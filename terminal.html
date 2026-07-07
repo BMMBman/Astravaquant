@@ -1,1234 +1,1455 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="AstravaQuant quantitative models terminal for macro, liquidity, mortgage, and digital asset market structure."
+      content="AstravaQuant terminal dashboard for proprietary market models, live macro indicators, crypto conditions, and institutional research signals."
     />
-    <title>AstravaQuant Terminal | Quantitative Models</title>
+    <title>AstravaQuant Terminal</title>
     <style>
-:root {
-  color-scheme: dark;
-  --bg: #050608;
-  --panel: #070b0f;
-  --panel-2: #091018;
-  --blue: #3b82f6;
-  --cyan: #19a8ff;
-  --text: #d7e7ff;
-  --muted: #8ca6c6;
-  --dim: #5f728c;
-  --green: #28f05a;
-  --red: #ff3b3b;
-  --yellow: #ffd84d;
-  --line: rgba(59, 130, 246, 0.32);
-  --line-soft: rgba(59, 130, 246, 0.16);
-  --mono: "SFMono-Regular", Consolas, "Liberation Mono", "Roboto Mono", monospace;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  min-height: 100%;
-  background: var(--bg);
-}
-
-body {
-  min-height: 100vh;
-  margin: 0;
-  color: var(--text);
-  font-family: var(--mono);
-  background:
-    radial-gradient(circle at 70% 12%, rgba(59, 130, 246, 0.08), transparent 24%),
-    linear-gradient(180deg, #050608 0%, #030405 100%);
-  letter-spacing: 0;
-}
-
-body::before {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  content: "";
-  background:
-    linear-gradient(rgba(59, 130, 246, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59, 130, 246, 0.02) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: linear-gradient(180deg, #050608, transparent 75%);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  color: inherit;
-  font: inherit;
-}
-
-.terminal-shell {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 284px 1fr;
-  grid-template-rows: 76px 1fr 56px;
-  min-height: 100vh;
-  border: 1px solid var(--line-soft);
-}
-
-.terminal-header {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 284px 1fr auto;
-  align-items: center;
-  min-width: 0;
-  border-bottom: 1px solid var(--line);
-  background: rgba(5, 6, 8, 0.88);
-}
-
-.terminal-brand {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  height: 100%;
-  padding: 0 24px;
-  border-right: 1px solid var(--line);
-}
-
-.terminal-brand svg {
-  width: 42px;
-  height: 39px;
-  fill: none;
-  stroke: var(--cyan);
-  stroke-width: 4;
-  filter: drop-shadow(0 0 10px rgba(25, 168, 255, 0.42));
-}
-
-.terminal-brand span {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
-  text-transform: uppercase;
-}
-
-.terminal-brand b {
-  color: var(--cyan);
-  font-size: 1.26rem;
-  font-weight: 500;
-  letter-spacing: 0;
-}
-
-.terminal-brand small {
-  color: var(--text);
-  font-size: 0.62rem;
-  letter-spacing: 0;
-}
-
-.terminal-nav {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  overflow-x: auto;
-}
-
-.terminal-nav a {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  height: 100%;
-  padding: 0 23px;
-  color: var(--text);
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition:
-    color 180ms ease,
-    background-color 180ms ease;
-}
-
-.terminal-nav a:hover,
-.terminal-nav a.active {
-  color: var(--cyan);
-  background: rgba(59, 130, 246, 0.05);
-}
-
-.terminal-nav a.active::after {
-  position: absolute;
-  right: 18px;
-  bottom: 0;
-  left: 18px;
-  height: 2px;
-  content: "";
-  background: var(--cyan);
-  box-shadow: 0 0 16px rgba(25, 168, 255, 0.72);
-}
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  height: 36px;
-  margin-right: 22px;
-  padding: 0 14px;
-  color: var(--cyan);
-  text-transform: uppercase;
-  border: 1px solid var(--blue);
-  background: rgba(59, 130, 246, 0.04);
-}
-
-.status-pill span {
-  color: var(--text);
-  font-size: 0.72rem;
-}
-
-.status-pill b {
-  font-size: 0.82rem;
-}
-
-.status-pill i,
-.block-title i,
-.panel-header i {
-  display: block;
-  width: 7px;
-  height: 7px;
-  border-radius: 999px;
-  background: var(--green);
-  box-shadow: 0 0 14px rgba(40, 240, 90, 0.8);
-  animation: blink 1.2s steps(2, start) infinite;
-}
-
-.market-sidebar {
-  grid-row: 2 / 3;
-  overflow: hidden auto;
-  border-right: 1px solid var(--line);
-  background: rgba(5, 6, 8, 0.86);
-}
-
-.sidebar-block {
-  padding: 18px 20px 20px;
-  border-bottom: 1px solid var(--line-soft);
-}
-
-.block-title,
-.panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.block-title span,
-.sidebar-block h2,
-.panel-header h2 {
-  margin: 0;
-  color: var(--text);
-  font-size: 0.84rem;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.block-title b,
-.panel-header b {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--green);
-  font-size: 0.72rem;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.status-block p {
-  margin: 24px 0 8px;
-  color: var(--muted);
-  font-size: 0.82rem;
-  text-transform: uppercase;
-}
-
-.status-block time {
-  color: var(--text);
-  font-size: 0.82rem;
-}
-
-.ticker-list {
-  display: grid;
-  gap: 13px;
-  padding: 0;
-  margin: 18px 0 0;
-  list-style: none;
-}
-
-.ticker-list li {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 14px;
-  align-items: center;
-  font-size: 0.78rem;
-}
-
-.ticker-list span {
-  color: var(--text);
-  text-transform: uppercase;
-}
-
-.ticker-list b {
-  color: var(--muted);
-  font-weight: 400;
-}
-
-em {
-  color: var(--text);
-  font-style: normal;
-}
-
-.up {
-  color: var(--green) !important;
-}
-
-.down {
-  color: var(--red) !important;
-}
-
-.feed-block ol {
-  display: grid;
-  gap: 11px;
-  padding: 0;
-  margin: 20px 0 30px;
-  color: var(--green);
-  font-size: 0.72rem;
-  list-style: none;
-}
-
-.feed-block li {
-  display: grid;
-  grid-template-columns: 58px 44px 1fr;
-  gap: 8px;
-}
-
-.feed-block b {
-  color: var(--green);
-  font-weight: 500;
-}
-
-.terminal-prompt {
-  color: var(--text);
-  font-size: 0.78rem;
-}
-
-.terminal-prompt i {
-  display: inline-block;
-  width: 8px;
-  height: 1em;
-  margin-left: 4px;
-  background: var(--cyan);
-  vertical-align: -0.15em;
-  animation: cursor 1s steps(2, start) infinite;
-}
-
-.terminal-main {
-  grid-column: 2 / 3;
-  grid-row: 2 / 3;
-  overflow: hidden auto;
-  padding: 26px 30px 30px;
-}
-
-.page-title {
-  max-width: 850px;
-  margin-bottom: 24px;
-}
-
-.page-title p {
-  margin: 0 0 18px;
-  color: var(--cyan);
-  font-size: 0.85rem;
-  text-transform: uppercase;
-}
-
-.page-title h1 {
-  margin: 0 0 14px;
-  color: var(--text);
-  font-size: 2.34rem;
-  line-height: 1.05;
-  font-weight: 400;
-  text-transform: uppercase;
-}
-
-.page-title span {
-  display: block;
-  color: var(--muted);
-  font-size: 0.91rem;
-  line-height: 1.62;
-}
-
-.model-card-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.model-card,
-.terminal-panel {
-  border: 1px solid var(--line);
-  background: rgba(5, 6, 8, 0.78);
-}
-
-.model-card {
-  display: grid;
-  min-height: 300px;
-}
-
-.model-card header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 18px 0;
-}
-
-.model-card h2 {
-  margin: 0;
-  color: var(--cyan);
-  font-size: 1.28rem;
-  font-weight: 500;
-}
-
-.model-card button {
-  width: 24px;
-  height: 24px;
-  color: var(--muted);
-  background: transparent;
-  border: 0;
-}
-
-.model-card p {
-  margin: 12px 18px 22px;
-  color: var(--text);
-  font-size: 0.88rem;
-  line-height: 1.55;
-}
-
-.model-card strong {
-  margin: 0 18px 6px;
-  color: #ffffff;
-  font-size: 1.65rem;
-  font-weight: 400;
-}
-
-.model-card em {
-  margin: 0 18px;
-  font-size: 0.85rem;
-}
-
-.model-card svg {
-  align-self: end;
-  width: calc(100% - 36px);
-  height: 72px;
-  margin: 8px 18px 0;
-}
-
-.model-card a {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 46px;
-  padding: 0 18px;
-  color: var(--cyan);
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  border-top: 1px solid var(--line-soft);
-}
-
-.terminal-panel {
-  margin-top: 24px;
-  padding: 20px 22px;
-}
-
-.panel-header {
-  padding-bottom: 14px;
-  margin-bottom: 18px;
-  border-bottom: 1px solid var(--line-soft);
-}
-
-.panel-header h2 {
-  color: var(--cyan);
-  font-size: 1rem;
-  letter-spacing: 0;
-}
-
-.asset-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--line-soft);
-}
-
-.asset-widget {
-  min-width: 0;
-  padding: 18px;
-  background: #050608;
-}
-
-.asset-widget span,
-.macro-grid span,
-dt {
-  color: var(--muted);
-  font-size: 0.76rem;
-  text-transform: uppercase;
-}
-
-.asset-widget strong {
-  display: inline-block;
-  margin: 12px 10px 8px 0;
-  color: #ffffff;
-  font-size: 1.55rem;
-  font-weight: 400;
-}
-
-.asset-widget svg {
-  display: block;
-  width: 100%;
-  height: 130px;
-  margin-top: 8px;
-}
-
-.asset-widget dl {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 12px 0 0;
-}
-
-dd {
-  margin: 6px 0 0;
-  color: var(--text);
-  font-size: 0.78rem;
-}
-
-.compact-widget {
-  min-height: 136px;
-}
-
-.compact-widget strong {
-  font-size: 1.1rem;
-}
-
-.compact-widget svg {
-  height: 54px;
-}
-
-.macro-grid {
-  display: grid;
-  grid-template-columns: repeat(9, minmax(120px, 1fr));
-  gap: 1px;
-  overflow-x: auto;
-  background: var(--line-soft);
-}
-
-.macro-grid article {
-  display: grid;
-  gap: 8px;
-  min-width: 120px;
-  padding: 14px;
-  background: #050608;
-}
-
-.macro-grid strong {
-  color: #ffffff;
-  font-size: 1.06rem;
-  font-weight: 400;
-}
-
-.macro-grid svg {
-  width: 100%;
-  height: 42px;
-}
-
-.table-wrap {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  min-width: 820px;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 13px 12px;
-  color: var(--muted);
-  font-size: 0.78rem;
-  text-align: left;
-  border-bottom: 1px solid var(--line-soft);
-}
-
-th {
-  color: var(--dim);
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-td:first-child {
-  color: var(--cyan);
-  font-size: 0.95rem;
-}
-
-td:nth-child(3),
-td:nth-child(4),
-td:last-child {
-  color: var(--text);
-}
-
-td svg {
-  width: 120px;
-  height: 34px;
-}
-
-.explanation-panel p {
-  max-width: 980px;
-  color: var(--muted);
-  font-size: 0.87rem;
-  line-height: 1.72;
-}
-
-.explanation-panel dl {
-  display: grid;
-  gap: 14px;
-  margin: 20px 0 0;
-}
-
-.explanation-panel div {
-  display: grid;
-  grid-template-columns: 62px 1fr;
-  gap: 20px;
-}
-
-.explanation-panel dt {
-  color: var(--cyan);
-  font-size: 1rem;
-}
-
-.pipeline-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.pipeline-grid article {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 58px;
-  padding: 0 14px;
-  border: 1px solid var(--line-soft);
-}
-
-.pipeline-grid span {
-  color: var(--text);
-  font-size: 0.82rem;
-}
-
-.pipeline-grid b {
-  color: var(--yellow);
-  font-size: 0.72rem;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.terminal-footer {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  align-items: center;
-  min-height: 56px;
-  padding: 0 22px;
-  color: var(--muted);
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  border-top: 1px solid var(--line);
-  background: rgba(5, 6, 8, 0.92);
-}
-
-.terminal-footer span:nth-child(2) {
-  text-align: center;
-}
-
-.terminal-footer span:nth-child(3) {
-  text-align: right;
-}
-
-.terminal-footer b {
-  color: var(--green);
-  font-weight: 500;
-}
-
-.sparkline path,
-.chart path,
-.mini-chart path,
-td svg path,
-.macro-grid svg path {
-  fill: none;
-  stroke: var(--cyan);
-  stroke-width: 2;
-  vector-effect: non-scaling-stroke;
-  filter: drop-shadow(0 0 5px rgba(25, 168, 255, 0.56));
-}
-
-.sparkline .area,
-.chart .area,
-.mini-chart .area {
-  fill: rgba(59, 130, 246, 0.12);
-  stroke: none;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0.25;
-  }
-}
-
-@keyframes cursor {
-  50% {
-    opacity: 0;
-  }
-}
-
-@media (max-width: 1180px) {
-  .terminal-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .terminal-header {
-    grid-template-columns: auto 1fr auto;
-  }
-
-  .terminal-brand {
-    border-right: 0;
-  }
-
-  .market-sidebar {
-    display: none;
-  }
-
-  .terminal-main {
-    grid-column: 1;
-  }
-
-  .model-card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .terminal-shell {
-    display: block;
-    min-height: 100vh;
-  }
-
-  .terminal-header {
-    display: grid;
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-
-  .terminal-brand {
-    min-height: 70px;
-    padding: 0 16px;
-  }
-
-  .terminal-nav {
-    min-height: 52px;
-    border-top: 1px solid var(--line-soft);
-  }
-
-  .terminal-nav a {
-    padding: 0 16px;
-  }
-
-  .status-pill {
-    justify-content: center;
-    width: calc(100% - 32px);
-    margin: 12px 16px 16px;
-  }
-
-  .terminal-main {
-    padding: 20px 16px 24px;
-  }
-
-  .page-title h1 {
-    font-size: 1.9rem;
-  }
-
-  .model-card-grid,
-  .asset-grid,
-  .pipeline-grid,
-  .terminal-footer {
-    grid-template-columns: 1fr;
-  }
-
-  .terminal-footer {
-    display: grid;
-    gap: 8px;
-    padding: 16px;
-  }
-
-  .terminal-footer span,
-  .terminal-footer span:nth-child(2),
-  .terminal-footer span:nth-child(3) {
-    text-align: left;
-  }
-}
-
-</style>
+      :root {
+        color-scheme: dark;
+        --bg: #05070b;
+        --bg-2: #07101a;
+        --navy: #081626;
+        --panel: rgba(8, 18, 30, 0.78);
+        --panel-solid: #07101a;
+        --panel-deep: #05090f;
+        --line: rgba(77, 166, 255, 0.28);
+        --line-strong: rgba(77, 166, 255, 0.5);
+        --blue: #4da6ff;
+        --cyan: #20b7ff;
+        --ice: #d6dee8;
+        --muted: #8298b4;
+        --dim: #52657d;
+        --green: #29f073;
+        --red: #ff4b5f;
+        --yellow: #f5d45e;
+        --white: #ffffff;
+        --shadow: 0 18px 70px rgba(0, 0, 0, 0.42);
+        --mono: "SFMono-Regular", Consolas, "Liberation Mono", "Roboto Mono", monospace;
+        --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+        background: var(--bg);
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ice);
+        font-family: var(--mono);
+        background:
+          radial-gradient(circle at 76% -10%, rgba(77, 166, 255, 0.2), transparent 32rem),
+          radial-gradient(circle at 18% 18%, rgba(32, 183, 255, 0.08), transparent 24rem),
+          linear-gradient(135deg, #05070b 0%, #081626 52%, #04060a 100%);
+        letter-spacing: 0;
+        overflow-x: hidden;
+      }
+
+      body::before,
+      body::after {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+      }
+
+      body::before {
+        z-index: 0;
+        background:
+          linear-gradient(rgba(77, 166, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(77, 166, 255, 0.025) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: linear-gradient(180deg, #05070b 0%, rgba(5, 7, 11, 0.72) 62%, transparent 100%);
+      }
+
+      body::after {
+        z-index: 1;
+        opacity: 0.16;
+        background-image:
+          radial-gradient(circle, rgba(214, 222, 232, 0.76) 0 1px, transparent 1.4px),
+          radial-gradient(circle, rgba(77, 166, 255, 0.55) 0 1px, transparent 1.3px);
+        background-position:
+          0 0,
+          36px 58px;
+        background-size:
+          130px 130px,
+          190px 190px;
+        animation: starDrift 38s linear infinite;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        color: inherit;
+        font: inherit;
+      }
+
+      .terminal {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 286px minmax(0, 1fr);
+        grid-template-rows: 76px 42px minmax(0, 1fr) 50px;
+        min-height: 100vh;
+        border: 1px solid rgba(77, 166, 255, 0.2);
+        background: rgba(5, 7, 11, 0.6);
+      }
+
+      .topbar {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 286px minmax(0, 1fr) auto;
+        align-items: center;
+        min-width: 0;
+        border-bottom: 1px solid var(--line);
+        background: rgba(5, 7, 11, 0.86);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        height: 100%;
+        padding: 0 22px;
+        border-right: 1px solid var(--line);
+      }
+
+      .brand-mark {
+        width: 43px;
+        height: 40px;
+        fill: none;
+        stroke: var(--blue);
+        stroke-width: 4;
+        filter: drop-shadow(0 0 12px rgba(77, 166, 255, 0.65));
+      }
+
+      .brand-text {
+        display: grid;
+        gap: 3px;
+        min-width: 0;
+        text-transform: uppercase;
+      }
+
+      .brand-text b {
+        color: var(--blue);
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1;
+      }
+
+      .brand-text small {
+        color: var(--ice);
+        font-size: 0.62rem;
+        line-height: 1.1;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        overflow-x: auto;
+      }
+
+      .nav a {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 21px;
+        color: var(--ice);
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        white-space: nowrap;
+        transition:
+          color 180ms ease,
+          background-color 180ms ease;
+      }
+
+      .nav a:hover,
+      .nav a.active {
+        color: var(--blue);
+        background: rgba(77, 166, 255, 0.07);
+      }
+
+      .nav a.active::after {
+        position: absolute;
+        right: 17px;
+        bottom: 0;
+        left: 17px;
+        height: 2px;
+        content: "";
+        background: var(--blue);
+        box-shadow: 0 0 18px rgba(77, 166, 255, 0.78);
+      }
+
+      .system-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        min-height: 36px;
+        margin-right: 22px;
+        padding: 0 14px;
+        color: var(--green);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        border: 1px solid var(--line-strong);
+        background: rgba(77, 166, 255, 0.06);
+        box-shadow: inset 0 0 24px rgba(77, 166, 255, 0.05);
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 15px rgba(41, 240, 115, 0.9);
+        animation: blink 1.25s steps(2, start) infinite;
+      }
+
+      .ticker-tape {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(77, 166, 255, 0.22);
+        background:
+          linear-gradient(90deg, rgba(77, 166, 255, 0.1), transparent 18%),
+          rgba(5, 7, 11, 0.9);
+      }
+
+      .ticker-label {
+        position: relative;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        align-self: stretch;
+        padding: 0 18px;
+        color: var(--blue);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        border-right: 1px solid var(--line);
+        background: #05070b;
+      }
+
+      .ticker-track {
+        display: inline-flex;
+        gap: 34px;
+        min-width: max-content;
+        padding-left: 28px;
+        animation: tickerScroll 34s linear infinite;
+      }
+
+      .ticker-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--muted);
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .ticker-item b {
+        color: var(--ice);
+        font-weight: 500;
+      }
+
+      .sidebar {
+        grid-row: 3 / 4;
+        overflow: auto;
+        border-right: 1px solid var(--line);
+        background: rgba(5, 7, 11, 0.78);
+        backdrop-filter: blur(16px);
+      }
+
+      .side-block {
+        padding: 18px 20px 20px;
+        border-bottom: 1px solid rgba(77, 166, 255, 0.17);
+      }
+
+      .block-head,
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .block-head h2,
+      .panel-head h2 {
+        margin: 0;
+        color: var(--ice);
+        font-size: 0.84rem;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .block-head b,
+      .panel-head b {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--green);
+        font-size: 0.7rem;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .clock-label {
+        margin: 23px 0 8px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+      }
+
+      #clock {
+        display: block;
+        color: var(--white);
+        font-size: 0.85rem;
+      }
+
+      .market-open {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: 18px;
+        background: rgba(77, 166, 255, 0.16);
+      }
+
+      .market-open div {
+        padding: 12px;
+        background: rgba(5, 7, 11, 0.92);
+      }
+
+      .market-open span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.66rem;
+        text-transform: uppercase;
+      }
+
+      .market-open strong {
+        display: block;
+        margin-top: 7px;
+        color: var(--ice);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .watchlist {
+        display: grid;
+        gap: 12px;
+        padding: 0;
+        margin: 18px 0 0;
+        list-style: none;
+      }
+
+      .watchlist li {
+        display: grid;
+        grid-template-columns: minmax(72px, 1fr) auto auto;
+        gap: 12px;
+        align-items: baseline;
+        font-size: 0.76rem;
+      }
+
+      .watchlist span {
+        color: var(--ice);
+        text-transform: uppercase;
+      }
+
+      .watchlist b {
+        color: var(--muted);
+        font-weight: 400;
+      }
+
+      .up {
+        color: var(--green) !important;
+      }
+
+      .down {
+        color: var(--red) !important;
+      }
+
+      .flat {
+        color: var(--ice) !important;
+      }
+
+      em {
+        font-style: normal;
+      }
+
+      .feed {
+        display: grid;
+        gap: 10px;
+        padding: 0;
+        margin: 18px 0 26px;
+        color: var(--green);
+        font-size: 0.7rem;
+        list-style: none;
+      }
+
+      .feed li {
+        display: grid;
+        grid-template-columns: 58px 46px 1fr;
+        gap: 8px;
+      }
+
+      .feed b {
+        color: var(--blue);
+        font-weight: 500;
+      }
+
+      .prompt {
+        color: var(--ice);
+        font-size: 0.78rem;
+      }
+
+      .prompt i {
+        display: inline-block;
+        width: 8px;
+        height: 1em;
+        margin-left: 5px;
+        background: var(--blue);
+        vertical-align: -0.16em;
+        animation: cursor 1s steps(2, start) infinite;
+      }
+
+      .main {
+        grid-column: 2 / 3;
+        grid-row: 3 / 4;
+        overflow: auto;
+        min-width: 0;
+        padding: 26px 30px 30px;
+      }
+
+      .command-line {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+        max-width: 100%;
+        margin-bottom: 22px;
+        padding: 9px 12px;
+        color: var(--green);
+        font-size: 0.76rem;
+        border: 1px solid rgba(77, 166, 255, 0.2);
+        background: rgba(5, 7, 11, 0.6);
+      }
+
+      .command-line span {
+        color: var(--blue);
+      }
+
+      .hero-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 310px;
+        gap: 20px;
+        align-items: stretch;
+        margin-bottom: 20px;
+      }
+
+      .title-panel,
+      .panel,
+      .model-card,
+      .future-card,
+      .signal-card {
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(180deg, rgba(77, 166, 255, 0.055), transparent 72%),
+          var(--panel);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+      }
+
+      .title-panel {
+        position: relative;
+        min-height: 236px;
+        padding: 27px;
+        overflow: hidden;
+      }
+
+      .title-panel::after {
+        position: absolute;
+        right: -12%;
+        bottom: -46%;
+        width: 58%;
+        height: 80%;
+        pointer-events: none;
+        content: "";
+        border: 1px solid rgba(77, 166, 255, 0.3);
+        border-radius: 50%;
+        box-shadow:
+          0 0 42px rgba(77, 166, 255, 0.2),
+          inset 0 0 38px rgba(77, 166, 255, 0.08);
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        color: var(--blue);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 760px;
+        margin: 0;
+        color: var(--white);
+        font-family: var(--sans);
+        font-size: clamp(2.15rem, 4vw, 4.7rem);
+        line-height: 0.95;
+        font-weight: 650;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .title-panel p:last-child {
+        max-width: 800px;
+        margin: 20px 0 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.65;
+      }
+
+      .session-card {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        min-height: 236px;
+        padding: 20px;
+      }
+
+      .session-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: 16px;
+        background: rgba(77, 166, 255, 0.16);
+      }
+
+      .session-grid div {
+        min-height: 68px;
+        padding: 13px;
+        background: rgba(5, 7, 11, 0.92);
+      }
+
+      .session-grid span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.65rem;
+        text-transform: uppercase;
+      }
+
+      .session-grid strong {
+        display: block;
+        margin-top: 8px;
+        color: var(--white);
+        font-size: 1.12rem;
+        font-weight: 500;
+      }
+
+      .terminal-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .signal-card {
+        display: grid;
+        min-height: 202px;
+        padding: 17px;
+        overflow: hidden;
+      }
+
+      .signal-card header,
+      .model-card header,
+      .future-card header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .signal-card h2,
+      .model-card h2,
+      .future-card h2 {
+        margin: 0;
+        color: var(--blue);
+        font-size: 1rem;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .signal-card header span,
+      .model-card header span,
+      .future-card header span {
+        color: var(--dim);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+      }
+
+      .signal-card strong {
+        margin-top: 16px;
+        color: var(--white);
+        font-size: 1.65rem;
+        font-weight: 400;
+      }
+
+      .signal-card em {
+        margin-top: 6px;
+        font-size: 0.82rem;
+      }
+
+      .spark {
+        align-self: end;
+        width: 100%;
+        height: 66px;
+        margin-top: 16px;
+      }
+
+      .panel {
+        margin-top: 20px;
+        padding: 20px;
+      }
+
+      .panel-head {
+        padding-bottom: 14px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(77, 166, 255, 0.18);
+      }
+
+      .widget-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1px;
+        background: rgba(77, 166, 255, 0.18);
+      }
+
+      .widget {
+        min-width: 0;
+        padding: 16px;
+        background: rgba(5, 7, 11, 0.9);
+      }
+
+      .widget span,
+      .metric-grid span,
+      .model-card p,
+      .future-card p {
+        color: var(--muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      .widget strong {
+        display: block;
+        margin: 10px 0 6px;
+        color: var(--white);
+        font-size: 1.34rem;
+        font-weight: 400;
+      }
+
+      .widget svg {
+        display: block;
+        width: 100%;
+        height: 58px;
+        margin-top: 11px;
+      }
+
+      .model-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .model-card,
+      .future-card {
+        min-height: 254px;
+        padding: 18px;
+      }
+
+      .model-card p,
+      .future-card p {
+        margin: 14px 0 18px;
+        line-height: 1.5;
+        text-transform: none;
+      }
+
+      .score-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+
+      .score-row strong {
+        color: var(--white);
+        font-size: 1.8rem;
+        font-weight: 400;
+      }
+
+      .score-row em {
+        font-size: 0.78rem;
+      }
+
+      .regime {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        min-height: 27px;
+        padding: 0 9px;
+        color: var(--green);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        border: 1px solid rgba(41, 240, 115, 0.28);
+        background: rgba(41, 240, 115, 0.06);
+      }
+
+      .regime.watch {
+        color: var(--yellow);
+        border-color: rgba(245, 212, 94, 0.32);
+        background: rgba(245, 212, 94, 0.07);
+      }
+
+      .model-card .spark,
+      .future-card .spark {
+        height: 58px;
+      }
+
+      .future-card {
+        display: grid;
+        align-content: space-between;
+        border-style: dashed;
+      }
+
+      .future-card .module-tag {
+        display: inline-flex;
+        width: fit-content;
+        padding: 7px 9px;
+        color: var(--blue);
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        border: 1px solid rgba(77, 166, 255, 0.26);
+        background: rgba(77, 166, 255, 0.06);
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 1px;
+        background: rgba(77, 166, 255, 0.16);
+      }
+
+      .metric-grid article {
+        padding: 15px;
+        background: rgba(5, 7, 11, 0.9);
+      }
+
+      .metric-grid strong {
+        display: block;
+        margin-top: 9px;
+        color: var(--white);
+        font-size: 1.1rem;
+        font-weight: 400;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        min-width: 920px;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 13px 12px;
+        color: var(--muted);
+        font-size: 0.76rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(77, 166, 255, 0.14);
+      }
+
+      th {
+        color: var(--dim);
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      td:first-child {
+        color: var(--blue);
+        font-size: 0.92rem;
+      }
+
+      td:nth-child(3),
+      td:nth-child(5),
+      td:last-child {
+        color: var(--ice);
+      }
+
+      td svg {
+        width: 120px;
+        height: 32px;
+      }
+
+      .footer {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        align-items: center;
+        min-height: 50px;
+        padding: 0 20px;
+        color: var(--muted);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        border-top: 1px solid var(--line);
+        background: rgba(5, 7, 11, 0.9);
+      }
+
+      .footer span:nth-child(2) {
+        text-align: center;
+      }
+
+      .footer span:nth-child(3) {
+        text-align: right;
+      }
+
+      .footer b {
+        color: var(--green);
+        font-weight: 500;
+      }
+
+      svg.spark path,
+      .widget svg path,
+      td svg path {
+        fill: none;
+        stroke: var(--blue);
+        stroke-width: 2;
+        vector-effect: non-scaling-stroke;
+        filter: drop-shadow(0 0 5px rgba(77, 166, 255, 0.55));
+      }
+
+      svg .area {
+        fill: rgba(77, 166, 255, 0.14);
+        stroke: none;
+      }
+
+      @keyframes tickerScroll {
+        0% {
+          transform: translateX(0);
+        }
+
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0.25;
+        }
+      }
+
+      @keyframes cursor {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes starDrift {
+        0% {
+          background-position: 0 0, 36px 58px;
+        }
+
+        100% {
+          background-position: 130px 130px, 226px 248px;
+        }
+      }
+
+      @media (max-width: 1220px) {
+        .terminal {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          grid-template-columns: auto minmax(0, 1fr) auto;
+        }
+
+        .brand {
+          border-right: 0;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .main {
+          grid-column: 1;
+        }
+
+        .hero-row {
+          grid-template-columns: 1fr;
+        }
+
+        .terminal-grid,
+        .widget-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .model-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .metric-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .terminal {
+          display: block;
+          min-height: 100vh;
+        }
+
+        .topbar {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+
+        .brand {
+          min-height: 72px;
+          padding: 0 16px;
+        }
+
+        .nav {
+          min-height: 52px;
+          border-top: 1px solid rgba(77, 166, 255, 0.16);
+        }
+
+        .nav a {
+          padding: 0 16px;
+        }
+
+        .system-status {
+          justify-content: center;
+          width: calc(100% - 32px);
+          margin: 12px 16px 16px;
+        }
+
+        .ticker-tape {
+          min-height: 42px;
+        }
+
+        .ticker-label {
+          display: none;
+        }
+
+        .main {
+          padding: 18px 14px 24px;
+        }
+
+        .title-panel {
+          min-height: 0;
+          padding: 21px;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        .terminal-grid,
+        .widget-grid,
+        .model-grid,
+        .metric-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .panel {
+          padding: 16px;
+        }
+
+        .footer {
+          grid-template-columns: 1fr;
+          gap: 8px;
+          padding: 16px;
+        }
+
+        .footer span,
+        .footer span:nth-child(2),
+        .footer span:nth-child(3) {
+          text-align: left;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div class="terminal-shell">
-      <header class="terminal-header">
-        <a class="terminal-brand" href="index.html" aria-label="AstravaQuant home">
-          <svg viewBox="0 0 164 150" aria-hidden="true">
+    <div class="terminal">
+      <header class="topbar">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
             <path d="M82 10 151 138 82 101 13 138Z" />
             <path d="M82 38 119 107 82 87 45 107Z" />
           </svg>
-          <span>
+          <span class="brand-text">
             <b>Astrava</b>
             <small>Quantitative Research</small>
           </span>
         </a>
 
-        <nav class="terminal-nav" aria-label="Terminal navigation">
+        <nav class="nav" aria-label="Primary navigation">
           <a href="index.html">Home</a>
           <a href="#research">Research</a>
-          <a class="active" href="models.html">Models</a>
+          <a class="active" href="#models">Models</a>
           <a href="#dashboards">Dashboards</a>
           <a href="#crypto">Crypto</a>
           <a href="#about">About</a>
         </nav>
 
-        <div class="status-pill" aria-label="System status live">
-          <span>System Status</span>
-          <b>Live</b>
-          <i aria-hidden="true"></i>
+        <div class="system-status" aria-label="Market system status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>System Live</span>
         </div>
       </header>
 
-      <aside class="market-sidebar" aria-label="Live market sidebar">
-        <section class="sidebar-block status-block">
-          <div class="block-title">
-            <span>Market Status</span>
-            <b><i></i> Live</b>
+      <section class="ticker-tape" aria-label="Scrolling market ticker">
+        <span class="ticker-label">Live Tape</span>
+        <div class="ticker-track" id="tickerTrack">
+          <span class="ticker-item">BTC <b data-live="btc">$66,842.91</b> <em class="up">+1.23%</em></span>
+          <span class="ticker-item">ETH <b data-live="eth">$2,995.11</b> <em class="up">+2.38%</em></span>
+          <span class="ticker-item">TOTAL CRYPTO <b>$2.46T</b> <em class="up">+1.56%</em></span>
+          <span class="ticker-item">S&amp;P 500 <b data-live="spx">5,342.81</b> <em class="up">+0.53%</em></span>
+          <span class="ticker-item">NASDAQ <b data-live="ndx">18,742.11</b> <em class="up">+0.72%</em></span>
+          <span class="ticker-item">10Y <b data-live="tnx">4.36</b> <em class="down">-0.02</em></span>
+          <span class="ticker-item">DXY <b data-live="dxy">104.28</b> <em class="down">-0.21%</em></span>
+          <span class="ticker-item">VIX <b data-live="vix">13.42</b> <em class="down">-1.25%</em></span>
+        </div>
+      </section>
+
+      <aside class="sidebar" aria-label="Terminal sidebar">
+        <section class="side-block">
+          <div class="block-head">
+            <h2>Market Status</h2>
+            <b><span class="status-dot" aria-hidden="true"></span> Live</b>
           </div>
-          <p>Markets Open</p>
-          <time id="clock">05.19.2025 10:24:37 ET</time>
+          <p class="clock-label">Markets Open</p>
+          <time id="clock">07.06.2026 21:24:37 ET</time>
+          <div class="market-open">
+            <div><span>US Equities</span><strong>Open</strong></div>
+            <div><span>Crypto</span><strong>24/7</strong></div>
+            <div><span>Rates</span><strong>Active</strong></div>
+            <div><span>Models</span><strong>Online</strong></div>
+          </div>
         </section>
 
-        <section class="sidebar-block">
-          <h2>Markets</h2>
-          <ul class="ticker-list" data-feed="market">
+        <section class="side-block">
+          <div class="block-head">
+            <h2>Macro Watch</h2>
+            <b>Live</b>
+          </div>
+          <ul class="watchlist">
             <li><span>S&amp;P 500</span><b data-value="5342.81">5,342.81</b><em class="up">+0.53%</em></li>
             <li><span>NASDAQ</span><b data-value="18742.11">18,742.11</b><em class="up">+0.72%</em></li>
-            <li><span>Dow Jones</span><b data-value="38654.42">38,654.42</b><em class="up">+0.39%</em></li>
-            <li><span>VIX</span><b data-value="13.42">13.42</b><em class="down">-1.25%</em></li>
+            <li><span>10Y Treasury</span><b data-value="4.36">4.36%</b><em class="down">-0.02</em></li>
             <li><span>DXY</span><b data-value="104.28">104.28</b><em class="down">-0.21%</em></li>
-            <li><span>US10Y</span><b data-value="4.36">4.36</b><em class="down">-0.02</em></li>
-            <li><span>US30Y</span><b data-value="4.63">4.63</b><em class="down">-0.02</em></li>
-            <li><span>SOFR</span><b data-value="5.33">5.33</b><em>0.00</em></li>
-            <li><span>Fed Funds</span><b data-value="5.38">5.38</b><em>0.00</em></li>
+            <li><span>VIX</span><b data-value="13.42">13.42</b><em class="down">-1.25%</em></li>
+            <li><span>SOFR</span><b data-value="5.33">5.33%</b><em class="flat">0.00</em></li>
           </ul>
         </section>
 
-        <section class="sidebar-block">
-          <div class="block-title">
-            <h2>Crypto</h2>
-            <b><i></i> Live</b>
+        <section class="side-block">
+          <div class="block-head">
+            <h2>Crypto Watch</h2>
+            <b><span class="status-dot" aria-hidden="true"></span> Live</b>
           </div>
-          <ul class="ticker-list" data-feed="crypto">
+          <ul class="watchlist">
             <li><span>Bitcoin</span><b data-value="66842.91">$66,842.91</b><em class="up">+1.23%</em></li>
             <li><span>Ethereum</span><b data-value="2995.11">$2,995.11</b><em class="up">+2.38%</em></li>
-            <li><span>ETH/BTC</span><b data-value="0.0448">0.0448</b><em class="up">+0.31%</em></li>
-            <li><span>BTC Dom.</span><b data-value="53.80">53.80%</b><em class="up">+0.42%</em></li>
-            <li><span>ETH Dom.</span><b data-value="15.20">15.20%</b><em class="up">+0.31%</em></li>
             <li><span>Total Cap</span><b data-value="2.46">$2.46T</b><em class="up">+1.56%</em></li>
+            <li><span>BTC Dom.</span><b data-value="53.8">53.80%</b><em class="up">+0.42%</em></li>
             <li><span>Stablecoins</span><b data-value="164.8">$164.8B</b><em class="up">+0.18%</em></li>
-            <li><span>USDT Dom.</span><b data-value="4.68">4.68%</b><em class="down">-0.12%</em></li>
           </ul>
         </section>
 
-        <section class="sidebar-block feed-block">
-          <h2>System Feed</h2>
-          <ol id="systemFeed">
-            <li><time>10:24:37</time><b>System</b><span>Models engine online</span></li>
-            <li><time>10:24:37</time><b>Data</b><span>Market data connected</span></li>
-            <li><time>10:24:37</time><b>Data</b><span>Crypto feed synced</span></li>
-            <li><time>10:24:36</time><b>Model</b><span>MRPI updated</span></li>
-            <li><time>10:24:36</time><b>Model</b><span>LTPI updated</span></li>
-            <li><time>10:24:35</time><b>Model</b><span>MTPI updated</span></li>
-            <li><time>10:24:35</time><b>Model</b><span>ITPI updated</span></li>
+        <section class="side-block">
+          <div class="block-head">
+            <h2>System Feed</h2>
+            <b>Streaming</b>
+          </div>
+          <ol class="feed" id="systemFeed">
+            <li><time>21:24:37</time><b>MODEL</b><span>MRPI refreshed</span></li>
+            <li><time>21:24:35</time><b>DATA</b><span>Crypto feed synced</span></li>
+            <li><time>21:24:31</time><b>RISK</b><span>Volatility checked</span></li>
+            <li><time>21:24:26</time><b>MACRO</b><span>Treasury curve parsed</span></li>
+            <li><time>21:24:20</time><b>SYS</b><span>Terminal online</span></li>
           </ol>
-          <div class="terminal-prompt">astrava@terminal:~$ <i></i></div>
+          <div class="prompt">astrava@terminal:~$<i></i></div>
         </section>
       </aside>
 
-      <main class="terminal-main">
-        <section class="page-title">
-          <p>/models</p>
-          <h1>Quantitative Models</h1>
-          <span>
-            A suite of proprietary quantitative models designed to measure macroeconomic pressure, liquidity conditions,
-            mortgage rate dynamics, and digital asset market structure.
-          </span>
+      <main class="main">
+        <div class="command-line"><span>/terminal</span> load astrava.market_intelligence --mode=institutional</div>
+
+        <section class="hero-row" aria-labelledby="terminalTitle">
+          <div class="title-panel">
+            <p class="eyebrow">AstravaQuant Terminal</p>
+            <h1 id="terminalTitle">Quantitative Market Intelligence</h1>
+            <p>
+              A terminal-grade command center for proprietary models, market signals, crypto conditions,
+              macro stress, liquidity, mortgage pressure, and future research frameworks.
+            </p>
+          </div>
+
+          <aside class="panel session-card" aria-label="Session status">
+            <div class="panel-head">
+              <h2>Session</h2>
+              <b><span class="status-dot" aria-hidden="true"></span> Live</b>
+            </div>
+            <div class="session-grid">
+              <div><span>Data Updated</span><strong id="sessionTime">21:24:37</strong></div>
+              <div><span>Latency</span><strong>32ms</strong></div>
+              <div><span>Model Engine</span><strong>Online</strong></div>
+              <div><span>Risk State</span><strong>Normal</strong></div>
+            </div>
+          </aside>
         </section>
 
-        <section class="model-card-grid" aria-label="Model overview cards">
-          <article class="model-card">
-            <header><h2>MRPI</h2><button aria-label="Inspect MRPI">{}</button></header>
-            <p>Mortgage Rate<br />Pressure Index</p>
-            <strong data-model-value="62.47">62.47</strong>
-            <em class="up">&#9650; 1.32 (2.16%)</em>
-            <svg class="sparkline" viewBox="0 0 220 70" data-sparkline="up"></svg>
-            <a href="#model-table">View Model <span>&rarr;</span></a>
+        <section class="terminal-grid" aria-label="Primary live widgets">
+          <article class="signal-card">
+            <header><h2>Bitcoin</h2><span>BTC/USD</span></header>
+            <strong data-value="66842.91">$66,842.91</strong>
+            <em class="up">+1.23%</em>
+            <svg class="spark" viewBox="0 0 220 72" data-sparkline="strong" aria-hidden="true"></svg>
           </article>
-
-          <article class="model-card">
-            <header><h2>LTPI</h2><button aria-label="Inspect LTPI">{}</button></header>
-            <p>Liquidity Trend<br />Pressure Index</p>
-            <strong data-model-value="58.21">58.21</strong>
-            <em class="up">&#9650; 0.98 (1.71%)</em>
-            <svg class="sparkline" viewBox="0 0 220 70" data-sparkline="up"></svg>
-            <a href="#model-table">View Model <span>&rarr;</span></a>
+          <article class="signal-card">
+            <header><h2>Ethereum</h2><span>ETH/USD</span></header>
+            <strong data-value="2995.11">$2,995.11</strong>
+            <em class="up">+2.38%</em>
+            <svg class="spark" viewBox="0 0 220 72" data-sparkline="up" aria-hidden="true"></svg>
           </article>
-
-          <article class="model-card">
-            <header><h2>MTPI</h2><button aria-label="Inspect MTPI">{}</button></header>
-            <p>Macro Trend<br />Pressure Index</p>
-            <strong data-model-value="71.38">71.38</strong>
-            <em class="up">&#9650; 1.87 (2.69%)</em>
-            <svg class="sparkline" viewBox="0 0 220 70" data-sparkline="strong"></svg>
-            <a href="#model-table">View Model <span>&rarr;</span></a>
+          <article class="signal-card">
+            <header><h2>Total Crypto</h2><span>Market Cap</span></header>
+            <strong data-value="2.46">$2.46T</strong>
+            <em class="up">+1.56%</em>
+            <svg class="spark" viewBox="0 0 220 72" data-sparkline="up" aria-hidden="true"></svg>
           </article>
-
-          <article class="model-card">
-            <header><h2>ITPI</h2><button aria-label="Inspect ITPI">{}</button></header>
-            <p>Integrated Trend<br />Pressure Index</p>
-            <strong data-model-value="63.82">63.82</strong>
-            <em class="up">&#9650; 1.43 (2.29%)</em>
-            <svg class="sparkline" viewBox="0 0 220 70" data-sparkline="up"></svg>
-            <a href="#model-table">View Model <span>&rarr;</span></a>
+          <article class="signal-card">
+            <header><h2>VIX</h2><span>Volatility</span></header>
+            <strong data-value="13.42">13.42</strong>
+            <em class="down">-1.25%</em>
+            <svg class="spark" viewBox="0 0 220 72" data-sparkline="down" aria-hidden="true"></svg>
           </article>
         </section>
 
-        <section class="terminal-panel crypto-panel" id="crypto">
-          <header class="panel-header">
-            <h2>Crypto Market Overview</h2>
-            <b><i></i> Live</b>
+        <section class="panel" id="dashboards">
+          <header class="panel-head">
+            <h2>Live Market Widgets</h2>
+            <b><span class="status-dot" aria-hidden="true"></span> Streaming</b>
           </header>
-          <div class="asset-grid">
-            <article class="asset-widget">
-              <span>Bitcoin / USD</span>
-              <strong data-live-value="66842.91">66,842.91</strong>
-              <em class="up">&#9650; 1.23%</em>
-              <svg class="chart" viewBox="0 0 300 130" data-sparkline="strong"></svg>
-              <dl>
-                <div><dt>24h High</dt><dd>67,579.34</dd></div>
-                <div><dt>24h Low</dt><dd>64,102.21</dd></div>
-                <div><dt>24h Vol</dt><dd>28.41B</dd></div>
-              </dl>
+          <div class="widget-grid">
+            <article class="widget"><span>S&amp;P 500</span><strong data-value="5342.81">5,342.81</strong><em class="up">+0.53%</em><svg viewBox="0 0 180 58" data-sparkline="up" aria-hidden="true"></svg></article>
+            <article class="widget"><span>NASDAQ</span><strong data-value="18742.11">18,742.11</strong><em class="up">+0.72%</em><svg viewBox="0 0 180 58" data-sparkline="strong" aria-hidden="true"></svg></article>
+            <article class="widget"><span>10-Year Treasury</span><strong data-value="4.36">4.36%</strong><em class="down">-0.02</em><svg viewBox="0 0 180 58" data-sparkline="down" aria-hidden="true"></svg></article>
+            <article class="widget"><span>Dollar Index</span><strong data-value="104.28">104.28</strong><em class="down">-0.21%</em><svg viewBox="0 0 180 58" data-sparkline="down" aria-hidden="true"></svg></article>
+            <article class="widget"><span>Bitcoin</span><strong data-value="66842.91">$66,842.91</strong><em class="up">+1.23%</em><svg viewBox="0 0 180 58" data-sparkline="strong" aria-hidden="true"></svg></article>
+            <article class="widget"><span>Ethereum</span><strong data-value="2995.11">$2,995.11</strong><em class="up">+2.38%</em><svg viewBox="0 0 180 58" data-sparkline="up" aria-hidden="true"></svg></article>
+            <article class="widget"><span>Total Crypto Cap</span><strong data-value="2.46">$2.46T</strong><em class="up">+1.56%</em><svg viewBox="0 0 180 58" data-sparkline="up" aria-hidden="true"></svg></article>
+            <article class="widget"><span>VIX</span><strong data-value="13.42">13.42</strong><em class="down">-1.25%</em><svg viewBox="0 0 180 58" data-sparkline="down" aria-hidden="true"></svg></article>
+          </div>
+        </section>
+
+        <section class="panel" id="models">
+          <header class="panel-head">
+            <h2>Proprietary Models</h2>
+            <b>Updated <span id="modelTime">21:24:37</span></b>
+          </header>
+          <div class="model-grid">
+            <article class="model-card">
+              <header><h2>MTPI</h2><span>Macro</span></header>
+              <p>Macro Trend Pressure Index measuring growth, inflation, labor, policy, and financial conditions.</p>
+              <div class="score-row"><strong data-model-value="71.38">71.38</strong><em class="up">+2.69%</em></div>
+              <span class="regime">Bullish</span>
+              <svg class="spark" viewBox="0 0 220 58" data-sparkline="strong" aria-hidden="true"></svg>
             </article>
-            <article class="asset-widget">
-              <span>Ethereum / USD</span>
-              <strong data-live-value="2995.11">2,995.11</strong>
-              <em class="up">&#9650; 2.38%</em>
-              <svg class="chart" viewBox="0 0 300 130" data-sparkline="up"></svg>
-              <dl>
-                <div><dt>24h High</dt><dd>3,041.32</dd></div>
-                <div><dt>24h Low</dt><dd>2,824.15</dd></div>
-                <div><dt>24h Vol</dt><dd>18.73B</dd></div>
-              </dl>
+            <article class="model-card">
+              <header><h2>LTPI</h2><span>Liquidity</span></header>
+              <p>Liquidity Trend Pressure Index tracking market depth, funding, credit, and systemic liquidity.</p>
+              <div class="score-row"><strong data-model-value="58.21">58.21</strong><em class="up">+1.71%</em></div>
+              <span class="regime watch">Watching</span>
+              <svg class="spark" viewBox="0 0 220 58" data-sparkline="up" aria-hidden="true"></svg>
             </article>
-            <article class="asset-widget">
-              <span>Total Crypto Market Cap</span>
-              <strong data-live-value="2.46">$2.46T</strong>
-              <em class="up">&#9650; 1.56%</em>
-              <svg class="chart" viewBox="0 0 300 130" data-sparkline="up"></svg>
-              <dl>
-                <div><dt>24h High</dt><dd>$2.49T</dd></div>
-                <div><dt>24h Low</dt><dd>$2.37T</dd></div>
-                <div><dt>24h Vol</dt><dd>84.21B</dd></div>
-              </dl>
+            <article class="model-card">
+              <header><h2>MRPI</h2><span>Rates</span></header>
+              <p>Mortgage Rate Pressure Index assessing mortgage-rate pressure from bonds, liquidity, and macro data.</p>
+              <div class="score-row"><strong data-model-value="62.47">62.47</strong><em class="up">+2.16%</em></div>
+              <span class="regime watch">Neutral</span>
+              <svg class="spark" viewBox="0 0 220 58" data-sparkline="up" aria-hidden="true"></svg>
             </article>
-            <article class="asset-widget compact-widget">
-              <span>ETH/BTC</span>
-              <strong>0.0448</strong>
-              <em class="up">&#9650; 0.31%</em>
-              <svg class="mini-chart" viewBox="0 0 160 54" data-sparkline="flat"></svg>
+            <article class="model-card">
+              <header><h2>ITPI</h2><span>Integrated</span></header>
+              <p>Integrated Trend Pressure Index synthesizing macro, liquidity, mortgage, and crypto regimes.</p>
+              <div class="score-row"><strong data-model-value="63.82">63.82</strong><em class="up">+2.29%</em></div>
+              <span class="regime">Constructive</span>
+              <svg class="spark" viewBox="0 0 220 58" data-sparkline="up" aria-hidden="true"></svg>
             </article>
-            <article class="asset-widget compact-widget">
-              <span>BTC Dominance</span>
-              <strong>53.80%</strong>
-              <em class="up">&#9650; 0.42%</em>
-              <svg class="mini-chart" viewBox="0 0 160 54" data-sparkline="up"></svg>
-            </article>
-            <article class="asset-widget compact-widget">
-              <span>Stablecoin Supply</span>
-              <strong>$164.8B</strong>
-              <em class="up">&#9650; 0.18%</em>
-              <svg class="mini-chart" viewBox="0 0 160 54" data-sparkline="flat"></svg>
+            <article class="future-card">
+              <header><h2>Future</h2><span>Pipeline</span></header>
+              <p>New proprietary models for credit conditions, housing strength, volatility regimes, and financial stress.</p>
+              <span class="module-tag">Research Queue</span>
+              <svg class="spark" viewBox="0 0 220 58" data-sparkline="flat" aria-hidden="true"></svg>
             </article>
           </div>
         </section>
 
-        <section class="terminal-panel macro-panel" id="dashboards">
-          <header class="panel-header">
-            <h2>Global Macro Panel</h2>
-            <b><i></i> Live</b>
+        <section class="panel" id="crypto">
+          <header class="panel-head">
+            <h2>Crypto Market Structure</h2>
+            <b><span class="status-dot" aria-hidden="true"></span> Live</b>
           </header>
-          <div class="macro-grid">
-            <article><span>10Y Treasury</span><strong>4.36</strong><em class="down">-0.02</em><svg viewBox="0 0 120 42" data-sparkline="down"></svg></article>
-            <article><span>2Y Treasury</span><strong>3.91</strong><em class="down">-0.01</em><svg viewBox="0 0 120 42" data-sparkline="flat"></svg></article>
-            <article><span>Yield Curve</span><strong>45 bps</strong><em class="up">+2</em><svg viewBox="0 0 120 42" data-sparkline="up"></svg></article>
-            <article><span>Dollar Index</span><strong>104.28</strong><em class="down">-0.21%</em><svg viewBox="0 0 120 42" data-sparkline="down"></svg></article>
-            <article><span>Fed Funds</span><strong>5.38</strong><em>0.00</em><svg viewBox="0 0 120 42" data-sparkline="flat"></svg></article>
-            <article><span>Oil</span><strong>81.42</strong><em class="up">+0.64%</em><svg viewBox="0 0 120 42" data-sparkline="up"></svg></article>
-            <article><span>Gold</span><strong>2,392.10</strong><em class="up">+0.18%</em><svg viewBox="0 0 120 42" data-sparkline="flat"></svg></article>
-            <article><span>Copper</span><strong>4.58</strong><em class="down">-0.31%</em><svg viewBox="0 0 120 42" data-sparkline="down"></svg></article>
-            <article><span>Volatility</span><strong>13.42</strong><em class="down">-1.25%</em><svg viewBox="0 0 120 42" data-sparkline="down"></svg></article>
+          <div class="metric-grid">
+            <article><span>BTC Dominance</span><strong>53.80%</strong></article>
+            <article><span>ETH Dominance</span><strong>15.20%</strong></article>
+            <article><span>Stablecoins</span><strong>$164.8B</strong></article>
+            <article><span>On-Chain Risk</span><strong>Normal</strong></article>
+            <article><span>Funding Bias</span><strong>Neutral</strong></article>
+            <article><span>Liquidity Regime</span><strong>Watching</strong></article>
           </div>
         </section>
 
-        <section class="terminal-panel" id="model-table">
-          <header class="panel-header">
-            <h2>Model Summary</h2>
-            <b>Updated <span id="tableTime">10:24:37</span></b>
+        <section class="panel" id="research">
+          <header class="panel-head">
+            <h2>Research Model Table</h2>
+            <b>Terminal View</b>
           </header>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
                   <th>Model</th>
-                  <th>Description</th>
-                  <th>Value</th>
+                  <th>Framework</th>
+                  <th>Score</th>
                   <th>Regime</th>
-                  <th>Change (24h)</th>
-                  <th>Trend (7d)</th>
-                  <th>Updated</th>
+                  <th>Change</th>
+                  <th>Trend</th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>MRPI</td>
-                  <td>Mortgage Rate Pressure Index</td>
-                  <td>62.47</td>
-                  <td>Neutral</td>
-                  <td class="up">&#9650; 2.16%</td>
-                  <td><svg viewBox="0 0 120 34" data-sparkline="up"></svg></td>
-                  <td>10:24:36</td>
+                  <td>MTPI</td>
+                  <td>Macro Trend Pressure Index</td>
+                  <td>71.38</td>
+                  <td>Bullish</td>
+                  <td class="up">+2.69%</td>
+                  <td><svg viewBox="0 0 120 32" data-sparkline="strong" aria-hidden="true"></svg></td>
+                  <td>Live</td>
                 </tr>
                 <tr>
                   <td>LTPI</td>
                   <td>Liquidity Trend Pressure Index</td>
                   <td>58.21</td>
                   <td>Watching</td>
-                  <td class="up">&#9650; 1.71%</td>
-                  <td><svg viewBox="0 0 120 34" data-sparkline="flat"></svg></td>
-                  <td>10:24:36</td>
+                  <td class="up">+1.71%</td>
+                  <td><svg viewBox="0 0 120 32" data-sparkline="up" aria-hidden="true"></svg></td>
+                  <td>Live</td>
                 </tr>
                 <tr>
-                  <td>MTPI</td>
-                  <td>Macro Trend Pressure Index</td>
-                  <td>71.38</td>
-                  <td>Bullish</td>
-                  <td class="up">&#9650; 2.69%</td>
-                  <td><svg viewBox="0 0 120 34" data-sparkline="strong"></svg></td>
-                  <td>10:24:35</td>
+                  <td>MRPI</td>
+                  <td>Mortgage Rate Pressure Index</td>
+                  <td>62.47</td>
+                  <td>Neutral</td>
+                  <td class="up">+2.16%</td>
+                  <td><svg viewBox="0 0 120 32" data-sparkline="up" aria-hidden="true"></svg></td>
+                  <td>Live</td>
                 </tr>
                 <tr>
                   <td>ITPI</td>
                   <td>Integrated Trend Pressure Index</td>
                   <td>63.82</td>
                   <td>Constructive</td>
-                  <td class="up">&#9650; 2.29%</td>
-                  <td><svg viewBox="0 0 120 34" data-sparkline="up"></svg></td>
-                  <td>10:24:35</td>
+                  <td class="up">+2.29%</td>
+                  <td><svg viewBox="0 0 120 32" data-sparkline="flat" aria-hidden="true"></svg></td>
+                  <td>Live</td>
+                </tr>
+                <tr>
+                  <td>FSCI</td>
+                  <td>Financial Stress Conditions Index</td>
+                  <td>Pending</td>
+                  <td>Research</td>
+                  <td class="flat">0.00%</td>
+                  <td><svg viewBox="0 0 120 32" data-sparkline="flat" aria-hidden="true"></svg></td>
+                  <td>Pipeline</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </section>
 
-        <section class="terminal-panel explanation-panel" id="about">
-          <header class="panel-header">
-            <h2>About Our Models</h2>
+        <section class="panel" id="about">
+          <header class="panel-head">
+            <h2>Institutional Terminal Layer</h2>
+            <b>AstravaQuant</b>
           </header>
-          <p>
-            Astrava models are quantitative frameworks that transform real-time market, macroeconomic, liquidity, mortgage,
-            and on-chain data into actionable intelligence.
-          </p>
-          <dl>
-            <div><dt>MRPI</dt><dd>Measures mortgage rate pressure through Treasury yields, volatility, macroeconomic conditions, and market structure.</dd></div>
-            <div><dt>LTPI</dt><dd>Measures global liquidity conditions across central banks, credit markets, and financial system liquidity.</dd></div>
-            <div><dt>MTPI</dt><dd>Measures macroeconomic trend strength using inflation, labor, growth, and financial conditions.</dd></div>
-            <div><dt>ITPI</dt><dd>Integrates macro, liquidity, mortgage, and digital asset data into a unified quantitative framework.</dd></div>
-          </dl>
-        </section>
-
-        <section class="terminal-panel pipeline-panel" id="research">
-          <header class="panel-header">
-            <h2>Research Pipeline</h2>
-            <b>Upcoming Models</b>
-          </header>
-          <div class="pipeline-grid">
-            <article><span>Global Liquidity Index</span><b>In Development</b></article>
-            <article><span>Credit Conditions Index</span><b>In Development</b></article>
-            <article><span>Housing Market Strength Index</span><b>In Development</b></article>
-            <article><span>Financial Stress Index</span><b>In Development</b></article>
-            <article><span>Volatility Regime Model</span><b>In Development</b></article>
-            <article><span>Economic Momentum Index</span><b>In Development</b></article>
+          <div class="metric-grid">
+            <article><span>Primary Identity</span><strong>Models</strong></article>
+            <article><span>Decision Layer</span><strong>Signals</strong></article>
+            <article><span>Research Layer</span><strong>Evidence</strong></article>
+            <article><span>Data Layer</span><strong>Markets</strong></article>
+            <article><span>Update Cycle</span><strong>Daily</strong></article>
+            <article><span>Interface</span><strong>Terminal</strong></article>
           </div>
         </section>
       </main>
 
-      <footer class="terminal-footer">
+      <footer class="footer">
         <span>Astrava Terminal v1.0.0</span>
-        <span>Data Source: Multiple</span>
+        <span>Data source: simulated live placeholders</span>
         <span>Status: <b>All Systems Operational</b></span>
       </footer>
     </div>
 
     <script>
-(function () {
-  var clock = document.getElementById("clock");
-  var tableTime = document.getElementById("tableTime");
-  var feed = document.getElementById("systemFeed");
-  var feedMessages = [
-    ["SYSTEM", "All systems nominal"],
-    ["DATA", "Market data connected"],
-    ["MODEL", "MRPI updated"],
-    ["MODEL", "LTPI updated"],
-    ["MODEL", "MTPI updated"],
-    ["MODEL", "ITPI updated"],
-    ["DATA", "Crypto feed synced"],
-    ["RISK", "Volatility regime checked"]
-  ];
+      (function () {
+        var clock = document.getElementById("clock");
+        var sessionTime = document.getElementById("sessionTime");
+        var modelTime = document.getElementById("modelTime");
+        var feed = document.getElementById("systemFeed");
+        var tickerTrack = document.getElementById("tickerTrack");
+        var messages = [
+          ["MODEL", "MRPI refreshed"],
+          ["MODEL", "LTPI recalculated"],
+          ["MODEL", "MTPI momentum updated"],
+          ["MODEL", "ITPI regime scored"],
+          ["DATA", "Crypto market data synced"],
+          ["MACRO", "Treasury curve parsed"],
+          ["RISK", "Volatility regime checked"],
+          ["SYS", "Terminal heartbeat confirmed"]
+        ];
 
-  function formatClock(date) {
-    var month = String(date.getMonth() + 1).padStart(2, "0");
-    var day = String(date.getDate()).padStart(2, "0");
-    var year = date.getFullYear();
-    return month + "." + day + "." + year + " " + formatTime(date) + " ET";
-  }
+        function formatTime(date) {
+          return [
+            String(date.getHours()).padStart(2, "0"),
+            String(date.getMinutes()).padStart(2, "0"),
+            String(date.getSeconds()).padStart(2, "0")
+          ].join(":");
+        }
 
-  function formatTime(date) {
-    return [
-      String(date.getHours()).padStart(2, "0"),
-      String(date.getMinutes()).padStart(2, "0"),
-      String(date.getSeconds()).padStart(2, "0")
-    ].join(":");
-  }
+        function formatClock(date) {
+          var month = String(date.getMonth() + 1).padStart(2, "0");
+          var day = String(date.getDate()).padStart(2, "0");
+          var year = date.getFullYear();
+          return month + "." + day + "." + year + " " + formatTime(date) + " ET";
+        }
 
-  function updateClock() {
-    var now = new Date();
-    if (clock) {
-      clock.textContent = formatClock(now);
-    }
-    if (tableTime) {
-      tableTime.textContent = formatTime(now);
-    }
-  }
+        function updateClock() {
+          var now = new Date();
+          if (clock) clock.textContent = formatClock(now);
+          if (sessionTime) sessionTime.textContent = formatTime(now);
+          if (modelTime) modelTime.textContent = formatTime(now);
+        }
 
-  function createPoints(kind, count) {
-    var points = [];
-    var value = kind === "down" ? 58 : 42;
-    var drift = kind === "strong" ? 1.1 : kind === "up" ? 0.62 : kind === "down" ? -0.42 : 0.08;
+        function pointsFor(kind, count) {
+          var points = [];
+          var value = kind === "down" ? 62 : kind === "strong" ? 34 : 45;
+          var drift = kind === "strong" ? 0.95 : kind === "up" ? 0.55 : kind === "down" ? -0.5 : 0.04;
 
-    for (var i = 0; i < count; i += 1) {
-      var wave = Math.sin(i * 0.55) * 2.4 + Math.cos(i * 0.19) * 1.5;
-      value += drift + (Math.random() - 0.48) * 7 + wave * 0.18;
-      value = Math.max(8, Math.min(92, value));
-      points.push(value);
-    }
+          for (var index = 0; index < count; index += 1) {
+            var wave = Math.sin(index * 0.52) * 2.1 + Math.cos(index * 0.23) * 1.4;
+            value += drift + (Math.random() - 0.48) * 6.4 + wave * 0.2;
+            value = Math.max(8, Math.min(92, value));
+            points.push(value);
+          }
 
-    return points;
-  }
+          return points;
+        }
 
-  function drawSparkline(svg) {
-    var kind = svg.getAttribute("data-sparkline") || "up";
-    var viewBox = svg.getAttribute("viewBox").split(" ").map(Number);
-    var width = viewBox[2];
-    var height = viewBox[3];
-    var count = width > 200 ? 54 : 28;
-    var points = createPoints(kind, count);
-    var step = width / (points.length - 1);
+        function drawSparkline(svg) {
+          var kind = svg.getAttribute("data-sparkline") || "up";
+          var viewBox = svg.getAttribute("viewBox").split(" ").map(Number);
+          var width = viewBox[2];
+          var height = viewBox[3];
+          var count = width > 200 ? 50 : 26;
+          var points = pointsFor(kind, count);
+          var step = width / (points.length - 1);
 
-    var line = points
-      .map(function (point, index) {
-        var x = index * step;
-        var y = height - (point / 100) * (height - 8) - 4;
-        return (index === 0 ? "M" : "L") + x.toFixed(2) + " " + y.toFixed(2);
-      })
-      .join(" ");
+          var line = points
+            .map(function (point, index) {
+              var x = index * step;
+              var y = height - (point / 100) * (height - 8) - 4;
+              return (index === 0 ? "M" : "L") + x.toFixed(2) + " " + y.toFixed(2);
+            })
+            .join(" ");
 
-    var area = line + " L " + width + " " + height + " L 0 " + height + " Z";
-    svg.innerHTML = '<path class="area" d="' + area + '"></path><path d="' + line + '"></path>';
-  }
+          var area = line + " L " + width + " " + height + " L 0 " + height + " Z";
+          svg.innerHTML = '<path class="area" d="' + area + '"></path><path d="' + line + '"></path>';
+        }
 
-  function refreshSparklines() {
-    document.querySelectorAll("[data-sparkline]").forEach(drawSparkline);
-  }
+        function refreshSparklines() {
+          document.querySelectorAll("[data-sparkline]").forEach(drawSparkline);
+        }
 
-  function jitterValues() {
-    document.querySelectorAll("[data-value]").forEach(function (item) {
-      var base = Number(item.getAttribute("data-value"));
-      var jitter = base * (Math.random() - 0.5) * 0.0008;
-      var next = base + jitter;
-      var text = item.textContent;
+        function formatLikeOriginal(original, value) {
+          if (original.indexOf("$") >= 0 && original.indexOf("T") >= 0) return "$" + value.toFixed(2) + "T";
+          if (original.indexOf("$") >= 0 && original.indexOf("B") >= 0) return "$" + value.toFixed(1) + "B";
+          if (original.indexOf("$") >= 0) {
+            return "$" + value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          }
+          if (original.indexOf("%") >= 0) return value.toFixed(2) + "%";
+          if (value > 999) return value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          return value.toFixed(2);
+        }
 
-      if (text.includes("$") && text.includes("T")) {
-        item.textContent = "$" + next.toFixed(2) + "T";
-      } else if (text.includes("$") && text.includes("B")) {
-        item.textContent = "$" + next.toFixed(1) + "B";
-      } else if (text.includes("$")) {
-        item.textContent = "$" + next.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      } else if (text.includes("%")) {
-        item.textContent = next.toFixed(2) + "%";
-      } else if (base > 1000) {
-        item.textContent = next.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      } else {
-        item.textContent = next.toFixed(2);
-      }
-    });
+        function jitterValues() {
+          document.querySelectorAll("[data-value]").forEach(function (node) {
+            var base = Number(node.getAttribute("data-value"));
+            var next = base + base * (Math.random() - 0.5) * 0.00085;
+            node.textContent = formatLikeOriginal(node.textContent, next);
+          });
 
-    document.querySelectorAll("[data-model-value]").forEach(function (item) {
-      var base = Number(item.getAttribute("data-model-value"));
-      var next = base + (Math.random() - 0.5) * 0.18;
-      item.textContent = next.toFixed(2);
-    });
-  }
+          document.querySelectorAll("[data-model-value]").forEach(function (node) {
+            var base = Number(node.getAttribute("data-model-value"));
+            var next = base + (Math.random() - 0.5) * 0.16;
+            node.textContent = next.toFixed(2);
+          });
+        }
 
-  function pushFeed() {
-    if (!feed) return;
-    var now = new Date();
-    var message = feedMessages[Math.floor(Math.random() * feedMessages.length)];
-    var li = document.createElement("li");
-    li.innerHTML = "<time>" + formatTime(now) + "</time><b>" + message[0] + "</b><span>" + message[1] + "</span>";
-    feed.prepend(li);
+        function updateFeed() {
+          if (!feed) return;
+          var now = new Date();
+          var message = messages[Math.floor(Math.random() * messages.length)];
+          var item = document.createElement("li");
+          item.innerHTML = "<time>" + formatTime(now) + "</time><b>" + message[0] + "</b><span>" + message[1] + "</span>";
+          feed.prepend(item);
+          while (feed.children.length > 7) feed.removeChild(feed.lastElementChild);
+        }
 
-    while (feed.children.length > 8) {
-      feed.removeChild(feed.lastElementChild);
-    }
-  }
+        function duplicateTicker() {
+          if (!tickerTrack || tickerTrack.getAttribute("data-ready") === "true") return;
+          tickerTrack.innerHTML += tickerTrack.innerHTML;
+          tickerTrack.setAttribute("data-ready", "true");
+        }
 
-  updateClock();
-  refreshSparklines();
-  window.setInterval(updateClock, 1000);
-  window.setInterval(jitterValues, 1600);
-  window.setInterval(refreshSparklines, 4400);
-  window.setInterval(pushFeed, 3400);
-})();
-
-</script>
+        updateClock();
+        duplicateTicker();
+        refreshSparklines();
+        window.setInterval(updateClock, 1000);
+        window.setInterval(jitterValues, 1500);
+        window.setInterval(updateFeed, 3300);
+        window.setInterval(refreshSparklines, 4200);
+      })();
+    </script>
   </body>
 </html>
-

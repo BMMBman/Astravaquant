@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="AstravaQuant quantitative models terminal for macro, liquidity, mortgage, and digital asset market structure."
+    />
+    <title>AstravaQuant Terminal | Quantitative Models</title>
+    <link rel="stylesheet" href="models.css" />
+  </head>
+  <body>
+    <div class="terminal-shell">
+      <header class="terminal-header">
+        <a class="terminal-brand" href="index.html" aria-label="AstravaQuant home">
+          <svg viewBox="0 0 164 150" aria-hidden="true">
+            <path d="M82 10 151 138 82 101 13 138Z" />
+            <path d="M82 38 119 107 82 87 45 107Z" />
+          </svg>
+          <span>
+            <b>Astrava</b>
+            <small>Quantitative Research</small>
+          </span>
+        </a>
+
+        <nav class="terminal-nav" aria-label="Terminal navigation">
+          <a href="index.html">Home</a>
+          <a href="#research">Research</a>
+          <a class="active" href="models.html">Models</a>
+          <a href="#dashboards">Dashboards</a>
+          <a href="#crypto">Crypto</a>
+          <a href="#about">About</a>
+        </nav>
+
+        <div class="status-pill" aria-label="System status live">
+          <span>System Status</span>
+          <b>Live</b>
+          <i aria-hidden="true"></i>
+        </div>
+      </header>
+
+      <aside class="market-sidebar" aria-label="Live market sidebar">
+        <section class="sidebar-block status-block">
+          <div class="block-title">
+            <span>Market Status</span>
+            <b><i></i> Live</b>
+          </div>
+          <p>Markets Open</p>
+          <time id="clock">05.19.2025 10:24:37 ET</time>
+        </section>
+
+        <section class="sidebar-block">
+          <h2>Markets</h2>
+          <ul class="ticker-list" data-feed="market">
+            <li><span>S&amp;P 500</span><b data-value="5342.81">5,342.81</b><em class="up">+0.53%</em></li>
+            <li><span>NASDAQ</span><b data-value="18742.11">18,742.11</b><em class="up">+0.72%</em></li>
+            <li><span>Dow Jones</span><b data-value="38654.42">38,654.42</b><em class="up">+0.39%</em></li>
+            <li><span>VIX</span><b data-value="13.42">13.42</b><em class="down">-1.25%</em></li>
+            <li><span>DXY</span><b data-value="104.28">104.28</b><em class="down">-0.21%</em></li>
+            <li><span>US10Y</span><b data-value="4.36">4.36</b><em class="down">-0.02</em></li>
+            <li><span>US30Y</span><b data-value="4.63">4.63</b><em class="down">-0.02</em></li>
+            <li><span>SOFR</span><b data-value="5.33">5.33</b><em>0.00</em></li>
+            <li><span>Fed Funds</span><b data-value="5.38">5.38</b><em>0.00</em></li>
+          </ul>
+        </section>
+
+        <section class="sidebar-block">
+          <div class="block-title">
+            <h2>Crypto</h2>
+            <b><i></i> Live</b>
+          </div>
+          <ul class="ticker-list" data-feed="crypto">
+            <li><span>Bitcoin</span><b data-value="66842.91">$66,842.91</b><em class="up">+1.23%</em></li>
+            <li><span>Ethereum</span><b data-value="2995.11">$2,995.11</b><em class="up">+2.38%</em></li>
+            <li><span>ETH/BTC</span><b data-value="0.0448">0.0448</b><em class="up">+0.31%</em></li>
+            <li><span>BTC Dom.</span><b data-value="53.80">53.80%</b><em class="up">+0.42%</em></li>
+            <li><span>ETH Dom.</span><b data-value="15.20">15.20%</b><em class="up">+0.31%</em></li>
+            <li><span>Total Cap</span><b data-value="2.46">$2.46T</b><em class="up">+1.56%</em></li>
+            <li><span>Stablecoins</span><b data-value="164.8">$164.8B</b><em class="up">+0.18%</em></li>
+            <li><span>USDT Dom.</span><b data-value="4.68">4.68%</b><em class="down">-0.12%</em></li>
+          </ul>
+        </section>
+
+        <section class="sidebar-block feed-block">
+          <h2>System Feed</h2>
+          <ol id="systemFeed">
+            <li><time>10:24:37</time><b>System</b><span>Models engine online</span></li>
+            <li><time>10:24:37</time><b>Data</b><span>Market data connected</span></li>
+            <li><time>10:24:37</time><b>Data</b><span>Crypto feed synced</span></li>
+            <li><time>10:24:36</time><b>Model</b><span>MRPI updated</span></li>
+            <li><time>10:24:36</time><b>Model</b><span>LTPI updated</span></li>
+            <li><time>10:24:35</time><b>Model</b><span>MTPI updated</span></li>
+            <li><time>10:24:35</time><b>Model</b><span>ITPI updated</span></li>
+          </ol>
+          <div class="terminal-prompt">astrava@terminal:~$ <i></i></div>
+        </section>
+      </aside>
+
+      <main class="terminal-main">
+        <section class="page-title">
+          <p>/models</p>
+          <h1>Quantitative Models</h1>
+          <span>
+            A suite of proprietary quantitative models designed to measure macroeconomic pressure, liquidity conditions,
+            mortgage rate dynamics, and digital asset market structure.
+          </span>
+        </section>
+
+        <section class="model-card-grid" aria-label="Model overview cards">
+          <article class="model-card">
+            <header><h2>MRPI</h2><button aria-label="Inspect MRPI">{}</button></header>
+            <p>Mortgage Rate<br />Pressure Index</p>
+            <strong data-model-value="62.47">62.47</strong>
+            <em class="up">&#9650; 1.32 (2.16%)</em>
+            <svg class="sparkline" viewBox="0 0 220 70" data-sparkline="up"></svg>
+            <a href="#model-table">View Model <span>&rarr;</span></a>
+          </article>
+
+          <article class="model-card">
+            <header><h2>LTPI</h2><button aria-label="Inspect LTPI">{}</button></header>
+            <p>Liquidity Trend<br />Pressure Index</p>
+            <strong data-model-value="58.21">58.21</strong>
+            <em class="up">&#9650; 0.98 (1.71%)</em>
+            <svg class="sparkline" viewBox="0 0 220 70" data-sparkline="up"></svg>
+            <a href="#model-table">View Model <span>&rarr;</span></a>
+          </article>
+
+          <article class="model-card">
+            <header><h2>MTPI</h2><button aria-label="Inspect MTPI">{}</button></header>
+            <p>Macro Trend<br />Pressure Index</p>
+            <strong data-model-value="71.38">71.38</strong>
+            <em class="up">&#9650; 1.87 (2.69%)</em>
+            <svg class="sparkline" viewBox="0 0 220 70" data-sparkline="strong"></svg>
+            <a href="#model-table">View Model <span>&rarr;</span></a>
+          </article>
+
+          <article class="model-card">
+            <header><h2>ITPI</h2><button aria-label="Inspect ITPI">{}</button></header>
+            <p>Integrated Trend<br />Pressure Index</p>
+            <strong data-model-value="63.82">63.82</strong>
+            <em class="up">&#9650; 1.43 (2.29%)</em>
+            <svg class="sparkline" viewBox="0 0 220 70" data-sparkline="up"></svg>
+            <a href="#model-table">View Model <span>&rarr;</span></a>
+          </article>
+        </section>
+
+        <section class="terminal-panel crypto-panel" id="crypto">
+          <header class="panel-header">
+            <h2>Crypto Market Overview</h2>
+            <b><i></i> Live</b>
+          </header>
+          <div class="asset-grid">
+            <article class="asset-widget">
+              <span>Bitcoin / USD</span>
+              <strong data-live-value="66842.91">66,842.91</strong>
+              <em class="up">&#9650; 1.23%</em>
+              <svg class="chart" viewBox="0 0 300 130" data-sparkline="strong"></svg>
+              <dl>
+                <div><dt>24h High</dt><dd>67,579.34</dd></div>
+                <div><dt>24h Low</dt><dd>64,102.21</dd></div>
+                <div><dt>24h Vol</dt><dd>28.41B</dd></div>
+              </dl>
+            </article>
+            <article class="asset-widget">
+              <span>Ethereum / USD</span>
+              <strong data-live-value="2995.11">2,995.11</strong>
+              <em class="up">&#9650; 2.38%</em>
+              <svg class="chart" viewBox="0 0 300 130" data-sparkline="up"></svg>
+              <dl>
+                <div><dt>24h High</dt><dd>3,041.32</dd></div>
+                <div><dt>24h Low</dt><dd>2,824.15</dd></div>
+                <div><dt>24h Vol</dt><dd>18.73B</dd></div>
+              </dl>
+            </article>
+            <article class="asset-widget">
+              <span>Total Crypto Market Cap</span>
+              <strong data-live-value="2.46">$2.46T</strong>
+              <em class="up">&#9650; 1.56%</em>
+              <svg class="chart" viewBox="0 0 300 130" data-sparkline="up"></svg>
+              <dl>
+                <div><dt>24h High</dt><dd>$2.49T</dd></div>
+                <div><dt>24h Low</dt><dd>$2.37T</dd></div>
+                <div><dt>24h Vol</dt><dd>84.21B</dd></div>
+              </dl>
+            </article>
+            <article class="asset-widget compact-widget">
+              <span>ETH/BTC</span>
+              <strong>0.0448</strong>
+              <em class="up">&#9650; 0.31%</em>
+              <svg class="mini-chart" viewBox="0 0 160 54" data-sparkline="flat"></svg>
+            </article>
+            <article class="asset-widget compact-widget">
+              <span>BTC Dominance</span>
+              <strong>53.80%</strong>
+              <em class="up">&#9650; 0.42%</em>
+              <svg class="mini-chart" viewBox="0 0 160 54" data-sparkline="up"></svg>
+            </article>
+            <article class="asset-widget compact-widget">
+              <span>Stablecoin Supply</span>
+              <strong>$164.8B</strong>
+              <em class="up">&#9650; 0.18%</em>
+              <svg class="mini-chart" viewBox="0 0 160 54" data-sparkline="flat"></svg>
+            </article>
+          </div>
+        </section>
+
+        <section class="terminal-panel macro-panel" id="dashboards">
+          <header class="panel-header">
+            <h2>Global Macro Panel</h2>
+            <b><i></i> Live</b>
+          </header>
+          <div class="macro-grid">
+            <article><span>10Y Treasury</span><strong>4.36</strong><em class="down">-0.02</em><svg viewBox="0 0 120 42" data-sparkline="down"></svg></article>
+            <article><span>2Y Treasury</span><strong>3.91</strong><em class="down">-0.01</em><svg viewBox="0 0 120 42" data-sparkline="flat"></svg></article>
+            <article><span>Yield Curve</span><strong>45 bps</strong><em class="up">+2</em><svg viewBox="0 0 120 42" data-sparkline="up"></svg></article>
+            <article><span>Dollar Index</span><strong>104.28</strong><em class="down">-0.21%</em><svg viewBox="0 0 120 42" data-sparkline="down"></svg></article>
+            <article><span>Fed Funds</span><strong>5.38</strong><em>0.00</em><svg viewBox="0 0 120 42" data-sparkline="flat"></svg></article>
+            <article><span>Oil</span><strong>81.42</strong><em class="up">+0.64%</em><svg viewBox="0 0 120 42" data-sparkline="up"></svg></article>
+            <article><span>Gold</span><strong>2,392.10</strong><em class="up">+0.18%</em><svg viewBox="0 0 120 42" data-sparkline="flat"></svg></article>
+            <article><span>Copper</span><strong>4.58</strong><em class="down">-0.31%</em><svg viewBox="0 0 120 42" data-sparkline="down"></svg></article>
+            <article><span>Volatility</span><strong>13.42</strong><em class="down">-1.25%</em><svg viewBox="0 0 120 42" data-sparkline="down"></svg></article>
+          </div>
+        </section>
+
+        <section class="terminal-panel" id="model-table">
+          <header class="panel-header">
+            <h2>Model Summary</h2>
+            <b>Updated <span id="tableTime">10:24:37</span></b>
+          </header>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Description</th>
+                  <th>Value</th>
+                  <th>Regime</th>
+                  <th>Change (24h)</th>
+                  <th>Trend (7d)</th>
+                  <th>Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>MRPI</td>
+                  <td>Mortgage Rate Pressure Index</td>
+                  <td>62.47</td>
+                  <td>Neutral</td>
+                  <td class="up">&#9650; 2.16%</td>
+                  <td><svg viewBox="0 0 120 34" data-sparkline="up"></svg></td>
+                  <td>10:24:36</td>
+                </tr>
+                <tr>
+                  <td>LTPI</td>
+                  <td>Liquidity Trend Pressure Index</td>
+                  <td>58.21</td>
+                  <td>Watching</td>
+                  <td class="up">&#9650; 1.71%</td>
+                  <td><svg viewBox="0 0 120 34" data-sparkline="flat"></svg></td>
+                  <td>10:24:36</td>
+                </tr>
+                <tr>
+                  <td>MTPI</td>
+                  <td>Macro Trend Pressure Index</td>
+                  <td>71.38</td>
+                  <td>Bullish</td>
+                  <td class="up">&#9650; 2.69%</td>
+                  <td><svg viewBox="0 0 120 34" data-sparkline="strong"></svg></td>
+                  <td>10:24:35</td>
+                </tr>
+                <tr>
+                  <td>ITPI</td>
+                  <td>Integrated Trend Pressure Index</td>
+                  <td>63.82</td>
+                  <td>Constructive</td>
+                  <td class="up">&#9650; 2.29%</td>
+                  <td><svg viewBox="0 0 120 34" data-sparkline="up"></svg></td>
+                  <td>10:24:35</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="terminal-panel explanation-panel" id="about">
+          <header class="panel-header">
+            <h2>About Our Models</h2>
+          </header>
+          <p>
+            Astrava models are quantitative frameworks that transform real-time market, macroeconomic, liquidity, mortgage,
+            and on-chain data into actionable intelligence.
+          </p>
+          <dl>
+            <div><dt>MRPI</dt><dd>Measures mortgage rate pressure through Treasury yields, volatility, macroeconomic conditions, and market structure.</dd></div>
+            <div><dt>LTPI</dt><dd>Measures global liquidity conditions across central banks, credit markets, and financial system liquidity.</dd></div>
+            <div><dt>MTPI</dt><dd>Measures macroeconomic trend strength using inflation, labor, growth, and financial conditions.</dd></div>
+            <div><dt>ITPI</dt><dd>Integrates macro, liquidity, mortgage, and digital asset data into a unified quantitative framework.</dd></div>
+          </dl>
+        </section>
+
+        <section class="terminal-panel pipeline-panel" id="research">
+          <header class="panel-header">
+            <h2>Research Pipeline</h2>
+            <b>Upcoming Models</b>
+          </header>
+          <div class="pipeline-grid">
+            <article><span>Global Liquidity Index</span><b>In Development</b></article>
+            <article><span>Credit Conditions Index</span><b>In Development</b></article>
+            <article><span>Housing Market Strength Index</span><b>In Development</b></article>
+            <article><span>Financial Stress Index</span><b>In Development</b></article>
+            <article><span>Volatility Regime Model</span><b>In Development</b></article>
+            <article><span>Economic Momentum Index</span><b>In Development</b></article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="terminal-footer">
+        <span>Astrava Terminal v1.0.0</span>
+        <span>Data Source: Multiple</span>
+        <span>Status: <b>All Systems Operational</b></span>
+      </footer>
+    </div>
+
+    <script src="models.js"></script>
+  </body>
+</html>
+

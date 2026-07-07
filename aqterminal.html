@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="AstravaQuant terminal dashboard for proprietary market models, live macro indicators, crypto conditions, and institutional research signals."
+    />
+    <title>AstravaQuant Terminal</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #05070b;
+        --bg-2: #07101a;
+        --navy: #081626;
+        --panel: rgba(8, 18, 30, 0.78);
+        --panel-solid: #07101a;
+        --panel-deep: #05090f;
+        --line: rgba(77, 166, 255, 0.28);
+        --line-strong: rgba(77, 166, 255, 0.5);
+        --blue: #4da6ff;
+        --cyan: #20b7ff;
+        --ice: #d6dee8;
+        --muted: #8298b4;
+        --dim: #52657d;
+        --green: #29f073;
+        --red: #ff4b5f;
+        --yellow: #f5d45e;
+        --white: #ffffff;
+        --shadow: 0 18px 70px rgba(0, 0, 0, 0.42);
+        --mono: "SFMono-Regular", Consolas, "Liberation Mono", "Roboto Mono", monospace;
+        --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+        background: var(--bg);
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        color: var(--ice);
+        font-family: var(--mono);
+        background:
+          radial-gradient(circle at 76% -10%, rgba(77, 166, 255, 0.2), transparent 32rem),
+          radial-gradient(circle at 18% 18%, rgba(32, 183, 255, 0.08), transparent 24rem),
+          linear-gradient(135deg, #05070b 0%, #081626 52%, #04060a 100%);
+        letter-spacing: 0;
+        overflow-x: hidden;
+      }
+
+      body::before,
+      body::after {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        content: "";
+      }
+
+      body::before {
+        z-index: 0;
+        background:
+          linear-gradient(rgba(77, 166, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(77, 166, 255, 0.025) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: linear-gradient(180deg, #05070b 0%, rgba(5, 7, 11, 0.72) 62%, transparent 100%);
+      }
+
+      body::after {
+        z-index: 1;
+        opacity: 0.16;
+        background-image:
+          radial-gradient(circle, rgba(214, 222, 232, 0.76) 0 1px, transparent 1.4px),
+          radial-gradient(circle, rgba(77, 166, 255, 0.55) 0 1px, transparent 1.3px);
+        background-position:
+          0 0,
+          36px 58px;
+        background-size:
+          130px 130px,
+          190px 190px;
+        animation: starDrift 38s linear infinite;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        color: inherit;
+        font: inherit;
+      }
+
+      .terminal {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 286px minmax(0, 1fr);
+        grid-template-rows: 76px 42px minmax(0, 1fr) 50px;
+        min-height: 100vh;
+        border: 1px solid rgba(77, 166, 255, 0.2);
+        background: rgba(5, 7, 11, 0.6);
+      }
+
+      .topbar {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 286px minmax(0, 1fr) auto;
+        align-items: center;
+        min-width: 0;
+        border-bottom: 1px solid var(--line);
+        background: rgba(5, 7, 11, 0.86);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        height: 100%;
+        padding: 0 22px;
+        border-right: 1px solid var(--line);
+      }
+
+      .brand-mark {
+        width: 43px;
+        height: 40px;
+        fill: none;
+        stroke: var(--blue);
+        stroke-width: 4;
+        filter: drop-shadow(0 0 12px rgba(77, 166, 255, 0.65));
+      }
+
+      .brand-text {
+        display: grid;
+        gap: 3px;
+        min-width: 0;
+        text-transform: uppercase;
+      }
+
+      .brand-text b {
+        color: var(--blue);
+        font-size: 1.25rem;
+        font-weight: 600;
+        line-height: 1;
+      }
+
+      .brand-text small {
+        color: var(--ice);
+        font-size: 0.62rem;
+        line-height: 1.1;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        overflow-x: auto;
+      }
+
+      .nav a {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        height: 100%;
+        padding: 0 21px;
+        color: var(--ice);
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        white-space: nowrap;
+        transition:
+          color 180ms ease,
+          background-color 180ms ease;
+      }
+
+      .nav a:hover,
+      .nav a.active {
+        color: var(--blue);
+        background: rgba(77, 166, 255, 0.07);
+      }
+
+      .nav a.active::after {
+        position: absolute;
+        right: 17px;
+        bottom: 0;
+        left: 17px;
+        height: 2px;
+        content: "";
+        background: var(--blue);
+        box-shadow: 0 0 18px rgba(77, 166, 255, 0.78);
+      }
+
+      .system-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 11px;
+        min-height: 36px;
+        margin-right: 22px;
+        padding: 0 14px;
+        color: var(--green);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        border: 1px solid var(--line-strong);
+        background: rgba(77, 166, 255, 0.06);
+        box-shadow: inset 0 0 24px rgba(77, 166, 255, 0.05);
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 15px rgba(41, 240, 115, 0.9);
+        animation: blink 1.25s steps(2, start) infinite;
+      }
+
+      .ticker-tape {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(77, 166, 255, 0.22);
+        background:
+          linear-gradient(90deg, rgba(77, 166, 255, 0.1), transparent 18%),
+          rgba(5, 7, 11, 0.9);
+      }
+
+      .ticker-label {
+        position: relative;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        align-self: stretch;
+        padding: 0 18px;
+        color: var(--blue);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        border-right: 1px solid var(--line);
+        background: #05070b;
+      }
+
+      .ticker-track {
+        display: inline-flex;
+        gap: 34px;
+        min-width: max-content;
+        padding-left: 28px;
+        animation: tickerScroll 34s linear infinite;
+      }
+
+      .ticker-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--muted);
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .ticker-item b {
+        color: var(--ice);
+        font-weight: 500;
+      }
+
+      .sidebar {
+        grid-row: 3 / 4;
+        overflow: auto;
+        border-right: 1px solid var(--line);
+        background: rgba(5, 7, 11, 0.78);
+        backdrop-filter: blur(16px);
+      }
+
+      .side-block {
+        padding: 18px 20px 20px;
+        border-bottom: 1px solid rgba(77, 166, 255, 0.17);
+      }
+
+      .block-head,
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .block-head h2,
+      .panel-head h2 {
+        margin: 0;
+        color: var(--ice);
+        font-size: 0.84rem;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .block-head b,
+      .panel-head b {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--green);
+        font-size: 0.7rem;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .clock-label {
+        margin: 23px 0 8px;
+        color: var(--muted);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+      }
+
+      #clock {
+        display: block;
+        color: var(--white);
+        font-size: 0.85rem;
+      }
+
+      .market-open {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: 18px;
+        background: rgba(77, 166, 255, 0.16);
+      }
+
+      .market-open div {
+        padding: 12px;
+        background: rgba(5, 7, 11, 0.92);
+      }
+
+      .market-open span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.66rem;
+        text-transform: uppercase;
+      }
+
+      .market-open strong {
+        display: block;
+        margin-top: 7px;
+        color: var(--ice);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .watchlist {
+        display: grid;
+        gap: 12px;
+        padding: 0;
+        margin: 18px 0 0;
+        list-style: none;
+      }
+
+      .watchlist li {
+        display: grid;
+        grid-template-columns: minmax(72px, 1fr) auto auto;
+        gap: 12px;
+        align-items: baseline;
+        font-size: 0.76rem;
+      }
+
+      .watchlist span {
+        color: var(--ice);
+        text-transform: uppercase;
+      }
+
+      .watchlist b {
+        color: var(--muted);
+        font-weight: 400;
+      }
+
+      .up {
+        color: var(--green) !important;
+      }
+
+      .down {
+        color: var(--red) !important;
+      }
+
+      .flat {
+        color: var(--ice) !important;
+      }
+
+      em {
+        font-style: normal;
+      }
+
+      .feed {
+        display: grid;
+        gap: 10px;
+        padding: 0;
+        margin: 18px 0 26px;
+        color: var(--green);
+        font-size: 0.7rem;
+        list-style: none;
+      }
+
+      .feed li {
+        display: grid;
+        grid-template-columns: 58px 46px 1fr;
+        gap: 8px;
+      }
+
+      .feed b {
+        color: var(--blue);
+        font-weight: 500;
+      }
+
+      .prompt {
+        color: var(--ice);
+        font-size: 0.78rem;
+      }
+
+      .prompt i {
+        display: inline-block;
+        width: 8px;
+        height: 1em;
+        margin-left: 5px;
+        background: var(--blue);
+        vertical-align: -0.16em;
+        animation: cursor 1s steps(2, start) infinite;
+      }
+
+      .main {
+        grid-column: 2 / 3;
+        grid-row: 3 / 4;
+        overflow: auto;
+        min-width: 0;
+        padding: 26px 30px 30px;
+      }
+
+      .command-line {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: fit-content;
+        max-width: 100%;
+        margin-bottom: 22px;
+        padding: 9px 12px;
+        color: var(--green);
+        font-size: 0.76rem;
+        border: 1px solid rgba(77, 166, 255, 0.2);
+        background: rgba(5, 7, 11, 0.6);
+      }
+
+      .command-line span {
+        color: var(--blue);
+      }
+
+      .hero-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 310px;
+        gap: 20px;
+        align-items: stretch;
+        margin-bottom: 20px;
+      }
+
+      .title-panel,
+      .panel,
+      .model-card,
+      .future-card,
+      .signal-card {
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(180deg, rgba(77, 166, 255, 0.055), transparent 72%),
+          var(--panel);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+      }
+
+      .title-panel {
+        position: relative;
+        min-height: 236px;
+        padding: 27px;
+        overflow: hidden;
+      }
+
+      .title-panel::after {
+        position: absolute;
+        right: -12%;
+        bottom: -46%;
+        width: 58%;
+        height: 80%;
+        pointer-events: none;
+        content: "";
+        border: 1px solid rgba(77, 166, 255, 0.3);
+        border-radius: 50%;
+        box-shadow:
+          0 0 42px rgba(77, 166, 255, 0.2),
+          inset 0 0 38px rgba(77, 166, 255, 0.08);
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        color: var(--blue);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 760px;
+        margin: 0;
+        color: var(--white);
+        font-family: var(--sans);
+        font-size: clamp(2.15rem, 4vw, 4.7rem);
+        line-height: 0.95;
+        font-weight: 650;
+        letter-spacing: 0;
+        text-transform: uppercase;
+      }
+
+      .title-panel p:last-child {
+        max-width: 800px;
+        margin: 20px 0 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+        line-height: 1.65;
+      }
+
+      .session-card {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        min-height: 236px;
+        padding: 20px;
+      }
+
+      .session-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1px;
+        margin-top: 16px;
+        background: rgba(77, 166, 255, 0.16);
+      }
+
+      .session-grid div {
+        min-height: 68px;
+        padding: 13px;
+        background: rgba(5, 7, 11, 0.92);
+      }
+
+      .session-grid span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.65rem;
+        text-transform: uppercase;
+      }
+
+      .session-grid strong {
+        display: block;
+        margin-top: 8px;
+        color: var(--white);
+        font-size: 1.12rem;
+        font-weight: 500;
+      }
+
+      .terminal-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .signal-card {
+        display: grid;
+        min-height: 202px;
+        padding: 17px;
+        overflow: hidden;
+      }
+
+      .signal-card header,
+      .model-card header,
+      .future-card header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .signal-card h2,
+      .model-card h2,
+      .future-card h2 {
+        margin: 0;
+        color: var(--blue);
+        font-size: 1rem;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .signal-card header span,
+      .model-card header span,
+      .future-card header span {
+        color: var(--dim);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+      }
+
+      .signal-card strong {
+        margin-top: 16px;
+        color: var(--white);
+        font-size: 1.65rem;
+        font-weight: 400;
+      }
+
+      .signal-card em {
+        margin-top: 6px;
+        font-size: 0.82rem;
+      }
+
+      .spark {
+        align-self: end;
+        width: 100%;
+        height: 66px;
+        margin-top: 16px;
+      }
+
+      .panel {
+        margin-top: 20px;
+        padding: 20px;
+      }
+
+      .panel-head {
+        padding-bottom: 14px;
+        margin-bottom: 16px;
+        border-bottom: 1px solid rgba(77, 166, 255, 0.18);
+      }
+
+      .widget-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1px;
+        background: rgba(77, 166, 255, 0.18);
+      }
+
+      .widget {
+        min-width: 0;
+        padding: 16px;
+        background: rgba(5, 7, 11, 0.9);
+      }
+
+      .widget span,
+      .metric-grid span,
+      .model-card p,
+      .future-card p {
+        color: var(--muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+      }
+
+      .widget strong {
+        display: block;
+        margin: 10px 0 6px;
+        color: var(--white);
+        font-size: 1.34rem;
+        font-weight: 400;
+      }
+
+      .widget svg {
+        display: block;
+        width: 100%;
+        height: 58px;
+        margin-top: 11px;
+      }
+
+      .model-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .model-card,
+      .future-card {
+        min-height: 254px;
+        padding: 18px;
+      }
+
+      .model-card p,
+      .future-card p {
+        margin: 14px 0 18px;
+        line-height: 1.5;
+        text-transform: none;
+      }
+
+      .score-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+
+      .score-row strong {
+        color: var(--white);
+        font-size: 1.8rem;
+        font-weight: 400;
+      }
+
+      .score-row em {
+        font-size: 0.78rem;
+      }
+
+      .regime {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        min-height: 27px;
+        padding: 0 9px;
+        color: var(--green);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        border: 1px solid rgba(41, 240, 115, 0.28);
+        background: rgba(41, 240, 115, 0.06);
+      }
+
+      .regime.watch {
+        color: var(--yellow);
+        border-color: rgba(245, 212, 94, 0.32);
+        background: rgba(245, 212, 94, 0.07);
+      }
+
+      .model-card .spark,
+      .future-card .spark {
+        height: 58px;
+      }
+
+      .future-card {
+        display: grid;
+        align-content: space-between;
+        border-style: dashed;
+      }
+
+      .future-card .module-tag {
+        display: inline-flex;
+        width: fit-content;
+        padding: 7px 9px;
+        color: var(--blue);
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        border: 1px solid rgba(77, 166, 255, 0.26);
+        background: rgba(77, 166, 255, 0.06);
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 1px;
+        background: rgba(77, 166, 255, 0.16);
+      }
+
+      .metric-grid article {
+        padding: 15px;
+        background: rgba(5, 7, 11, 0.9);
+      }
+
+      .metric-grid strong {
+        display: block;
+        margin-top: 9px;
+        color: var(--white);
+        font-size: 1.1rem;
+        font-weight: 400;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        min-width: 920px;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 13px 12px;
+        color: var(--muted);
+        font-size: 0.76rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(77, 166, 255, 0.14);
+      }
+
+      th {
+        color: var(--dim);
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      td:first-child {
+        color: var(--blue);
+        font-size: 0.92rem;
+      }
+
+      td:nth-child(3),
+      td:nth-child(5),
+      td:last-child {
+        color: var(--ice);
+      }
+
+      td svg {
+        width: 120px;
+        height: 32px;
+      }
+
+      .footer {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        align-items: center;
+        min-height: 50px;
+        padding: 0 20px;
+        color: var(--muted);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        border-top: 1px solid var(--line);
+        background: rgba(5, 7, 11, 0.9);
+      }
+
+      .footer span:nth-child(2) {
+        text-align: center;
+      }
+
+      .footer span:nth-child(3) {
+        text-align: right;
+      }
+
+      .footer b {
+        color: var(--green);
+        font-weight: 500;
+      }
+
+      svg.spark path,
+      .widget svg path,
+      td svg path {
+        fill: none;
+        stroke: var(--blue);
+        stroke-width: 2;
+        vector-effect: non-scaling-stroke;
+        filter: drop-shadow(0 0 5px rgba(77, 166, 255, 0.55));
+      }
+
+      svg .area {
+        fill: rgba(77, 166, 255, 0.14);
+        stroke: none;
+      }
+
+      @keyframes tickerScroll {
+        0% {
+          transform: translateX(0);
+        }
+
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0.25;
+        }
+      }
+
+      @keyframes cursor {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes starDrift {
+        0% {
+          background-position: 0 0, 36px 58px;
+        }
+
+        100% {
+          background-position: 130px 130px, 226px 248px;
+        }
+      }
+
+      @media (max-width: 1220px) {
+        .terminal {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          grid-template-columns: auto minmax(0, 1fr) auto;
+        }
+
+        .brand {
+          border-right: 0;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .main {
+          grid-column: 1;
+        }
+
+        .hero-row {
+          grid-template-columns: 1fr;
+        }
+
+        .terminal-grid,
+        .widget-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .model-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .metric-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .terminal {
+          display: block;
+          min-height: 100vh;
+        }
+
+        .topbar {
+          display: grid;
+          grid-template-columns: 1fr;
+        }
+
+        .brand {
+          min-height: 72px;
+          padding: 0 16px;
+        }
+
+        .nav {
+          min-height: 52px;
+          border-top: 1px solid rgba(77, 166, 255, 0.16);
+        }
+
+        .nav a {
+          padding: 0 16px;
+        }
+
+        .system-status {
+          justify-content: center;
+          width: calc(100% - 32px);
+          margin: 12px 16px 16px;
+        }
+
+        .ticker-tape {
+          min-height: 42px;
+        }
+
+        .ticker-label {
+          display: none;
+        }
+
+        .main {
+          padding: 18px 14px 24px;
+        }
+
+        .title-panel {
+          min-height: 0;
+          padding: 21px;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        .terminal-grid,
+        .widget-grid,
+        .model-grid,
+        .metric-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .panel {
+          padding: 16px;
+        }
+
+        .footer {
+          grid-template-columns: 1fr;
+          gap: 8px;
+          padding: 16px;
+        }
+
+        .footer span,
+        .footer span:nth-child(2),
+        .footer span:nth-child(3) {
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="terminal">
+      <header class="topbar">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <path d="M82 10 151 138 82 101 13 138Z" />
+            <path d="M82 38 119 107 82 87 45 107Z" />
+          </svg>
+          <span class="brand-text">
+            <b>Astrava</b>
+            <small>Quantitative Research</small>
+          </span>
+        </a>
+
+        <nav class="nav" aria-label="Primary navigation">
+          <a href="index.html">Home</a>
+          <a href="#research">Research</a>
+          <a class="active" href="#models">Models</a>
+          <a href="#dashboards">Dashboards</a>
+          <a href="#crypto">Crypto</a>
+          <a href="#about">About</a>
+        </nav>
+
+        <div class="system-status" aria-label="Market system status">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>System Live</span>
+        </div>
+      </header>
+
+      <section class="ticker-tape" aria-label="Scrolling market ticker">
+        <span class="ticker-label">Live Tape</span>
+        <div class="ticker-track" id="tickerTrack">
+          <span class="ticker-item">BTC <b data-live="btc">$66,842.91</b> <em class="up">+1.23%</em></span>
+          <span class="ticker-item">ETH <b data-live="eth">$2,995.11</b> <em class="up">+2.38%</em></span>
+          <span class="ticker-item">TOTAL CRYPTO <b>$2.46T</b> <em class="up">+1.56%</em></span>
+          <span class="ticker-item">S&amp;P 500 <b data-live="spx">5,342.81</b> <em class="up">+0.53%</em></span>
+          <span class="ticker-item">NASDAQ <b data-live="ndx">18,742.11</b> <em class="up">+0.72%</em></span>
+          <span class="ticker-item">10Y <b data-live="tnx">4.36</b> <em class="down">-0.02</em></span>
+          <span class="ticker-item">DXY <b data-live="dxy">104.28</b> <em class="down">-0.21%</em></span>
+          <span class="ticker-item">VIX <b data-live="vix">13.42</b> <em class="down">-1.25%</em></span>
+        </div>
+      </section>
+
+      <aside class="sidebar" aria-label="Terminal sidebar">
+        <section class="side-block">
+          <div class="block-head">
+            <h2>Market Status</h2>
+            <b><span class="status-dot" aria-hidden="true"></span> Live</b>
+          </div>
+          <p class="clock-label">Markets Open</p>
+          <time id="clock">07.06.2026 21:24:37 ET</time>
+          <div class="market-open">
+            <div><span>US Equities</span><strong>Open</strong></div>
+            <div><span>Crypto</span><strong>24/7</strong></div>
+            <div><span>Rates</span><strong>Active</strong></div>
+            <div><span>Models</span><strong>Online</strong></div>
+          </div>
+        </section>
+
+        <section class="side-block">
+          <div class="block-head">
+            <h2>Macro Watch</h2>
+            <b>Live</b>
+          </div>
+          <ul class="watchlist">
+            <li><span>S&amp;P 500</span><b data-value="5342.81">5,342.81</b><em class="up">+0.53%</em></li>
+            <li><span>NASDAQ</span><b data-value="18742.11">18,742.11</b><em class="up">+0.72%</em></li>
+            <li><span>10Y Treasury</span><b data-value="4.36">4.36%</b><em class="down">-0.02</em></li>
+            <li><span>DXY</span><b data-value="104.28">104.28</b><em class="down">-0.21%</em></li>
+            <li><span>VIX</span><b data-value="13.42">13.42</b><em class="down">-1.25%</em></li>
+            <li><span>SOFR</span><b data-value="5.33">5.33%</b><em class="flat">0.00</em></li>
+          </ul>
+        </section>
+
+        <section class="side-block">
+          <div class="block-head">
+            <h2>Crypto Watch</h2>
+            <b><span class="status-dot" aria-hidden="true"></span> Live</b>
+          </div>
+          <ul class="watchlist">
+            <li><span>Bitcoin</span><b data-value="66842.91">$66,842.91</b><em class="up">+1.23%</em></li>
+            <li><span>Ethereum</span><b data-value="2995.11">$2,995.11</b><em class="up">+2.38%</em></li>
+            <li><span>Total Cap</span><b data-value="2.46">$2.46T</b><em class="up">+1.56%</em></li>
+            <li><span>BTC Dom.</span><b data-value="53.8">53.80%</b><em class="up">+0.42%</em></li>
+            <li><span>Stablecoins</span><b data-value="164.8">$164.8B</b><em class="up">+0.18%</em></li>
+          </ul>
+        </section>
+
+        <section class="side-block">
+          <div class="block-head">
+            <h2>System Feed</h2>
+            <b>Streaming</b>
+          </div>
+          <ol class="feed" id="systemFeed">
+            <li><time>21:24:37</time><b>MODEL</b><span>MRPI refreshed</span></li>
+            <li><time>21:24:35</time><b>DATA</b><span>Crypto feed synced</span></li>
+            <li><time>21:24:31</time><b>RISK</b><span>Volatility checked</span></li>
+            <li><time>21:24:26</time><b>MACRO</b><span>Treasury curve parsed</span></li>
+            <li><time>21:24:20</time><b>SYS</b><span>Terminal online</span></li>
+          </ol>
+          <div class="prompt">astrava@terminal:~$<i></i></div>
+        </section>
+      </aside>
+
+      <main class="main">
+        <div class="command-line"><span>/terminal</span> load astrava.market_intelligence --mode=institutional</div>
+
+        <section class="hero-row" aria-labelledby="terminalTitle">
+          <div class="title-panel">
+            <p class="eyebrow">AstravaQuant Terminal</p>
+            <h1 id="terminalTitle">Quantitative Market Intelligence</h1>
+            <p>
+              A terminal-grade command center for proprietary models, market signals, crypto conditions,
+              macro stress, liquidity, mortgage pressure, and future research frameworks.
+            </p>
+          </div>
+
+          <aside class="panel session-card" aria-label="Session status">
+            <div class="panel-head">
+              <h2>Session</h2>
+              <b><span class="status-dot" aria-hidden="true"></span> Live</b>
+            </div>
+            <div class="session-grid">
+              <div><span>Data Updated</span><strong id="sessionTime">21:24:37</strong></div>
+              <div><span>Latency</span><strong>32ms</strong></div>
+              <div><span>Model Engine</span><strong>Online</strong></div>
+              <div><span>Risk State</span><strong>Normal</strong></div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="terminal-grid" aria-label="Primary live widgets">
+          <article class="signal-card">
+            <header><h2>Bitcoin</h2><span>BTC/USD</span></header>
+            <strong data-value="66842.91">$66,842.91</strong>
+            <em class="up">+1.23%</em>
+            <svg class="spark" viewBox="0 0 220 72" data-sparkline="strong" aria-hidden="true"></svg>
+          </article>
+          <article class="signal-card">
+            <header><h2>Ethereum</h2><span>ETH/USD</span></header>
+            <strong data-value="2995.11">$2,995.11</strong>
+            <em class="up">+2.38%</em>
+            <svg class="spark" viewBox="0 0 220 72" data-sparkline="up" aria-hidden="true"></svg>
+          </article>
+          <article class="signal-card">
+            <header><h2>Total Crypto</h2><span>Market Cap</span></header>
+            <strong data-value="2.46">$2.46T</strong>
+            <em class="up">+1.56%</em>
+            <svg class="spark" viewBox="0 0 220 72" data-sparkline="up" aria-hidden="true"></svg>
+          </article>
+          <article class="signal-card">
+            <header><h2>VIX</h2><span>Volatility</span></header>
+            <strong data-value="13.42">13.42</strong>
+            <em class="down">-1.25%</em>
+            <svg class="spark" viewBox="0 0 220 72" data-sparkline="down" aria-hidden="true"></svg>
+          </article>
+        </section>
+
+        <section class="panel" id="dashboards">
+          <header class="panel-head">
+            <h2>Live Market Widgets</h2>
+            <b><span class="status-dot" aria-hidden="true"></span> Streaming</b>
+          </header>
+          <div class="widget-grid">
+            <article class="widget"><span>S&amp;P 500</span><strong data-value="5342.81">5,342.81</strong><em class="up">+0.53%</em><svg viewBox="0 0 180 58" data-sparkline="up" aria-hidden="true"></svg></article>
+            <article class="widget"><span>NASDAQ</span><strong data-value="18742.11">18,742.11</strong><em class="up">+0.72%</em><svg viewBox="0 0 180 58" data-sparkline="strong" aria-hidden="true"></svg></article>
+            <article class="widget"><span>10-Year Treasury</span><strong data-value="4.36">4.36%</strong><em class="down">-0.02</em><svg viewBox="0 0 180 58" data-sparkline="down" aria-hidden="true"></svg></article>
+            <article class="widget"><span>Dollar Index</span><strong data-value="104.28">104.28</strong><em class="down">-0.21%</em><svg viewBox="0 0 180 58" data-sparkline="down" aria-hidden="true"></svg></article>
+            <article class="widget"><span>Bitcoin</span><strong data-value="66842.91">$66,842.91</strong><em class="up">+1.23%</em><svg viewBox="0 0 180 58" data-sparkline="strong" aria-hidden="true"></svg></article>
+            <article class="widget"><span>Ethereum</span><strong data-value="2995.11">$2,995.11</strong><em class="up">+2.38%</em><svg viewBox="0 0 180 58" data-sparkline="up" aria-hidden="true"></svg></article>
+            <article class="widget"><span>Total Crypto Cap</span><strong data-value="2.46">$2.46T</strong><em class="up">+1.56%</em><svg viewBox="0 0 180 58" data-sparkline="up" aria-hidden="true"></svg></article>
+            <article class="widget"><span>VIX</span><strong data-value="13.42">13.42</strong><em class="down">-1.25%</em><svg viewBox="0 0 180 58" data-sparkline="down" aria-hidden="true"></svg></article>
+          </div>
+        </section>
+
+        <section class="panel" id="models">
+          <header class="panel-head">
+            <h2>Proprietary Models</h2>
+            <b>Updated <span id="modelTime">21:24:37</span></b>
+          </header>
+          <div class="model-grid">
+            <article class="model-card">
+              <header><h2>MTPI</h2><span>Macro</span></header>
+              <p>Macro Trend Pressure Index measuring growth, inflation, labor, policy, and financial conditions.</p>
+              <div class="score-row"><strong data-model-value="71.38">71.38</strong><em class="up">+2.69%</em></div>
+              <span class="regime">Bullish</span>
+              <svg class="spark" viewBox="0 0 220 58" data-sparkline="strong" aria-hidden="true"></svg>
+            </article>
+            <article class="model-card">
+              <header><h2>LTPI</h2><span>Liquidity</span></header>
+              <p>Liquidity Trend Pressure Index tracking market depth, funding, credit, and systemic liquidity.</p>
+              <div class="score-row"><strong data-model-value="58.21">58.21</strong><em class="up">+1.71%</em></div>
+              <span class="regime watch">Watching</span>
+              <svg class="spark" viewBox="0 0 220 58" data-sparkline="up" aria-hidden="true"></svg>
+            </article>
+            <article class="model-card">
+              <header><h2>MRPI</h2><span>Rates</span></header>
+              <p>Mortgage Rate Pressure Index assessing mortgage-rate pressure from bonds, liquidity, and macro data.</p>
+              <div class="score-row"><strong data-model-value="62.47">62.47</strong><em class="up">+2.16%</em></div>
+              <span class="regime watch">Neutral</span>
+              <svg class="spark" viewBox="0 0 220 58" data-sparkline="up" aria-hidden="true"></svg>
+            </article>
+            <article class="model-card">
+              <header><h2>ITPI</h2><span>Integrated</span></header>
+              <p>Integrated Trend Pressure Index synthesizing macro, liquidity, mortgage, and crypto regimes.</p>
+              <div class="score-row"><strong data-model-value="63.82">63.82</strong><em class="up">+2.29%</em></div>
+              <span class="regime">Constructive</span>
+              <svg class="spark" viewBox="0 0 220 58" data-sparkline="up" aria-hidden="true"></svg>
+            </article>
+            <article class="future-card">
+              <header><h2>Future</h2><span>Pipeline</span></header>
+              <p>New proprietary models for credit conditions, housing strength, volatility regimes, and financial stress.</p>
+              <span class="module-tag">Research Queue</span>
+              <svg class="spark" viewBox="0 0 220 58" data-sparkline="flat" aria-hidden="true"></svg>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel" id="crypto">
+          <header class="panel-head">
+            <h2>Crypto Market Structure</h2>
+            <b><span class="status-dot" aria-hidden="true"></span> Live</b>
+          </header>
+          <div class="metric-grid">
+            <article><span>BTC Dominance</span><strong>53.80%</strong></article>
+            <article><span>ETH Dominance</span><strong>15.20%</strong></article>
+            <article><span>Stablecoins</span><strong>$164.8B</strong></article>
+            <article><span>On-Chain Risk</span><strong>Normal</strong></article>
+            <article><span>Funding Bias</span><strong>Neutral</strong></article>
+            <article><span>Liquidity Regime</span><strong>Watching</strong></article>
+          </div>
+        </section>
+
+        <section class="panel" id="research">
+          <header class="panel-head">
+            <h2>Research Model Table</h2>
+            <b>Terminal View</b>
+          </header>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Framework</th>
+                  <th>Score</th>
+                  <th>Regime</th>
+                  <th>Change</th>
+                  <th>Trend</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>MTPI</td>
+                  <td>Macro Trend Pressure Index</td>
+                  <td>71.38</td>
+                  <td>Bullish</td>
+                  <td class="up">+2.69%</td>
+                  <td><svg viewBox="0 0 120 32" data-sparkline="strong" aria-hidden="true"></svg></td>
+                  <td>Live</td>
+                </tr>
+                <tr>
+                  <td>LTPI</td>
+                  <td>Liquidity Trend Pressure Index</td>
+                  <td>58.21</td>
+                  <td>Watching</td>
+                  <td class="up">+1.71%</td>
+                  <td><svg viewBox="0 0 120 32" data-sparkline="up" aria-hidden="true"></svg></td>
+                  <td>Live</td>
+                </tr>
+                <tr>
+                  <td>MRPI</td>
+                  <td>Mortgage Rate Pressure Index</td>
+                  <td>62.47</td>
+                  <td>Neutral</td>
+                  <td class="up">+2.16%</td>
+                  <td><svg viewBox="0 0 120 32" data-sparkline="up" aria-hidden="true"></svg></td>
+                  <td>Live</td>
+                </tr>
+                <tr>
+                  <td>ITPI</td>
+                  <td>Integrated Trend Pressure Index</td>
+                  <td>63.82</td>
+                  <td>Constructive</td>
+                  <td class="up">+2.29%</td>
+                  <td><svg viewBox="0 0 120 32" data-sparkline="flat" aria-hidden="true"></svg></td>
+                  <td>Live</td>
+                </tr>
+                <tr>
+                  <td>FSCI</td>
+                  <td>Financial Stress Conditions Index</td>
+                  <td>Pending</td>
+                  <td>Research</td>
+                  <td class="flat">0.00%</td>
+                  <td><svg viewBox="0 0 120 32" data-sparkline="flat" aria-hidden="true"></svg></td>
+                  <td>Pipeline</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel" id="about">
+          <header class="panel-head">
+            <h2>Institutional Terminal Layer</h2>
+            <b>AstravaQuant</b>
+          </header>
+          <div class="metric-grid">
+            <article><span>Primary Identity</span><strong>Models</strong></article>
+            <article><span>Decision Layer</span><strong>Signals</strong></article>
+            <article><span>Research Layer</span><strong>Evidence</strong></article>
+            <article><span>Data Layer</span><strong>Markets</strong></article>
+            <article><span>Update Cycle</span><strong>Daily</strong></article>
+            <article><span>Interface</span><strong>Terminal</strong></article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>Astrava Terminal v1.0.0</span>
+        <span>Data source: simulated live placeholders</span>
+        <span>Status: <b>All Systems Operational</b></span>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        var clock = document.getElementById("clock");
+        var sessionTime = document.getElementById("sessionTime");
+        var modelTime = document.getElementById("modelTime");
+        var feed = document.getElementById("systemFeed");
+        var tickerTrack = document.getElementById("tickerTrack");
+        var messages = [
+          ["MODEL", "MRPI refreshed"],
+          ["MODEL", "LTPI recalculated"],
+          ["MODEL", "MTPI momentum updated"],
+          ["MODEL", "ITPI regime scored"],
+          ["DATA", "Crypto market data synced"],
+          ["MACRO", "Treasury curve parsed"],
+          ["RISK", "Volatility regime checked"],
+          ["SYS", "Terminal heartbeat confirmed"]
+        ];
+
+        function formatTime(date) {
+          return [
+            String(date.getHours()).padStart(2, "0"),
+            String(date.getMinutes()).padStart(2, "0"),
+            String(date.getSeconds()).padStart(2, "0")
+          ].join(":");
+        }
+
+        function formatClock(date) {
+          var month = String(date.getMonth() + 1).padStart(2, "0");
+          var day = String(date.getDate()).padStart(2, "0");
+          var year = date.getFullYear();
+          return month + "." + day + "." + year + " " + formatTime(date) + " ET";
+        }
+
+        function updateClock() {
+          var now = new Date();
+          if (clock) clock.textContent = formatClock(now);
+          if (sessionTime) sessionTime.textContent = formatTime(now);
+          if (modelTime) modelTime.textContent = formatTime(now);
+        }
+
+        function pointsFor(kind, count) {
+          var points = [];
+          var value = kind === "down" ? 62 : kind === "strong" ? 34 : 45;
+          var drift = kind === "strong" ? 0.95 : kind === "up" ? 0.55 : kind === "down" ? -0.5 : 0.04;
+
+          for (var index = 0; index < count; index += 1) {
+            var wave = Math.sin(index * 0.52) * 2.1 + Math.cos(index * 0.23) * 1.4;
+            value += drift + (Math.random() - 0.48) * 6.4 + wave * 0.2;
+            value = Math.max(8, Math.min(92, value));
+            points.push(value);
+          }
+
+          return points;
+        }
+
+        function drawSparkline(svg) {
+          var kind = svg.getAttribute("data-sparkline") || "up";
+          var viewBox = svg.getAttribute("viewBox").split(" ").map(Number);
+          var width = viewBox[2];
+          var height = viewBox[3];
+          var count = width > 200 ? 50 : 26;
+          var points = pointsFor(kind, count);
+          var step = width / (points.length - 1);
+
+          var line = points
+            .map(function (point, index) {
+              var x = index * step;
+              var y = height - (point / 100) * (height - 8) - 4;
+              return (index === 0 ? "M" : "L") + x.toFixed(2) + " " + y.toFixed(2);
+            })
+            .join(" ");
+
+          var area = line + " L " + width + " " + height + " L 0 " + height + " Z";
+          svg.innerHTML = '<path class="area" d="' + area + '"></path><path d="' + line + '"></path>';
+        }
+
+        function refreshSparklines() {
+          document.querySelectorAll("[data-sparkline]").forEach(drawSparkline);
+        }
+
+        function formatLikeOriginal(original, value) {
+          if (original.indexOf("$") >= 0 && original.indexOf("T") >= 0) return "$" + value.toFixed(2) + "T";
+          if (original.indexOf("$") >= 0 && original.indexOf("B") >= 0) return "$" + value.toFixed(1) + "B";
+          if (original.indexOf("$") >= 0) {
+            return "$" + value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          }
+          if (original.indexOf("%") >= 0) return value.toFixed(2) + "%";
+          if (value > 999) return value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          return value.toFixed(2);
+        }
+
+        function jitterValues() {
+          document.querySelectorAll("[data-value]").forEach(function (node) {
+            var base = Number(node.getAttribute("data-value"));
+            var next = base + base * (Math.random() - 0.5) * 0.00085;
+            node.textContent = formatLikeOriginal(node.textContent, next);
+          });
+
+          document.querySelectorAll("[data-model-value]").forEach(function (node) {
+            var base = Number(node.getAttribute("data-model-value"));
+            var next = base + (Math.random() - 0.5) * 0.16;
+            node.textContent = next.toFixed(2);
+          });
+        }
+
+        function updateFeed() {
+          if (!feed) return;
+          var now = new Date();
+          var message = messages[Math.floor(Math.random() * messages.length)];
+          var item = document.createElement("li");
+          item.innerHTML = "<time>" + formatTime(now) + "</time><b>" + message[0] + "</b><span>" + message[1] + "</span>";
+          feed.prepend(item);
+          while (feed.children.length > 7) feed.removeChild(feed.lastElementChild);
+        }
+
+        function duplicateTicker() {
+          if (!tickerTrack || tickerTrack.getAttribute("data-ready") === "true") return;
+          tickerTrack.innerHTML += tickerTrack.innerHTML;
+          tickerTrack.setAttribute("data-ready", "true");
+        }
+
+        updateClock();
+        duplicateTicker();
+        refreshSparklines();
+        window.setInterval(updateClock, 1000);
+        window.setInterval(jitterValues, 1500);
+        window.setInterval(updateFeed, 3300);
+        window.setInterval(refreshSparklines, 4200);
+      })();
+    </script>
+  </body>
+</html>

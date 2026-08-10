@@ -105,6 +105,16 @@ function latestSummary(rows: SheetRows): { score: number; state: string } | null
   return summaries.at(-1) ?? null;
 }
 
+function modelSummary(name: string, rows: SheetRows): { score: number; state: string } | null {
+  if (name !== "MTPI" && name !== "LTPI") return latestSummary(rows);
+  const matcher = new RegExp(`^${name}\\s+Avg\\s*Score`, "i");
+  const preferred = rows
+    .filter((row) => row.some((cell) => matcher.test(cell)))
+    .map(rowSummary)
+    .filter((summary): summary is { score: number; state: string } => Boolean(summary));
+  return preferred.at(-1) ?? latestSummary(rows);
+}
+
 function updatedLabel(rows: SheetRows): string | null {
   for (const row of rows.slice(0, 30)) {
     for (let index = 0; index < row.length; index += 1) {
@@ -129,7 +139,7 @@ function dimensions(rows: SheetRows): { rowCount: number; columnCount: number } 
 
 export function summarizeTab(definition: SheetDefinition, rows: SheetRows): WorkbookTabSummary {
   const { rowCount, columnCount } = dimensions(rows);
-  const summary = latestSummary(rows);
+  const summary = modelSummary(definition.name, rows);
   return {
     id: sheetId(definition.name),
     name: definition.name,
@@ -160,15 +170,23 @@ export function parseScoreSeries(
   const headerIndex = rows.findIndex(
     (row) => row.some((cell) => /^date$/i.test(cell)) && row.some((cell) => /(?:tpi|model)?\s*score/i.test(cell))
   );
-  if (headerIndex < 0) {
+  const inferredIndex = headerIndex < 0
+    ? rows.findIndex((row) => row.some((cell) => normalizedDate(cell)) && row.some((cell) => finiteScore(cell) !== null))
+    : -1;
+  if (headerIndex < 0 && inferredIndex < 0) {
     return { id, label: id.toUpperCase(), sourceTab, status: "unavailable", message: "No dated score series was found.", points: [] };
   }
 
-  const header = rows[headerIndex]!;
-  const dateIndex = header.findIndex((cell) => /^date$/i.test(cell));
-  const scoreIndex = header.findIndex((cell) => /(?:tpi|model)?\s*score/i.test(cell));
+  const anchor = rows[headerIndex >= 0 ? headerIndex : inferredIndex]!;
+  const dateIndex = headerIndex >= 0
+    ? anchor.findIndex((cell) => /^date$/i.test(cell))
+    : anchor.findIndex((cell) => normalizedDate(cell) !== null);
+  const scoreIndex = headerIndex >= 0
+    ? anchor.findIndex((cell) => /(?:tpi|model)?\s*score/i.test(cell))
+    : anchor.findIndex((cell, index) => index !== dateIndex && finiteScore(cell) !== null);
   const byDate = new Map<string, number>();
-  for (const row of rows.slice(headerIndex + 1)) {
+  const dataStart = headerIndex >= 0 ? headerIndex + 1 : inferredIndex;
+  for (const row of rows.slice(dataStart)) {
     const date = normalizedDate(row[dateIndex] ?? "");
     const score = finiteScore(row[scoreIndex] ?? "");
     if (date && score !== null) byDate.set(date, score);
@@ -187,6 +205,46 @@ export function parseScoreSeries(
   };
 }
 
+export function parseCsv(csv: string): SheetRows {
+  const rows: SheetRows = [];
+  let row: string[] = [];
+  let field = "";
+  let quoted = false;
+
+  for (let index = 0; index < csv.length; index += 1) {
+    const character = csv[index]!;
+    if (quoted) {
+      if (character === '"' && csv[index + 1] === '"') {
+        field += '"';
+        index += 1;
+      } else if (character === '"') {
+        quoted = false;
+      } else {
+        field += character;
+      }
+      continue;
+    }
+    if (character === '"') {
+      quoted = true;
+    } else if (character === ",") {
+      row.push(field.trim());
+      field = "";
+    } else if (character === "\n") {
+      row.push(field.trim());
+      rows.push(row);
+      row = [];
+      field = "";
+    } else if (character !== "\r") {
+      field += character;
+    }
+  }
+  if (field || row.length) {
+    row.push(field.trim());
+    rows.push(row);
+  }
+  return rows;
+}
+
 function ratioLabel(value: string): string | null {
   const cleaned = value.replace(/avg\s*score.*$/i, "").replace(/\s*tpi.*$/i, "").replace(/[^a-z0-9/]/gi, "").toUpperCase();
   if (!cleaned) return null;
@@ -203,14 +261,36 @@ function ratioLabel(value: string): string | null {
 
 export function parseRatioModels(sourceTab: "RSPS" | "Alts RSPS", rows: SheetRows): WorkbookRatioModel[] {
   const models = new Map<string, WorkbookRatioModel>();
+  let activeLabel: string | null = null;
   for (const row of rows) {
+    const heading = row.find((cell) => /\bTPI\s*$/i.test(cell));
+    if (heading) activeLabel = ratioLabel(heading);
+
     const labelCell = row.find((cell) => /avg\s*score/i.test(cell));
     const summary = rowSummary(row);
-    if (!labelCell || !summary) continue;
-    const label = ratioLabel(labelCell);
-    if (!label) continue;
+    let label = labelCell ? ratioLabel(labelCell) : null;
+    let finalSummary = summary;
+    if (!finalSummary && activeLabel) {
+      const scoreIndex = row.findIndex(
+        (cell, index) => finiteScore(cell) !== null && row.slice(0, index).every((leadingCell) => !leadingCell)
+      );
+      const score = scoreIndex >= 0 ? finiteScore(row[scoreIndex] ?? "") : null;
+      if (score !== null) {
+        const publishedState = row[scoreIndex + 1] ?? "";
+        const state = /^(?:long|short|neutral)$/i.test(publishedState)
+          ? titleState(publishedState)
+          : score > 0.25
+            ? "LONG"
+            : score < -0.25
+              ? "SHORT"
+              : "NEUTRAL";
+        label = activeLabel;
+        finalSummary = { score, state };
+      }
+    }
+    if (!label || !finalSummary) continue;
     const id = sheetId(label);
-    models.set(id, { id, label, score: summary.score, state: summary.state, sourceTab });
+    models.set(id, { id, label, score: finalSummary.score, state: finalSummary.state, sourceTab });
   }
   return [...models.values()];
 }
@@ -334,6 +414,53 @@ export class GoogleSheetsWorkbookProvider implements WorkbookProvider {
       return dashboard;
     } catch {
       return unavailableWorkbook("AstravaQuant could not reach the private research workbook. The last manual model snapshot remains visible.", Math.round(this.cacheMs / 1000));
+    }
+  }
+}
+
+export class PublicGoogleSheetsWorkbookProvider implements WorkbookProvider {
+  private cache: { expiresAt: number; dashboard: WorkbookDashboard } | null = null;
+
+  constructor(
+    private readonly spreadsheetId: string,
+    private readonly cacheMs: number
+  ) {}
+
+  async getDashboard(): Promise<WorkbookDashboard> {
+    if (this.cache && this.cache.expiresAt > Date.now()) return this.cache.dashboard;
+    try {
+      const sheetResults = await Promise.all(
+        sheetDefinitions.map(async (definition): Promise<[string, SheetRows]> => {
+          try {
+            const query = new URLSearchParams({
+              tqx: "out:csv",
+              headers: "0",
+              sheet: definition.name
+            });
+            const response = await fetch(
+              `https://docs.google.com/spreadsheets/d/${encodeURIComponent(this.spreadsheetId)}/gviz/tq?${query}`,
+              {
+                headers: { Accept: "text/csv" },
+                signal: AbortSignal.timeout(10_000)
+              }
+            );
+            if (!response.ok || !response.headers.get("content-type")?.includes("text/csv")) {
+              return [definition.name, []];
+            }
+            return [definition.name, parseCsv(await response.text())];
+          } catch {
+            return [definition.name, []];
+          }
+        })
+      );
+      const dashboard = buildWorkbookDashboard(new Map(sheetResults), Math.round(this.cacheMs / 1000));
+      this.cache = { expiresAt: Date.now() + this.cacheMs, dashboard };
+      return dashboard;
+    } catch {
+      return unavailableWorkbook(
+        "AstravaQuant could not read the link-shared research workbook. The manual model snapshot remains visible.",
+        Math.round(this.cacheMs / 1000)
+      );
     }
   }
 }

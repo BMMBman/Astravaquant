@@ -15,7 +15,7 @@ const schema = z.object({
   PORTFOLIO_CACHE_SECONDS: z.coerce.number().int().min(15).max(3600).default(60),
   COINGECKO_API_KEY: z.string().min(1).optional(),
   MARKET_CACHE_SECONDS: z.coerce.number().int().min(60).max(3600).default(300),
-  GOOGLE_SHEETS_ID: z.string().min(20).optional(),
+  GOOGLE_SHEETS_ID: z.string().min(20).default("1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA"),
   GOOGLE_SERVICE_ACCOUNT_EMAIL: z.email().optional(),
   GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: z.string().min(100).optional(),
   GOOGLE_SHEETS_CACHE_SECONDS: z.coerce.number().int().min(60).max(3600).default(300),
@@ -48,6 +48,7 @@ export interface AppConfig {
     serviceAccountEmail: string;
     privateKey: string;
   } | null;
+  googleSheetsId: string | null;
   googleSheetsCacheMs: number;
   rpcUrls: Record<number, string | undefined>;
 }
@@ -68,12 +69,11 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppCon
   }
 
   const sheetCredentialCount = [
-    parsed.GOOGLE_SHEETS_ID,
     parsed.GOOGLE_SERVICE_ACCOUNT_EMAIL,
     parsed.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
   ].filter(Boolean).length;
-  if (sheetCredentialCount !== 0 && sheetCredentialCount !== 3) {
-    throw new Error("Google Sheets requires the spreadsheet ID, service-account email, and private key together.");
+  if (sheetCredentialCount !== 0 && sheetCredentialCount !== 2) {
+    throw new Error("Google Sheets service-account access requires the email and private key together.");
   }
 
   return {
@@ -96,6 +96,7 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppCon
           privateKey: parsed.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, "\n")
         }
       : null,
+    googleSheetsId: parsed.GOOGLE_SHEETS_ID ?? null,
     googleSheetsCacheMs: parsed.GOOGLE_SHEETS_CACHE_SECONDS * 1000,
     rpcUrls: {
       1: parsed.ETHEREUM_RPC_URL,

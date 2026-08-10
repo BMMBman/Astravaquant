@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildWorkbookDashboard, parseRatioModels, parseScoreSeries, regimeForScore } from "./workbook.js";
+import { buildWorkbookDashboard, parseCsv, parseRatioModels, parseScoreSeries, regimeForScore } from "./workbook.js";
 
 describe("Google workbook normalization", () => {
   it("reads dated score observations and excludes blanks and formula errors", () => {
@@ -18,6 +18,20 @@ describe("Google workbook normalization", () => {
     ]);
   });
 
+  it("infers public CSV score columns when Google removes the header row", () => {
+    const rows = parseCsv('"8/4/25","0.56",""\n"8/5/25","-0.12",""\n');
+    const series = parseScoreSeries("mtpi", "MT Total Forward Testing", rows);
+    expect(series.status).toBe("ready");
+    expect(series.points).toEqual([
+      { date: "2025-08-04", score: 0.56 },
+      { date: "2025-08-05", score: -0.12 }
+    ]);
+  });
+
+  it("parses quoted commas and escaped quotes without altering cells", () => {
+    expect(parseCsv('"Model, Core","A ""quoted"" cell"\n')).toEqual([["Model, Core", 'A "quoted" cell']]);
+  });
+
   it("extracts the latest relative-strength summary", () => {
     const ratios = parseRatioModels("RSPS", [
       ["ETHBTC Avg Score", "0.33", "Long"],
@@ -27,6 +41,23 @@ describe("Google workbook normalization", () => {
 
     expect(ratios).toEqual([
       { id: "eth-btc", label: "ETH / BTC", score: -0.55, state: "SHORT", sourceTab: "RSPS" },
+      { id: "sui-sol", label: "SUI / SOL", score: -0.71, state: "SHORT", sourceTab: "RSPS" }
+    ]);
+  });
+
+  it("reads block-style relative-strength summaries from the public export", () => {
+    const ratios = parseRatioModels("RSPS", [
+      ["", "", "SOLETH TPI"],
+      ["", "Indicator", "2D", "18 - 3", "1", "Bullish"],
+      ["", "", "", "", "", "0.88", "Neutral", "ETH", "20%"],
+      ["", "", "ETHBTC TPI"],
+      ["", "", "", "", "", "-1.00", "BITCOIN", "BTC", "80%"],
+      ["", "", "SUISOL TPI"],
+      ["", "", "", "", "", "-0.71", "Short", "SOL", "80%"]
+    ]);
+    expect(ratios).toEqual([
+      { id: "sol-eth", label: "SOL / ETH", score: 0.88, state: "NEUTRAL", sourceTab: "RSPS" },
+      { id: "eth-btc", label: "ETH / BTC", score: -1, state: "SHORT", sourceTab: "RSPS" },
       { id: "sui-sol", label: "SUI / SOL", score: -0.71, state: "SHORT", sourceTab: "RSPS" }
     ]);
   });

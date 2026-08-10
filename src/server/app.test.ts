@@ -23,6 +23,7 @@ const config: AppConfig = {
   coinGeckoApiKey: null,
   marketCacheMs: 300_000,
   googleSheets: null,
+  googleSheetsId: "1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA",
   googleSheetsCacheMs: 300_000,
   rpcUrls: { 1: undefined, 8453: undefined, 42161: undefined }
 };

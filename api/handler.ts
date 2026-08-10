@@ -10,6 +10,7 @@ import {
 import { PublicMarketProvider } from "../src/server/providers/markets.js";
 import {
   GoogleSheetsWorkbookProvider,
+  PublicGoogleSheetsWorkbookProvider,
   UnavailableWorkbookProvider
 } from "../src/server/providers/workbook.js";
 
@@ -35,7 +36,9 @@ const workbookProvider = config.googleSheets
       config.googleSheets.privateKey,
       config.googleSheetsCacheMs
     )
-  : new UnavailableWorkbookProvider(config.googleSheetsCacheMs);
+  : config.googleSheetsId
+    ? new PublicGoogleSheetsWorkbookProvider(config.googleSheetsId, config.googleSheetsCacheMs)
+    : new UnavailableWorkbookProvider(config.googleSheetsCacheMs);
 const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider });
 
 export default function handler(request: VercelRequest, response: ServerResponse): void {

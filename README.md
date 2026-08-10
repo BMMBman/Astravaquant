@@ -14,7 +14,7 @@ The original project was a static multi-page site with shared `styles.css` and `
 - A shared persistence boundary backed by SQLite locally and durable Neon Postgres on Vercel.
 - A server-only GoldRush portfolio provider behind the `PortfolioProvider` interface.
 - A cached public-market provider for CoinGecko crypto data and Federal Reserve Economic Data series.
-- A server-only Google Sheets provider that normalizes all 15 research tabs through a read-only service account.
+- A server-only Google Sheets provider that normalizes all 15 research tabs through a read-only public export or optional service account.
 - A model-lab page for verified score history, regime distributions, threshold testing, and transition diagnostics.
 - Vercel Web Analytics with a client-side privacy filter that excludes wallet and portfolio properties.
 
@@ -62,7 +62,7 @@ Provider requests run independently and time out cleanly, so one failed series d
 
 ## Research Workbook And Backtesting
 
-`GET /api/workbook` reads the private AstravaQuant workbook with Google's official authentication client and the `spreadsheets.readonly` OAuth scope. The service account must be shared on the workbook as a Viewer. Its email and private key stay in server environment variables and are never returned to the browser.
+`GET /api/workbook` reads the link-shared AstravaQuant workbook through Google's read-only CSV export. If the workbook is made private again, the provider can instead use Google's official authentication client with the `spreadsheets.readonly` OAuth scope. Optional service-account credentials stay server-side and are never returned to the browser.
 
 The provider batch-reads and validates all 15 tabs: Command Center, RSPS, Alts RSPS, MTPI, LTPI, both forward-testing tabs, BTC, ETH, SOL, HYPE, SUI, Others.D TPI, ALT Selection Table, and Trash Tournament. The public response contains normalized scores, dated score observations, tab health, and formula-error counts rather than raw cells.
 
@@ -88,8 +88,8 @@ Copy `.env.example` to `.env` and configure:
 | `COINGECKO_API_KEY` | Optional server-only CoinGecko demo key. The keyless public endpoint is used when omitted. |
 | `MARKET_CACHE_SECONDS` | Server-side terminal feed cache duration. |
 | `GOOGLE_SHEETS_ID` | Private AstravaQuant spreadsheet ID. |
-| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Server-only Google service-account email shared on the workbook as Viewer. |
-| `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Server-only PEM private key; Vercel may store line breaks as escaped `\\n`. |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Optional server-only service-account email when the workbook is private. |
+| `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Optional server-only PEM private key; provide it with the email as a pair. |
 | `GOOGLE_SHEETS_CACHE_SECONDS` | Server-side normalized workbook cache duration. |
 | `ETHEREUM_RPC_URL` | Optional server RPC for Ethereum smart-account signature verification. |
 | `BASE_RPC_URL` | Optional server RPC for Base smart-account signature verification. |
@@ -144,7 +144,7 @@ The Vercel project requires these production variables before the wallet service
 
 `GOLDRUSH_API_KEY` is still required before production can return live wallet holdings. Without it, authentication works and the portfolio dashboard returns a deliberate provider-unavailable state rather than mock data.
 
-The Google model feed requires all three `GOOGLE_SHEETS_*` credential variables. Enable the Google Sheets API in a Google Cloud project, create a service account and JSON key, share the workbook with the service-account email as Viewer, then add the spreadsheet ID, client email, and private key to Vercel Production environment variables. A service account needs workbook access but should not receive broad project roles for this use case.
+The link-shared workbook needs only `GOOGLE_SHEETS_ID`; the AstravaQuant workbook ID is the project default. If access is restricted later, enable the Google Sheets API, create a service account, share the workbook with its email as Viewer, and provide both optional service-account variables together.
 
 The catch-all function is `api/handler.ts`. It creates the Postgres schema idempotently on cold start and delegates the original `/api/*` path to the existing Express application. Vercel function secrets remain server-side.
 

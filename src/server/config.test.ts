@@ -28,9 +28,15 @@ describe("production configuration", () => {
     expect(() => loadConfig(withoutSecret)).toThrow("SESSION_SECRET is required");
   });
 
-  it("requires the private-sheet credentials as one complete set", () => {
-    expect(() => loadConfig({ ...productionEnvironment, GOOGLE_SHEETS_ID: "1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA" })).toThrow(
-      "Google Sheets requires"
+  it("allows the link-shared workbook without service-account credentials", () => {
+    const config = loadConfig(productionEnvironment);
+    expect(config.googleSheets).toBeNull();
+    expect(config.googleSheetsId).toBe("1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA");
+  });
+
+  it("requires service-account credentials as a complete pair", () => {
+    expect(() => loadConfig({ ...productionEnvironment, GOOGLE_SERVICE_ACCOUNT_EMAIL: "reader@example.com" })).toThrow(
+      "service-account access requires"
     );
   });
 });

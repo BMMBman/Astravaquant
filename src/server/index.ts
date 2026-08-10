@@ -7,7 +7,11 @@ import {
   UnavailablePortfolioProvider
 } from "./providers/portfolio.js";
 import { PublicMarketProvider } from "./providers/markets.js";
-import { GoogleSheetsWorkbookProvider, UnavailableWorkbookProvider } from "./providers/workbook.js";
+import {
+  GoogleSheetsWorkbookProvider,
+  PublicGoogleSheetsWorkbookProvider,
+  UnavailableWorkbookProvider
+} from "./providers/workbook.js";
 
 const config = loadConfig();
 const database = new AstravaDatabase(config.databasePath);
@@ -23,7 +27,9 @@ const workbookProvider = config.googleSheets
       config.googleSheets.privateKey,
       config.googleSheetsCacheMs
     )
-  : new UnavailableWorkbookProvider(config.googleSheetsCacheMs);
+  : config.googleSheetsId
+    ? new PublicGoogleSheetsWorkbookProvider(config.googleSheetsId, config.googleSheetsCacheMs)
+    : new UnavailableWorkbookProvider(config.googleSheetsCacheMs);
 const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider });
 database.cleanup();
 const cleanupTimer = setInterval(() => database.cleanup(), 60 * 60 * 1000);

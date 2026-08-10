@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="AstravaQuant backtesting workspace for verified model-score history, regime distributions, and transition diagnostics." />
+    <title>AstravaQuant Backtesting | Signal Diagnostics</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-backtesting-page>
+    <div class="ambient-orb orb-left" aria-hidden="true"></div>
+    <div class="ambient-orb orb-right" aria-hidden="true"></div>
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true"><defs><linearGradient id="brand-gradient-backtest" x1="18" y1="132" x2="138" y2="16" gradientUnits="userSpaceOnUse"><stop stop-color="#68b6ff"/><stop offset=".5" stop-color="#eef5ff"/><stop offset="1" stop-color="#8fe0ff"/></linearGradient></defs><path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke="url(#brand-gradient-backtest)" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/></svg>
+          <span class="brand-copy"><strong>AstravaQuant</strong><span>Backtesting</span></span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="signals.html">Signals</a><a href="models.html">Models</a><a class="is-active" href="backtesting.html">Backtest</a><a href="portfolio.html">Portfolio</a><a href="terminal.html">Terminal</a><a href="research.html">Research</a>
+        </nav>
+        <div class="header-cta" data-wallet-root><button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section page-hero backtest-hero">
+        <div class="shell shell-wide">
+          <div class="page-hero-copy reveal">
+            <p class="eyebrow">Model Lab</p>
+            <h1>Test the signal, not a story.</h1>
+            <p class="lead">Inspect real score history, regime duration, and transitions. No invented returns.</p>
+          </div>
+          <div class="feed-state" data-backtest-status data-state="loading"><i aria-hidden="true"></i><span>Connecting workbook</span></div>
+        </div>
+      </section>
+
+      <section class="section section-compact">
+        <div class="shell shell-wide">
+          <article class="backtest-workspace glass-card reveal">
+            <header class="backtest-toolbar">
+              <div>
+                <span class="table-label">Signal Diagnostics</span>
+                <h2>Historical regime path</h2>
+                <p data-series-source>Waiting for verified observations</p>
+              </div>
+              <div class="backtest-controls">
+                <label>Series<select data-series-select aria-label="Model series"><option>Loading</option></select></label>
+                <label>Risk-off below <output data-negative-value>-0.25</output><input data-negative-threshold type="range" min="-0.75" max="0" step="0.05" value="-0.25" /></label>
+                <label>Risk-on above <output data-positive-value>+0.25</output><input data-positive-threshold type="range" min="0" max="0.75" step="0.05" value="0.25" /></label>
+              </div>
+            </header>
+
+            <div class="backtest-kpis" aria-label="Backtest summary">
+              <div><span>Observations</span><strong data-kpi-observations>--</strong></div>
+              <div><span>Current</span><strong data-kpi-current>--</strong></div>
+              <div><span>Average</span><strong data-kpi-average>--</strong></div>
+              <div><span>Transitions</span><strong data-kpi-transitions>--</strong></div>
+              <div><span>Current streak</span><strong data-kpi-streak>--</strong></div>
+              <div><span>Test window</span><strong data-kpi-range>--</strong></div>
+            </div>
+
+            <div class="backtest-chart-stage">
+              <svg data-backtest-chart viewBox="0 0 1000 320" role="img" aria-label="Historical model-score chart"></svg>
+              <p class="backtest-empty-copy" data-backtest-empty>Connecting to the private research workbook.</p>
+            </div>
+
+            <div class="backtest-distribution" aria-label="Regime distribution">
+              <div data-distribution="risk_off"><span>Risk-off</span><div><i></i></div><strong>--</strong></div>
+              <div data-distribution="neutral"><span>Neutral</span><div><i></i></div><strong>--</strong></div>
+              <div data-distribution="risk_on"><span>Risk-on</span><div><i></i></div><strong>--</strong></div>
+            </div>
+
+            <div class="backtest-transitions">
+              <header><span class="table-label">Recent Transitions</span><p>Recalculated when thresholds change.</p></header>
+              <div data-transition-list><p class="backtest-empty-copy">Waiting for score history.</p></div>
+            </div>
+          </article>
+
+          <article class="return-boundary reveal">
+            <div><span>Return analysis</span><strong>Data required</strong></div>
+            <p>The workbook currently supplies model scores, not an aligned investable benchmark. Return, alpha, Sharpe, and drawdown stay disabled until real price history is added.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell shell-wide">
+          <div class="section-head reveal"><p class="eyebrow">Relative Strength</p><h2>Current ratio reads.</h2><p>Normalized from RSPS and Alts RSPS. Spreadsheet errors are excluded, never converted to zero.</p></div>
+          <article class="ratio-ledger glass-card reveal" data-ratio-models><p class="backtest-empty-copy">Connecting ratio models.</p></article>
+        </div>
+      </section>
+
+      <section class="section section-compact">
+        <div class="shell shell-wide">
+          <div class="section-head reveal"><p class="eyebrow">Workbook Coverage</p><h2>All 15 research tabs.</h2><p>One compact health view across allocation, relative strength, model components, forward tests, breadth, and selection.</p></div>
+          <div class="workbook-grid reveal" data-workbook-tabs aria-live="polite"></div>
+          <ul class="workbook-warnings reveal" data-workbook-warnings></ul>
+        </div>
+      </section>
+
+      <section class="section section-compact"><div class="shell shell-wide"><p class="research-disclaimer reveal">Diagnostics describe historical model scores. They are not a simulated trading strategy, investment advice, or evidence of future performance.</p></div></section>
+    </main>
+    <footer class="footer"><div class="shell footer-inner"><p>Verified research data only. No fabricated performance.</p><div class="footer-links"><a href="methodology.html">Methodology</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div></div></footer>
+    <script type="module" src="/app.js"></script><script type="module" src="/src/client/index.ts"></script>
+  </body>
+</html>

@@ -500,6 +500,13 @@ document.documentElement.classList.add("js");
       renderDial(node, parseInt(node.getAttribute("data-dial-index"), 10) || 0, true);
     });
 
+  window.addEventListener("astrava:model-updated", function (event) {
+    var node = event.detail && event.detail.element;
+    if (node && node.matches && node.matches("[data-dial-value]")) {
+      renderDial(node, parseInt(node.getAttribute("data-dial-index"), 10) || 0, true);
+    }
+  });
+
   tabGroups.forEach(function (group) {
     var buttons = Array.prototype.slice.call(group.querySelectorAll("[data-tab-target]"));
 

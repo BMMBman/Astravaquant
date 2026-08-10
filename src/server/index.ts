@@ -7,6 +7,7 @@ import {
   UnavailablePortfolioProvider
 } from "./providers/portfolio.js";
 import { PublicMarketProvider } from "./providers/markets.js";
+import { GoogleSheetsWorkbookProvider, UnavailableWorkbookProvider } from "./providers/workbook.js";
 
 const config = loadConfig();
 const database = new AstravaDatabase(config.databasePath);
@@ -15,7 +16,15 @@ const provider = config.goldrushApiKey
   : new UnavailablePortfolioProvider();
 const portfolioProvider = new CachedPortfolioProvider(provider, config.portfolioCacheMs);
 const marketProvider = new PublicMarketProvider(config.coinGeckoApiKey, config.marketCacheMs);
-const app = createApp({ config, database, portfolioProvider, marketProvider });
+const workbookProvider = config.googleSheets
+  ? new GoogleSheetsWorkbookProvider(
+      config.googleSheets.spreadsheetId,
+      config.googleSheets.serviceAccountEmail,
+      config.googleSheets.privateKey,
+      config.googleSheetsCacheMs
+    )
+  : new UnavailableWorkbookProvider(config.googleSheetsCacheMs);
+const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider });
 database.cleanup();
 const cleanupTimer = setInterval(() => database.cleanup(), 60 * 60 * 1000);
 cleanupTimer.unref();

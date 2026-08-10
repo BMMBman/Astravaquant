@@ -7,7 +7,7 @@
     <title>AstravaQuant Signals | Current Model State</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body data-model-feed>
     <div class="ambient-orb orb-left" aria-hidden="true"></div>
     <div class="ambient-orb orb-right" aria-hidden="true"></div>
     <header class="site-header" aria-label="Primary navigation">
@@ -17,7 +17,7 @@
           <span class="brand-copy"><strong>AstravaQuant</strong><span>Signals</span></span>
         </a>
         <nav class="site-nav" aria-label="Main navigation">
-          <a class="is-active" href="signals.html">Signals</a><a href="models.html">Models</a><a href="portfolio.html">Portfolio</a><a href="terminal.html">Dashboards</a><a href="research.html">Research</a>
+          <a class="is-active" href="signals.html">Signals</a><a href="models.html">Models</a><a href="backtesting.html">Backtest</a><a href="portfolio.html">Portfolio</a><a href="terminal.html">Terminal</a><a href="research.html">Research</a>
         </nav>
         <div class="header-cta" data-wallet-root><button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div>
       </div>
@@ -28,18 +28,18 @@
       </section>
       <section class="section section-compact">
         <div class="shell shell-narrow">
-          <div class="publication-bar reveal"><div><i aria-hidden="true"></i><span>Manual model snapshot</span></div><p>No score timestamp is claimed until automated publishing is connected.</p><a href="methodology.html">AQ Core v0.1</a></div>
+          <div class="publication-bar reveal" data-model-publication><div><i aria-hidden="true"></i><span data-publication-title>Manual fallback snapshot</span></div><p data-publication-message>The private workbook connection is pending; existing published values remain visible.</p><a href="backtesting.html" data-publication-status>Workbook offline</a></div>
           <div class="signal-ledger reveal" aria-label="Current model signals">
-            <article class="signal-ledger-row"><div><span>MTPI</span><h2>Medium-Term Trend</h2><p>Total crypto market cap + TOTAL2 / five-day model</p></div><strong>+0.47</strong><b class="status-good">Long</b><a href="models.html#mtpi" aria-label="View MTPI model">View</a></article>
-            <article class="signal-ledger-row"><div><span>LTPI</span><h2>Long-Term Trend</h2><p>Total crypto market cap + Bitcoin / weekly model</p></div><strong>-0.95</strong><b class="status-bad">Short</b><a href="models.html#ltpi" aria-label="View LTPI model">View</a></article>
-            <article class="signal-ledger-row"><div><span>NSPI</span><h2>Net System Positioning Index</h2><p>MTPI + LTPI / aggregate crypto regime</p></div><strong>-0.24</strong><b class="status-warn">Neutral transition</b><a href="models.html#nspi" aria-label="View NSPI model">View</a></article>
-            <article class="signal-ledger-row"><div><span>MRPI</span><h2>Mortgage Rate Pressure Index</h2><p>10-year Treasury pressure / weekly model</p></div><strong>-0.79</strong><b class="status-bad">Tightening</b><a href="models.html#mrpi" aria-label="View MRPI model">View</a></article>
+            <article class="signal-ledger-row" data-model-id="mtpi"><div><span>MTPI</span><h2>Medium-Term Trend</h2><p>Total crypto market cap + TOTAL2 / five-day model</p></div><strong data-model-value>+0.47</strong><b class="status-good" data-model-state>Long</b><a href="models.html#mtpi" aria-label="View MTPI model">View</a></article>
+            <article class="signal-ledger-row" data-model-id="ltpi"><div><span>LTPI</span><h2>Long-Term Trend</h2><p>Total crypto market cap + Bitcoin / weekly model</p></div><strong data-model-value>-0.95</strong><b class="status-bad" data-model-state>Short</b><a href="models.html#ltpi" aria-label="View LTPI model">View</a></article>
+            <article class="signal-ledger-row" data-model-id="nspi"><div><span>NSPI</span><h2>Net System Positioning Index</h2><p>MTPI + LTPI / aggregate crypto regime</p></div><strong data-model-value>-0.24</strong><b class="status-warn" data-model-state>Neutral transition</b><a href="models.html#nspi" aria-label="View NSPI model">View</a></article>
+            <article class="signal-ledger-row" data-model-id="mrpi"><div><span>MRPI</span><h2>Mortgage Rate Pressure Index</h2><p>10-year Treasury pressure / weekly model</p></div><strong data-model-value>-0.79</strong><b class="status-bad" data-model-state>Tightening</b><a href="models.html#mrpi" aria-label="View MRPI model">View</a></article>
           </div>
         </div>
       </section>
       <section class="section section-compact">
         <div class="shell shell-narrow">
-          <article class="history-empty glass-card reveal"><span class="table-label">Signal history</span><h2>Change log begins with verified publishing.</h2><p>AstravaQuant will record score changes, regime transitions, and publication times once the model feed is automated. Historical transitions are not being reconstructed or fabricated.</p><div><span>Next event</span><strong>Awaiting first automated publication</strong></div></article>
+          <article class="history-empty glass-card reveal"><span class="table-label">Verified History</span><h2>Inspect the model path.</h2><p>The backtesting workspace reads dated MTPI and LTPI score observations directly from the forward-testing tabs, excluding blanks and spreadsheet errors.</p><div><span>Model lab</span><strong><a href="backtesting.html">Open signal diagnostics</a></strong></div></article>
         </div>
       </section>
       <section class="section section-compact"><div class="shell shell-narrow"><p class="research-disclaimer reveal">Model outputs are informational research. They are not investment advice, execution instructions, or guarantees of future performance.</p></div></section>

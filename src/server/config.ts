@@ -15,6 +15,10 @@ const schema = z.object({
   PORTFOLIO_CACHE_SECONDS: z.coerce.number().int().min(15).max(3600).default(60),
   COINGECKO_API_KEY: z.string().min(1).optional(),
   MARKET_CACHE_SECONDS: z.coerce.number().int().min(60).max(3600).default(300),
+  GOOGLE_SHEETS_ID: z.string().min(20).optional(),
+  GOOGLE_SERVICE_ACCOUNT_EMAIL: z.email().optional(),
+  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: z.string().min(100).optional(),
+  GOOGLE_SHEETS_CACHE_SECONDS: z.coerce.number().int().min(60).max(3600).default(300),
   ETHEREUM_RPC_URL: z.url().optional(),
   BASE_RPC_URL: z.url().optional(),
   ARBITRUM_RPC_URL: z.url().optional()
@@ -39,6 +43,12 @@ export interface AppConfig {
   portfolioCacheMs: number;
   coinGeckoApiKey: string | null;
   marketCacheMs: number;
+  googleSheets: {
+    spreadsheetId: string;
+    serviceAccountEmail: string;
+    privateKey: string;
+  } | null;
+  googleSheetsCacheMs: number;
   rpcUrls: Record<number, string | undefined>;
 }
 export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppConfig {
@@ -57,6 +67,15 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppCon
     throw new Error("DATABASE_URL is required for the production wallet service.");
   }
 
+  const sheetCredentialCount = [
+    parsed.GOOGLE_SHEETS_ID,
+    parsed.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+    parsed.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
+  ].filter(Boolean).length;
+  if (sheetCredentialCount !== 0 && sheetCredentialCount !== 3) {
+    throw new Error("Google Sheets requires the spreadsheet ID, service-account email, and private key together.");
+  }
+
   return {
     nodeEnv: parsed.NODE_ENV,
     port: parsed.PORT,
@@ -70,6 +89,14 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppCon
     portfolioCacheMs: parsed.PORTFOLIO_CACHE_SECONDS * 1000,
     coinGeckoApiKey: parsed.COINGECKO_API_KEY ?? null,
     marketCacheMs: parsed.MARKET_CACHE_SECONDS * 1000,
+    googleSheets: parsed.GOOGLE_SHEETS_ID && parsed.GOOGLE_SERVICE_ACCOUNT_EMAIL && parsed.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
+      ? {
+          spreadsheetId: parsed.GOOGLE_SHEETS_ID,
+          serviceAccountEmail: parsed.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+          privateKey: parsed.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, "\n")
+        }
+      : null,
+    googleSheetsCacheMs: parsed.GOOGLE_SHEETS_CACHE_SECONDS * 1000,
     rpcUrls: {
       1: parsed.ETHEREUM_RPC_URL,
       8453: parsed.BASE_RPC_URL,

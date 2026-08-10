@@ -75,6 +75,70 @@ export interface ModelSignal {
   relevantSymbols: string[];
 }
 
+export type WorkbookTabCategory =
+  | "allocation"
+  | "relative_strength"
+  | "core_model"
+  | "forward_test"
+  | "asset_model"
+  | "breadth"
+  | "selection";
+
+export interface WorkbookTabSummary {
+  id: string;
+  name: string;
+  category: WorkbookTabCategory;
+  description: string;
+  status: "ready" | "unavailable";
+  rowCount: number;
+  columnCount: number;
+  latestScore: number | null;
+  latestState: string | null;
+  updatedLabel: string | null;
+  formulaErrorCount: number;
+}
+
+export interface WorkbookModelSignal extends ModelSignal {
+  regime: string;
+  source: "google_sheets" | "manual_fallback" | "derived";
+  sourceTab: string | null;
+  updatedLabel: string | null;
+}
+
+export interface WorkbookScorePoint {
+  date: string;
+  score: number;
+}
+
+export interface WorkbookScoreSeries {
+  id: "mtpi" | "ltpi";
+  label: string;
+  sourceTab: string;
+  status: "ready" | "unavailable";
+  message: string | null;
+  points: WorkbookScorePoint[];
+}
+
+export interface WorkbookRatioModel {
+  id: string;
+  label: string;
+  score: number;
+  state: string;
+  sourceTab: "RSPS" | "Alts RSPS";
+}
+
+export interface WorkbookDashboard {
+  status: "ready" | "partial" | "not_configured" | "unavailable";
+  provider: "Google Sheets" | null;
+  updatedAt: string;
+  refreshSeconds: number;
+  signals: WorkbookModelSignal[];
+  scoreSeries: WorkbookScoreSeries[];
+  ratioModels: WorkbookRatioModel[];
+  tabs: WorkbookTabSummary[];
+  warnings: string[];
+}
+
 export interface PersonalizedResearch {
   id: string;
   title: string;

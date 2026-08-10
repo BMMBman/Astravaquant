@@ -14,11 +14,13 @@ The original project was a static multi-page site with shared `styles.css` and `
 - A shared persistence boundary backed by SQLite locally and durable Neon Postgres on Vercel.
 - A server-only GoldRush portfolio provider behind the `PortfolioProvider` interface.
 - A cached public-market provider for CoinGecko crypto data and Federal Reserve Economic Data series.
+- A server-only Google Sheets provider that normalizes all 15 research tabs through a read-only service account.
+- A model-lab page for verified score history, regime distributions, threshold testing, and transition diagnostics.
 - Vercel Web Analytics with a client-side privacy filter that excludes wallet and portfolio properties.
 
-Public pages include the homepage, models, signals, terminal, research library, individual research notes, methodology, privacy, and terms. The portfolio API requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
+Public pages include the homepage, models, signals, backtesting, terminal, research library, individual research notes, methodology, privacy, and terms. The portfolio API requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
 
-There was no deployment configuration or existing backend, database, authentication system, or live model API in the repository before this milestone. Model values remain the existing AstravaQuant values in `src/server/data/astrava.ts`.
+There was no deployment configuration or existing backend, database, authentication system, or live model API in the repository before this milestone. `src/server/data/astrava.ts` now acts only as the disclosed fallback when the private workbook cannot be verified.
 
 ## Wallet Authentication
 
@@ -58,6 +60,16 @@ The current AstravaQuant model does not publish target portfolio weights. The da
 
 Provider requests run independently and time out cleanly, so one failed series does not blank the dashboard. Responses are cached for five minutes by default. Global crypto market-cap history is not fabricated when it is unavailable from the public feed; TOTAL and TOTAL2 remain current-snapshot cards while BTC, ETH, and FRED series include sourced history.
 
+## Research Workbook And Backtesting
+
+`GET /api/workbook` reads the private AstravaQuant workbook with Google's official authentication client and the `spreadsheets.readonly` OAuth scope. The service account must be shared on the workbook as a Viewer. Its email and private key stay in server environment variables and are never returned to the browser.
+
+The provider batch-reads and validates all 15 tabs: Command Center, RSPS, Alts RSPS, MTPI, LTPI, both forward-testing tabs, BTC, ETH, SOL, HYPE, SUI, Others.D TPI, ALT Selection Table, and Trash Tournament. The public response contains normalized scores, dated score observations, tab health, and formula-error counts rather than raw cells.
+
+MTPI and LTPI are sourced from their workbook summaries when available. NSPI is transparently derived as the mean of the two published readings. MRPI is not present in this crypto workbook and remains the separate manual reading. If Google is unavailable, the app keeps the existing fallback snapshot visible and labels the workbook offline.
+
+The Backtesting page analyzes only the dated scores that exist in the two forward-testing tabs. It supports adjustable regime thresholds, distributions, streaks, and transitions. It does not calculate returns, alpha, Sharpe, or drawdown because the current workbook does not contain an aligned investable benchmark series. Those statistics must remain disabled until real price history is supplied.
+
 ## Environment
 
 Copy `.env.example` to `.env` and configure:
@@ -75,6 +87,10 @@ Copy `.env.example` to `.env` and configure:
 | `PORTFOLIO_CACHE_SECONDS` | Short server-side holdings cache duration. |
 | `COINGECKO_API_KEY` | Optional server-only CoinGecko demo key. The keyless public endpoint is used when omitted. |
 | `MARKET_CACHE_SECONDS` | Server-side terminal feed cache duration. |
+| `GOOGLE_SHEETS_ID` | Private AstravaQuant spreadsheet ID. |
+| `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Server-only Google service-account email shared on the workbook as Viewer. |
+| `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Server-only PEM private key; Vercel may store line breaks as escaped `\\n`. |
+| `GOOGLE_SHEETS_CACHE_SECONDS` | Server-side normalized workbook cache duration. |
 | `ETHEREUM_RPC_URL` | Optional server RPC for Ethereum smart-account signature verification. |
 | `BASE_RPC_URL` | Optional server RPC for Base smart-account signature verification. |
 | `ARBITRUM_RPC_URL` | Optional server RPC for Arbitrum smart-account signature verification. |
@@ -128,6 +144,8 @@ The Vercel project requires these production variables before the wallet service
 
 `GOLDRUSH_API_KEY` is still required before production can return live wallet holdings. Without it, authentication works and the portfolio dashboard returns a deliberate provider-unavailable state rather than mock data.
 
+The Google model feed requires all three `GOOGLE_SHEETS_*` credential variables. Enable the Google Sheets API in a Google Cloud project, create a service account and JSON key, share the workbook with the service-account email as Viewer, then add the spreadsheet ID, client email, and private key to Vercel Production environment variables. A service account needs workbook access but should not receive broad project roles for this use case.
+
 The catch-all function is `api/handler.ts`. It creates the Postgres schema idempotently on cold start and delegates the original `/api/*` path to the existing Express application. Vercel function secrets remain server-side.
 
 ## Data Model
@@ -158,7 +176,7 @@ Vercel Web Analytics is initialized only on HTTPS deployments. Page URLs are str
 
 ## Model Publication
 
-The public model register begins with `AQ Core v0.1`. Current scores are identified as manually published snapshots because the repository does not contain verified source timestamps. Signal history begins only when automated model publishing is connected; no historical transitions are backfilled. See `methodology.html` for inputs, timeframes, scales, and limitations.
+The public model register is `AQ Core v0.2`. When configured, current crypto readings and existing forward-test observations are normalized from the private workbook every five minutes. No missing dates, ratio histories, benchmark prices, or performance statistics are backfilled. Workbook cell errors are reported as unavailable rather than coerced to zero. See `methodology.html` for inputs, scales, derivations, and limitations.
 
 ## Visual Sources
 

@@ -10,7 +10,7 @@
     <title>AstravaQuant | Connected Intelligence for Modern Markets</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body data-model-feed>
     <div class="ambient-orb orb-left" aria-hidden="true"></div>
     <div class="ambient-orb orb-right" aria-hidden="true"></div>
 
@@ -43,8 +43,9 @@
         <nav class="site-nav" aria-label="Main navigation">
           <a href="signals.html">Signals</a>
           <a href="models.html">Models</a>
+          <a href="backtesting.html">Backtest</a>
           <a href="portfolio.html">Portfolio</a>
-          <a href="terminal.html">Dashboards</a>
+          <a href="terminal.html">Terminal</a>
           <a href="research.html">Research</a>
         </nav>
 
@@ -213,25 +214,25 @@
         </div>
 
         <div class="hero-strip reveal" aria-label="Current model snapshot">
-          <article class="hero-metric">
+          <article class="hero-metric" data-model-id="mtpi">
             <span>Medium-Term Trend</span>
-            <strong>+0.47</strong>
-            <b class="status-good">Long</b>
+            <strong data-model-value>+0.47</strong>
+            <b class="status-good" data-model-state>Long</b>
           </article>
-          <article class="hero-metric">
+          <article class="hero-metric" data-model-id="ltpi">
             <span>Long-Term Trend</span>
-            <strong>-0.95</strong>
-            <b class="status-bad">Short</b>
+            <strong data-model-value>-0.95</strong>
+            <b class="status-bad" data-model-state>Short</b>
           </article>
-          <article class="hero-metric">
+          <article class="hero-metric" data-model-id="nspi">
             <span>NSPI</span>
-            <strong>-0.24</strong>
-            <b class="status-warn">Neutral</b>
+            <strong data-model-value>-0.24</strong>
+            <b class="status-warn" data-model-state>Neutral</b>
           </article>
-          <article class="hero-metric">
+          <article class="hero-metric" data-model-id="mrpi">
             <span>MRPI</span>
-            <strong>-0.79</strong>
-            <b class="status-bad">Tightening</b>
+            <strong data-model-value>-0.79</strong>
+            <b class="status-bad" data-model-state>Tightening</b>
           </article>
         </div>
       </section>
@@ -278,44 +279,44 @@
           </div>
 
           <div class="core-model-grid">
-            <article class="core-model-card glass-card reveal">
+            <article class="core-model-card glass-card reveal" data-model-id="mtpi">
               <div class="core-model-head">
                 <span class="table-label">MTPI</span>
-                <span class="status-tag status-good">Long</span>
+                <span class="status-tag status-good" data-model-state>Long</span>
               </div>
               <h3>Medium-Term Trend</h3>
               <p>Five-day aggregate of total crypto market cap and TOTAL2 for the medium-term crypto trend.</p>
-              <strong>+0.47</strong>
+              <strong data-model-value>+0.47</strong>
             </article>
 
-            <article class="core-model-card glass-card reveal">
+            <article class="core-model-card glass-card reveal" data-model-id="ltpi">
               <div class="core-model-head">
                 <span class="table-label">LTPI</span>
-                <span class="status-tag status-bad">Short</span>
+                <span class="status-tag status-bad" data-model-state>Short</span>
               </div>
               <h3>Long-Term Trend</h3>
               <p>Weekly aggregate of total crypto market cap and Bitcoin for the long-term crypto trend.</p>
-              <strong>-0.95</strong>
+              <strong data-model-value>-0.95</strong>
             </article>
 
-            <article class="core-model-card glass-card reveal">
+            <article class="core-model-card glass-card reveal" data-model-id="nspi">
               <div class="core-model-head">
                 <span class="table-label">NSPI</span>
-                <span class="status-tag status-warn">Neutral</span>
+                <span class="status-tag status-warn" data-model-state>Neutral</span>
               </div>
               <h3>NSPI</h3>
               <p>Aggregate of the medium-term and long-term trend into one regime score.</p>
-              <strong>-0.24</strong>
+              <strong data-model-value>-0.24</strong>
             </article>
 
-            <article class="core-model-card glass-card reveal">
+            <article class="core-model-card glass-card reveal" data-model-id="mrpi">
               <div class="core-model-head">
                 <span class="table-label">MRPI</span>
-                <span class="status-tag status-bad">Tightening</span>
+                <span class="status-tag status-bad" data-model-state>Tightening</span>
               </div>
               <h3>Mortgage Rate Pressure Index</h3>
               <p>Weekly mortgage-rate pressure model on the 10-year Treasury, read as tightening versus easing.</p>
-              <strong>-0.79</strong>
+              <strong data-model-value>-0.79</strong>
             </article>
           </div>
         </div>

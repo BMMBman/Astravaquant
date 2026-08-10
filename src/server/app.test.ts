@@ -22,12 +22,55 @@ const config: AppConfig = {
   portfolioCacheMs: 60_000,
   coinGeckoApiKey: null,
   marketCacheMs: 300_000,
+  googleSheets: null,
+  googleSheetsCacheMs: 300_000,
   rpcUrls: { 1: undefined, 8453: undefined, 42161: undefined }
 };
 
 const marketProvider = {
   async getDashboard() {
     return { status: "unavailable" as const, updatedAt: new Date().toISOString(), metrics: [] };
+  }
+};
+
+const workbookProvider = {
+  async getDashboard() {
+    return {
+      status: "not_configured" as const,
+      provider: null,
+      updatedAt: new Date().toISOString(),
+      refreshSeconds: 300,
+      signals: [
+        {
+          id: "mtpi",
+          name: "Medium-Term Trend",
+          value: 0.47,
+          state: "LONG",
+          regime: "CONSTRUCTIVE EXPANSION",
+          scope: "Five-day aggregate.",
+          relevantSymbols: ["ETH"],
+          source: "manual_fallback" as const,
+          sourceTab: null,
+          updatedLabel: null
+        },
+        {
+          id: "nspi",
+          name: "NSPI",
+          value: -0.24,
+          state: "NEUTRAL TRANSITION",
+          regime: "NEUTRAL TRANSITION",
+          scope: "Aggregate regime.",
+          relevantSymbols: ["ETH"],
+          source: "manual_fallback" as const,
+          sourceTab: null,
+          updatedLabel: null
+        }
+      ],
+      scoreSeries: [],
+      ratioModels: [],
+      tabs: [],
+      warnings: []
+    };
   }
 };
 
@@ -76,7 +119,7 @@ describe("wallet authentication", () => {
 
   async function authenticate() {
     const account = privateKeyToAccount(generatePrivateKey());
-    const agent = request.agent(createApp({ config, database, portfolioProvider, marketProvider }));
+    const agent = request.agent(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider }));
     const nonceResponse = await agent
       .post("/api/auth/nonce")
       .set(mutationHeaders)
@@ -93,7 +136,7 @@ describe("wallet authentication", () => {
   }
 
   it("reports the wallet API as healthy when its datastore is available", async () => {
-    const response = await request(createApp({ config, database, portfolioProvider, marketProvider }))
+    const response = await request(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider }))
       .get("/api/health")
       .expect(200);
     expect(response.body).toEqual({ status: "ok", service: "astravaquant-wallet" });
@@ -127,7 +170,7 @@ describe("wallet authentication", () => {
 
   it("rejects authentication requests from another origin", async () => {
     const account = privateKeyToAccount(generatePrivateKey());
-    const app = createApp({ config, database, portfolioProvider, marketProvider });
+    const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider });
     const response = await request(app)
       .post("/api/auth/nonce")
       .set({ Origin: "https://example.com", "X-Astrava-Request": "wallet-auth" })
@@ -137,7 +180,7 @@ describe("wallet authentication", () => {
   });
 
   it("requires authentication for portfolio data and revokes logout sessions", async () => {
-    const app = createApp({ config, database, portfolioProvider, marketProvider });
+    const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider });
     await request(app).get("/api/dashboard").expect(401);
 
     const { agent } = await authenticate();
@@ -148,5 +191,13 @@ describe("wallet authentication", () => {
 
     await agent.post("/api/auth/logout").set(mutationHeaders).send({}).expect(200);
     await agent.get("/api/dashboard").expect(401);
+  });
+
+  it("publishes the normalized workbook contract without authentication", async () => {
+    const response = await request(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider }))
+      .get("/api/workbook")
+      .expect(200);
+    expect(response.body.status).toBe("not_configured");
+    expect(response.body.signals[0].id).toBe("mtpi");
   });
 });

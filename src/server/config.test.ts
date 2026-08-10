@@ -27,4 +27,10 @@ describe("production configuration", () => {
     delete withoutSecret.SESSION_SECRET;
     expect(() => loadConfig(withoutSecret)).toThrow("SESSION_SECRET is required");
   });
+
+  it("requires the private-sheet credentials as one complete set", () => {
+    expect(() => loadConfig({ ...productionEnvironment, GOOGLE_SHEETS_ID: "1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA" })).toThrow(
+      "Google Sheets requires"
+    );
+  });
 });

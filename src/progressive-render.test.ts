@@ -6,6 +6,7 @@ const css = readFileSync(new URL("styles.css", root), "utf8");
 const pages = [
   "index.html",
   "models.html",
+  "backtesting.html",
   "terminal.html",
   "portfolio.html",
   "signals.html",

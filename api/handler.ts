@@ -8,6 +8,10 @@ import {
   UnavailablePortfolioProvider
 } from "../src/server/providers/portfolio.js";
 import { PublicMarketProvider } from "../src/server/providers/markets.js";
+import {
+  GoogleSheetsWorkbookProvider,
+  UnavailableWorkbookProvider
+} from "../src/server/providers/workbook.js";
 
 interface VercelRequest extends IncomingMessage {
   query?: Record<string, string | string[] | undefined>;
@@ -24,7 +28,15 @@ const provider = config.goldrushApiKey
   : new UnavailablePortfolioProvider();
 const portfolioProvider = new CachedPortfolioProvider(provider, config.portfolioCacheMs);
 const marketProvider = new PublicMarketProvider(config.coinGeckoApiKey, config.marketCacheMs);
-const app = createApp({ config, database, portfolioProvider, marketProvider });
+const workbookProvider = config.googleSheets
+  ? new GoogleSheetsWorkbookProvider(
+      config.googleSheets.spreadsheetId,
+      config.googleSheets.serviceAccountEmail,
+      config.googleSheets.privateKey,
+      config.googleSheetsCacheMs
+    )
+  : new UnavailableWorkbookProvider(config.googleSheetsCacheMs);
+const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider });
 
 export default function handler(request: VercelRequest, response: ServerResponse): void {
   const route = request.query?.path;

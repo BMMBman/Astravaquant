@@ -10,6 +10,14 @@ if (document.querySelector("[data-market-terminal]")) {
   void import("./terminal.js").then(({ bootTerminal }) => bootTerminal());
 }
 
+if (document.querySelector("[data-model-feed]")) {
+  void import("./model-feed.js").then(({ bootModelFeed }) => bootModelFeed());
+}
+
+if (document.querySelector("[data-backtesting-page]")) {
+  void import("./backtesting.js").then(({ bootBacktesting }) => bootBacktesting());
+}
+
 async function boot(): Promise<void> {
   const walletRoot = document.querySelector<HTMLElement>("[data-wallet-root]");
   if (!walletRoot) return;

@@ -21,13 +21,16 @@ function allocationBySymbol(holdings: PortfolioHolding[]): Map<string, number> {
   return allocations;
 }
 
-export function relevantSignals(holdings: PortfolioHolding[]): ModelSignal[] {
+export function relevantSignals(
+  holdings: PortfolioHolding[],
+  signals: ModelSignal[] = currentSignals
+): ModelSignal[] {
   const heldSymbols = new Set(holdings.map((holding) => normalizedSymbol(holding.symbol)));
   if (heldSymbols.size === 0) {
-    return currentSignals.filter((signal) => signal.id === "nspi");
+    return signals.filter((signal) => signal.id === "nspi");
   }
 
-  return currentSignals.filter((signal) =>
+  return signals.filter((signal) =>
     signal.relevantSymbols.some((symbol) => heldSymbols.has(normalizedSymbol(symbol)))
   );
 }
@@ -60,6 +63,6 @@ export function allocationContext(holdings: PortfolioHolding[]): AllocationConte
   };
 }
 
-export function portfolioRegime(): ModelSignal {
-  return currentSignals.find((signal) => signal.id === "nspi")!;
+export function portfolioRegime(signals: ModelSignal[] = currentSignals): ModelSignal {
+  return signals.find((signal) => signal.id === "nspi") ?? currentSignals.find((signal) => signal.id === "nspi")!;
 }

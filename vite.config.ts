@@ -7,6 +7,7 @@ export default defineConfig({
       input: {
         home: resolve(import.meta.dirname, "index.html"),
         models: resolve(import.meta.dirname, "models.html"),
+        backtesting: resolve(import.meta.dirname, "backtesting.html"),
         terminal: resolve(import.meta.dirname, "terminal.html"),
         portfolio: resolve(import.meta.dirname, "portfolio.html"),
         signals: resolve(import.meta.dirname, "signals.html"),

@@ -647,7 +647,7 @@ footer {
   z-index: 4;
   overflow: visible;
   pointer-events: none;
-  opacity: 0.64;
+  opacity: 0.82;
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 7px rgba(73, 170, 232, 0.22));
 }
@@ -661,10 +661,9 @@ footer {
 .hero-world-network-link {
   fill: none;
   stroke: url("#earth-network-line");
-  stroke-width: 0.34;
+  stroke-width: 0.42;
   stroke-linecap: round;
   stroke-dasharray: 1.1 1.8 8 2.2;
-  vector-effect: non-scaling-stroke;
   animation: earthDataFlow 12s linear infinite;
 }
 
@@ -679,8 +678,8 @@ footer {
 
 .hero-world-node-ring {
   fill: rgba(106, 196, 249, 0.06);
-  stroke: rgba(157, 220, 255, 0.58);
-  stroke-width: 0.3;
+  stroke: rgba(178, 229, 255, 0.78);
+  stroke-width: 0.36;
   transform-box: fill-box;
   transform-origin: center;
   animation: earthNodePulse 6.4s ease-out infinite;
@@ -688,8 +687,8 @@ footer {
 }
 
 .hero-world-node-core {
-  fill: rgba(225, 246, 255, 0.92);
-  stroke: rgba(83, 177, 236, 0.72);
+  fill: rgba(235, 250, 255, 0.98);
+  stroke: rgba(83, 177, 236, 0.9);
   stroke-width: 0.18;
   transform: rotate(45deg);
   transform-box: fill-box;
@@ -698,15 +697,14 @@ footer {
 
 .hero-world-orbit-line {
   fill: none;
-  stroke: rgba(116, 196, 244, 0.2);
-  stroke-width: 0.25;
+  stroke: rgba(116, 196, 244, 0.3);
+  stroke-width: 0.3;
   stroke-dasharray: 1 2.3 10 3.2;
-  vector-effect: non-scaling-stroke;
   animation: earthOrbitScan 26s linear infinite;
 }
 
 .hero-world-orbit-line.is-secondary {
-  stroke: rgba(221, 242, 255, 0.1);
+  stroke: rgba(221, 242, 255, 0.16);
   stroke-dasharray: 0.8 3.8;
   animation-duration: 38s;
   animation-direction: reverse;
@@ -1612,7 +1610,7 @@ footer {
   }
 
   .hero-world-network {
-    opacity: 0.52;
+    opacity: 0.66;
   }
 
   .hero-actions,

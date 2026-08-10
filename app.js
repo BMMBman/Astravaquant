@@ -72,7 +72,7 @@ document.documentElement.classList.add("js");
       "  float longitudeLine = smoothstep(0.485, 0.5, abs(fract(longitude * 18.0) - 0.5));",
       "  float latitudeLine = smoothstep(0.485, 0.5, abs(fract(latitude * 12.0) - 0.5));",
       "  float ledgerGrid = max(longitudeLine, latitudeLine) * smoothstep(0.08, 0.42, depth);",
-      "  surface += vec3(0.08, 0.46, 0.72) * ledgerGrid * (0.035 + daylight * 0.025);",
+      "  surface += vec3(0.08, 0.46, 0.72) * ledgerGrid * (0.055 + daylight * 0.035);",
       "  float atmosphere = pow(1.0 - depth, 3.2) * (0.3 + daylight * 0.7);",
       "  surface += vec3(0.08, 0.28, 0.52) * atmosphere * 0.72;",
       "  float alpha = 1.0 - smoothstep(0.985, 1.0, radiusSquared);",

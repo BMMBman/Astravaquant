@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="AstravaQuant models page covering MTPI, LTPI, NSPI, MRPI, and the relative-strength portfolio system."
+    />
+    <title>AstravaQuant Models | Regime and Relative Strength Frameworks</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient-orb orb-left" aria-hidden="true"></div>
+    <div class="ambient-orb orb-right" aria-hidden="true"></div>
+
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <defs>
+              <linearGradient id="brand-gradient-models" x1="18" y1="132" x2="138" y2="16" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#68b6ff" />
+                <stop offset="0.5" stop-color="#eef5ff" />
+                <stop offset="1" stop-color="#8fe0ff" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M82 10 151 138 82 101 13 138Z"
+              fill="none"
+              stroke="url(#brand-gradient-models)"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="14"
+            />
+          </svg>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Models</span>
+          </span>
+        </a>
+
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="index.html#signals">Signals</a>
+          <a class="is-active" href="models.html">Models</a>
+          <a href="terminal.html">Dashboards</a>
+          <a href="index.html#brief">Research</a>
+        </nav>
+
+        <div class="header-cta">
+          <a class="button ghost" href="terminal.html">Open Terminal</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section page-hero page-hero-simple">
+        <div class="shell shell-narrow">
+          <div class="page-hero-copy page-hero-center reveal">
+            <p class="eyebrow">Models</p>
+            <h1>Four core models. One screen.</h1>
+            <p class="lead">MTPI, LTPI, NSPI, and MRPI stay visible so the regime reads fast.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-compact">
+        <div class="shell shell-narrow">
+          <div class="model-elite-grid">
+            <article class="model-elite-card glass-card reveal">
+              <div class="model-elite-head">
+                <div>
+                  <span class="table-label">MTPI</span>
+                  <h2>Medium-Term Trend</h2>
+                </div>
+                <span class="status-tag status-good">Long</span>
+              </div>
+              <p class="explorer-summary">Five-day aggregate of total crypto market cap and TOTAL2 for the medium-term crypto trend.</p>
+              <div class="dial dial-premium" data-dial-value="0.47" data-dial-tone="good">
+                <svg class="dial-svg" viewBox="0 0 360 220" aria-hidden="true"></svg>
+                <div class="dial-center">
+                  <strong>+0.47</strong>
+                  <span>Constructive expansion</span>
+                </div>
+                <div class="dial-axis" aria-hidden="true">
+                  <span>Risk-off</span>
+                  <span>Neutral</span>
+                  <span>Risk-on</span>
+                </div>
+              </div>
+              <dl class="model-facts model-facts-compact">
+                <div>
+                  <dt>Tracks</dt>
+                  <dd>Fast crypto participation and tactical bias.</dd>
+                </div>
+                <div>
+                  <dt>Inputs</dt>
+                  <dd>Total crypto market cap and TOTAL2.</dd>
+                </div>
+                <div>
+                  <dt>Timeframe</dt>
+                  <dd>Five-day model.</dd>
+                </div>
+              </dl>
+            </article>
+
+            <article class="model-elite-card glass-card reveal">
+              <div class="model-elite-head">
+                <div>
+                  <span class="table-label">LTPI</span>
+                  <h2>Long-Term Trend</h2>
+                </div>
+                <span class="status-tag status-bad">Short</span>
+              </div>
+              <p class="explorer-summary">Weekly aggregate of total crypto market cap and Bitcoin for the long-term crypto trend.</p>
+              <div class="dial dial-premium" data-dial-value="-0.95" data-dial-tone="bad">
+                <svg class="dial-svg" viewBox="0 0 360 220" aria-hidden="true"></svg>
+                <div class="dial-center">
+                  <strong>-0.95</strong>
+                  <span>Extreme risk-off</span>
+                </div>
+                <div class="dial-axis" aria-hidden="true">
+                  <span>Risk-off</span>
+                  <span>Neutral</span>
+                  <span>Risk-on</span>
+                </div>
+              </div>
+              <dl class="model-facts model-facts-compact">
+                <div>
+                  <dt>Tracks</dt>
+                  <dd>Structural crypto trend and weekly bias.</dd>
+                </div>
+                <div>
+                  <dt>Inputs</dt>
+                  <dd>Total crypto market cap and Bitcoin.</dd>
+                </div>
+                <div>
+                  <dt>Timeframe</dt>
+                  <dd>Weekly model.</dd>
+                </div>
+              </dl>
+            </article>
+
+            <article class="model-elite-card glass-card reveal">
+              <div class="model-elite-head">
+                <div>
+                  <span class="table-label">NSPI</span>
+                  <h2>Net System Positioning Index</h2>
+                </div>
+                <span class="status-tag status-warn">Neutral</span>
+              </div>
+              <p class="explorer-summary">Aggregate of the medium-term trend and long-term trend into one connected regime score.</p>
+              <div class="dial dial-premium" data-dial-value="-0.24" data-dial-tone="neutral">
+                <svg class="dial-svg" viewBox="0 0 360 220" aria-hidden="true"></svg>
+                <div class="dial-center">
+                  <strong>-0.24</strong>
+                  <span>Neutral transition</span>
+                </div>
+                <div class="dial-axis" aria-hidden="true">
+                  <span>Risk-off</span>
+                  <span>Neutral</span>
+                  <span>Risk-on</span>
+                </div>
+              </div>
+              <dl class="model-facts model-facts-compact">
+                <div>
+                  <dt>Tracks</dt>
+                  <dd>The combined regime read for the system.</dd>
+                </div>
+                <div>
+                  <dt>Inputs</dt>
+                  <dd>MTPI and LTPI together.</dd>
+                </div>
+                <div>
+                  <dt>Current read</dt>
+                  <dd>Medium-term strength against weak weekly structure.</dd>
+                </div>
+              </dl>
+            </article>
+
+            <article class="model-elite-card glass-card reveal">
+              <div class="model-elite-head">
+                <div>
+                  <span class="table-label">MRPI</span>
+                  <h2>Mortgage Rate Pressure Index</h2>
+                </div>
+                <span class="status-tag status-bad">Tightening</span>
+              </div>
+              <p class="explorer-summary">Weekly mortgage-rate pressure model on the 10-year Treasury, read as tightening versus easing.</p>
+              <div class="dial dial-premium" data-dial-value="-0.79" data-dial-tone="bad">
+                <svg class="dial-svg" viewBox="0 0 360 220" aria-hidden="true"></svg>
+                <div class="dial-center">
+                  <strong>-0.79</strong>
+                  <span>Tightening regime</span>
+                </div>
+                <div class="dial-axis" aria-hidden="true">
+                  <span>Tightening</span>
+                  <span>Balanced</span>
+                  <span>Easing</span>
+                </div>
+              </div>
+              <dl class="model-facts model-facts-compact">
+                <div>
+                  <dt>Tracks</dt>
+                  <dd>Housing and rates pressure inside the macro system.</dd>
+                </div>
+                <div>
+                  <dt>Anchor input</dt>
+                  <dd>10-year Treasury pressure.</dd>
+                </div>
+                <div>
+                  <dt>Timeframe</dt>
+                  <dd>Weekly model.</dd>
+                </div>
+              </dl>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-compact">
+        <div class="shell shell-narrow">
+          <div class="legend-grid-stack">
+            <article class="scale-bar-card glass-card reveal">
+              <span class="table-label">Regime Scale</span>
+              <h2>How MTPI, LTPI, and NSPI are read.</h2>
+              <p>These three models share the same minus one to plus one regime scale.</p>
+              <div class="scale-bar" aria-label="Regime interpretation scale">
+                <div class="scale-point scale-risk">
+                  <strong>-1.00 to -0.75</strong>
+                  <span>Extreme risk-off</span>
+                </div>
+                <div class="scale-point scale-defensive">
+                  <strong>-0.75 to -0.25</strong>
+                  <span>Defensive contraction</span>
+                </div>
+                <div class="scale-point scale-neutral">
+                  <strong>-0.25 to +0.25</strong>
+                  <span>Neutral transition</span>
+                </div>
+                <div class="scale-point scale-constructive">
+                  <strong>+0.25 to +0.75</strong>
+                  <span>Constructive expansion</span>
+                </div>
+                <div class="scale-point scale-blowoff">
+                  <strong>+0.75 to +1.00</strong>
+                  <span>Full risk-on</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="scale-bar-card glass-card reveal">
+              <span class="table-label">MRPI Scale</span>
+              <h2>MRPI is read differently.</h2>
+              <p>MRPI is not a risk-on scale. Negative reads mean tightening on the 10-year backdrop. Positive reads mean easing.</p>
+              <div class="scale-bar scale-bar-mrpi" aria-label="MRPI interpretation scale">
+                <div class="scale-point scale-risk">
+                  <strong>-1.00 to -0.50</strong>
+                  <span>Tightening pressure</span>
+                </div>
+                <div class="scale-point scale-neutral">
+                  <strong>-0.50 to +0.25</strong>
+                  <span>Mixed transition</span>
+                </div>
+                <div class="scale-point scale-constructive">
+                  <strong>+0.25 to +1.00</strong>
+                  <span>Easing pressure</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell shell-narrow">
+          <div class="section-head reveal">
+            <p class="eyebrow">Relative Strength</p>
+            <h2>Relative strength stays button-driven.</h2>
+            <p>ETH / BTC starts first. The rest stay in neutral placeholder mode until the live ratio charts are wired.</p>
+          </div>
+
+          <article class="explorer-card glass-card reveal" data-tabs aria-label="Relative strength explorer">
+            <div class="tab-list tab-list-small" role="tablist" aria-label="Ratio selection">
+              <button class="tab-button is-active" id="ratio-btn-ethbtc" type="button" role="tab" aria-selected="true" aria-controls="ratio-panel-ethbtc" data-tab-target="ratio-panel-ethbtc">ETH / BTC</button>
+              <button class="tab-button" id="ratio-btn-soleth" type="button" role="tab" aria-selected="false" aria-controls="ratio-panel-soleth" data-tab-target="ratio-panel-soleth">SOL / ETH</button>
+              <button class="tab-button" id="ratio-btn-solbtc" type="button" role="tab" aria-selected="false" aria-controls="ratio-panel-solbtc" data-tab-target="ratio-panel-solbtc">SOL / BTC</button>
+              <button class="tab-button" id="ratio-btn-suibtc" type="button" role="tab" aria-selected="false" aria-controls="ratio-panel-suibtc" data-tab-target="ratio-panel-suibtc">SUI / BTC</button>
+              <button class="tab-button" id="ratio-btn-suieth" type="button" role="tab" aria-selected="false" aria-controls="ratio-panel-suieth" data-tab-target="ratio-panel-suieth">SUI / ETH</button>
+              <button class="tab-button" id="ratio-btn-suisol" type="button" role="tab" aria-selected="false" aria-controls="ratio-panel-suisol" data-tab-target="ratio-panel-suisol">SUI / SOL</button>
+            </div>
+
+            <div class="tab-panels">
+              <article class="tab-panel is-active" id="ratio-panel-ethbtc" data-tab-panel role="tabpanel" aria-labelledby="ratio-btn-ethbtc">
+                <span class="table-label">ETH / BTC</span>
+                <div class="explorer-panel-head">
+                  <h2>First ratio coming online.</h2>
+                  <span class="status-tag status-accent">First live</span>
+                </div>
+                <p class="explorer-summary">This is the first relative-strength chart and gauge to wire in.</p>
+                <div class="ratio-stage">
+                  <div class="placeholder-chart">
+                    <span>Chart feed coming soon</span>
+                  </div>
+                  <div class="dial dial-compact" data-dial-value="0" data-dial-tone="neutral">
+                    <svg class="dial-svg" viewBox="0 0 360 220" aria-hidden="true"></svg>
+                    <div class="dial-center">
+                      <strong>0.00</strong>
+                      <span>Neutral placeholder</span>
+                    </div>
+                    <div class="dial-axis" aria-hidden="true">
+                      <span>Weak</span>
+                      <span>Neutral</span>
+                      <span>Strong</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="tab-panel" id="ratio-panel-soleth" data-tab-panel role="tabpanel" aria-labelledby="ratio-btn-soleth" hidden>
+                <span class="table-label">SOL / ETH</span>
+                <div class="explorer-panel-head">
+                  <h2>Queued next.</h2>
+                  <span class="status-tag status-accent">Next up</span>
+                </div>
+                <p class="explorer-summary">Neutral placeholder until the live chart and gauge are connected.</p>
+                <div class="ratio-stage">
+                  <div class="placeholder-chart">
+                    <span>Chart feed coming soon</span>
+                  </div>
+                  <div class="dial dial-compact" data-dial-value="0" data-dial-tone="neutral">
+                    <svg class="dial-svg" viewBox="0 0 360 220" aria-hidden="true"></svg>
+                    <div class="dial-center">
+                      <strong>0.00</strong>
+                      <span>Neutral placeholder</span>
+                    </div>
+                    <div class="dial-axis" aria-hidden="true">
+                      <span>Weak</span>
+                      <span>Neutral</span>
+                      <span>Strong</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="tab-panel" id="ratio-panel-solbtc" data-tab-panel role="tabpanel" aria-labelledby="ratio-btn-solbtc" hidden>
+                <span class="table-label">SOL / BTC</span>
+                <div class="explorer-panel-head">
+                  <h2>Coming soon.</h2>
+                  <span class="status-tag status-warn">Queued</span>
+                </div>
+                <p class="explorer-summary">Neutral placeholder until the live chart and gauge are connected.</p>
+                <div class="ratio-stage">
+                  <div class="placeholder-chart">
+                    <span>Chart feed coming soon</span>
+                  </div>
+                  <div class="dial dial-compact" data-dial-value="0" data-dial-tone="neutral">
+                    <svg class="dial-svg" viewBox="0 0 360 220" aria-hidden="true"></svg>
+                    <div class="dial-center">
+                      <strong>0.00</strong>
+                      <span>Neutral placeholder</span>
+                    </div>
+                    <div class="dial-axis" aria-hidden="true">
+                      <span>Weak</span>
+                      <span>Neutral</span>
+                      <span>Strong</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="tab-panel" id="ratio-panel-suibtc" data-tab-panel role="tabpanel" aria-labelledby="ratio-btn-suibtc" hidden>
+                <span class="table-label">SUI / BTC</span>
+                <div class="explorer-panel-head">
+                  <h2>Coming soon.</h2>
+                  <span class="status-tag status-warn">Queued</span>
+                </div>
+                <p class="explorer-summary">Neutral placeholder until the live chart and gauge are connected.</p>
+                <div class="ratio-stage">
+                  <div class="placeholder-chart">
+                    <span>Chart feed coming soon</span>
+                  </div>
+                  <div class="dial dial-compact" data-dial-value="0" data-dial-tone="neutral">
+                    <svg class="dial-svg" viewBox="0 0 360 220" aria-hidden="true"></svg>
+                    <div class="dial-center">
+                      <strong>0.00</strong>
+                      <span>Neutral placeholder</span>
+                    </div>
+                    <div class="dial-axis" aria-hidden="true">
+                      <span>Weak</span>
+                      <span>Neutral</span>
+                      <span>Strong</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="tab-panel" id="ratio-panel-suieth" data-tab-panel role="tabpanel" aria-labelledby="ratio-btn-suieth" hidden>
+                <span class="table-label">SUI / ETH</span>
+                <div class="explorer-panel-head">
+                  <h2>Coming soon.</h2>
+                  <span class="status-tag status-warn">Queued</span>
+                </div>
+                <p class="explorer-summary">Neutral placeholder until the live chart and gauge are connected.</p>
+                <div class="ratio-stage">
+                  <div class="placeholder-chart">
+                    <span>Chart feed coming soon</span>
+                  </div>
+                  <div class="dial dial-compact" data-dial-value="0" data-dial-tone="neutral">
+                    <svg class="dial-svg" viewBox="0 0 360 220" aria-hidden="true"></svg>
+                    <div class="dial-center">
+                      <strong>0.00</strong>
+                      <span>Neutral placeholder</span>
+                    </div>
+                    <div class="dial-axis" aria-hidden="true">
+                      <span>Weak</span>
+                      <span>Neutral</span>
+                      <span>Strong</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="tab-panel" id="ratio-panel-suisol" data-tab-panel role="tabpanel" aria-labelledby="ratio-btn-suisol" hidden>
+                <span class="table-label">SUI / SOL</span>
+                <div class="explorer-panel-head">
+                  <h2>Coming soon.</h2>
+                  <span class="status-tag status-warn">Queued</span>
+                </div>
+                <p class="explorer-summary">Neutral placeholder until the live chart and gauge are connected.</p>
+                <div class="ratio-stage">
+                  <div class="placeholder-chart">
+                    <span>Chart feed coming soon</span>
+                  </div>
+                  <div class="dial dial-compact" data-dial-value="0" data-dial-tone="neutral">
+                    <svg class="dial-svg" viewBox="0 0 360 220" aria-hidden="true"></svg>
+                    <div class="dial-center">
+                      <strong>0.00</strong>
+                      <span>Neutral placeholder</span>
+                    </div>
+                    <div class="dial-axis" aria-hidden="true">
+                      <span>Weak</span>
+                      <span>Neutral</span>
+                      <span>Strong</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer-inner">
+        <p>AstravaQuant models are designed to explain regime, rotation, and pressure in one system.</p>
+        <span>Copyright <span data-year></span> AstravaQuant</span>
+      </div>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

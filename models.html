@@ -43,12 +43,13 @@
         <nav class="site-nav" aria-label="Main navigation">
           <a href="index.html#signals">Signals</a>
           <a class="is-active" href="models.html">Models</a>
+          <a href="portfolio.html">Portfolio</a>
           <a href="terminal.html">Dashboards</a>
           <a href="index.html#brief">Research</a>
         </nav>
 
-        <div class="header-cta">
-          <a class="button ghost" href="terminal.html">Open Terminal</a>
+        <div class="header-cta" data-wallet-root>
+          <button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button>
         </div>
       </div>
     </header>
@@ -67,7 +68,7 @@
       <section class="section section-compact">
         <div class="shell shell-narrow">
           <div class="model-elite-grid">
-            <article class="model-elite-card glass-card reveal">
+            <article class="model-elite-card glass-card reveal" id="mtpi">
               <div class="model-elite-head">
                 <div>
                   <span class="table-label">MTPI</span>
@@ -104,7 +105,7 @@
               </dl>
             </article>
 
-            <article class="model-elite-card glass-card reveal">
+            <article class="model-elite-card glass-card reveal" id="ltpi">
               <div class="model-elite-head">
                 <div>
                   <span class="table-label">LTPI</span>
@@ -272,7 +273,7 @@
         </div>
       </section>
 
-      <section class="section">
+      <section class="section" id="relative-strength">
         <div class="shell shell-narrow">
           <div class="section-head reveal">
             <p class="eyebrow">Relative Strength</p>
@@ -459,6 +460,7 @@
       </div>
     </footer>
 
-    <script src="app.js"></script>
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
   </body>
 </html>

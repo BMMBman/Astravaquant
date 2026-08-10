@@ -1,0 +1,10 @@
+node_modules/
+.pnpm-store/
+dist/
+server-dist/
+coverage/
+data/
+.env
+.env.local
+*.log
+assets/*-source.*

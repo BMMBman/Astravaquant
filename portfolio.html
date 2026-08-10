@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="AstravaQuant read-only portfolio intelligence connects wallet holdings to systematic market research."
+    />
+    <title>AstravaQuant Portfolio | Read-Only Wallet Intelligence</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient-orb orb-left" aria-hidden="true"></div>
+    <div class="ambient-orb orb-right" aria-hidden="true"></div>
+
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <defs>
+              <linearGradient id="brand-gradient-portfolio" x1="18" y1="132" x2="138" y2="16" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#68b6ff" />
+                <stop offset="0.5" stop-color="#eef5ff" />
+                <stop offset="1" stop-color="#8fe0ff" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M82 10 151 138 82 101 13 138Z"
+              fill="none"
+              stroke="url(#brand-gradient-portfolio)"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="14"
+            />
+          </svg>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Portfolio Intelligence</span>
+          </span>
+        </a>
+
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="index.html#signals">Signals</a>
+          <a href="models.html">Models</a>
+          <a class="is-active" href="portfolio.html">Portfolio</a>
+          <a href="terminal.html">Dashboards</a>
+          <a href="index.html#brief">Research</a>
+        </nav>
+
+        <div class="header-cta" data-wallet-root>
+          <button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button>
+        </div>
+      </div>
+    </header>
+
+    <main data-portfolio-page>
+      <section class="portfolio-hero">
+        <div class="shell">
+          <div class="portfolio-hero-copy reveal">
+            <p class="eyebrow">AstravaQuant Terminal</p>
+            <h1>Your portfolio.<br />In model context.</h1>
+            <p class="lead">Read-only holdings, verified performance history, and research matched to the assets in your wallet.</p>
+          </div>
+          <div class="readonly-standard reveal">
+            <span class="readonly-standard-mark" aria-hidden="true"></span>
+            <div>
+              <strong>Non-custodial by design</strong>
+              <p>AstravaQuant can read public wallet data. It cannot move assets or initiate blockchain transactions.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-compact portfolio-workspace">
+        <div class="shell">
+          <div class="portfolio-gate glass-card" data-portfolio-gate>
+            <span class="table-label">Wallet access</span>
+            <h2>See your holdings through the AstravaQuant lens.</h2>
+            <p data-portfolio-gate-message>Connect and sign one login message to view your allocation, verified performance history, and research relevant to your assets.</p>
+            <button class="button primary" type="button" data-portfolio-connect>Connect Wallet</button>
+            <div class="gate-safety-grid">
+              <span>No private keys</span>
+              <span>No asset custody</span>
+              <span>No transaction requests</span>
+            </div>
+            <p class="portfolio-preview-note" data-static-preview>
+              Local preview: wallet access activates when this page is opened through the AstravaQuant application server.
+            </p>
+          </div>
+
+          <div class="portfolio-loading" data-portfolio-loading hidden aria-live="polite">
+            <div class="portfolio-skeleton skeleton-wide"></div>
+            <div class="portfolio-skeleton-grid">
+              <div class="portfolio-skeleton"></div>
+              <div class="portfolio-skeleton"></div>
+            </div>
+            <span>Reading indexed public wallet data...</span>
+          </div>
+
+          <div class="portfolio-error glass-card" data-portfolio-error hidden>
+            <span class="table-label">Portfolio unavailable</span>
+            <h2>We could not load this wallet view.</h2>
+            <p data-error-message>No wallet data was changed. Please try again.</p>
+            <button class="button secondary" type="button" data-portfolio-retry>Try again</button>
+          </div>
+
+          <div class="portfolio-terminal" data-portfolio-content hidden>
+            <section class="terminal-summary glass-card">
+              <div class="terminal-summary-head">
+                <div>
+                  <span class="table-label">Portfolio value</span>
+                  <strong class="terminal-total" data-portfolio-value>--</strong>
+                  <span class="terminal-change is-muted" data-portfolio-daily-change>24-hour change unavailable</span>
+                </div>
+                <div class="terminal-identity">
+                  <span>Connected wallet</span>
+                  <strong data-portfolio-address>--</strong>
+                  <small data-portfolio-asof>Loading holdings</small>
+                </div>
+              </div>
+              <div class="terminal-kpi-strip">
+                <div><span>Network</span><strong data-portfolio-network>--</strong></div>
+                <div><span>Assets</span><strong data-portfolio-assets>--</strong></div>
+                <div><span>Portfolio regime</span><strong data-portfolio-regime>--</strong></div>
+                <div><span>Access</span><strong>Authenticated</strong></div>
+              </div>
+              <p class="provider-state" data-provider-state hidden></p>
+            </section>
+
+            <div class="portfolio-primary-grid">
+              <section class="performance-card glass-card">
+                <div class="portfolio-panel-head">
+                  <div>
+                    <span class="table-label">Portfolio performance</span>
+                    <strong data-performance-value>--</strong>
+                    <b class="performance-change is-muted" data-performance-change>Awaiting verified history</b>
+                  </div>
+                  <div class="performance-periods" aria-label="Performance period">
+                    <button type="button" data-performance-period="1D">1D</button>
+                    <button type="button" data-performance-period="7D">7D</button>
+                    <button class="is-active" type="button" data-performance-period="1M">1M</button>
+                    <button type="button" data-performance-period="3M">3M</button>
+                    <button type="button" data-performance-period="YTD">YTD</button>
+                    <button type="button" data-performance-period="1Y">1Y</button>
+                    <button type="button" data-performance-period="ALL">ALL</button>
+                  </div>
+                </div>
+                <div class="performance-chart-stage">
+                  <svg data-performance-chart viewBox="0 0 720 220" preserveAspectRatio="none" aria-label="Historical portfolio value"></svg>
+                  <div class="performance-empty" data-performance-empty></div>
+                </div>
+                <p class="panel-footnote">Performance uses recorded wallet valuation snapshots. AstravaQuant never fabricates pre-connection history.</p>
+              </section>
+
+              <section class="allocation-card glass-card">
+                <span class="table-label">Your allocation</span>
+                <h2>Portfolio composition</h2>
+                <div class="allocation-visual">
+                  <div class="allocation-donut" data-allocation-chart><span>100%</span></div>
+                  <div class="allocation-legend" data-allocation-legend></div>
+                </div>
+              </section>
+            </div>
+
+            <section class="holdings-card glass-card">
+              <div class="portfolio-panel-title">
+                <div>
+                  <span class="table-label">Portfolio overview</span>
+                  <h2>Holdings</h2>
+                </div>
+                <span>Read-only indexed balances</span>
+              </div>
+              <div class="holdings-table">
+                <div class="holding-row holding-row-head" aria-hidden="true">
+                  <span>Asset</span><span>Balance</span><span>Value</span><span>Allocation</span><span>24H</span>
+                </div>
+                <div data-holdings-body></div>
+              </div>
+            </section>
+
+            <section class="portfolio-section-block">
+              <div class="section-head section-head-left">
+                <p class="eyebrow">AstravaQuant market signals</p>
+                <h2>Context for assets you hold.</h2>
+                <p>Systematic research is surfaced by portfolio relevance, not as an instruction to act.</p>
+              </div>
+              <div class="personal-signals-grid" data-personalized-signals></div>
+            </section>
+
+            <section class="model-context-card glass-card">
+              <div class="portfolio-panel-title">
+                <div>
+                  <span class="table-label">Portfolio vs Model</span>
+                  <h2>Allocation comparison</h2>
+                </div>
+                <span>Analytical context only</span>
+              </div>
+              <div class="model-context-grid">
+                <div>
+                  <h3>Your allocation</h3>
+                  <div data-model-portfolio></div>
+                </div>
+                <div>
+                  <h3>Astrava model</h3>
+                  <div data-model-allocation></div>
+                </div>
+              </div>
+              <p class="model-context-note" data-model-note></p>
+            </section>
+
+            <section class="research-portfolio-card glass-card">
+              <div class="portfolio-panel-title">
+                <div>
+                  <span class="table-label">Research for your portfolio</span>
+                  <h2>Relevant AstravaQuant research</h2>
+                </div>
+                <span>Ranked by real allocation</span>
+              </div>
+              <div class="portfolio-research-list" data-personalized-research></div>
+            </section>
+
+            <div class="portfolio-disclosure">
+              <strong>Read-only portfolio intelligence</strong>
+              <p>AstravaQuant wallet integrations are non-custodial. AstravaQuant does not execute blockchain transactions or control user assets.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell footer-inner">
+        <p>AstravaQuant connects public wallet holdings to systematic research.</p>
+        <span>Copyright <span data-year></span> AstravaQuant</span>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
+  </body>
+</html>

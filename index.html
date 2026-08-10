@@ -43,12 +43,13 @@
         <nav class="site-nav" aria-label="Main navigation">
           <a class="is-active" href="#signals">Signals</a>
           <a href="models.html">Models</a>
+          <a href="portfolio.html">Portfolio</a>
           <a href="terminal.html">Dashboards</a>
           <a href="#brief">Research</a>
         </nav>
 
-        <div class="header-cta">
-          <a class="button ghost" href="terminal.html">Open Terminal</a>
+        <div class="header-cta" data-wallet-root>
+          <button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button>
         </div>
       </div>
     </header>
@@ -56,6 +57,26 @@
     <main>
       <section class="shell hero hero-simple hero-home">
         <div class="hero-world" aria-hidden="true">
+          <div class="hero-world-backdrop hero-world-backdrop-real"></div>
+          <div class="hero-world-globe hero-world-globe-real" data-earth-stage>
+            <div class="hero-world-aura"></div>
+            <div class="hero-world-frame">
+              <div class="hero-world-css-globe">
+                <div class="hero-world-css-texture"></div>
+              </div>
+              <canvas
+                class="hero-world-canvas"
+                data-earth-globe
+                width="720"
+                height="720"
+              ></canvas>
+            </div>
+            <div class="hero-world-atmosphere"></div>
+            <div class="hero-world-rim"></div>
+            <div class="hero-world-ground-shadow"></div>
+          </div>
+
+          <div class="hero-world-legacy" hidden>
           <div class="hero-world-backdrop"></div>
           <div class="hero-world-globe">
             <div class="hero-world-aura"></div>
@@ -121,6 +142,7 @@
 
             <div class="hero-world-rim"></div>
             <div class="hero-world-ground-shadow"></div>
+          </div>
           </div>
         </div>
 
@@ -246,11 +268,12 @@
 
     <footer class="footer">
       <div class="shell footer-inner">
-        <p>AstravaQuant is a connected research platform for modern markets.</p>
+        <p>AstravaQuant is a connected research platform for modern markets. Earth imagery: NASA/GSFC SVS.</p>
         <span>Copyright <span data-year></span> AstravaQuant</span>
       </div>
     </footer>
 
-    <script src="app.js"></script>
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
   </body>
 </html>

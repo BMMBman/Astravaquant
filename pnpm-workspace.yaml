@@ -1,0 +1,5 @@
+allowBuilds:
+  esbuild: true
+  better-sqlite3: true
+  "@reown/appkit": false
+confirmModulesPurge: false

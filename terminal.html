@@ -43,12 +43,13 @@
         <nav class="site-nav" aria-label="Main navigation">
           <a href="index.html#signals">Signals</a>
           <a href="models.html">Models</a>
+          <a href="portfolio.html">Portfolio</a>
           <a class="is-active" href="terminal.html">Dashboards</a>
           <a href="index.html#brief">Research</a>
         </nav>
 
-        <div class="header-cta">
-          <a class="button ghost" href="models.html">Open Models</a>
+        <div class="header-cta" data-wallet-root>
+          <button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button>
         </div>
       </div>
     </header>
@@ -132,6 +133,7 @@
       </div>
     </footer>
 
-    <script src="app.js"></script>
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
   </body>
 </html>

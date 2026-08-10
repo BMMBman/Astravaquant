@@ -7,6 +7,7 @@ document.documentElement.classList.add("js");
   var dialNodes = Array.prototype.slice.call(document.querySelectorAll("[data-dial-value]"));
   var tabGroups = Array.prototype.slice.call(document.querySelectorAll("[data-tabs]"));
   var yearNodes = Array.prototype.slice.call(document.querySelectorAll("[data-year]"));
+  var earthCanvas = document.querySelector("[data-earth-globe]");
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
@@ -23,6 +24,181 @@ document.documentElement.classList.add("js");
     }
 
     return "0.00";
+  }
+
+  function initEarthGlobe(canvas) {
+    var stage = canvas.closest("[data-earth-stage]");
+    var texturePath = new URL("./assets/earth-blue-marble.webp", import.meta.url).href;
+    var gl = canvas.getContext("webgl", {
+      alpha: true,
+      antialias: true,
+      depth: false,
+      premultipliedAlpha: false,
+      powerPreference: "low-power"
+    });
+
+    if (!stage || !texturePath || !gl) {
+      return;
+    }
+
+    var vertexSource = [
+      "attribute vec2 aPosition;",
+      "varying vec2 vUv;",
+      "void main() {",
+      "  vUv = aPosition * 0.5 + 0.5;",
+      "  gl_Position = vec4(aPosition, 0.0, 1.0);",
+      "}"
+    ].join("\n");
+    var fragmentSource = [
+      "precision mediump float;",
+      "uniform sampler2D uTexture;",
+      "uniform float uRotation;",
+      "varying vec2 vUv;",
+      "void main() {",
+      "  vec2 point = (vUv - 0.5) * 2.18;",
+      "  float radiusSquared = dot(point, point);",
+      "  if (radiusSquared > 1.0) discard;",
+      "  float depth = sqrt(1.0 - radiusSquared);",
+      "  vec3 normal = normalize(vec3(point.x, point.y, depth));",
+      "  float longitude = atan(normal.x, normal.z) / 6.2831853 + 0.5 + uRotation;",
+      "  float latitude = asin(clamp(normal.y, -1.0, 1.0)) / 3.14159265 + 0.5;",
+      "  vec3 surface = texture2D(uTexture, vec2(fract(longitude), latitude)).rgb;",
+      "  vec3 lightDirection = normalize(vec3(0.28, 0.5, 0.86));",
+      "  float lightLevel = dot(normal, lightDirection);",
+      "  float daylight = smoothstep(-0.3, 0.58, lightLevel);",
+      "  float luminance = dot(surface, vec3(0.2126, 0.7152, 0.0722));",
+      "  surface = mix(vec3(luminance), surface, 0.88);",
+      "  surface *= mix(0.09, 1.04, daylight);",
+      "  float atmosphere = pow(1.0 - depth, 3.2) * (0.3 + daylight * 0.7);",
+      "  surface += vec3(0.08, 0.28, 0.52) * atmosphere * 0.72;",
+      "  float alpha = 1.0 - smoothstep(0.985, 1.0, radiusSquared);",
+      "  gl_FragColor = vec4(surface, alpha);",
+      "}"
+    ].join("\n");
+
+    function compileShader(type, source) {
+      var shader = gl.createShader(type);
+      if (!shader) {
+        return null;
+      }
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    var vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
+    var fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
+    if (!vertexShader || !fragmentShader) {
+      return;
+    }
+
+    var program = gl.createProgram();
+    if (!program) {
+      return;
+    }
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      return;
+    }
+
+    var buffer = gl.createBuffer();
+    var positionLocation = gl.getAttribLocation(program, "aPosition");
+    var rotationLocation = gl.getUniformLocation(program, "uRotation");
+    var textureLocation = gl.getUniformLocation(program, "uTexture");
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW
+    );
+    gl.useProgram(program);
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+    gl.uniform1i(textureLocation, 0);
+    gl.clearColor(0, 0, 0, 0);
+
+    var texture = gl.createTexture();
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+
+    var active = true;
+    var animationFrame = 0;
+    var lastDraw = 0;
+    var image = new Image();
+
+    function resizeCanvas() {
+      var ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+      var width = Math.max(280, Math.round(canvas.clientWidth * ratio));
+      var height = Math.max(280, Math.round(canvas.clientHeight * ratio));
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+        gl.viewport(0, 0, width, height);
+      }
+    }
+
+    function draw(timestamp) {
+      animationFrame = 0;
+      if (!active) {
+        return;
+      }
+      if (!lastDraw || timestamp - lastDraw >= 32 || reduceMotion) {
+        resizeCanvas();
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform1f(rotationLocation, -0.13 + (reduceMotion ? 0 : timestamp / 140000));
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        stage.classList.add("is-live");
+        lastDraw = timestamp;
+      }
+      if (!reduceMotion) {
+        animationFrame = window.requestAnimationFrame(draw);
+      }
+    }
+
+    function start() {
+      if (!animationFrame) {
+        animationFrame = window.requestAnimationFrame(draw);
+      }
+    }
+
+    image.addEventListener("load", function () {
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
+      start();
+    });
+    image.src = texturePath;
+
+    if ("IntersectionObserver" in window) {
+      var globeObserver = new IntersectionObserver(function (entries) {
+        active = Boolean(entries[0] && entries[0].isIntersecting);
+        if (active) {
+          start();
+        } else if (animationFrame) {
+          window.cancelAnimationFrame(animationFrame);
+          animationFrame = 0;
+        }
+      });
+      globeObserver.observe(stage);
+    }
+
+    canvas.addEventListener("webglcontextlost", function (event) {
+      event.preventDefault();
+      if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+      }
+      stage.classList.remove("is-live");
+    });
   }
 
   function pointOnDial(cx, cy, radius, angle) {
@@ -296,6 +472,10 @@ document.documentElement.classList.add("js");
       " H" +
       (width - 12) +
       '" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="4 6" />';
+  }
+
+  if (earthCanvas) {
+    initEarthGlobe(earthCanvas);
   }
 
   chartNodes.forEach(function (node, index) {

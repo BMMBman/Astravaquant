@@ -56,7 +56,7 @@ function updatePublication(dashboard: WorkbookDashboard): void {
       root.dataset.state = dashboard.status;
     } else {
       if (title) title.textContent = "Manual fallback snapshot";
-      if (message) message.textContent = "The private workbook connection is pending; existing published values remain visible.";
+      if (message) message.textContent = "The research workbook connection is pending; existing published values remain visible.";
       if (status) status.textContent = "Workbook offline";
       root.dataset.state = "unavailable";
     }

@@ -20,7 +20,7 @@ The original project was a static multi-page site with shared `styles.css` and `
 
 Public pages include the homepage, models, signals, backtesting, terminal, research library, individual research notes, methodology, privacy, and terms. The portfolio API requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
 
-There was no deployment configuration or existing backend, database, authentication system, or live model API in the repository before this milestone. `src/server/data/astrava.ts` now acts only as the disclosed fallback when the private workbook cannot be verified.
+There was no deployment configuration or existing backend, database, authentication system, or live model API in the repository before this milestone. `src/server/data/astrava.ts` now acts only as the disclosed fallback when the research workbook cannot be verified.
 
 ## Wallet Authentication
 
@@ -176,7 +176,7 @@ Vercel Web Analytics is initialized only on HTTPS deployments. Page URLs are str
 
 ## Model Publication
 
-The public model register is `AQ Core v0.2`. When configured, current crypto readings and existing forward-test observations are normalized from the private workbook every five minutes. No missing dates, ratio histories, benchmark prices, or performance statistics are backfilled. Workbook cell errors are reported as unavailable rather than coerced to zero. See `methodology.html` for inputs, scales, derivations, and limitations.
+The public model register is `AQ Core v0.2`. Current crypto readings and existing forward-test observations are normalized from the link-shared research workbook every five minutes. No missing dates, ratio histories, benchmark prices, or performance statistics are backfilled. Workbook cell errors are reported as unavailable rather than coerced to zero. See `methodology.html` for inputs, scales, derivations, and limitations.
 
 ## Visual Sources
 

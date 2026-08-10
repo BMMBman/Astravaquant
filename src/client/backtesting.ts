@@ -81,7 +81,7 @@ function renderCoverage(dashboard: WorkbookDashboard): void {
   if (ratioRoot) {
     ratioRoot.innerHTML = dashboard.ratioModels.length
       ? dashboard.ratioModels.map((model) => `<div><span>${escapeHtml(model.label)}</span><strong>${formatScore(model.score)}</strong><b>${escapeHtml(model.state)}</b><small>${escapeHtml(model.sourceTab)}</small></div>`).join("")
-      : '<p class="backtest-empty-copy">Relative-strength summaries will appear when the private workbook feed is connected.</p>';
+      : '<p class="backtest-empty-copy">Relative-strength summaries will appear when the research workbook feed is connected.</p>';
   }
 
   const warningRoot = document.querySelector<HTMLElement>("[data-workbook-warnings]");
@@ -139,7 +139,7 @@ export async function bootBacktesting(): Promise<void> {
     if (state) {
       state.dataset.state = dashboard.status === "ready" || dashboard.status === "partial" ? "ready" : "unavailable";
       state.querySelector("span")!.textContent = dashboard.status === "ready"
-        ? "Private workbook live"
+        ? "Research workbook live"
         : dashboard.status === "partial"
           ? "Workbook live / partial"
           : "Workbook connection pending";

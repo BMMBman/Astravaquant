@@ -574,7 +574,8 @@ footer {
 }
 
 .hero-world-frame,
-.hero-world-canvas {
+.hero-world-canvas,
+.hero-world-network {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -640,6 +641,75 @@ footer {
   display: block;
   opacity: 0;
   transition: opacity 900ms ease;
+}
+
+.hero-world-network {
+  z-index: 4;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0.64;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 7px rgba(73, 170, 232, 0.22));
+}
+
+.hero-world-network-surface {
+  animation: earthNetworkDrift 16s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.hero-world-network-link {
+  fill: none;
+  stroke: url("#earth-network-line");
+  stroke-width: 0.34;
+  stroke-linecap: round;
+  stroke-dasharray: 1.1 1.8 8 2.2;
+  vector-effect: non-scaling-stroke;
+  animation: earthDataFlow 12s linear infinite;
+}
+
+.hero-world-network-link.is-delayed {
+  animation-delay: -4.5s;
+}
+
+.hero-world-network-link.is-slow {
+  animation-duration: 17s;
+  animation-delay: -8s;
+}
+
+.hero-world-node-ring {
+  fill: rgba(106, 196, 249, 0.06);
+  stroke: rgba(157, 220, 255, 0.58);
+  stroke-width: 0.3;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: earthNodePulse 6.4s ease-out infinite;
+  animation-delay: var(--node-delay);
+}
+
+.hero-world-node-core {
+  fill: rgba(225, 246, 255, 0.92);
+  stroke: rgba(83, 177, 236, 0.72);
+  stroke-width: 0.18;
+  transform: rotate(45deg);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.hero-world-orbit-line {
+  fill: none;
+  stroke: rgba(116, 196, 244, 0.2);
+  stroke-width: 0.25;
+  stroke-dasharray: 1 2.3 10 3.2;
+  vector-effect: non-scaling-stroke;
+  animation: earthOrbitScan 26s linear infinite;
+}
+
+.hero-world-orbit-line.is-secondary {
+  stroke: rgba(221, 242, 255, 0.1);
+  stroke-dasharray: 0.8 3.8;
+  animation-duration: 38s;
+  animation-direction: reverse;
 }
 
 .hero-world-globe-real.is-live .hero-world-canvas {
@@ -1314,6 +1384,47 @@ footer {
   }
 }
 
+@keyframes earthNetworkDrift {
+  from {
+    transform: translate3d(-0.7%, 0.2%, 0) scale(0.995);
+  }
+
+  to {
+    transform: translate3d(0.9%, -0.5%, 0) scale(1.008);
+  }
+}
+
+@keyframes earthDataFlow {
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+
+@keyframes earthNodePulse {
+  0%,
+  58%,
+  100% {
+    opacity: 0.22;
+    transform: scale(0.72);
+  }
+
+  68% {
+    opacity: 0.86;
+    transform: scale(1.34);
+  }
+
+  82% {
+    opacity: 0.34;
+    transform: scale(1.62);
+  }
+}
+
+@keyframes earthOrbitScan {
+  to {
+    stroke-dashoffset: -82;
+  }
+}
+
 @keyframes globeRotate {
   from {
     transform: translateX(0);
@@ -1360,6 +1471,10 @@ footer {
   .hero-world-frame,
   .hero-world-current,
   .hero-world-css-texture,
+  .hero-world-network-surface,
+  .hero-world-network-link,
+  .hero-world-node-ring,
+  .hero-world-orbit-line,
   .hero-world-map-track,
   .hero-world-cloud-track {
     animation: none;
@@ -1494,6 +1609,10 @@ footer {
   .hero-world-globe {
     top: 16px;
     width: min(90vw, 336px);
+  }
+
+  .hero-world-network {
+    opacity: 0.52;
   }
 
   .hero-actions,

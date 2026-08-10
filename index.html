@@ -70,6 +70,62 @@
                 width="720"
                 height="720"
               ></canvas>
+              <svg class="hero-world-network" viewBox="0 0 100 100" aria-hidden="true">
+                <defs>
+                  <clipPath id="earth-network-clip">
+                    <circle cx="50" cy="50" r="45.2" />
+                  </clipPath>
+                  <linearGradient id="earth-network-line" x1="16" y1="22" x2="84" y2="76" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#7ecbff" stop-opacity="0.08" />
+                    <stop offset="0.48" stop-color="#d9f2ff" stop-opacity="0.72" />
+                    <stop offset="1" stop-color="#4da9ec" stop-opacity="0.12" />
+                  </linearGradient>
+                </defs>
+
+                <g class="hero-world-network-surface" clip-path="url(#earth-network-clip)">
+                  <path class="hero-world-network-link" d="M16 57Q39 24 63 34T85 48" />
+                  <path class="hero-world-network-link is-delayed" d="M23 31Q48 62 79 48" />
+                  <path class="hero-world-network-link is-slow" d="M28 71Q51 47 75 67" />
+                  <path class="hero-world-network-link is-delayed" d="M42 19Q56 42 85 41" />
+                  <path class="hero-world-network-link is-slow" d="M15 48Q39 82 67 74" />
+
+                  <g class="hero-world-node" style="--node-delay: -1.4s" transform="translate(16 57)">
+                    <circle class="hero-world-node-ring" r="2.4" />
+                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
+                  </g>
+                  <g class="hero-world-node" style="--node-delay: -3.8s" transform="translate(23 31)">
+                    <circle class="hero-world-node-ring" r="2.4" />
+                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
+                  </g>
+                  <g class="hero-world-node" style="--node-delay: -0.2s" transform="translate(42 19)">
+                    <circle class="hero-world-node-ring" r="2.4" />
+                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
+                  </g>
+                  <g class="hero-world-node" style="--node-delay: -5.1s" transform="translate(63 34)">
+                    <circle class="hero-world-node-ring" r="2.4" />
+                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
+                  </g>
+                  <g class="hero-world-node" style="--node-delay: -2.7s" transform="translate(79 48)">
+                    <circle class="hero-world-node-ring" r="2.4" />
+                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
+                  </g>
+                  <g class="hero-world-node" style="--node-delay: -4.4s" transform="translate(75 67)">
+                    <circle class="hero-world-node-ring" r="2.4" />
+                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
+                  </g>
+                  <g class="hero-world-node" style="--node-delay: -1.9s" transform="translate(28 71)">
+                    <circle class="hero-world-node-ring" r="2.4" />
+                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
+                  </g>
+                  <g class="hero-world-node" style="--node-delay: -5.8s" transform="translate(67 74)">
+                    <circle class="hero-world-node-ring" r="2.4" />
+                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
+                  </g>
+                </g>
+
+                <ellipse class="hero-world-orbit-line" cx="50" cy="50" rx="49" ry="13.5" transform="rotate(-18 50 50)" />
+                <ellipse class="hero-world-orbit-line is-secondary" cx="50" cy="50" rx="48" ry="11" transform="rotate(67 50 50)" />
+              </svg>
             </div>
             <div class="hero-world-atmosphere"></div>
             <div class="hero-world-rim"></div>

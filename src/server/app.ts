@@ -7,7 +7,7 @@ import helmet from "helmet";
 import type { PortfolioDashboard, PortfolioOverview } from "../shared/contracts.js";
 import { attachSession, createAuthRouter, requireAuth, sessionResponse } from "./auth.js";
 import { getSupportedChain, supportedChains, type AppConfig } from "./config.js";
-import type { AstravaDatabase } from "./database.js";
+import type { AstravaDataStore } from "./database.js";
 import type { PortfolioProvider } from "./providers/portfolio.js";
 import { PortfolioProviderError } from "./providers/portfolio.js";
 import { ApiError } from "./security.js";
@@ -21,7 +21,7 @@ import {
 
 interface AppDependencies {
   config: AppConfig;
-  database: AstravaDatabase;
+  database: AstravaDataStore;
   portfolioProvider: PortfolioProvider;
 }
 function unavailablePortfolio(address: string, chainId: number, network: string): PortfolioOverview {
@@ -85,6 +85,16 @@ export function createApp({ config, database, portfolioProvider }: AppDependenci
     });
   });
 
+  app.get("/api/health", async (_request, response, next) => {
+    try {
+      await database.cleanup();
+      response.setHeader("Cache-Control", "no-store");
+      response.json({ status: "ok", service: "astravaquant-wallet" });
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.use("/api/auth", createAuthRouter(config, database));
 
   app.get("/api/dashboard", requireAuth, async (request, response, next) => {
@@ -106,7 +116,7 @@ export function createApp({ config, database, portfolioProvider }: AppDependenci
       }
 
       if (portfolio.status === "ready" && portfolio.totalValueUsd !== null) {
-        database.recordSnapshot({
+        await database.recordSnapshot({
           walletId: session.walletId,
           chainId: chain.id,
           totalValueUsd: portfolio.totalValueUsd,
@@ -114,7 +124,7 @@ export function createApp({ config, database, portfolioProvider }: AppDependenci
         });
       }
 
-      const snapshots = database.getSnapshots(session.walletId, chain.id);
+      const snapshots = await database.getSnapshots(session.walletId, chain.id);
       const dashboard: PortfolioDashboard = {
         session: sessionResponse(request),
         portfolio,

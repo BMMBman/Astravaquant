@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import Database from "better-sqlite3";
 import type { AccessTier, PerformancePoint } from "../shared/contracts.js";
 
-interface NonceRow {
+export interface NonceRecord {
   id: string;
   nonce_hash: string;
   address: string;
@@ -40,7 +40,39 @@ export interface WalletIdentity {
   accessTier: AccessTier;
 }
 
-export class AstravaDatabase {
+type Awaitable<T> = T | Promise<T>;
+
+export interface AstravaDataStore {
+  createNonce(input: {
+    nonceHash: string;
+    address: string;
+    chainId: number;
+    domain: string;
+    expiresAt: string;
+  }): Awaitable<void>;
+  findNonce(nonceHash: string): Awaitable<NonceRecord | null>;
+  consumeNonce(id: string): Awaitable<boolean>;
+  upsertWallet(address: string, chainId: number): Awaitable<WalletIdentity>;
+  createSession(input: {
+    userId: string;
+    walletId: string;
+    tokenHash: string;
+    expiresAt: string;
+  }): Awaitable<void>;
+  findSession(tokenHash: string): Awaitable<SessionRecord | null>;
+  revokeSession(tokenHash: string): Awaitable<void>;
+  recordSnapshot(input: {
+    walletId: string;
+    chainId: number;
+    totalValueUsd: number;
+    minimumIntervalMs: number;
+  }): Awaitable<void>;
+  getSnapshots(walletId: string, chainId: number): Awaitable<PerformancePoint[]>;
+  cleanup(): Awaitable<void>;
+  close(): Awaitable<void>;
+}
+
+export class AstravaDatabase implements AstravaDataStore {
   readonly connection: Database.Database;
 
   constructor(path: string) {
@@ -134,12 +166,12 @@ export class AstravaDatabase {
     `).run(randomUUID(), input.nonceHash, input.address.toLowerCase(), input.chainId, input.domain, now, input.expiresAt);
   }
 
-  findNonce(nonceHash: string): NonceRow | null {
+  findNonce(nonceHash: string): NonceRecord | null {
     return (this.connection.prepare(`
       SELECT id, nonce_hash, address, chain_id, domain, expires_at, used_at
       FROM auth_nonces
       WHERE nonce_hash = ?
-    `).get(nonceHash) as unknown as NonceRow | undefined) ?? null;
+    `).get(nonceHash) as unknown as NonceRecord | undefined) ?? null;
   }
 
   consumeNonce(id: string): boolean {

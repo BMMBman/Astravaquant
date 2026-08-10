@@ -17,5 +17,5 @@
     "isolatedModules": true,
     "types": ["node", "vite/client", "vitest/globals"]
   },
-  "include": ["src/**/*.ts", "vite.config.ts", "eslint.config.js"]
+  "include": ["api/**/*.ts", "src/**/*.ts", "vite.config.ts", "eslint.config.js"]
 }

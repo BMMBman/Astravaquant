@@ -10,8 +10,8 @@ The original project was a static multi-page site with shared `styles.css` and `
 
 - Vite as the multi-page frontend build system.
 - A small TypeScript wallet client built with Wagmi Core, Viem, WalletConnect, Coinbase Wallet, and EIP-6963 injected-wallet discovery.
-- An Express API for SIWE authentication, sessions, portfolio retrieval, snapshots, and personalized research.
-- A mature SQLite database driver for users, wallets, nonces, sessions, and portfolio snapshots.
+- An Express API for SIWE authentication, sessions, portfolio retrieval, snapshots, and personalized research, published as one Vercel Function in production.
+- A shared persistence boundary backed by SQLite locally and durable Neon Postgres on Vercel.
 - A server-only GoldRush portfolio provider behind the `PortfolioProvider` interface.
 
 Current pages are `index.html`, `models.html`, `terminal.html`, and `portfolio.html`. Public research remains available without wallet authentication. The portfolio API requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
@@ -58,6 +58,7 @@ Copy `.env.example` to `.env` and configure:
 | `SESSION_SECRET` | Server-only secret of at least 32 random characters. Required in production. |
 | `SESSION_TTL_HOURS` | Authenticated session lifetime. |
 | `DATABASE_PATH` | Persistent SQLite file path. |
+| `DATABASE_URL` | Server-only Neon Postgres URL. Required for the Vercel wallet service. |
 | `WALLETCONNECT_PROJECT_ID` | Public Reown project ID that enables WalletConnect. |
 | `GOLDRUSH_API_KEY` | Server-only GoldRush portfolio API key. |
 | `PORTFOLIO_CACHE_SECONDS` | Short server-side holdings cache duration. |
@@ -65,11 +66,11 @@ Copy `.env.example` to `.env` and configure:
 | `BASE_RPC_URL` | Optional server RPC for Base smart-account signature verification. |
 | `ARBITRUM_RPC_URL` | Optional server RPC for Arbitrum smart-account signature verification. |
 
-Never commit `.env` or real secrets. In production, serve the built frontend and `/api` from the same origin. Use a Node 24+ host with persistent storage mounted at `DATABASE_PATH`; a static-only host such as GitHub Pages cannot run the authentication API.
+Never commit `.env` or real secrets. Production serves the built frontend and `/api` from the same origin. `vercel.json` sends every `/api/*` request to one Express function, while Neon supplies durable nonce, session, wallet, and snapshot state across function invocations.
 
 ## Local Development
 
-Node 24+ and pnpm 11+ are required.
+Node 24+ and pnpm 10.28 are required.
 
 ```powershell
 pnpm install
@@ -102,9 +103,21 @@ Add the chain in all three chain-aware locations:
 
 Then add authentication and provider tests for the new chain before release.
 
+## Vercel Deployment
+
+The Vercel project requires these production variables before the wallet service can start:
+
+- `APP_URL=https://www.astravaquant.com/`
+- `SESSION_SECRET` set to a generated value of at least 32 characters
+- `DATABASE_URL` injected by the connected Neon integration
+
+`WALLETCONNECT_PROJECT_ID` enables WalletConnect QR sessions, and `GOLDRUSH_API_KEY` enables live indexed portfolio balances. The service remains non-custodial with or without those optional providers.
+
+The catch-all function is `api/handler.ts`. It creates the Postgres schema idempotently on cold start and delegates the original `/api/*` path to the existing Express application. Vercel function secrets remain server-side.
+
 ## Data Model
 
-SQLite is migrated on server startup with these tables:
+SQLite is migrated on local server startup, and Neon Postgres is migrated when the Vercel Function initializes. Both stores use these tables:
 
 - `users`: identity, access tier, creation, and last login.
 - `wallets`: user relationship, normalized public address, chain ID, optional label, and connection timestamps.
@@ -118,7 +131,7 @@ No private keys, seed phrases, signing keys, token approvals, or unnecessary tra
 
 - Production runs behind HTTPS with `APP_URL` set to the exact public origin.
 - `SESSION_SECRET` is generated securely and stored only in the deployment secret manager.
-- The SQLite database is on persistent, access-controlled storage and is backed up.
+- Production uses durable, access-controlled Neon Postgres; SQLite is limited to local development or a persistent Node host.
 - GoldRush and RPC credentials are server-only.
 - The deployment uses a shared rate-limit store if it scales to multiple API instances.
 - Content Security Policy, origin validation, custom request headers, HttpOnly cookies, nonce expiration, replay protection, and server signature verification remain enabled.
@@ -126,4 +139,4 @@ No private keys, seed phrases, signing keys, token approvals, or unnecessary tra
 
 ## Visual Sources
 
-The live homepage globe uses NASA/Goddard Space Flight Center Scientific Visualization Studio Blue Marble imagery. The optimized project texture is derived from the NASA SVS equirectangular Earth visualization (ID 3615); the generated orbital still is used only as a graceful no-WebGL fallback.
+The live homepage globe uses NASA/Goddard Space Flight Center Scientific Visualization Studio Blue Marble imagery. The optimized project texture is derived from the NASA SVS equirectangular Earth visualization (ID 3615) and also powers the CSS fallback when WebGL is unavailable.

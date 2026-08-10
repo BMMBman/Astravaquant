@@ -16,6 +16,7 @@ const config: AppConfig = {
   sessionSecret: "test-secret-that-is-longer-than-thirty-two-characters",
   sessionTtlMs: 60 * 60 * 1000,
   databasePath: ":memory:",
+  databaseUrl: null,
   walletConnectProjectId: null,
   goldrushApiKey: null,
   portfolioCacheMs: 60_000,
@@ -82,6 +83,13 @@ describe("wallet authentication", () => {
       .expect(200);
     return { account, agent, message, signature, verification };
   }
+
+  it("reports the wallet API as healthy when its datastore is available", async () => {
+    const response = await request(createApp({ config, database, portfolioProvider }))
+      .get("/api/health")
+      .expect(200);
+    expect(response.body).toEqual({ status: "ok", service: "astravaquant-wallet" });
+  });
 
   it("creates a server session after a valid SIWE signature", async () => {
     const { account, agent, verification } = await authenticate();

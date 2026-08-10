@@ -5,15 +5,16 @@ import {
   createPublicClient,
   getAddress,
   http,
+  verifyMessage,
   type Address,
   type Hex
 } from "viem";
 import { arbitrum, base, mainnet } from "viem/chains";
-import { createSiweMessage, parseSiweMessage } from "viem/siwe";
+import { createSiweMessage, parseSiweMessage, validateSiweMessage } from "viem/siwe";
 import { z } from "zod";
 import type { AuthSession } from "../shared/contracts.js";
 import { getSupportedChain, type AppConfig } from "./config.js";
-import type { AstravaDatabase } from "./database.js";
+import type { AstravaDataStore } from "./database.js";
 import {
   ApiError,
   clearSessionCookieOptions,
@@ -87,13 +88,17 @@ function createClients(config: AppConfig): Map<number, SiweVerifier> {
   );
 }
 
-export function attachSession(config: AppConfig, database: AstravaDatabase) {
-  return (request: Request, _response: Response, next: NextFunction): void => {
-    const token = request.cookies?.[SESSION_COOKIE] as string | undefined;
-    if (token) {
-      request.astravaSession = database.findSession(hashToken(token, config.sessionSecret)) ?? undefined;
+export function attachSession(config: AppConfig, database: AstravaDataStore) {
+  return async (request: Request, _response: Response, next: NextFunction): Promise<void> => {
+    try {
+      const token = request.cookies?.[SESSION_COOKIE] as string | undefined;
+      if (token) {
+        request.astravaSession = (await database.findSession(hashToken(token, config.sessionSecret))) ?? undefined;
+      }
+      next();
+    } catch (error) {
+      next(error);
     }
-    next();
   };
 }
 
@@ -120,7 +125,7 @@ export function requireAccess(minimum: "authenticated" | "premium") {
   };
 }
 
-export function createAuthRouter(config: AppConfig, database: AstravaDatabase): Router {
+export function createAuthRouter(config: AppConfig, database: AstravaDataStore): Router {
   const router = Router();
   const clients = createClients(config);
   const mutationGuard = requireTrustedOrigin(config);
@@ -137,7 +142,7 @@ export function createAuthRouter(config: AppConfig, database: AstravaDatabase): 
     response.json(sessionResponse(request));
   });
 
-  router.post("/nonce", mutationGuard, nonceRateLimit, (request, response, next) => {
+  router.post("/nonce", mutationGuard, nonceRateLimit, async (request, response, next) => {
     try {
       const input = parseBody(nonceRequestSchema, request.body);
       let address: Address;
@@ -169,7 +174,7 @@ export function createAuthRouter(config: AppConfig, database: AstravaDatabase): 
         statement: "Sign in to AstravaQuant for read-only research and portfolio intelligence. This does not authorize a transaction."
       });
 
-      database.createNonce({
+      await database.createNonce({
         nonceHash: hashToken(nonce, config.sessionSecret),
         address,
         chainId: chain.id,
@@ -199,7 +204,7 @@ export function createAuthRouter(config: AppConfig, database: AstravaDatabase): 
       }
 
       const nonceHash = hashToken(parsed.nonce, config.sessionSecret);
-      const nonceRecord = database.findNonce(nonceHash);
+      const nonceRecord = await database.findNonce(nonceHash);
       const expectedAddress = getAddress(parsed.address);
       if (
         !nonceRecord ||
@@ -214,7 +219,7 @@ export function createAuthRouter(config: AppConfig, database: AstravaDatabase): 
         throw new ApiError(401, "AUTH_MESSAGE_EXPIRED", "This sign-in request is expired or has already been used.");
       }
 
-      const verified = await client.verifySiweMessage({
+      const verificationParameters = {
         address: expectedAddress,
         message: input.message,
         signature: input.signature as Hex,
@@ -222,20 +227,38 @@ export function createAuthRouter(config: AppConfig, database: AstravaDatabase): 
         nonce: parsed.nonce,
         scheme: config.appUrl.protocol.replace(":", ""),
         time: new Date()
-      });
+      };
+      if (!validateSiweMessage({ ...verificationParameters, message: parsed })) {
+        throw new ApiError(401, "INVALID_SIGNATURE", "The wallet signature could not be verified.");
+      }
+
+      // EOA signatures can be recovered locally; contract wallets retain the RPC-backed fallback.
+      let verified = false;
+      try {
+        verified = await verifyMessage({
+          address: expectedAddress,
+          message: input.message,
+          signature: input.signature as Hex
+        });
+      } catch {
+        // A non-EOA signature may still be valid through ERC-1271 or ERC-6492.
+      }
+      if (!verified) {
+        verified = await client.verifySiweMessage(verificationParameters);
+      }
 
       if (!verified) {
         throw new ApiError(401, "INVALID_SIGNATURE", "The wallet signature could not be verified.");
       }
 
-      if (!database.consumeNonce(nonceRecord.id)) {
+      if (!(await database.consumeNonce(nonceRecord.id))) {
         throw new ApiError(401, "AUTH_MESSAGE_EXPIRED", "This sign-in request is expired or has already been used.");
       }
 
-      const identity = database.upsertWallet(expectedAddress, chain.id);
+      const identity = await database.upsertWallet(expectedAddress, chain.id);
       const sessionToken = createOpaqueToken();
       const expiresAt = new Date(Date.now() + config.sessionTtlMs);
-      database.createSession({
+      await database.createSession({
         userId: identity.userId,
         walletId: identity.walletId,
         tokenHash: hashToken(sessionToken, config.sessionSecret),
@@ -259,14 +282,18 @@ export function createAuthRouter(config: AppConfig, database: AstravaDatabase): 
     }
   });
 
-  router.post("/logout", mutationGuard, (request, response) => {
-    const token = request.cookies?.[SESSION_COOKIE] as string | undefined;
-    if (token) {
-      database.revokeSession(hashToken(token, config.sessionSecret));
+  router.post("/logout", mutationGuard, async (request, response, next) => {
+    try {
+      const token = request.cookies?.[SESSION_COOKIE] as string | undefined;
+      if (token) {
+        await database.revokeSession(hashToken(token, config.sessionSecret));
+      }
+      response.clearCookie(SESSION_COOKIE, clearSessionCookieOptions(config));
+      response.setHeader("Cache-Control", "no-store");
+      response.json(emptySession());
+    } catch (error) {
+      next(error);
     }
-    response.clearCookie(SESSION_COOKIE, clearSessionCookieOptions(config));
-    response.setHeader("Cache-Control", "no-store");
-    response.json(emptySession());
   });
 
   return router;

@@ -1,5 +1,6 @@
 node_modules/
 .pnpm-store/
+.vercel/
 dist/
 server-dist/
 coverage/

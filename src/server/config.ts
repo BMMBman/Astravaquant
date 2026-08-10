@@ -9,6 +9,7 @@ const schema = z.object({
   SESSION_SECRET: z.string().min(32).optional(),
   SESSION_TTL_HOURS: z.coerce.number().int().min(1).max(168).default(12),
   DATABASE_PATH: z.string().min(1).default("./data/astravaquant.db"),
+  DATABASE_URL: z.string().min(1).optional(),
   WALLETCONNECT_PROJECT_ID: z.string().min(1).optional(),
   GOLDRUSH_API_KEY: z.string().min(1).optional(),
   PORTFOLIO_CACHE_SECONDS: z.coerce.number().int().min(15).max(3600).default(60),
@@ -30,6 +31,7 @@ export interface AppConfig {
   sessionSecret: string;
   sessionTtlMs: number;
   databasePath: string;
+  databaseUrl: string | null;
   walletConnectProjectId: string | null;
   goldrushApiKey: string | null;
   portfolioCacheMs: number;
@@ -47,6 +49,10 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppCon
     throw new Error("APP_URL must use HTTPS in production.");
   }
 
+  if (parsed.NODE_ENV === "production" && environment.VERCEL && !parsed.DATABASE_URL) {
+    throw new Error("DATABASE_URL is required for the production wallet service.");
+  }
+
   return {
     nodeEnv: parsed.NODE_ENV,
     port: parsed.PORT,
@@ -54,6 +60,7 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppCon
     sessionSecret,
     sessionTtlMs: parsed.SESSION_TTL_HOURS * 60 * 60 * 1000,
     databasePath: parsed.DATABASE_PATH,
+    databaseUrl: parsed.DATABASE_URL ?? null,
     walletConnectProjectId: parsed.WALLETCONNECT_PROJECT_ID ?? null,
     goldrushApiKey: parsed.GOLDRUSH_API_KEY ?? null,
     portfolioCacheMs: parsed.PORTFOLIO_CACHE_SECONDS * 1000,

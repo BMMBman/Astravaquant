@@ -4,12 +4,13 @@ import cookieParser from "cookie-parser";
 import express, { type ErrorRequestHandler } from "express";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
-import type { PortfolioDashboard, PortfolioOverview } from "../shared/contracts.js";
+import type { MarketDashboard, PortfolioDashboard, PortfolioOverview } from "../shared/contracts.js";
 import { attachSession, createAuthRouter, requireAuth, sessionResponse } from "./auth.js";
 import { getSupportedChain, supportedChains, type AppConfig } from "./config.js";
 import type { AstravaDataStore } from "./database.js";
 import type { PortfolioProvider } from "./providers/portfolio.js";
 import { PortfolioProviderError } from "./providers/portfolio.js";
+import type { PublicMarketProvider } from "./providers/markets.js";
 import { ApiError } from "./security.js";
 import { buildAllPerformanceSeries } from "./services/performance.js";
 import {
@@ -23,6 +24,7 @@ interface AppDependencies {
   config: AppConfig;
   database: AstravaDataStore;
   portfolioProvider: PortfolioProvider;
+  marketProvider: Pick<PublicMarketProvider, "getDashboard">;
 }
 function unavailablePortfolio(address: string, chainId: number, network: string): PortfolioOverview {
   return {
@@ -41,7 +43,7 @@ function unavailablePortfolio(address: string, chainId: number, network: string)
   };
 }
 
-export function createApp({ config, database, portfolioProvider }: AppDependencies) {
+export function createApp({ config, database, portfolioProvider, marketProvider }: AppDependencies) {
   const app = express();
   app.disable("x-powered-by");
   app.set("trust proxy", 1);
@@ -97,6 +99,16 @@ export function createApp({ config, database, portfolioProvider }: AppDependenci
 
   app.use("/api/auth", createAuthRouter(config, database));
 
+  app.get("/api/markets", async (_request, response, next) => {
+    try {
+      const dashboard: MarketDashboard = await marketProvider.getDashboard();
+      response.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=240");
+      response.json(dashboard);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.get("/api/dashboard", requireAuth, async (request, response, next) => {
     try {
       const session = request.astravaSession!;
@@ -148,7 +160,19 @@ export function createApp({ config, database, portfolioProvider }: AppDependenci
   const staticDirectory = resolve("dist");
   if (existsSync(staticDirectory)) {
     app.use(express.static(staticDirectory, { index: "index.html", extensions: ["html"] }));
-    for (const page of ["models", "terminal", "portfolio"]) {
+    for (const page of [
+      "models",
+      "terminal",
+      "portfolio",
+      "signals",
+      "research",
+      "research-crypto-participation",
+      "research-weekly-structure",
+      "research-mortgage-pressure",
+      "methodology",
+      "privacy",
+      "terms"
+    ]) {
       app.get(`/${page}`, (_request, response) => response.sendFile(resolve(staticDirectory, `${page}.html`)));
     }
   }

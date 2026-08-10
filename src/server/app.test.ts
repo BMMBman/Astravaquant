@@ -20,7 +20,15 @@ const config: AppConfig = {
   walletConnectProjectId: null,
   goldrushApiKey: null,
   portfolioCacheMs: 60_000,
+  coinGeckoApiKey: null,
+  marketCacheMs: 300_000,
   rpcUrls: { 1: undefined, 8453: undefined, 42161: undefined }
+};
+
+const marketProvider = {
+  async getDashboard() {
+    return { status: "unavailable" as const, updatedAt: new Date().toISOString(), metrics: [] };
+  }
 };
 
 const portfolioProvider: PortfolioProvider = {
@@ -68,7 +76,7 @@ describe("wallet authentication", () => {
 
   async function authenticate() {
     const account = privateKeyToAccount(generatePrivateKey());
-    const agent = request.agent(createApp({ config, database, portfolioProvider }));
+    const agent = request.agent(createApp({ config, database, portfolioProvider, marketProvider }));
     const nonceResponse = await agent
       .post("/api/auth/nonce")
       .set(mutationHeaders)
@@ -85,7 +93,7 @@ describe("wallet authentication", () => {
   }
 
   it("reports the wallet API as healthy when its datastore is available", async () => {
-    const response = await request(createApp({ config, database, portfolioProvider }))
+    const response = await request(createApp({ config, database, portfolioProvider, marketProvider }))
       .get("/api/health")
       .expect(200);
     expect(response.body).toEqual({ status: "ok", service: "astravaquant-wallet" });
@@ -119,7 +127,7 @@ describe("wallet authentication", () => {
 
   it("rejects authentication requests from another origin", async () => {
     const account = privateKeyToAccount(generatePrivateKey());
-    const app = createApp({ config, database, portfolioProvider });
+    const app = createApp({ config, database, portfolioProvider, marketProvider });
     const response = await request(app)
       .post("/api/auth/nonce")
       .set({ Origin: "https://example.com", "X-Astrava-Request": "wallet-auth" })
@@ -129,7 +137,7 @@ describe("wallet authentication", () => {
   });
 
   it("requires authentication for portfolio data and revokes logout sessions", async () => {
-    const app = createApp({ config, database, portfolioProvider });
+    const app = createApp({ config, database, portfolioProvider, marketProvider });
     await request(app).get("/api/dashboard").expect(401);
 
     const { agent } = await authenticate();

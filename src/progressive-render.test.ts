@@ -3,7 +3,20 @@ import { describe, expect, it } from "vitest";
 
 const root = new URL("../", import.meta.url);
 const css = readFileSync(new URL("styles.css", root), "utf8");
-const pages = ["index.html", "models.html", "terminal.html", "portfolio.html"];
+const pages = [
+  "index.html",
+  "models.html",
+  "terminal.html",
+  "portfolio.html",
+  "signals.html",
+  "research.html",
+  "research-crypto-participation.html",
+  "research-weekly-structure.html",
+  "research-mortgage-pressure.html",
+  "methodology.html",
+  "privacy.html",
+  "terms.html"
+];
 
 describe("progressive page rendering", () => {
   it("keeps reveal content visible until JavaScript starts", () => {

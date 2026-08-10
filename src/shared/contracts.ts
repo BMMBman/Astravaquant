@@ -102,6 +102,45 @@ export interface PortfolioDashboard {
   allocationContext: AllocationContext;
 }
 
+export type MarketMetricId =
+  | "total"
+  | "total2"
+  | "bitcoin"
+  | "ethereum"
+  | "treasury10y"
+  | "fedLiquidity"
+  | "mortgage30y"
+  | "homePrices";
+
+export interface MarketPoint {
+  timestamp: string;
+  value: number;
+}
+
+export interface MarketMetric {
+  id: MarketMetricId;
+  label: string;
+  status: "ready" | "unavailable";
+  message: string | null;
+  value: number | null;
+  unit: "usd" | "usd_compact" | "usd_millions" | "percent" | "index";
+  change: number | null;
+  changeType: "percent" | "basis_points" | null;
+  asOf: string | null;
+  frequency: string;
+  source: string;
+  sourceUrl: string;
+  historyStatus: "ready" | "unavailable";
+  historyMessage: string | null;
+  points: MarketPoint[];
+}
+
+export interface MarketDashboard {
+  status: "ready" | "partial" | "unavailable";
+  updatedAt: string;
+  metrics: MarketMetric[];
+}
+
 export interface ApiErrorBody {
   error: {
     code: string;

@@ -41,21 +41,21 @@ export const researchLibrary: Omit<PersonalizedResearch, "relevance">[] = [
     id: "crypto-medium-term",
     title: "Medium-Term Crypto Participation",
     summary: "The five-day MTPI combines total crypto market cap and TOTAL2 into the current tactical regime.",
-    href: "models.html#mtpi",
+    href: "research-crypto-participation.html",
     symbols: broadCryptoSymbols
   },
   {
     id: "crypto-long-term",
     title: "Weekly Crypto Structure",
     summary: "LTPI places broad crypto exposure against the weekly total-market and Bitcoin trend.",
-    href: "models.html#ltpi",
+    href: "research-weekly-structure.html",
     symbols: broadCryptoSymbols
   },
   {
     id: "eth-btc-relative-strength",
     title: "ETH / BTC Relative Strength",
     summary: "The relative-strength workspace is prepared for the first ETH/BTC ratio feed without publishing placeholder signals.",
-    href: "models.html#relative-strength",
+    href: "research.html#relative-strength",
     symbols: ["ETH", "WETH", "BTC", "WBTC"]
   }
 ];

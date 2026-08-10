@@ -41,11 +41,11 @@
         </a>
 
         <nav class="site-nav" aria-label="Main navigation">
-          <a href="index.html#signals">Signals</a>
+          <a href="signals.html">Signals</a>
           <a href="models.html">Models</a>
           <a href="portfolio.html">Portfolio</a>
           <a class="is-active" href="terminal.html">Dashboards</a>
-          <a href="index.html#brief">Research</a>
+          <a href="research.html">Research</a>
         </nav>
 
         <div class="header-cta" data-wallet-root>
@@ -58,78 +58,108 @@
       <section class="section page-hero page-hero-simple">
         <div class="shell shell-narrow">
           <div class="page-hero-copy page-hero-center reveal">
-            <p class="eyebrow">Dashboards</p>
-            <h1>Live market context.</h1>
-            <p class="lead">The first board will surface total crypto market cap, TOTAL2, Bitcoin, and Ethereum.</p>
+            <p class="eyebrow">AstravaQuant Terminal</p>
+            <h1>The market, in context.</h1>
+            <p class="lead">Live crypto, rates, liquidity, and housing data in one research board.</p>
           </div>
         </div>
       </section>
 
       <section class="section section-compact">
-        <div class="shell shell-narrow">
-          <article class="live-board glass-card reveal">
-            <div class="panel-head">
-              <span>Live market board</span>
-              <b>Streaming soon</b>
+        <div class="shell shell-wide" data-market-terminal>
+          <div class="terminal-section-head reveal">
+            <div>
+              <p class="eyebrow">Crypto tape</p>
+              <h2>Broad market participation</h2>
             </div>
-            <h2>Quote tiles ready for live data.</h2>
-            <div class="quote-grid">
-              <article class="quote-card">
-                <span>Total Crypto</span>
-                <strong>--</strong>
-                <b>Live feed soon</b>
-              </article>
-              <article class="quote-card">
-                <span>TOTAL2</span>
-                <strong>--</strong>
-                <b>Live feed soon</b>
-              </article>
-              <article class="quote-card">
-                <span>Bitcoin</span>
-                <strong>--</strong>
-                <b>Live feed soon</b>
-              </article>
-              <article class="quote-card">
-                <span>Ethereum</span>
-                <strong>--</strong>
-                <b>Live feed soon</b>
-              </article>
+            <div class="feed-state" data-market-status role="status">
+              <i aria-hidden="true"></i>
+              <span>Loading market feeds</span>
             </div>
-            <p class="muted-note">Real-time integrations are not wired in yet, so the layout stays honest until the feeds are ready.</p>
-          </article>
+          </div>
+
+          <div class="terminal-quote-grid reveal">
+            <article class="terminal-quote" data-market-card="total">
+              <div><span>Total Crypto</span><small>CoinGecko aggregate</small></div>
+              <strong data-market-value>Loading</strong>
+              <b data-market-change>--</b>
+              <time data-market-asof>Awaiting feed</time>
+            </article>
+            <article class="terminal-quote" data-market-card="total2">
+              <div><span>TOTAL2</span><small>Crypto ex-Bitcoin</small></div>
+              <strong data-market-value>Loading</strong>
+              <b data-market-change>--</b>
+              <time data-market-asof>Awaiting feed</time>
+            </article>
+            <article class="terminal-quote" data-market-card="bitcoin">
+              <div><span>Bitcoin</span><small>BTC / USD</small></div>
+              <strong data-market-value>Loading</strong>
+              <b data-market-change>--</b>
+              <time data-market-asof>Awaiting feed</time>
+            </article>
+            <article class="terminal-quote" data-market-card="ethereum">
+              <div><span>Ethereum</span><small>ETH / USD</small></div>
+              <strong data-market-value>Loading</strong>
+              <b data-market-change>--</b>
+              <time data-market-asof>Awaiting feed</time>
+            </article>
+          </div>
+
+          <div class="terminal-chart-grid">
+            <article class="terminal-panel reveal" data-market-panel="bitcoin">
+              <header><div><span>Bitcoin</span><h3>30-day price</h3></div><b data-panel-change>--</b></header>
+              <div class="terminal-chart" data-market-chart="bitcoin"><span>Loading verified observations</span></div>
+              <footer><span data-panel-range>--</span><a data-panel-source href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a></footer>
+            </article>
+            <article class="terminal-panel reveal" data-market-panel="ethereum">
+              <header><div><span>Ethereum</span><h3>30-day price</h3></div><b data-panel-change>--</b></header>
+              <div class="terminal-chart" data-market-chart="ethereum"><span>Loading verified observations</span></div>
+              <footer><span data-panel-range>--</span><a data-panel-source href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a></footer>
+            </article>
+          </div>
         </div>
       </section>
 
       <section class="section section-compact">
-        <div class="shell shell-narrow">
-          <div class="dashboard-grid-simple">
-            <article class="dashboard-card glass-card reveal">
-              <span class="table-label">Crypto dashboard</span>
-              <h3>Total crypto, TOTAL2, BTC, and ETH.</h3>
-              <p>The first market board focuses on the broad crypto tape before the deeper rotation tools come online.</p>
+        <div class="shell shell-wide">
+          <div class="terminal-section-head reveal">
+            <div>
+              <p class="eyebrow">Macro transmission</p>
+              <h2>Liquidity, rates, and housing</h2>
+            </div>
+            <a class="terminal-text-link" href="models.html#mrpi">View MRPI methodology</a>
+          </div>
+          <div class="macro-panel-grid">
+            <article class="terminal-panel reveal" data-market-panel="treasury10y">
+              <header><div><span>Rates</span><h3>10-Year Treasury</h3></div><strong data-panel-value>--</strong></header>
+              <div class="terminal-chart terminal-chart-compact" data-market-chart="treasury10y"><span>Loading FRED observations</span></div>
+              <footer><span data-panel-range>--</span><a data-panel-source href="https://fred.stlouisfed.org/series/DGS10" target="_blank" rel="noreferrer">FRED / DGS10</a></footer>
             </article>
-
-            <article class="dashboard-card glass-card reveal">
-              <span class="table-label">Model layer</span>
-              <h3>Current regime stays visible.</h3>
-              <p>MTPI, LTPI, NSPI, and MRPI should sit beside the live market board, not on a separate island.</p>
+            <article class="terminal-panel reveal" data-market-panel="fedLiquidity">
+              <header><div><span>Liquidity</span><h3>Federal Reserve Assets</h3></div><strong data-panel-value>--</strong></header>
+              <div class="terminal-chart terminal-chart-compact" data-market-chart="fedLiquidity"><span>Loading FRED observations</span></div>
+              <footer><span data-panel-range>--</span><a data-panel-source href="https://fred.stlouisfed.org/series/WALCL" target="_blank" rel="noreferrer">FRED / WALCL</a></footer>
             </article>
-
-            <article class="dashboard-card glass-card reveal">
-              <span class="table-label">Build the Brief</span>
-              <h3>Explore housing market trends.</h3>
-              <p>Build the Brief follows housing, mortgage-rate pressure, and the 10-year backdrop in a cleaner research format.</p>
-              <a class="button secondary" href="https://buildthebrief.com" target="_blank" rel="noreferrer">Visit Build the Brief</a>
+            <article class="terminal-panel reveal" data-market-panel="mortgage30y">
+              <header><div><span>Housing finance</span><h3>30-Year Mortgage Rate</h3></div><strong data-panel-value>--</strong></header>
+              <div class="terminal-chart terminal-chart-compact" data-market-chart="mortgage30y"><span>Loading FRED observations</span></div>
+              <footer><span data-panel-range>--</span><a data-panel-source href="https://fred.stlouisfed.org/series/MORTGAGE30US" target="_blank" rel="noreferrer">FRED / MORTGAGE30US</a></footer>
+            </article>
+            <article class="terminal-panel reveal" data-market-panel="homePrices">
+              <header><div><span>Housing</span><h3>U.S. Home Price Index</h3></div><strong data-panel-value>--</strong></header>
+              <div class="terminal-chart terminal-chart-compact" data-market-chart="homePrices"><span>Loading FRED observations</span></div>
+              <footer><span data-panel-range>--</span><a data-panel-source href="https://fred.stlouisfed.org/series/CSUSHPINSA" target="_blank" rel="noreferrer">FRED / CSUSHPINSA</a></footer>
             </article>
           </div>
+          <p class="terminal-disclosure reveal">Market data may be delayed. Crypto data is provided by CoinGecko; macro and housing series are provided by Federal Reserve Economic Data. Current values are research inputs, not execution prices.</p>
         </div>
       </section>
     </main>
 
     <footer class="footer">
       <div class="shell footer-inner">
-        <p>AstravaQuant Terminal connects models, dashboards, watchlists, and research in one surface.</p>
-        <span>Copyright <span data-year></span> AstravaQuant</span>
+        <p>AstravaQuant is read-only research infrastructure. No trading, custody, or transaction execution.</p>
+        <div class="footer-links"><a href="methodology.html">Methodology</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div>
       </div>
     </footer>
 

@@ -7,6 +7,7 @@ import {
   GoldRushPortfolioProvider,
   UnavailablePortfolioProvider
 } from "../src/server/providers/portfolio.js";
+import { PublicMarketProvider } from "../src/server/providers/markets.js";
 
 interface VercelRequest extends IncomingMessage {
   query?: Record<string, string | string[] | undefined>;
@@ -22,7 +23,8 @@ const provider = config.goldrushApiKey
   ? new GoldRushPortfolioProvider(config.goldrushApiKey)
   : new UnavailablePortfolioProvider();
 const portfolioProvider = new CachedPortfolioProvider(provider, config.portfolioCacheMs);
-const app = createApp({ config, database, portfolioProvider });
+const marketProvider = new PublicMarketProvider(config.coinGeckoApiKey, config.marketCacheMs);
+const app = createApp({ config, database, portfolioProvider, marketProvider });
 
 export default function handler(request: VercelRequest, response: ServerResponse): void {
   const route = request.query?.path;

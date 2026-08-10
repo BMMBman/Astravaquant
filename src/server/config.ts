@@ -13,6 +13,8 @@ const schema = z.object({
   WALLETCONNECT_PROJECT_ID: z.string().min(1).optional(),
   GOLDRUSH_API_KEY: z.string().min(1).optional(),
   PORTFOLIO_CACHE_SECONDS: z.coerce.number().int().min(15).max(3600).default(60),
+  COINGECKO_API_KEY: z.string().min(1).optional(),
+  MARKET_CACHE_SECONDS: z.coerce.number().int().min(60).max(3600).default(300),
   ETHEREUM_RPC_URL: z.url().optional(),
   BASE_RPC_URL: z.url().optional(),
   ARBITRUM_RPC_URL: z.url().optional()
@@ -35,6 +37,8 @@ export interface AppConfig {
   walletConnectProjectId: string | null;
   goldrushApiKey: string | null;
   portfolioCacheMs: number;
+  coinGeckoApiKey: string | null;
+  marketCacheMs: number;
   rpcUrls: Record<number, string | undefined>;
 }
 export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppConfig {
@@ -64,6 +68,8 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppCon
     walletConnectProjectId: parsed.WALLETCONNECT_PROJECT_ID ?? null,
     goldrushApiKey: parsed.GOLDRUSH_API_KEY ?? null,
     portfolioCacheMs: parsed.PORTFOLIO_CACHE_SECONDS * 1000,
+    coinGeckoApiKey: parsed.COINGECKO_API_KEY ?? null,
+    marketCacheMs: parsed.MARKET_CACHE_SECONDS * 1000,
     rpcUrls: {
       1: parsed.ETHEREUM_RPC_URL,
       8453: parsed.BASE_RPC_URL,

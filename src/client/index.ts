@@ -1,7 +1,14 @@
 import type { AuthSession, PublicConfig } from "../shared/contracts.js";
 import { apiRequest } from "./api.js";
+import { initializeAnalytics } from "./analytics.js";
 import { PortfolioController } from "./portfolio.js";
 import type { WalletController } from "./wallet.js";
+
+initializeAnalytics();
+
+if (document.querySelector("[data-market-terminal]")) {
+  void import("./terminal.js").then(({ bootTerminal }) => bootTerminal());
+}
 
 async function boot(): Promise<void> {
   const walletRoot = document.querySelector<HTMLElement>("[data-wallet-root]");

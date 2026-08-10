@@ -6,6 +6,7 @@ import type {
   PortfolioHolding
 } from "../shared/contracts.js";
 import { apiRequest, ClientApiError } from "./api.js";
+import { trackProductEvent } from "./analytics.js";
 import {
   escapeHtml,
   formatBalance,
@@ -89,9 +90,13 @@ export class PortfolioController {
     this.show("loading");
     try {
       this.dashboard = await apiRequest<PortfolioDashboard>("/api/dashboard");
+      trackProductEvent("portfolio_dashboard_loaded", { status: this.dashboard.portfolio.status });
       this.render();
       this.show("content");
     } catch (error) {
+      trackProductEvent("portfolio_dashboard_failed", {
+        reason: error instanceof ClientApiError ? error.code.toLowerCase() : "request_failed"
+      });
       if (error instanceof ClientApiError && error.code === "AUTH_REQUIRED") {
         this.show("gate");
         return;

@@ -13,8 +13,10 @@ The original project was a static multi-page site with shared `styles.css` and `
 - An Express API for SIWE authentication, sessions, portfolio retrieval, snapshots, and personalized research, published as one Vercel Function in production.
 - A shared persistence boundary backed by SQLite locally and durable Neon Postgres on Vercel.
 - A server-only GoldRush portfolio provider behind the `PortfolioProvider` interface.
+- A cached public-market provider for CoinGecko crypto data and Federal Reserve Economic Data series.
+- Vercel Web Analytics with a client-side privacy filter that excludes wallet and portfolio properties.
 
-Current pages are `index.html`, `models.html`, `terminal.html`, and `portfolio.html`. Public research remains available without wallet authentication. The portfolio API requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
+Public pages include the homepage, models, signals, terminal, research library, individual research notes, methodology, privacy, and terms. The portfolio API requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
 
 There was no deployment configuration or existing backend, database, authentication system, or live model API in the repository before this milestone. Model values remain the existing AstravaQuant values in `src/server/data/astrava.ts`.
 
@@ -47,6 +49,15 @@ Supported networks in the first milestone are:
 
 The current AstravaQuant model does not publish target portfolio weights. The dashboard therefore shows the user's real allocation and an explicit `Not published` model state. Add real target weights before enabling allocation differences.
 
+## Market Terminal
+
+`GET /api/markets` serves a normalized market dashboard contract. `PublicMarketProvider` retrieves:
+
+- Total crypto market capitalization, crypto market capitalization excluding Bitcoin, Bitcoin, and Ethereum from CoinGecko.
+- The 10-year Treasury (`DGS10`), Federal Reserve assets (`WALCL`), 30-year mortgage rate (`MORTGAGE30US`), and U.S. home price index (`CSUSHPINSA`) from FRED.
+
+Provider requests run independently and time out cleanly, so one failed series does not blank the dashboard. Responses are cached for five minutes by default. Global crypto market-cap history is not fabricated when it is unavailable from the public feed; TOTAL and TOTAL2 remain current-snapshot cards while BTC, ETH, and FRED series include sourced history.
+
 ## Environment
 
 Copy `.env.example` to `.env` and configure:
@@ -62,6 +73,8 @@ Copy `.env.example` to `.env` and configure:
 | `WALLETCONNECT_PROJECT_ID` | Public Reown project ID that enables WalletConnect. |
 | `GOLDRUSH_API_KEY` | Server-only GoldRush portfolio API key. |
 | `PORTFOLIO_CACHE_SECONDS` | Short server-side holdings cache duration. |
+| `COINGECKO_API_KEY` | Optional server-only CoinGecko demo key. The keyless public endpoint is used when omitted. |
+| `MARKET_CACHE_SECONDS` | Server-side terminal feed cache duration. |
 | `ETHEREUM_RPC_URL` | Optional server RPC for Ethereum smart-account signature verification. |
 | `BASE_RPC_URL` | Optional server RPC for Base smart-account signature verification. |
 | `ARBITRUM_RPC_URL` | Optional server RPC for Arbitrum smart-account signature verification. |
@@ -113,6 +126,8 @@ The Vercel project requires these production variables before the wallet service
 
 `WALLETCONNECT_PROJECT_ID` enables WalletConnect QR sessions, and `GOLDRUSH_API_KEY` enables live indexed portfolio balances. The service remains non-custodial with or without those optional providers.
 
+`GOLDRUSH_API_KEY` is still required before production can return live wallet holdings. Without it, authentication works and the portfolio dashboard returns a deliberate provider-unavailable state rather than mock data.
+
 The catch-all function is `api/handler.ts`. It creates the Postgres schema idempotently on cold start and delegates the original `/api/*` path to the existing Express application. Vercel function secrets remain server-side.
 
 ## Data Model
@@ -136,6 +151,14 @@ No private keys, seed phrases, signing keys, token approvals, or unnecessary tra
 - The deployment uses a shared rate-limit store if it scales to multiple API instances.
 - Content Security Policy, origin validation, custom request headers, HttpOnly cookies, nonce expiration, replay protection, and server signature verification remain enabled.
 - Dependency updates and changes to wallet/authentication code receive security review and run `pnpm check` before deployment.
+
+## Analytics
+
+Vercel Web Analytics is initialized only on HTTPS deployments. Page URLs are stripped of query strings and fragments before collection. Custom product events cover wallet-modal opens, categorized connection outcomes, terminal feed status, portfolio dashboard status, and research opens. The analytics helper rejects property keys related to wallet addresses, balances, holdings, values, signatures, nonces, messages, or tokens. Availability of custom-event reporting depends on the Vercel project plan; anonymous pageview analytics can operate independently.
+
+## Model Publication
+
+The public model register begins with `AQ Core v0.1`. Current scores are identified as manually published snapshots because the repository does not contain verified source timestamps. Signal history begins only when automated model publishing is connected; no historical transitions are backfilled. See `methodology.html` for inputs, timeframes, scales, and limitations.
 
 ## Visual Sources
 

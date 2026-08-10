@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Current AstravaQuant crypto and mortgage-rate model signals with transparent publication status." />
+    <title>AstravaQuant Signals | Current Model State</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient-orb orb-left" aria-hidden="true"></div>
+    <div class="ambient-orb orb-right" aria-hidden="true"></div>
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true"><defs><linearGradient id="brand-gradient-signals" x1="18" y1="132" x2="138" y2="16" gradientUnits="userSpaceOnUse"><stop stop-color="#68b6ff"/><stop offset=".5" stop-color="#eef5ff"/><stop offset="1" stop-color="#8fe0ff"/></linearGradient></defs><path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke="url(#brand-gradient-signals)" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/></svg>
+          <span class="brand-copy"><strong>AstravaQuant</strong><span>Signals</span></span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a class="is-active" href="signals.html">Signals</a><a href="models.html">Models</a><a href="portfolio.html">Portfolio</a><a href="terminal.html">Dashboards</a><a href="research.html">Research</a>
+        </nav>
+        <div class="header-cta" data-wallet-root><button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div>
+      </div>
+    </header>
+    <main>
+      <section class="section page-hero page-hero-simple">
+        <div class="shell shell-narrow"><div class="page-hero-copy page-hero-center reveal"><p class="eyebrow">Signals</p><h1>State, without the noise.</h1><p class="lead">The latest published readings from AstravaQuant's core crypto and mortgage-rate models.</p></div></div>
+      </section>
+      <section class="section section-compact">
+        <div class="shell shell-narrow">
+          <div class="publication-bar reveal"><div><i aria-hidden="true"></i><span>Manual model snapshot</span></div><p>No score timestamp is claimed until automated publishing is connected.</p><a href="methodology.html">AQ Core v0.1</a></div>
+          <div class="signal-ledger reveal" aria-label="Current model signals">
+            <article class="signal-ledger-row"><div><span>MTPI</span><h2>Medium-Term Trend</h2><p>Total crypto market cap + TOTAL2 / five-day model</p></div><strong>+0.47</strong><b class="status-good">Long</b><a href="models.html#mtpi" aria-label="View MTPI model">View</a></article>
+            <article class="signal-ledger-row"><div><span>LTPI</span><h2>Long-Term Trend</h2><p>Total crypto market cap + Bitcoin / weekly model</p></div><strong>-0.95</strong><b class="status-bad">Short</b><a href="models.html#ltpi" aria-label="View LTPI model">View</a></article>
+            <article class="signal-ledger-row"><div><span>NSPI</span><h2>Net System Positioning Index</h2><p>MTPI + LTPI / aggregate crypto regime</p></div><strong>-0.24</strong><b class="status-warn">Neutral transition</b><a href="models.html#nspi" aria-label="View NSPI model">View</a></article>
+            <article class="signal-ledger-row"><div><span>MRPI</span><h2>Mortgage Rate Pressure Index</h2><p>10-year Treasury pressure / weekly model</p></div><strong>-0.79</strong><b class="status-bad">Tightening</b><a href="models.html#mrpi" aria-label="View MRPI model">View</a></article>
+          </div>
+        </div>
+      </section>
+      <section class="section section-compact">
+        <div class="shell shell-narrow">
+          <article class="history-empty glass-card reveal"><span class="table-label">Signal history</span><h2>Change log begins with verified publishing.</h2><p>AstravaQuant will record score changes, regime transitions, and publication times once the model feed is automated. Historical transitions are not being reconstructed or fabricated.</p><div><span>Next event</span><strong>Awaiting first automated publication</strong></div></article>
+        </div>
+      </section>
+      <section class="section section-compact"><div class="shell shell-narrow"><p class="research-disclaimer reveal">Model outputs are informational research. They are not investment advice, execution instructions, or guarantees of future performance.</p></div></section>
+    </main>
+    <footer class="footer"><div class="shell footer-inner"><p>Signals are published research states, not trading instructions.</p><div class="footer-links"><a href="methodology.html">Methodology</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div></div></footer>
+    <script type="module" src="/app.js"></script><script type="module" src="/src/client/index.ts"></script>
+  </body>
+</html>

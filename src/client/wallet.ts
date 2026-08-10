@@ -15,6 +15,7 @@ import { arbitrum, base, mainnet } from "@wagmi/core/chains";
 import { coinbaseWallet, walletConnect } from "@wagmi/connectors";
 import type { AuthSession, PublicConfig } from "../shared/contracts.js";
 import { apiRequest, ClientApiError } from "./api.js";
+import { trackProductEvent } from "./analytics.js";
 import { escapeHtml, shortenAddress } from "./format.js";
 
 type SessionListener = (session: AuthSession) => void;
@@ -140,6 +141,14 @@ function errorMessage(error: unknown): string {
   return "The wallet could not be connected. Please try again.";
 }
 
+function analyticsError(error: unknown): string {
+  if (error instanceof ClientApiError) return error.code.toLowerCase();
+  const message = error instanceof Error ? error.message.toLowerCase() : "unknown";
+  if (message.includes("rejected") || message.includes("denied") || message.includes("cancelled")) return "user_rejected";
+  if (message.includes("chain") || message.includes("network")) return "unsupported_network";
+  return "connection_failed";
+}
+
 export class WalletController {
   private readonly config: Config;
   private readonly listeners = new Set<SessionListener>();
@@ -225,6 +234,7 @@ export class WalletController {
   }
 
   openConnect(): void {
+    trackProductEvent("wallet_modal_opened");
     this.renderDialog();
     this.dialog.showModal();
   }
@@ -344,6 +354,8 @@ export class WalletController {
     }
 
     this.busy = true;
+    const provider = connectorBrand(connector);
+    trackProductEvent("wallet_connect_started", { provider });
     this.dialog.close();
     this.render();
 
@@ -369,8 +381,10 @@ export class WalletController {
         body: JSON.stringify({ message: nonce.message, signature })
       });
       this.setSession(session);
+      trackProductEvent("wallet_auth_succeeded", { provider, chain_id: result.chainId });
       this.showToast("Wallet authenticated. Portfolio access is read-only.");
     } catch (error) {
+      trackProductEvent("wallet_auth_failed", { provider, reason: analyticsError(error) });
       this.showToast(errorMessage(error));
     } finally {
       this.busy = false;
@@ -389,6 +403,7 @@ export class WalletController {
     await Promise.allSettled(connections.map((connection) => disconnect(this.config, { connector: connection.connector })));
     this.accountMenuOpen = false;
     this.setSession(disconnectedSession());
+    trackProductEvent("wallet_disconnected");
     if (showConfirmation) this.showToast("Wallet disconnected from AstravaQuant.");
   }
 

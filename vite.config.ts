@@ -8,7 +8,15 @@ export default defineConfig({
         home: resolve(import.meta.dirname, "index.html"),
         models: resolve(import.meta.dirname, "models.html"),
         terminal: resolve(import.meta.dirname, "terminal.html"),
-        portfolio: resolve(import.meta.dirname, "portfolio.html")
+        portfolio: resolve(import.meta.dirname, "portfolio.html"),
+        signals: resolve(import.meta.dirname, "signals.html"),
+        research: resolve(import.meta.dirname, "research.html"),
+        researchCryptoParticipation: resolve(import.meta.dirname, "research-crypto-participation.html"),
+        researchWeeklyStructure: resolve(import.meta.dirname, "research-weekly-structure.html"),
+        researchMortgagePressure: resolve(import.meta.dirname, "research-mortgage-pressure.html"),
+        methodology: resolve(import.meta.dirname, "methodology.html"),
+        privacy: resolve(import.meta.dirname, "privacy.html"),
+        terms: resolve(import.meta.dirname, "terms.html")
       }
     }
   },

@@ -6,6 +6,7 @@ import {
   GoldRushPortfolioProvider,
   UnavailablePortfolioProvider
 } from "./providers/portfolio.js";
+import { PublicMarketProvider } from "./providers/markets.js";
 
 const config = loadConfig();
 const database = new AstravaDatabase(config.databasePath);
@@ -13,7 +14,8 @@ const provider = config.goldrushApiKey
   ? new GoldRushPortfolioProvider(config.goldrushApiKey)
   : new UnavailablePortfolioProvider();
 const portfolioProvider = new CachedPortfolioProvider(provider, config.portfolioCacheMs);
-const app = createApp({ config, database, portfolioProvider });
+const marketProvider = new PublicMarketProvider(config.coinGeckoApiKey, config.marketCacheMs);
+const app = createApp({ config, database, portfolioProvider, marketProvider });
 database.cleanup();
 const cleanupTimer = setInterval(() => database.cleanup(), 60 * 60 * 1000);
 cleanupTimer.unref();

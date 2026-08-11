@@ -139,6 +139,54 @@ export interface WorkbookDashboard {
   warnings: string[];
 }
 
+export type ValuationCategoryId = "fundamental" | "technical" | "sentiment";
+
+export interface ValuationIndicator {
+  id: string;
+  name: string;
+  category: ValuationCategoryId;
+  categoryLabel: string;
+  state: string;
+  description: string;
+  score: number;
+  sourceUrl: string | null;
+}
+
+export interface ValuationCategorySummary {
+  id: ValuationCategoryId;
+  label: string;
+  indicatorCount: number;
+  averageScore: number;
+}
+
+export interface ValuationPoint {
+  date: string;
+  score: number;
+}
+
+export interface BitcoinValuationDashboard {
+  status: "ready" | "partial" | "unavailable";
+  provider: "Google Sheets" | null;
+  updatedAt: string;
+  refreshSeconds: number;
+  workbookUpdatedLabel: string | null;
+  sourceUrl: string;
+  score: number | null;
+  calculatedScore: number | null;
+  invertedScore: number | null;
+  state: string | null;
+  invertedState: string | null;
+  scaleMin: number;
+  scaleMax: number;
+  indicatorCount: number;
+  indicators: ValuationIndicator[];
+  categories: ValuationCategorySummary[];
+  historyStatus: "ready" | "unavailable";
+  historyMessage: string | null;
+  history: ValuationPoint[];
+  warnings: string[];
+}
+
 export interface PersonalizedResearch {
   id: string;
   title: string;

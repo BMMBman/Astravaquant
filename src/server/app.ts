@@ -4,13 +4,14 @@ import cookieParser from "cookie-parser";
 import express, { type ErrorRequestHandler } from "express";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
-import type { MarketDashboard, PortfolioDashboard, PortfolioOverview, WorkbookDashboard } from "../shared/contracts.js";
+import type { BitcoinValuationDashboard, MarketDashboard, PortfolioDashboard, PortfolioOverview, WorkbookDashboard } from "../shared/contracts.js";
 import { attachSession, createAuthRouter, requireAuth, sessionResponse } from "./auth.js";
 import { getSupportedChain, supportedChains, type AppConfig } from "./config.js";
 import type { AstravaDataStore } from "./database.js";
 import type { PortfolioProvider } from "./providers/portfolio.js";
 import { PortfolioProviderError } from "./providers/portfolio.js";
 import type { PublicMarketProvider } from "./providers/markets.js";
+import type { BitcoinValuationProvider } from "./providers/valuation.js";
 import type { WorkbookProvider } from "./providers/workbook.js";
 import { workbookSignals } from "./providers/workbook.js";
 import { ApiError } from "./security.js";
@@ -28,6 +29,7 @@ interface AppDependencies {
   portfolioProvider: PortfolioProvider;
   marketProvider: Pick<PublicMarketProvider, "getDashboard">;
   workbookProvider: WorkbookProvider;
+  valuationProvider: BitcoinValuationProvider;
 }
 function unavailablePortfolio(address: string, chainId: number, network: string): PortfolioOverview {
   return {
@@ -46,7 +48,7 @@ function unavailablePortfolio(address: string, chainId: number, network: string)
   };
 }
 
-export function createApp({ config, database, portfolioProvider, marketProvider, workbookProvider }: AppDependencies) {
+export function createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider }: AppDependencies) {
   const app = express();
   app.disable("x-powered-by");
   app.set("trust proxy", 1);
@@ -122,6 +124,16 @@ export function createApp({ config, database, portfolioProvider, marketProvider,
     }
   });
 
+  app.get("/api/valuation", async (_request, response, next) => {
+    try {
+      const dashboard: BitcoinValuationDashboard = await valuationProvider.getDashboard();
+      response.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=240");
+      response.json(dashboard);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.get("/api/dashboard", requireAuth, async (request, response, next) => {
     try {
       const session = request.astravaSession!;
@@ -176,6 +188,7 @@ export function createApp({ config, database, portfolioProvider, marketProvider,
     app.use(express.static(staticDirectory, { index: "index.html", extensions: ["html"] }));
     for (const page of [
       "models",
+      "valuation",
       "backtesting",
       "terminal",
       "portfolio",

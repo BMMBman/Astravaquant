@@ -15,6 +15,7 @@ The original project was a static multi-page site with shared `styles.css` and `
 - A server-only GoldRush portfolio provider behind the `PortfolioProvider` interface.
 - A cached public-market provider for CoinGecko crypto data and Federal Reserve Economic Data series.
 - A server-only Google Sheets provider that normalizes all 15 research tabs through a read-only public export or optional service account.
+- A separate read-only Bitcoin valuation provider that verifies a 17-input standard-deviation composite and its forward-testing history.
 - A model-lab page for verified score history, regime distributions, threshold testing, and transition diagnostics.
 - Vercel Web Analytics with a client-side privacy filter that excludes wallet and portfolio properties.
 
@@ -70,6 +71,14 @@ MTPI and LTPI are sourced from their workbook summaries when available. NSPI is 
 
 The Backtesting page analyzes only the dated scores that exist in the two forward-testing tabs. It supports adjustable regime thresholds, distributions, streaks, and transitions. It does not calculate returns, alpha, Sharpe, or drawdown because the current workbook does not contain an aligned investable benchmark series. Those statistics must remain disabled until real price history is supplied.
 
+## Bitcoin Valuation Workbook
+
+`GET /api/valuation` reads bounded ranges from the link-shared Bitcoin valuation workbook set by `VALUATION_GOOGLE_SHEETS_ID`. The provider validates all indicator scores, recomputes their arithmetic mean, compares it with the published composite, and caches the normalized result server-side for five minutes by default.
+
+The primary score follows the workbook's orientation: positive standard deviations represent greater modeled value and negative standard deviations represent lower modeled value. The workbook's score multiplied by `-1` is shown separately as an inverse risk lens. Neither score is presented as a dollar fair-value target.
+
+Fundamental, technical, and sentiment category averages are calculated from the available input rows. Forward-testing history appears only after the workbook contains at least two real dated score observations; the application does not generate or backfill historical values.
+
 ## Environment
 
 Copy `.env.example` to `.env` and configure:
@@ -88,6 +97,7 @@ Copy `.env.example` to `.env` and configure:
 | `COINGECKO_API_KEY` | Optional server-only CoinGecko demo key. The keyless public endpoint is used when omitted. |
 | `MARKET_CACHE_SECONDS` | Server-side terminal feed cache duration. |
 | `GOOGLE_SHEETS_ID` | Private AstravaQuant spreadsheet ID. |
+| `VALUATION_GOOGLE_SHEETS_ID` | Link-shared Bitcoin valuation workbook ID. |
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Optional server-only service-account email when the workbook is private. |
 | `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Optional server-only PEM private key; provide it with the email as a pair. |
 | `GOOGLE_SHEETS_CACHE_SECONDS` | Server-side normalized workbook cache duration. |

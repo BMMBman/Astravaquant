@@ -32,6 +32,7 @@ describe("production configuration", () => {
     const config = loadConfig(productionEnvironment);
     expect(config.googleSheets).toBeNull();
     expect(config.googleSheetsId).toBe("1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA");
+    expect(config.valuationSheetsId).toBe("1CDRiyNvMiQEz-YsrJT6vOEPN-CwAMj6cQrMYmY01bxE");
   });
 
   it("requires service-account credentials as a complete pair", () => {

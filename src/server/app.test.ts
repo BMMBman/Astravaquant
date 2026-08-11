@@ -24,6 +24,7 @@ const config: AppConfig = {
   marketCacheMs: 300_000,
   googleSheets: null,
   googleSheetsId: "1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA",
+  valuationSheetsId: "1CDRiyNvMiQEz-YsrJT6vOEPN-CwAMj6cQrMYmY01bxE",
   googleSheetsCacheMs: 300_000,
   rpcUrls: { 1: undefined, 8453: undefined, 42161: undefined }
 };
@@ -75,6 +76,33 @@ const workbookProvider = {
   }
 };
 
+const valuationProvider = {
+  async getDashboard() {
+    return {
+      status: "ready" as const,
+      provider: "Google Sheets" as const,
+      updatedAt: new Date().toISOString(),
+      refreshSeconds: 300,
+      workbookUpdatedLabel: "Dec 22 2025",
+      sourceUrl: "https://docs.google.com/spreadsheets/d/test/edit",
+      score: 1.84,
+      calculatedScore: 1.835,
+      invertedScore: -1.84,
+      state: "High Value",
+      invertedState: "No Value",
+      scaleMin: -2,
+      scaleMax: 2,
+      indicatorCount: 17,
+      indicators: [],
+      categories: [],
+      historyStatus: "unavailable" as const,
+      historyMessage: "No verified history.",
+      history: [],
+      warnings: []
+    };
+  }
+};
+
 const portfolioProvider: PortfolioProvider = {
   name: "Test indexer",
   async getPortfolio(address, chain) {
@@ -120,7 +148,7 @@ describe("wallet authentication", () => {
 
   async function authenticate() {
     const account = privateKeyToAccount(generatePrivateKey());
-    const agent = request.agent(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider }));
+    const agent = request.agent(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider }));
     const nonceResponse = await agent
       .post("/api/auth/nonce")
       .set(mutationHeaders)
@@ -137,7 +165,7 @@ describe("wallet authentication", () => {
   }
 
   it("reports the wallet API as healthy when its datastore is available", async () => {
-    const response = await request(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider }))
+    const response = await request(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider }))
       .get("/api/health")
       .expect(200);
     expect(response.body).toEqual({ status: "ok", service: "astravaquant-wallet" });
@@ -171,7 +199,7 @@ describe("wallet authentication", () => {
 
   it("rejects authentication requests from another origin", async () => {
     const account = privateKeyToAccount(generatePrivateKey());
-    const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider });
+    const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider });
     const response = await request(app)
       .post("/api/auth/nonce")
       .set({ Origin: "https://example.com", "X-Astrava-Request": "wallet-auth" })
@@ -181,7 +209,7 @@ describe("wallet authentication", () => {
   });
 
   it("requires authentication for portfolio data and revokes logout sessions", async () => {
-    const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider });
+    const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider });
     await request(app).get("/api/dashboard").expect(401);
 
     const { agent } = await authenticate();
@@ -195,10 +223,18 @@ describe("wallet authentication", () => {
   });
 
   it("publishes the normalized workbook contract without authentication", async () => {
-    const response = await request(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider }))
+    const response = await request(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider }))
       .get("/api/workbook")
       .expect(200);
     expect(response.body.status).toBe("not_configured");
     expect(response.body.signals[0].id).toBe("mtpi");
+  });
+
+  it("publishes the Bitcoin valuation contract without authentication", async () => {
+    const response = await request(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider }))
+      .get("/api/valuation")
+      .expect(200);
+    expect(response.body.score).toBe(1.84);
+    expect(response.body.state).toBe("High Value");
   });
 });

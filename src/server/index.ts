@@ -7,6 +7,7 @@ import {
   UnavailablePortfolioProvider
 } from "./providers/portfolio.js";
 import { PublicMarketProvider } from "./providers/markets.js";
+import { PublicGoogleSheetsValuationProvider } from "./providers/valuation.js";
 import {
   GoogleSheetsWorkbookProvider,
   PublicGoogleSheetsWorkbookProvider,
@@ -30,7 +31,8 @@ const workbookProvider = config.googleSheets
   : config.googleSheetsId
     ? new PublicGoogleSheetsWorkbookProvider(config.googleSheetsId, config.googleSheetsCacheMs)
     : new UnavailableWorkbookProvider(config.googleSheetsCacheMs);
-const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider });
+const valuationProvider = new PublicGoogleSheetsValuationProvider(config.valuationSheetsId, config.googleSheetsCacheMs);
+const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider });
 database.cleanup();
 const cleanupTimer = setInterval(() => database.cleanup(), 60 * 60 * 1000);
 cleanupTimer.unref();

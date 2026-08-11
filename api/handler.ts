@@ -8,6 +8,7 @@ import {
   UnavailablePortfolioProvider
 } from "../src/server/providers/portfolio.js";
 import { PublicMarketProvider } from "../src/server/providers/markets.js";
+import { PublicGoogleSheetsValuationProvider } from "../src/server/providers/valuation.js";
 import {
   GoogleSheetsWorkbookProvider,
   PublicGoogleSheetsWorkbookProvider,
@@ -39,7 +40,8 @@ const workbookProvider = config.googleSheets
   : config.googleSheetsId
     ? new PublicGoogleSheetsWorkbookProvider(config.googleSheetsId, config.googleSheetsCacheMs)
     : new UnavailableWorkbookProvider(config.googleSheetsCacheMs);
-const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider });
+const valuationProvider = new PublicGoogleSheetsValuationProvider(config.valuationSheetsId, config.googleSheetsCacheMs);
+const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider });
 
 export default function handler(request: VercelRequest, response: ServerResponse): void {
   const route = request.query?.path;

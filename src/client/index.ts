@@ -18,6 +18,10 @@ if (document.querySelector("[data-backtesting-page]")) {
   void import("./backtesting.js").then(({ bootBacktesting }) => bootBacktesting());
 }
 
+if (document.querySelector("[data-valuation-page]")) {
+  void import("./valuation.js").then(({ bootValuation }) => bootValuation());
+}
+
 async function boot(): Promise<void> {
   const walletRoot = document.querySelector<HTMLElement>("[data-wallet-root]");
   if (!walletRoot) return;

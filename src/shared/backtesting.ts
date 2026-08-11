@@ -36,7 +36,7 @@ export function analyzeScoreSeries(
 ): ScoreBacktestAnalysis {
   if (negativeThreshold >= positiveThreshold) throw new Error("The negative threshold must be below the positive threshold.");
   const ordered = [...points]
-    .filter((point) => Number.isFinite(point.score) && point.score >= -1 && point.score <= 1)
+    .filter((point) => Number.isFinite(point.score))
     .sort((left, right) => left.date.localeCompare(right.date));
   const counts: Record<BacktestRegime, number> = { risk_off: 0, neutral: 0, risk_on: 0 };
   const transitions: BacktestTransition[] = [];

@@ -22,4 +22,11 @@ describe("score-series diagnostics", () => {
     expect(analysis.currentStreak).toBe(2);
     expect(analysis.averageScore).toBeCloseTo(0.225);
   });
+
+  it("accepts standard-deviation valuation scores outside the trend-model range", () => {
+    const analysis = analyzeScoreSeries([{ date: "2026-08-10", score: 1.76 }], -0.5, 0.5);
+    expect(analysis.observations).toBe(1);
+    expect(analysis.currentScore).toBe(1.76);
+    expect(analysis.currentRegime).toBe("risk_on");
+  });
 });

@@ -26,6 +26,11 @@ interface CoinGeckoChart {
   prices?: Array<[number, number]>;
 }
 
+interface DefiLlamaStablecoinPoint {
+  date?: string;
+  totalCirculatingUSD?: { peggedUSD?: number };
+}
+
 interface FredDefinition {
   id: MarketMetricId;
   label: string;
@@ -69,6 +74,51 @@ const fredSeries: FredDefinition[] = [
     seriesId: "WALCL",
     unit: "usd_millions",
     frequency: "Weekly",
+    changeType: "percent",
+    historyDays: 730
+  },
+  {
+    id: "treasuryGeneralAccount",
+    label: "Treasury General Account",
+    seriesId: "WTREGEN",
+    unit: "usd_millions",
+    frequency: "Weekly",
+    changeType: "percent",
+    historyDays: 1825
+  },
+  {
+    id: "reverseRepo",
+    label: "Overnight Reverse Repo",
+    seriesId: "RRPONTSYD",
+    unit: "usd_billions",
+    frequency: "Daily",
+    changeType: "percent",
+    historyDays: 1825
+  },
+  {
+    id: "m2MoneySupply",
+    label: "U.S. M2 Money Supply",
+    seriesId: "M2SL",
+    unit: "usd_billions",
+    frequency: "Monthly",
+    changeType: "percent",
+    historyDays: 3650
+  },
+  {
+    id: "sp500",
+    label: "S&P 500",
+    seriesId: "SP500",
+    unit: "index",
+    frequency: "Daily close",
+    changeType: "percent",
+    historyDays: 730
+  },
+  {
+    id: "nasdaq",
+    label: "Nasdaq Composite",
+    seriesId: "NASDAQCOM",
+    unit: "index",
+    frequency: "Daily close",
     changeType: "percent",
     historyDays: 730
   },
@@ -125,7 +175,7 @@ function change(previous: number, current: number, type: FredDefinition["changeT
   return type === "basis_points" ? (current - previous) * 100 : ((current - previous) / previous) * 100;
 }
 
-function downsample(points: MarketPoint[], maximum = 180): MarketPoint[] {
+function downsample(points: MarketPoint[], maximum = 720): MarketPoint[] {
   if (points.length <= maximum) {
     return points;
   }
@@ -168,6 +218,55 @@ function chartPoints(chart: CoinGeckoChart | null): MarketPoint[] {
   );
 }
 
+function latestAtOrBefore(points: MarketPoint[], timestamp: string): number | null {
+  let latest: number | null = null;
+  for (const point of points) {
+    if (point.timestamp > timestamp) break;
+    latest = point.value;
+  }
+  return latest;
+}
+
+export function deriveFedNetLiquidity(metrics: MarketMetric[]): MarketMetric {
+  const fed = metrics.find((metric) => metric.id === "fedLiquidity" && metric.status === "ready");
+  const tga = metrics.find((metric) => metric.id === "treasuryGeneralAccount" && metric.status === "ready");
+  const rrp = metrics.find((metric) => metric.id === "reverseRepo" && metric.status === "ready");
+  const sourceUrl = "https://fred.stlouisfed.org/series/WALCL";
+  if (!fed || !tga || !rrp) {
+    return unavailableMetric("fedNetLiquidity", "Fed Net Liquidity", "Derived from Federal Reserve Economic Data", sourceUrl, "Weekly derived");
+  }
+
+  const points = fed.points.flatMap((point) => {
+    const tgaValue = latestAtOrBefore(tga.points, point.timestamp);
+    const rrpBillions = latestAtOrBefore(rrp.points, point.timestamp);
+    return tgaValue === null || rrpBillions === null
+      ? []
+      : [{ timestamp: point.timestamp, value: point.value - tgaValue - rrpBillions * 1_000 }];
+  });
+  if (!points.length) {
+    return unavailableMetric("fedNetLiquidity", "Fed Net Liquidity", "Derived from Federal Reserve Economic Data", sourceUrl, "Weekly derived");
+  }
+  const current = points.at(-1)!;
+  const previous = points.at(-2);
+  return {
+    id: "fedNetLiquidity",
+    label: "Fed Net Liquidity",
+    status: "ready",
+    message: "Derived as Federal Reserve assets minus the Treasury General Account minus overnight reverse repo.",
+    value: current.value,
+    unit: "usd_millions",
+    change: previous ? change(previous.value, current.value, "percent") : null,
+    changeType: "percent",
+    asOf: current.timestamp,
+    frequency: "Weekly derived",
+    source: "FRED-derived",
+    sourceUrl,
+    historyStatus: points.length > 1 ? "ready" : "unavailable",
+    historyMessage: points.length > 1 ? null : "One aligned liquidity observation is available.",
+    points: downsample(points)
+  };
+}
+
 export class PublicMarketProvider {
   private cached: MarketDashboard | null = null;
   private cacheExpiresAt = 0;
@@ -198,9 +297,10 @@ export class PublicMarketProvider {
   }
 
   private async loadDashboard(): Promise<MarketDashboard> {
-    const [cryptoResults, fredResults] = await Promise.all([
+    const [cryptoResults, fredResults, stablecoinResults] = await Promise.all([
       Promise.allSettled([this.loadCrypto()]),
-      Promise.allSettled(fredSeries.map((definition) => this.loadFred(definition)))
+      Promise.allSettled(fredSeries.map((definition) => this.loadFred(definition))),
+      Promise.allSettled([this.loadStablecoinSupply()])
     ]);
     const metrics: MarketMetric[] = [];
 
@@ -233,6 +333,12 @@ export class PublicMarketProvider {
             )
       );
     });
+
+    const stablecoinResult = stablecoinResults[0];
+    metrics.push(stablecoinResult?.status === "fulfilled"
+      ? stablecoinResult.value
+      : unavailableMetric("stablecoinSupply", "Stablecoin Supply", "DefiLlama", "https://defillama.com/stablecoins", "Daily"));
+    metrics.push(deriveFedNetLiquidity(metrics));
 
     const readyCount = metrics.filter((metric) => metric.status === "ready").length;
     const expectedHistoryReady = metrics
@@ -397,6 +503,41 @@ export class PublicMarketProvider {
       historyStatus: points.length > 1 ? "ready" : "unavailable",
       historyMessage: points.length > 1 ? null : "This series does not yet have enough observations for a chart.",
       points: downsample(points)
+    };
+  }
+
+  private async loadStablecoinSupply(): Promise<MarketMetric> {
+    const response = await fetchWithTimeout(this.fetcher, "https://stablecoins.llama.fi/stablecoincharts/all", {
+      headers: { Accept: "application/json" }
+    });
+    const rows = (await response.json()) as DefiLlamaStablecoinPoint[];
+    const rawPoints = rows.flatMap((row) => {
+      const seconds = Number(row.date);
+      const value = row.totalCirculatingUSD?.peggedUSD;
+      return Number.isFinite(seconds) && Number.isFinite(value)
+        ? [{ timestamp: new Date(seconds * 1_000).toISOString(), value: value! }]
+        : [];
+    }).sort((left, right) => left.timestamp.localeCompare(right.timestamp));
+    if (!rawPoints.length) throw new Error("DefiLlama returned no stablecoin observations.");
+    const current = rawPoints.at(-1)!;
+    const previous = rawPoints.at(-2);
+    const points = downsample(rawPoints);
+    return {
+      id: "stablecoinSupply",
+      label: "Stablecoin Supply",
+      status: "ready",
+      message: null,
+      value: current.value,
+      unit: "usd_compact",
+      change: previous ? change(previous.value, current.value, "percent") : null,
+      changeType: "percent",
+      asOf: current.timestamp,
+      frequency: "Daily",
+      source: "DefiLlama",
+      sourceUrl: "https://defillama.com/stablecoins",
+      historyStatus: points.length > 1 ? "ready" : "unavailable",
+      historyMessage: points.length > 1 ? null : "Stablecoin history does not yet contain enough observations.",
+      points
     };
   }
 }

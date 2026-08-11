@@ -16,7 +16,9 @@ const marketPeriods: HistoryPeriod[] = ["30D", "90D", "1Y", "ALL"];
 const modelPeriods: HistoryPeriod[] = ["30D", "90D", "YTD", "ALL"];
 const cryptoIds: MarketMetricId[] = ["bitcoin", "ethereum", "solana", "sui", "hyperliquid"];
 const quoteIds: MarketMetricId[] = ["total", "total2", ...cryptoIds];
-const macroIds: MarketMetricId[] = ["treasury10y", "fedLiquidity", "mortgage30y", "homePrices"];
+const liquidityIds: MarketMetricId[] = ["fedNetLiquidity", "fedLiquidity", "treasuryGeneralAccount", "reverseRepo", "m2MoneySupply", "stablecoinSupply"];
+const crossAssetIds: MarketMetricId[] = ["sp500", "nasdaq", "treasury10y"];
+const housingIds: MarketMetricId[] = ["mortgage30y", "homePrices"];
 const modelIds = ["mtpi", "ltpi", "nspi", "mrpi"];
 const symbols: Partial<Record<MarketMetricId, string>> = {
   total: "TOTAL",
@@ -28,6 +30,13 @@ const symbols: Partial<Record<MarketMetricId, string>> = {
   hyperliquid: "HYPE",
   treasury10y: "US10Y",
   fedLiquidity: "WALCL",
+  fedNetLiquidity: "NET LIQ",
+  treasuryGeneralAccount: "TGA",
+  reverseRepo: "ON RRP",
+  m2MoneySupply: "M2",
+  stablecoinSupply: "STABLES",
+  sp500: "SPX",
+  nasdaq: "NASDAQ",
   mortgage30y: "MORTGAGE30US",
   homePrices: "CSUSHPINSA"
 };
@@ -47,6 +56,11 @@ function formatValue(metric: MarketMetric, value = metric.value): string {
   if (metric.unit === "percent") return `${value.toFixed(2)}%`;
   if (metric.unit === "index") return value.toFixed(1);
   if (metric.unit === "usd_millions") return `$${(value / 1_000_000).toFixed(2)}T`;
+  if (metric.unit === "usd_billions") {
+    return value >= 1_000
+      ? `$${(value / 1_000).toFixed(2)}T`
+      : `$${value.toLocaleString("en-US", { maximumFractionDigits: 2 })}B`;
+  }
   if (metric.unit === "usd_compact") {
     return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", notation: "compact", maximumFractionDigits: 2 }).format(value);
   }
@@ -230,6 +244,7 @@ function marketPanelMarkup(metric: MarketMetric, period: HistoryPeriod): string 
       <div><span>${escapeHtml(symbols[metric.id] ?? metric.frequency)}</span><h3>${escapeHtml(metric.label)}</h3></div>
       <div class="terminal-panel-metric"><strong>${escapeHtml(formatValue(metric))}</strong><b data-tone="${tone(metric.change)}">${escapeHtml(formatChange(metric))}</b></div>
     </header>
+    ${metric.message ? `<p class="terminal-panel-note">${escapeHtml(metric.message)}</p>` : ""}
     <div class="terminal-panel-tools">
       ${periodButtons(marketPeriods, period, "data-market-period")}
       <div class="terminal-range-meter"><div><span>Range position</span><strong data-range-position>--</strong></div><i><b data-range-marker></b></i><small><span data-range-low>Low --</span><span data-range-high>High --</span></small></div>
@@ -349,7 +364,9 @@ export async function bootTerminal(): Promise<void> {
   if (markets.status === "fulfilled") {
     renderQuotes(markets.value.metrics);
     renderMarketPanels(markets.value.metrics, cryptoIds, "[data-crypto-panels]");
-    renderMarketPanels(markets.value.metrics, macroIds, "[data-macro-panels]");
+    renderMarketPanels(markets.value.metrics, liquidityIds, "[data-liquidity-panels]");
+    renderMarketPanels(markets.value.metrics, crossAssetIds, "[data-cross-asset-panels]");
+    renderMarketPanels(markets.value.metrics, housingIds, "[data-housing-panels]");
     setFeedState("[data-market-status]", markets.value.status, markets.value.status === "ready" ? "Feeds online" : "Partial feed");
     trackProductEvent("terminal_data_loaded", { status: markets.value.status });
   } else {

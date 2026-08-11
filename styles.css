@@ -632,6 +632,25 @@
   font-size: 11px;
 }
 
+.valuation-history-value {
+  fill: #f3efe6;
+  font-family: var(--font-display);
+  font-size: 20px;
+}
+
+.backtest-current-halo {
+  fill: rgba(143, 200, 244, 0.09);
+  stroke: rgba(143, 200, 244, 0.25);
+  stroke-width: 1;
+}
+
+.valuation-method-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .valuation-empty-state {
   max-width: 340px;
   text-align: center;
@@ -911,7 +930,12 @@
     gap: 5px;
   }
 
-  .valuation-method > .button {
+  .valuation-method-actions {
+    justify-content: stretch;
+  }
+
+  .valuation-method-actions .button {
+    flex: 1 1 180px;
     justify-self: stretch;
   }
 
@@ -3508,6 +3532,23 @@ footer {
   gap: 24px;
   padding: 15px 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.terminal-panel-note {
+  margin: -4px 0 16px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.terminal-section-note {
+  max-width: 360px;
+  color: var(--faint);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-align: right;
+  text-transform: uppercase;
 }
 
 .terminal-history-range {

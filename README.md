@@ -56,8 +56,10 @@ The current AstravaQuant model does not publish target portfolio weights. The da
 
 `GET /api/markets` serves a normalized market dashboard contract. `PublicMarketProvider` retrieves:
 
-- Total crypto market capitalization, crypto market capitalization excluding Bitcoin, Bitcoin, and Ethereum from CoinGecko.
-- The 10-year Treasury (`DGS10`), Federal Reserve assets (`WALCL`), 30-year mortgage rate (`MORTGAGE30US`), and U.S. home price index (`CSUSHPINSA`) from FRED.
+- Total crypto market capitalization, crypto market capitalization excluding Bitcoin, and tracked crypto assets from CoinGecko.
+- The 10-year Treasury (`DGS10`), Federal Reserve assets (`WALCL`), Treasury General Account (`WTREGEN`), overnight reverse repo (`RRPONTSYD`), M2 (`M2SL`), S&P 500 (`SP500`), Nasdaq Composite (`NASDAQCOM`), mortgage rates, and home prices from FRED.
+- Aggregate USD stablecoin supply and history from DefiLlama.
+- Fed net liquidity derived as `WALCL - WTREGEN - (RRPONTSYD * 1,000)` after normalizing all inputs to millions of U.S. dollars.
 
 Provider requests run independently and time out cleanly, so one failed series does not blank the dashboard. Responses are cached for five minutes by default. Global crypto market-cap history is not fabricated when it is unavailable from the public feed; TOTAL and TOTAL2 remain current-snapshot cards while BTC, ETH, and FRED series include sourced history.
 
@@ -69,7 +71,7 @@ The provider batch-reads and validates all 15 tabs: Command Center, RSPS, Alts R
 
 MTPI and LTPI are sourced from their workbook summaries when available. NSPI is transparently derived as the mean of the two published readings. MRPI is not present in this crypto workbook and remains the separate manual reading. If Google is unavailable, the app keeps the existing fallback snapshot visible and labels the workbook offline.
 
-The Backtesting page analyzes only the dated scores that exist in the two forward-testing tabs. It supports adjustable regime thresholds, distributions, streaks, and transitions. It does not calculate returns, alpha, Sharpe, or drawdown because the current workbook does not contain an aligned investable benchmark series. Those statistics must remain disabled until real price history is supplied.
+The Backtesting page analyzes only dated scores that exist in the connected forward-testing tabs. It supports MTPI, LTPI, derived NSPI, and the Bitcoin valuation composite with scale-specific thresholds, distributions, streaks, and transitions. A first dated valuation observation is shown as a verified tracking point; the historical line forms automatically after another scored date is published. It does not calculate returns, alpha, Sharpe, or drawdown because the current workbooks do not contain an aligned investable benchmark series. Those statistics remain disabled until real price history is supplied.
 
 ## Bitcoin Valuation Workbook
 

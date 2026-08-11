@@ -224,6 +224,13 @@ export type MarketMetricId =
   | "hyperliquid"
   | "treasury10y"
   | "fedLiquidity"
+  | "fedNetLiquidity"
+  | "treasuryGeneralAccount"
+  | "reverseRepo"
+  | "m2MoneySupply"
+  | "stablecoinSupply"
+  | "sp500"
+  | "nasdaq"
   | "mortgage30y"
   | "homePrices";
 
@@ -238,7 +245,7 @@ export interface MarketMetric {
   status: "ready" | "unavailable";
   message: string | null;
   value: number | null;
-  unit: "usd" | "usd_compact" | "usd_millions" | "percent" | "index";
+  unit: "usd" | "usd_compact" | "usd_millions" | "usd_billions" | "percent" | "index";
   change: number | null;
   changeType: "percent" | "basis_points" | null;
   asOf: string | null;

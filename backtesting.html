@@ -29,7 +29,7 @@
           <div class="page-hero-copy reveal">
             <p class="eyebrow">Model Lab</p>
             <h1>Test the signal, not a story.</h1>
-            <p class="lead">Inspect real score history, regime duration, and transitions. No invented returns.</p>
+            <p class="lead">Inspect real trend and valuation history, regime duration, and transitions. No invented returns.</p>
           </div>
           <div class="feed-state" data-backtest-status data-state="loading"><i aria-hidden="true"></i><span>Connecting workbook</span></div>
         </div>
@@ -46,8 +46,8 @@
               </div>
               <div class="backtest-controls">
                 <label>Series<select data-series-select aria-label="Model series"><option>Loading</option></select></label>
-                <label>Risk-off below <output data-negative-value>-0.25</output><input data-negative-threshold type="range" min="-0.75" max="0" step="0.05" value="-0.25" /></label>
-                <label>Risk-on above <output data-positive-value>+0.25</output><input data-positive-threshold type="range" min="0" max="0.75" step="0.05" value="0.25" /></label>
+                <label><span data-negative-threshold-label>Risk-off below</span> <output data-negative-value>-0.25</output><input data-negative-threshold type="range" min="-0.75" max="0" step="0.05" value="-0.25" /></label>
+                <label><span data-positive-threshold-label>Risk-on above</span> <output data-positive-value>+0.25</output><input data-positive-threshold type="range" min="0" max="0.75" step="0.05" value="0.25" /></label>
               </div>
             </header>
 
@@ -71,7 +71,7 @@
             <div class="backtest-chart-stage">
               <svg data-backtest-chart viewBox="0 0 1000 320" role="img" aria-label="Historical model-score chart"></svg>
               <div class="chart-inspector" data-backtest-inspector hidden><time>--</time><strong>--</strong></div>
-              <p class="backtest-empty-copy" data-backtest-empty>Connecting to the private research workbook.</p>
+              <p class="backtest-empty-copy" data-backtest-empty>Connecting to verified research feeds.</p>
               <div class="chart-date-axis" data-backtest-axis aria-hidden="true"></div>
             </div>
 
@@ -95,7 +95,7 @@
 
           <article class="return-boundary reveal">
             <div><span>Return analysis</span><strong>Data required</strong></div>
-            <p>The workbook currently supplies model scores, not an aligned investable benchmark. Return, alpha, Sharpe, and drawdown stay disabled until real price history is added.</p>
+            <p>The research feeds currently supply model scores, not an aligned investable benchmark. Return, alpha, Sharpe, and drawdown stay disabled until real price history is added.</p>
           </article>
         </div>
       </section>
@@ -115,7 +115,7 @@
         </div>
       </section>
 
-      <section class="section section-compact"><div class="shell shell-wide"><p class="research-disclaimer reveal">Diagnostics describe historical model scores. They are not a simulated trading strategy, investment advice, or evidence of future performance.</p></div></section>
+      <section class="section section-compact"><div class="shell shell-wide"><p class="research-disclaimer reveal">Diagnostics describe historical model and valuation scores. They are not a simulated trading strategy, investment advice, or evidence of future performance.</p></div></section>
     </main>
     <footer class="footer"><div class="shell footer-inner"><p>Verified research data only. No fabricated performance.</p><div class="footer-links"><a href="methodology.html">Methodology</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div></div></footer>
     <script type="module" src="/app.js"></script><script type="module" src="/src/client/index.ts"></script>

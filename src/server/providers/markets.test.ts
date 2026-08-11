@@ -30,10 +30,21 @@ function successfulFetcher() {
     if (url.includes("/coins/solana/")) return response({ prices: [[1_700_000_000_000, 170], [1_700_086_400_000, 180]] });
     if (url.includes("/coins/sui/")) return response({ prices: [[1_700_000_000_000, 3.2], [1_700_086_400_000, 3.5]] });
     if (url.includes("/coins/hyperliquid/")) return response({ prices: [[1_700_000_000_000, 47], [1_700_086_400_000, 45]] });
+    if (url.includes("stablecoins.llama.fi")) {
+      return response([
+        { date: "1700000000", totalCirculatingUSD: { peggedUSD: 150_000_000_000 } },
+        { date: "1700086400", totalCirculatingUSD: { peggedUSD: 151_000_000_000 } }
+      ]);
+    }
     const seriesId = new URL(url).searchParams.get("id") ?? "SERIES";
     const values: Record<string, [number, number]> = {
       DGS10: [4.2, 4.3],
       WALCL: [6_500_000, 6_600_000],
+      WTREGEN: [800_000, 810_000],
+      RRPONTSYD: [10, 9],
+      M2SL: [22_000, 22_100],
+      SP500: [7_500, 7_550],
+      NASDAQCOM: [25_000, 25_250],
       MORTGAGE30US: [6.5, 6.55],
       CSUSHPINSA: [320, 324]
     };
@@ -51,14 +62,17 @@ describe("PublicMarketProvider", () => {
     const second = await provider.getDashboard();
 
     expect(first.status).toBe("ready");
-    expect(first.metrics).toHaveLength(11);
+    expect(first.metrics).toHaveLength(18);
     expect(first.metrics.find((metric) => metric.id === "total2")?.value).toBe(1_000_000);
     expect(first.metrics.find((metric) => metric.id === "treasury10y")?.change).toBeCloseTo(10);
     expect(first.metrics.find((metric) => metric.id === "bitcoin")?.points).toHaveLength(2);
     expect(second).toBe(first);
     expect(first.metrics.find((metric) => metric.id === "solana")?.value).toBe(180);
     expect(first.metrics.find((metric) => metric.id === "hyperliquid")?.points).toHaveLength(2);
-    expect(source.getCalls()).toBe(11);
+    expect(first.metrics.find((metric) => metric.id === "stablecoinSupply")?.value).toBe(151_000_000_000);
+    expect(first.metrics.find((metric) => metric.id === "fedNetLiquidity")?.value).toBe(5_781_000);
+    expect(first.metrics.find((metric) => metric.id === "sp500")?.value).toBe(7_550);
+    expect(source.getCalls()).toBe(17);
   });
 
   it("keeps working metrics available when the crypto feed fails", async () => {

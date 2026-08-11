@@ -85,6 +85,23 @@ describe("Bitcoin valuation workbook", () => {
     ]);
   });
 
+  it("marks a single scored valuation date as a valid tracking start", () => {
+    const dashboard = buildBitcoinValuationDashboard(
+      {
+        header: [["SDCA", "DATE UPDATED:", "Aug 10 2026"]],
+        indicators: indicatorRows(),
+        summary: [["Avg Z Score", "", "", "1.76", "", "High Value"]],
+        history: [["08/10/2026", "1.76", ""], ["08/11/2026", "", ""]]
+      },
+      "test-workbook-id",
+      300
+    );
+
+    expect(dashboard.historyStatus).toBe("ready");
+    expect(dashboard.history).toEqual([{ date: "2026-08-10", score: 1.76 }]);
+    expect(dashboard.historyMessage).toContain("Tracking started");
+  });
+
   it("rejects non-HTTPS indicator source links", () => {
     const rows = indicatorRows();
     rows[0]![6] = "javascript:alert(1)";

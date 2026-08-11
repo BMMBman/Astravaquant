@@ -153,7 +153,9 @@ export function buildBitcoinValuationDashboard(
     warnings.push(`Only ${indicators.length} of 17 expected valuation inputs are currently readable.`);
   }
   if (history.length < 2) {
-    warnings.push("Forward-testing history will appear when the workbook contains at least two dated score observations.");
+    warnings.push(history.length === 1
+      ? "Forward testing has started; one more scored date is needed to form a historical line."
+      : "Forward-testing history will appear when the workbook contains a dated score observation.");
   }
 
   return {
@@ -173,8 +175,12 @@ export function buildBitcoinValuationDashboard(
     indicatorCount: indicators.length,
     indicators,
     categories: categoriesFor(indicators),
-    historyStatus: history.length >= 2 ? "ready" : "unavailable",
-    historyMessage: history.length >= 2 ? null : "No verified dated history is published yet. Forward tests will populate here automatically.",
+    historyStatus: history.length >= 1 ? "ready" : "unavailable",
+    historyMessage: history.length >= 2
+      ? null
+      : history.length === 1
+        ? "Tracking started with one dated observation. A line will form after the next scored date."
+        : "No verified dated history is published yet. Forward tests will populate here automatically.",
     history,
     warnings
   };

@@ -145,6 +145,17 @@ function renderHistoryChart(root: HTMLElement, points: ValuationPoint[]): void {
   const width = 680;
   const height = 220;
   const padding = { top: 24, right: 20, bottom: 32, left: 20 };
+  if (points.length === 1) {
+    const point = points[0]!;
+    root.innerHTML = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Bitcoin valuation tracking start">
+      <path d="M${padding.left} ${height / 2}H${width - padding.right}" class="valuation-history-zero"/>
+      <circle cx="${width / 2}" cy="${height / 2}" r="14" class="backtest-current-halo"/>
+      <circle cx="${width / 2}" cy="${height / 2}" r="6" class="valuation-history-current"/>
+      <text x="${width / 2}" y="${height / 2 - 24}" text-anchor="middle" class="valuation-history-value">${escapeHtml(formatScore(point.score))}</text>
+      <text x="${width / 2}" y="${height - 8}" text-anchor="middle" class="valuation-history-date">${escapeHtml(formatDate(point.date))}</text>
+    </svg>`;
+    return;
+  }
   const values = points.map((point) => point.score);
   const minimum = Math.min(-2, ...values);
   const maximum = Math.max(2, ...values);
@@ -168,8 +179,8 @@ function renderHistory(dashboard: BitcoinValuationDashboard): void {
   const root = document.querySelector<HTMLElement>("[data-valuation-history]");
   const state = document.querySelector<HTMLElement>("[data-history-state]");
   if (!root) return;
-  if (dashboard.historyStatus === "ready" && dashboard.history.length >= 2) {
-    if (state) state.textContent = `${dashboard.history.length} observations`;
+  if (dashboard.historyStatus === "ready" && dashboard.history.length >= 1) {
+    if (state) state.textContent = dashboard.history.length === 1 ? "Tracking started" : `${dashboard.history.length} observations`;
     renderHistoryChart(root, dashboard.history);
     return;
   }

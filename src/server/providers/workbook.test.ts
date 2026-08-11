@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildWorkbookDashboard, parseCsv, parseRatioModels, parseScoreSeries, regimeForScore } from "./workbook.js";
+import { buildWorkbookDashboard, deriveNspiSeries, parseCsv, parseRatioModels, parseScoreSeries, regimeForScore } from "./workbook.js";
 
 describe("Google workbook normalization", () => {
   it("reads dated score observations and excludes blanks and formula errors", () => {
@@ -89,6 +89,43 @@ describe("Google workbook normalization", () => {
       value: -0.79,
       source: "manual_fallback"
     });
+    expect(dashboard.scoreSeries.find((series) => series.id === "nspi")?.points).toEqual([
+      { date: "2025-11-26", score: -0.3 },
+      { date: "2025-12-03", score: -0.35 }
+    ]);
+  });
+
+  it("derives dated NSPI history from the latest available MTPI and LTPI states", () => {
+    const series = deriveNspiSeries(
+      {
+        id: "mtpi",
+        label: "Medium-Term Trend",
+        sourceTab: "MT Total Forward Testing",
+        status: "ready",
+        message: null,
+        points: [
+          { date: "2026-01-01", score: 0.4 },
+          { date: "2026-01-03", score: 0.6 }
+        ]
+      },
+      {
+        id: "ltpi",
+        label: "Long-Term Trend",
+        sourceTab: "LT Total Forward Testing",
+        status: "ready",
+        message: null,
+        points: [
+          { date: "2026-01-02", score: -0.8 },
+          { date: "2026-01-04", score: -0.4 }
+        ]
+      }
+    );
+
+    expect(series.points).toEqual([
+      { date: "2026-01-02", score: -0.2 },
+      { date: "2026-01-03", score: -0.1 },
+      { date: "2026-01-04", score: 0.1 }
+    ]);
   });
 
   it("uses the documented shared regime bands", () => {

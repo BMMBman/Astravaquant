@@ -205,6 +205,48 @@ export function parseScoreSeries(
   };
 }
 
+export function deriveNspiSeries(
+  mtpi: WorkbookScoreSeries,
+  ltpi: WorkbookScoreSeries
+): WorkbookScoreSeries {
+  const sourceTab = "Derived from MTPI + LTPI forward tests";
+  if (mtpi.points.length < 1 || ltpi.points.length < 1) {
+    return {
+      id: "nspi",
+      label: "NSPI Aggregate",
+      sourceTab,
+      status: "unavailable",
+      message: "Both dated MTPI and LTPI histories are required to derive NSPI.",
+      points: []
+    };
+  }
+
+  const mtByDate = new Map(mtpi.points.map((point) => [point.date, point.score]));
+  const ltByDate = new Map(ltpi.points.map((point) => [point.date, point.score]));
+  const dates = [...new Set([...mtByDate.keys(), ...ltByDate.keys()])].sort();
+  const points: WorkbookScorePoint[] = [];
+  let latestMt: number | null = null;
+  let latestLt: number | null = null;
+
+  for (const date of dates) {
+    if (mtByDate.has(date)) latestMt = mtByDate.get(date)!;
+    if (ltByDate.has(date)) latestLt = ltByDate.get(date)!;
+    if (latestMt === null || latestLt === null) continue;
+    points.push({ date, score: Number(((latestMt + latestLt) / 2).toFixed(4)) });
+  }
+
+  return {
+    id: "nspi",
+    label: "NSPI Aggregate",
+    sourceTab,
+    status: points.length > 1 ? "ready" : "unavailable",
+    message: points.length > 1
+      ? "Uses the latest published MTPI and LTPI value at every model update date."
+      : "The source histories do not yet overlap enough to derive NSPI.",
+    points
+  };
+}
+
 export function parseCsv(csv: string): SheetRows {
   const rows: SheetRows = [];
   let row: string[] = [];
@@ -342,10 +384,9 @@ export function buildWorkbookDashboard(
       }
     : fallbackSignal("nspi");
   const mrpi = fallbackSignal("mrpi");
-  const scoreSeries = [
-    parseScoreSeries("mtpi", "MT Total Forward Testing", rowsBySheet.get("MT Total Forward Testing") ?? []),
-    parseScoreSeries("ltpi", "LT Total Forward Testing", rowsBySheet.get("LT Total Forward Testing") ?? [])
-  ];
+  const mtpiSeries = parseScoreSeries("mtpi", "MT Total Forward Testing", rowsBySheet.get("MT Total Forward Testing") ?? []);
+  const ltpiSeries = parseScoreSeries("ltpi", "LT Total Forward Testing", rowsBySheet.get("LT Total Forward Testing") ?? []);
+  const scoreSeries = [mtpiSeries, ltpiSeries, deriveNspiSeries(mtpiSeries, ltpiSeries)];
   const ratioModels = [
     ...parseRatioModels("RSPS", rowsBySheet.get("RSPS") ?? []),
     ...parseRatioModels("Alts RSPS", rowsBySheet.get("Alts RSPS") ?? [])
@@ -353,6 +394,7 @@ export function buildWorkbookDashboard(
   const readyTabs = tabs.filter((tab) => tab.status === "ready").length;
   const warnings: string[] = [];
   if (!bothPublished) warnings.push("MTPI or LTPI could not be verified; affected readings use the manual fallback snapshot.");
+  if (scoreSeries[2]?.status === "ready") warnings.push("NSPI history is derived at each MTPI or LTPI update date using the latest available score from both series.");
   warnings.push("MRPI is not present in this crypto workbook and remains a separately published manual reading.");
   if (tabs.some((tab) => tab.formulaErrorCount > 0)) warnings.push("Some research cells contain spreadsheet formula errors; they are reported as unavailable, never as zero.");
   return {
@@ -491,7 +533,8 @@ function unavailableWorkbook(
     signals,
     scoreSeries: [
       { id: "mtpi", label: "Medium-Term Trend", sourceTab: "MT Total Forward Testing", status: "unavailable", message, points: [] },
-      { id: "ltpi", label: "Long-Term Trend", sourceTab: "LT Total Forward Testing", status: "unavailable", message, points: [] }
+      { id: "ltpi", label: "Long-Term Trend", sourceTab: "LT Total Forward Testing", status: "unavailable", message, points: [] },
+      { id: "nspi", label: "NSPI Aggregate", sourceTab: "Derived from MTPI + LTPI forward tests", status: "unavailable", message, points: [] }
     ],
     ratioModels: [],
     tabs: sheetDefinitions.map((definition) => summarizeTab(definition, [])),

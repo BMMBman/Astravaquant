@@ -36,8 +36,22 @@ interface FredDefinition {
   historyDays: number;
 }
 
+interface CryptoDefinition {
+  id: "bitcoin" | "ethereum" | "solana" | "sui" | "hyperliquid";
+  coinGeckoId: string;
+  label: string;
+}
+
 const coinGeckoSource = "CoinGecko";
 const coinGeckoSourceUrl = "https://www.coingecko.com/";
+
+const cryptoAssets: CryptoDefinition[] = [
+  { id: "bitcoin", coinGeckoId: "bitcoin", label: "Bitcoin" },
+  { id: "ethereum", coinGeckoId: "ethereum", label: "Ethereum" },
+  { id: "solana", coinGeckoId: "solana", label: "Solana" },
+  { id: "sui", coinGeckoId: "sui", label: "Sui" },
+  { id: "hyperliquid", coinGeckoId: "hyperliquid", label: "Hyperliquid" }
+];
 
 const fredSeries: FredDefinition[] = [
   {
@@ -111,7 +125,7 @@ function change(previous: number, current: number, type: FredDefinition["changeT
   return type === "basis_points" ? (current - previous) * 100 : ((current - previous) / previous) * 100;
 }
 
-function downsample(points: MarketPoint[], maximum = 96): MarketPoint[] {
+function downsample(points: MarketPoint[], maximum = 180): MarketPoint[] {
   if (points.length <= maximum) {
     return points;
   }
@@ -194,7 +208,10 @@ export class PublicMarketProvider {
         unavailableMetric("total", "Total Crypto Market Cap", coinGeckoSource, coinGeckoSourceUrl),
         unavailableMetric("total2", "Crypto Market Cap ex-Bitcoin", coinGeckoSource, coinGeckoSourceUrl),
         unavailableMetric("bitcoin", "Bitcoin", coinGeckoSource, coinGeckoSourceUrl),
-        unavailableMetric("ethereum", "Ethereum", coinGeckoSource, coinGeckoSourceUrl)
+        unavailableMetric("ethereum", "Ethereum", coinGeckoSource, coinGeckoSourceUrl),
+        unavailableMetric("solana", "Solana", coinGeckoSource, coinGeckoSourceUrl),
+        unavailableMetric("sui", "Sui", coinGeckoSource, coinGeckoSourceUrl),
+        unavailableMetric("hyperliquid", "Hyperliquid", coinGeckoSource, coinGeckoSourceUrl)
       );
     }
 
@@ -231,31 +248,29 @@ export class PublicMarketProvider {
   }
 
   private async loadCrypto(): Promise<MarketMetric[]> {
-    const [simple, global, bitcoinChart, ethereumChart] = await Promise.all([
+    const ids = cryptoAssets.map((asset) => asset.coinGeckoId).join("%2C");
+    const [simple, global, charts] = await Promise.all([
       this.coinGeckoJson<Record<string, CoinGeckoSimpleAsset>>(
-        "/simple/price?ids=bitcoin%2Cethereum&vs_currencies=usd&include_market_cap=true&include_24hr_change=true&include_last_updated_at=true"
+        `/simple/price?ids=${ids}&vs_currencies=usd&include_market_cap=true&include_24hr_change=true&include_last_updated_at=true`
       ),
       this.coinGeckoJson<CoinGeckoGlobal>("/global"),
-      this.coinGeckoJson<CoinGeckoChart>("/coins/bitcoin/market_chart?vs_currency=usd&days=30&interval=daily").catch(
-        () => null
-      ),
-      this.coinGeckoJson<CoinGeckoChart>("/coins/ethereum/market_chart?vs_currency=usd&days=30&interval=daily").catch(
-        () => null
+      Promise.all(
+        cryptoAssets.map((asset) =>
+          this.coinGeckoJson<CoinGeckoChart>(
+            `/coins/${asset.coinGeckoId}/market_chart?vs_currency=usd&days=90&interval=daily`
+          ).catch(() => null)
+        )
       )
     ]);
 
     const bitcoin = simple.bitcoin;
-    const ethereum = simple.ethereum;
     const total = global.data?.total_market_cap?.usd;
     const bitcoinMarketCap = bitcoin?.usd_market_cap;
-    if (!bitcoin?.usd || !ethereum?.usd || !total || !bitcoinMarketCap) {
-      throw new Error("CoinGecko returned an incomplete market snapshot.");
-    }
 
     const totalChange = global.data?.market_cap_change_percentage_24h_usd ?? null;
-    const total2 = total - bitcoinMarketCap;
+    const total2 = total !== undefined && bitcoinMarketCap !== undefined ? total - bitcoinMarketCap : null;
     let total2Change: number | null = null;
-    if (totalChange !== null && bitcoin.usd_24h_change !== undefined) {
+    if (total2 !== null && total !== undefined && bitcoinMarketCap !== undefined && totalChange !== null && bitcoin?.usd_24h_change !== undefined) {
       const previousTotal = total / (1 + totalChange / 100);
       const previousBitcoin = bitcoinMarketCap / (1 + bitcoin.usd_24h_change / 100);
       if (previousTotal > previousBitcoin) {
@@ -268,33 +283,36 @@ export class PublicMarketProvider {
     const createCurrentMetric = (
       id: MarketMetricId,
       label: string,
-      value: number,
+      value: number | null | undefined,
       metricChange: number | null,
       asOf: string | null
-    ): MarketMetric => ({
-      id,
-      label,
-      status: "ready",
-      message: null,
-      value,
-      unit: "usd_compact",
-      change: metricChange,
-      changeType: "percent",
-      asOf,
-      frequency: "Live snapshot",
-      source: coinGeckoSource,
-      sourceUrl: coinGeckoSourceUrl,
-      historyStatus: "unavailable",
-      historyMessage: currentAggregateHistory,
-      points: []
-    });
+    ): MarketMetric => value === null || value === undefined
+      ? unavailableMetric(id, label, coinGeckoSource, coinGeckoSourceUrl)
+      : ({
+          id,
+          label,
+          status: "ready",
+          message: null,
+          value,
+          unit: "usd_compact",
+          change: metricChange,
+          changeType: "percent",
+          asOf,
+          frequency: "Live snapshot",
+          source: coinGeckoSource,
+          sourceUrl: coinGeckoSourceUrl,
+          historyStatus: "unavailable",
+          historyMessage: currentAggregateHistory,
+          points: []
+        });
 
     const createAssetMetric = (
-      id: "bitcoin" | "ethereum",
+      id: CryptoDefinition["id"],
       label: string,
-      asset: CoinGeckoSimpleAsset,
+      asset: CoinGeckoSimpleAsset | undefined,
       chart: CoinGeckoChart | null
     ): MarketMetric => {
+      if (asset?.usd === undefined) return unavailableMetric(id, label, coinGeckoSource, coinGeckoSourceUrl);
       const points = chartPoints(chart);
       return {
         id,
@@ -306,20 +324,23 @@ export class PublicMarketProvider {
         change: asset.usd_24h_change ?? null,
         changeType: "percent",
         asOf: unixTimestamp(asset.last_updated_at),
-        frequency: "Live snapshot / 30-day chart",
+        frequency: "Live snapshot / 90-day chart",
         source: coinGeckoSource,
         sourceUrl: coinGeckoSourceUrl,
         historyStatus: points.length > 1 ? "ready" : "unavailable",
-        historyMessage: points.length > 1 ? null : "Thirty-day price history is temporarily unavailable.",
+        historyMessage: points.length > 1 ? null : "Ninety-day price history is temporarily unavailable.",
         points
       };
     };
 
+    const assetMetrics = cryptoAssets.map((definition, index) =>
+      createAssetMetric(definition.id, definition.label, simple[definition.coinGeckoId], charts[index] ?? null)
+    );
+
     return [
       createCurrentMetric("total", "Total Crypto Market Cap", total, totalChange, globalAsOf),
       createCurrentMetric("total2", "Crypto Market Cap ex-Bitcoin", total2, total2Change, globalAsOf),
-      createAssetMetric("bitcoin", "Bitcoin", bitcoin, bitcoinChart),
-      createAssetMetric("ethereum", "Ethereum", ethereum, ethereumChart)
+      ...assetMetrics
     ];
   }
 

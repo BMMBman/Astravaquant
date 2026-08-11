@@ -18,6 +18,8 @@ const categoryLabels: Record<WorkbookTabCategory, string> = {
   selection: "Selection"
 };
 
+type BacktestPeriod = "30D" | "90D" | "YTD" | "ALL";
+
 function formatScore(value: number | null): string {
   if (value === null) return "--";
   return `${value > 0 ? "+" : ""}${value.toFixed(2)}`;
@@ -37,6 +39,17 @@ function setText(selector: string, value: string): void {
   if (node) node.textContent = value;
 }
 
+function windowSeries(series: WorkbookScoreSeries, period: BacktestPeriod): WorkbookScoreSeries {
+  const latest = series.points.at(-1);
+  if (!latest || period === "ALL") return series;
+  const end = new Date(`${latest.date}T00:00:00Z`);
+  const start = new Date(end);
+  if (period === "YTD") start.setUTCMonth(0, 1);
+  else start.setUTCDate(start.getUTCDate() - Number.parseInt(period, 10));
+  const startDate = start.toISOString().slice(0, 10);
+  return { ...series, points: series.points.filter((point) => point.date >= startDate) };
+}
+
 function chartMarkup(series: WorkbookScoreSeries, negativeThreshold: number, positiveThreshold: number): string {
   const points = series.points;
   if (points.length < 2) return "";
@@ -49,6 +62,8 @@ function chartMarkup(series: WorkbookScoreSeries, negativeThreshold: number, pos
   const line = points.map((point, index) => `${index ? "L" : "M"}${x(index).toFixed(1)} ${y(point.score).toFixed(1)}`).join(" ");
   const area = `${line} L${x(points.length - 1).toFixed(1)} ${y(-1).toFixed(1)} L${x(0).toFixed(1)} ${y(-1).toFixed(1)} Z`;
   const current = points.at(-1)!;
+  const currentX = x(points.length - 1).toFixed(1);
+  const currentY = y(current.score).toFixed(1);
   return `
     <defs><linearGradient id="backtest-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8caed3" stop-opacity=".32"/><stop offset="1" stop-color="#8caed3" stop-opacity="0"/></linearGradient></defs>
     <rect x="${paddingX}" y="${y(positiveThreshold).toFixed(1)}" width="${width - paddingX * 2}" height="${(y(negativeThreshold) - y(positiveThreshold)).toFixed(1)}" fill="rgba(185,181,174,.035)"/>
@@ -57,8 +72,40 @@ function chartMarkup(series: WorkbookScoreSeries, negativeThreshold: number, pos
     <path d="M${paddingX} ${y(0).toFixed(1)} H${width - paddingX}" class="backtest-zero"/>
     <path d="${area}" fill="url(#backtest-area)"/>
     <path d="${line}" class="backtest-line"/>
-    <circle cx="${x(points.length - 1).toFixed(1)}" cy="${y(current.score).toFixed(1)}" r="6" class="backtest-current"/>
+    <line x1="${currentX}" x2="${currentX}" y1="${paddingY}" y2="${height - paddingY}" class="chart-hover-guide" data-backtest-guide/>
+    <circle cx="${currentX}" cy="${currentY}" r="6" class="backtest-current" data-backtest-hover/>
   `;
+}
+
+function bindChartInspector(series: WorkbookScoreSeries): void {
+  const chart = document.querySelector<SVGElement>("[data-backtest-chart]");
+  const inspector = document.querySelector<HTMLElement>("[data-backtest-inspector]");
+  if (!chart || !inspector || series.points.length < 2) return;
+  const guide = chart.querySelector<SVGLineElement>("[data-backtest-guide]");
+  const dot = chart.querySelector<SVGCircleElement>("[data-backtest-hover]");
+  const time = inspector.querySelector("time");
+  const value = inspector.querySelector("strong");
+
+  const inspect = (index: number) => {
+    const point = series.points[index]!;
+    const x = 28 + (index / (series.points.length - 1)) * 944;
+    const y = 22 + ((1 - point.score) / 2) * 276;
+    guide?.setAttribute("x1", x.toFixed(1));
+    guide?.setAttribute("x2", x.toFixed(1));
+    dot?.setAttribute("cx", x.toFixed(1));
+    dot?.setAttribute("cy", y.toFixed(1));
+    if (time) time.textContent = formatDate(point.date);
+    if (value) value.textContent = formatScore(point.score);
+    inspector.hidden = false;
+  };
+
+  inspect(series.points.length - 1);
+  chart.onpointermove = (event) => {
+    const rect = chart.getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+    inspect(Math.round(ratio * (series.points.length - 1)));
+  };
+  chart.onpointerleave = () => inspect(series.points.length - 1);
 }
 
 function renderCoverage(dashboard: WorkbookDashboard): void {
@@ -88,11 +135,12 @@ function renderCoverage(dashboard: WorkbookDashboard): void {
   if (warningRoot) warningRoot.innerHTML = dashboard.warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("");
 }
 
-function renderSeries(series: WorkbookScoreSeries, negativeThreshold: number, positiveThreshold: number): void {
+function renderSeries(series: WorkbookScoreSeries, totalObservations: number, negativeThreshold: number, positiveThreshold: number): void {
   const analysis = analyzeScoreSeries(series.points, negativeThreshold, positiveThreshold);
   const chart = document.querySelector<SVGElement>("[data-backtest-chart]");
   const empty = document.querySelector<HTMLElement>("[data-backtest-empty]");
   if (chart) chart.innerHTML = chartMarkup(series, negativeThreshold, positiveThreshold);
+  bindChartInspector(series);
   if (empty) {
     empty.hidden = analysis.observations > 1;
     empty.textContent = series.message ?? "At least two valid observations are required.";
@@ -100,11 +148,19 @@ function renderSeries(series: WorkbookScoreSeries, negativeThreshold: number, po
 
   setText("[data-kpi-observations]", String(analysis.observations));
   setText("[data-kpi-current]", formatScore(analysis.currentScore));
-  setText("[data-kpi-average]", formatScore(analysis.averageScore));
+  setText("[data-kpi-latest-date]", formatDate(analysis.endDate));
   setText("[data-kpi-transitions]", String(analysis.transitions.length));
   setText("[data-kpi-streak]", analysis.currentRegime ? `${analysis.currentStreak} obs / ${regimeLabels[analysis.currentRegime]}` : "--");
   setText("[data-kpi-range]", analysis.startDate ? `${formatDate(analysis.startDate)} - ${formatDate(analysis.endDate)}` : "--");
-  setText("[data-series-source]", `${series.sourceTab} / ${analysis.observations} verified observations`);
+  setText("[data-series-source]", `${series.sourceTab} / ${analysis.observations} of ${totalObservations} dated observations${series.message ? ` / ${series.message}` : ""}`);
+
+  const axis = document.querySelector<HTMLElement>("[data-backtest-axis]");
+  if (axis) {
+    const middle = series.points[Math.floor((series.points.length - 1) / 2)];
+    axis.innerHTML = analysis.startDate && analysis.endDate
+      ? `<span>${escapeHtml(formatDate(analysis.startDate))}</span><span>${escapeHtml(formatDate(middle?.date ?? analysis.startDate))}</span><span>${escapeHtml(formatDate(analysis.endDate))}</span>`
+      : "";
+  }
 
   for (const regime of Object.keys(regimeLabels) as BacktestRegime[]) {
     const count = analysis.counts[regime];
@@ -123,6 +179,16 @@ function renderSeries(series: WorkbookScoreSeries, negativeThreshold: number, po
           <div><time>${escapeHtml(formatDate(transition.date))}</time><span>${regimeLabels[transition.from]} to ${regimeLabels[transition.to]}</span><strong>${formatScore(transition.score)}</strong></div>
         `).join("")
       : '<p class="backtest-empty-copy">No regime transitions under the selected thresholds.</p>';
+  }
+
+
+  const observations = document.querySelector<HTMLElement>("[data-observation-list]");
+  if (observations) {
+    observations.innerHTML = series.points.length
+      ? [...series.points].reverse().map((point) => `
+          <div><time datetime="${escapeHtml(point.date)}">${escapeHtml(formatDate(point.date))}</time><strong>${formatScore(point.score)}</strong></div>
+        `).join("")
+      : '<p class="backtest-empty-copy">No dated observations in this history window.</p>';
   }
 }
 
@@ -146,17 +212,29 @@ export async function bootBacktesting(): Promise<void> {
     }
 
     seriesSelect.innerHTML = dashboard.scoreSeries.map((series) => `<option value="${series.id}">${escapeHtml(series.label)}</option>`).join("");
+    if (dashboard.scoreSeries.some((series) => series.id === "nspi" && series.status === "ready")) seriesSelect.value = "nspi";
+    let period: BacktestPeriod = "90D";
     const rerender = () => {
       const negative = Number(negativeInput.value);
       const positive = Number(positiveInput.value);
       setText("[data-negative-value]", negative.toFixed(2));
       setText("[data-positive-value]", `+${positive.toFixed(2)}`);
-      const series = dashboard.scoreSeries.find((candidate) => candidate.id === seriesSelect.value) ?? dashboard.scoreSeries[0];
-      if (series && negative < positive) renderSeries(series, negative, positive);
+      const fullSeries = dashboard.scoreSeries.find((candidate) => candidate.id === seriesSelect.value) ?? dashboard.scoreSeries[0];
+      const series = fullSeries ? windowSeries(fullSeries, period) : undefined;
+      if (series && fullSeries && negative < positive) renderSeries(series, fullSeries.points.length, negative, positive);
     };
     seriesSelect.addEventListener("change", rerender);
     negativeInput.addEventListener("input", rerender);
     positiveInput.addEventListener("input", rerender);
+    document.querySelectorAll<HTMLButtonElement>("[data-backtest-period]").forEach((button) => {
+      button.addEventListener("click", () => {
+        period = button.dataset.backtestPeriod as BacktestPeriod;
+        document.querySelectorAll<HTMLButtonElement>("[data-backtest-period]").forEach((candidate) => {
+          candidate.classList.toggle("is-active", candidate === button);
+        });
+        rerender();
+      });
+    });
     rerender();
   } catch {
     if (state) {

@@ -111,7 +111,7 @@ export interface WorkbookScorePoint {
 }
 
 export interface WorkbookScoreSeries {
-  id: "mtpi" | "ltpi";
+  id: "mtpi" | "ltpi" | "nspi";
   label: string;
   sourceTab: string;
   status: "ready" | "unavailable";
@@ -171,6 +171,9 @@ export type MarketMetricId =
   | "total2"
   | "bitcoin"
   | "ethereum"
+  | "solana"
+  | "sui"
+  | "hyperliquid"
   | "treasury10y"
   | "fedLiquidity"
   | "mortgage30y"

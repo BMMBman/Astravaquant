@@ -79,45 +79,24 @@
             </div>
           </div>
 
-          <div class="terminal-quote-grid reveal">
-            <article class="terminal-quote" data-market-card="total">
-              <div><span>Total Crypto</span><small>CoinGecko aggregate</small></div>
-              <strong data-market-value>Loading</strong>
-              <b data-market-change>--</b>
-              <time data-market-asof>Awaiting feed</time>
-            </article>
-            <article class="terminal-quote" data-market-card="total2">
-              <div><span>TOTAL2</span><small>Crypto ex-Bitcoin</small></div>
-              <strong data-market-value>Loading</strong>
-              <b data-market-change>--</b>
-              <time data-market-asof>Awaiting feed</time>
-            </article>
-            <article class="terminal-quote" data-market-card="bitcoin">
-              <div><span>Bitcoin</span><small>BTC / USD</small></div>
-              <strong data-market-value>Loading</strong>
-              <b data-market-change>--</b>
-              <time data-market-asof>Awaiting feed</time>
-            </article>
-            <article class="terminal-quote" data-market-card="ethereum">
-              <div><span>Ethereum</span><small>ETH / USD</small></div>
-              <strong data-market-value>Loading</strong>
-              <b data-market-change>--</b>
-              <time data-market-asof>Awaiting feed</time>
-            </article>
+          <div class="terminal-quote-grid reveal" data-market-quotes>
+            <p class="terminal-loading-copy">Building the live market tape.</p>
           </div>
 
-          <div class="terminal-chart-grid">
-            <article class="terminal-panel reveal" data-market-panel="bitcoin">
-              <header><div><span>Bitcoin</span><h3>30-day price</h3></div><b data-panel-change>--</b></header>
-              <div class="terminal-chart" data-market-chart="bitcoin"><span>Loading verified observations</span></div>
-              <footer><span data-panel-range>--</span><a data-panel-source href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a></footer>
-            </article>
-            <article class="terminal-panel reveal" data-market-panel="ethereum">
-              <header><div><span>Ethereum</span><h3>30-day price</h3></div><b data-panel-change>--</b></header>
-              <div class="terminal-chart" data-market-chart="ethereum"><span>Loading verified observations</span></div>
-              <footer><span data-panel-range>--</span><a data-panel-source href="https://www.coingecko.com/" target="_blank" rel="noreferrer">CoinGecko</a></footer>
-            </article>
+          <div class="terminal-chart-grid" data-crypto-panels></div>
+        </div>
+      </section>
+
+      <section class="section section-compact">
+        <div class="shell shell-wide">
+          <div class="terminal-section-head reveal">
+            <div>
+              <p class="eyebrow">Model regimes</p>
+              <h2>State, scale, and history</h2>
+            </div>
+            <div class="feed-state" data-model-status role="status"><i aria-hidden="true"></i><span>Loading model history</span></div>
           </div>
+          <div class="terminal-model-grid" data-model-panels></div>
         </div>
       </section>
 
@@ -130,28 +109,7 @@
             </div>
             <a class="terminal-text-link" href="models.html#mrpi">View MRPI methodology</a>
           </div>
-          <div class="macro-panel-grid">
-            <article class="terminal-panel reveal" data-market-panel="treasury10y">
-              <header><div><span>Rates</span><h3>10-Year Treasury</h3></div><strong data-panel-value>--</strong></header>
-              <div class="terminal-chart terminal-chart-compact" data-market-chart="treasury10y"><span>Loading FRED observations</span></div>
-              <footer><span data-panel-range>--</span><a data-panel-source href="https://fred.stlouisfed.org/series/DGS10" target="_blank" rel="noreferrer">FRED / DGS10</a></footer>
-            </article>
-            <article class="terminal-panel reveal" data-market-panel="fedLiquidity">
-              <header><div><span>Liquidity</span><h3>Federal Reserve Assets</h3></div><strong data-panel-value>--</strong></header>
-              <div class="terminal-chart terminal-chart-compact" data-market-chart="fedLiquidity"><span>Loading FRED observations</span></div>
-              <footer><span data-panel-range>--</span><a data-panel-source href="https://fred.stlouisfed.org/series/WALCL" target="_blank" rel="noreferrer">FRED / WALCL</a></footer>
-            </article>
-            <article class="terminal-panel reveal" data-market-panel="mortgage30y">
-              <header><div><span>Housing finance</span><h3>30-Year Mortgage Rate</h3></div><strong data-panel-value>--</strong></header>
-              <div class="terminal-chart terminal-chart-compact" data-market-chart="mortgage30y"><span>Loading FRED observations</span></div>
-              <footer><span data-panel-range>--</span><a data-panel-source href="https://fred.stlouisfed.org/series/MORTGAGE30US" target="_blank" rel="noreferrer">FRED / MORTGAGE30US</a></footer>
-            </article>
-            <article class="terminal-panel reveal" data-market-panel="homePrices">
-              <header><div><span>Housing</span><h3>U.S. Home Price Index</h3></div><strong data-panel-value>--</strong></header>
-              <div class="terminal-chart terminal-chart-compact" data-market-chart="homePrices"><span>Loading FRED observations</span></div>
-              <footer><span data-panel-range>--</span><a data-panel-source href="https://fred.stlouisfed.org/series/CSUSHPINSA" target="_blank" rel="noreferrer">FRED / CSUSHPINSA</a></footer>
-            </article>
-          </div>
+          <div class="macro-panel-grid" data-macro-panels></div>
           <p class="terminal-disclosure reveal">Market data may be delayed. Crypto data is provided by CoinGecko; macro and housing series are provided by Federal Reserve Economic Data. Current values are research inputs, not execution prices.</p>
         </div>
       </section>

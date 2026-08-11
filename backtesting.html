@@ -51,10 +51,18 @@
               </div>
             </header>
 
+            <div class="history-range" data-backtest-periods aria-label="Backtest history range">
+              <span>History</span>
+              <button type="button" data-backtest-period="30D">30D</button>
+              <button class="is-active" type="button" data-backtest-period="90D">90D</button>
+              <button type="button" data-backtest-period="YTD">YTD</button>
+              <button type="button" data-backtest-period="ALL">All</button>
+            </div>
+
             <div class="backtest-kpis" aria-label="Backtest summary">
               <div><span>Observations</span><strong data-kpi-observations>--</strong></div>
               <div><span>Current</span><strong data-kpi-current>--</strong></div>
-              <div><span>Average</span><strong data-kpi-average>--</strong></div>
+              <div><span>Latest date</span><strong data-kpi-latest-date>--</strong></div>
               <div><span>Transitions</span><strong data-kpi-transitions>--</strong></div>
               <div><span>Current streak</span><strong data-kpi-streak>--</strong></div>
               <div><span>Test window</span><strong data-kpi-range>--</strong></div>
@@ -62,7 +70,9 @@
 
             <div class="backtest-chart-stage">
               <svg data-backtest-chart viewBox="0 0 1000 320" role="img" aria-label="Historical model-score chart"></svg>
+              <div class="chart-inspector" data-backtest-inspector hidden><time>--</time><strong>--</strong></div>
               <p class="backtest-empty-copy" data-backtest-empty>Connecting to the private research workbook.</p>
+              <div class="chart-date-axis" data-backtest-axis aria-hidden="true"></div>
             </div>
 
             <div class="backtest-distribution" aria-label="Regime distribution">
@@ -71,9 +81,15 @@
               <div data-distribution="risk_on"><span>Risk-on</span><div><i></i></div><strong>--</strong></div>
             </div>
 
-            <div class="backtest-transitions">
-              <header><span class="table-label">Recent Transitions</span><p>Recalculated when thresholds change.</p></header>
-              <div data-transition-list><p class="backtest-empty-copy">Waiting for score history.</p></div>
+            <div class="backtest-detail-grid">
+              <div class="backtest-transitions">
+                <header><span class="table-label">Recent Transitions</span><p>Recalculated when thresholds change.</p></header>
+                <div data-transition-list><p class="backtest-empty-copy">Waiting for score history.</p></div>
+              </div>
+              <div class="backtest-observations">
+                <header><span class="table-label">Dated Observations</span><p>Newest first.</p></header>
+                <div data-observation-list><p class="backtest-empty-copy">Waiting for score history.</p></div>
+              </div>
             </div>
           </article>
 

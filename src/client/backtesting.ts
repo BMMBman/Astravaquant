@@ -289,9 +289,10 @@ export async function bootBacktesting(): Promise<void> {
   }
 
   seriesSelect.innerHTML = series.map((candidate) => `<option value="${escapeHtml(candidate.id)}">${escapeHtml(candidate.label)}</option>`).join("");
+  const mtpi = series.find((candidate) => candidate.id === "mtpi" && candidate.status === "ready");
   const valuation = series.find((candidate) => candidate.id === "bitcoin-valuation" && candidate.points.length > 0);
   const nspi = series.find((candidate) => candidate.id === "nspi" && candidate.status === "ready");
-  seriesSelect.value = (valuation ?? nspi ?? series[0])!.id;
+  seriesSelect.value = (mtpi ?? valuation ?? nspi ?? series[0])!.id;
 
   let period: BacktestPeriod = "90D";
   const thresholds = new Map(series.map((candidate) => [candidate.id, candidate.defaultThresholds]));

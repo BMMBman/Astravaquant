@@ -1,5 +1,6 @@
 import type { WorkbookDashboard, WorkbookModelSignal } from "../shared/contracts.js";
 import { apiRequest } from "./api.js";
+import { renderModelHistory, renderModelHistoryUnavailable } from "./model-history.js";
 
 function signed(value: number): string {
   if (value > 0) return `+${value.toFixed(2)}`;
@@ -88,7 +89,9 @@ export async function bootModelFeed(): Promise<void> {
     dashboard.signals.forEach(updateSignal);
     updatePublication(dashboard);
     updateRatios(dashboard);
+    renderModelHistory(dashboard);
   } catch {
     updatePublication({ status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] });
+    renderModelHistoryUnavailable();
   }
 }

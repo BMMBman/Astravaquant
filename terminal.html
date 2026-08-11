@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="AstravaQuant Terminal presents connected dashboards, model state, watchlists, and Build the Brief research."
+      content="AstravaQuant Terminal presents live crypto, liquidity, rates, equity-index, and housing market data."
     />
-    <title>AstravaQuant Terminal | Dashboards and Research</title>
+    <title>AstravaQuant Terminal | Market and Liquidity Dashboard</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -41,7 +41,6 @@
         </a>
 
         <nav class="site-nav" aria-label="Main navigation">
-          <a href="signals.html">Signals</a>
           <a href="models.html">Models</a>
           <a href="backtesting.html">Backtest</a>
           <a href="portfolio.html">Portfolio</a>
@@ -91,19 +90,6 @@
         <div class="shell shell-wide">
           <div class="terminal-section-head reveal">
             <div>
-              <p class="eyebrow">Model regimes</p>
-              <h2>State, scale, and history</h2>
-            </div>
-            <div class="feed-state" data-model-status role="status"><i aria-hidden="true"></i><span>Loading model history</span></div>
-          </div>
-          <div class="terminal-model-grid" data-model-panels></div>
-        </div>
-      </section>
-
-      <section class="section section-compact">
-        <div class="shell shell-wide">
-          <div class="terminal-section-head reveal">
-            <div>
               <p class="eyebrow">Liquidity plumbing</p>
               <h2>Where market liquidity is moving</h2>
             </div>
@@ -136,7 +122,7 @@
             <a class="terminal-text-link" href="models.html#mrpi">View MRPI methodology</a>
           </div>
           <div class="macro-panel-grid" data-housing-panels></div>
-          <p class="terminal-disclosure reveal">Market data may be delayed. Crypto data is provided by CoinGecko, stablecoin data by DefiLlama, and macro, equity-index, and housing series by Federal Reserve Economic Data. Current values are research inputs, not execution prices.</p>
+          <p class="terminal-disclosure reveal">Market data may be delayed. Current crypto data is provided by CoinGecko with CoinPaprika fallback, stablecoin data by DefiLlama, and macro, equity-index, and housing series by Federal Reserve Economic Data. Current values are research inputs, not execution prices.</p>
         </div>
       </section>
     </main>

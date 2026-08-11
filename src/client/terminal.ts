@@ -2,10 +2,7 @@ import type {
   MarketDashboard,
   MarketMetric,
   MarketMetricId,
-  MarketPoint,
-  WorkbookDashboard,
-  WorkbookModelSignal,
-  WorkbookScoreSeries
+  MarketPoint
 } from "../shared/contracts.js";
 import { apiRequest } from "./api.js";
 import { trackProductEvent } from "./analytics.js";
@@ -13,13 +10,11 @@ import { trackProductEvent } from "./analytics.js";
 type HistoryPeriod = "30D" | "90D" | "1Y" | "YTD" | "ALL";
 
 const marketPeriods: HistoryPeriod[] = ["30D", "90D", "1Y", "ALL"];
-const modelPeriods: HistoryPeriod[] = ["30D", "90D", "YTD", "ALL"];
 const cryptoIds: MarketMetricId[] = ["bitcoin", "ethereum", "solana", "sui", "hyperliquid"];
 const quoteIds: MarketMetricId[] = ["total", "total2", ...cryptoIds];
 const liquidityIds: MarketMetricId[] = ["fedNetLiquidity", "fedLiquidity", "treasuryGeneralAccount", "reverseRepo", "m2MoneySupply", "stablecoinSupply"];
 const crossAssetIds: MarketMetricId[] = ["sp500", "nasdaq", "treasury10y"];
 const housingIds: MarketMetricId[] = ["mortgage30y", "homePrices"];
-const modelIds = ["mtpi", "ltpi", "nspi", "mrpi"];
 const symbols: Partial<Record<MarketMetricId, string>> = {
   total: "TOTAL",
   total2: "TOTAL2",
@@ -39,12 +34,6 @@ const symbols: Partial<Record<MarketMetricId, string>> = {
   nasdaq: "NASDAQ",
   mortgage30y: "MORTGAGE30US",
   homePrices: "CSUSHPINSA"
-};
-const modelScopes: Record<string, string> = {
-  mtpi: "Five-day crypto trend",
-  ltpi: "Weekly crypto trend",
-  nspi: "Combined crypto regime",
-  mrpi: "10-year Treasury pressure"
 };
 
 function escapeHtml(value: string): string {
@@ -97,10 +86,6 @@ function formatAsOf(value: string | null): string {
 
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(new Date(value));
-}
-
-function formatScore(value: number): string {
-  return `${value > 0 ? "+" : ""}${value.toFixed(2)}`;
 }
 
 function filterPoints(points: MarketPoint[], period: HistoryPeriod): MarketPoint[] {
@@ -286,65 +271,6 @@ function renderMarketPanels(metrics: MarketMetric[], ids: MarketMetricId[], sele
   }
 }
 
-function modelPanelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | undefined, period: HistoryPeriod): string {
-  const position = ((signal.value + 1) / 2) * 100;
-  const isMrpi = signal.id === "mrpi";
-  const leftLabel = isMrpi ? "Tightening" : "Risk-off";
-  const rightLabel = isMrpi ? "Easing" : "Risk-on";
-  const latestSeriesDate = series?.points.at(-1)?.date;
-  const asOf = latestSeriesDate ? `As of ${formatDate(`${latestSeriesDate}T00:00:00.000Z`)}` : signal.updatedLabel ?? "Current published state";
-  return `<article class="terminal-model-card" data-model-card="${escapeHtml(signal.id)}">
-    <header><div><span>${escapeHtml(modelScopes[signal.id] ?? signal.scope)}</span><h3>${escapeHtml(signal.name)}</h3></div><time>${escapeHtml(asOf)}</time></header>
-    <div class="model-gauge-read"><strong>${formatScore(signal.value)}</strong><b>${escapeHtml(signal.regime)}</b></div>
-    <div class="model-scale-gauge" aria-label="${escapeHtml(signal.name)} score ${formatScore(signal.value)}">
-      <div><i></i><i></i><i></i><i></i><i></i><b style="left:${Math.min(100, Math.max(0, position)).toFixed(1)}%"></b></div>
-      <small><span>${leftLabel} / -1</span><span>Neutral / 0</span><span>${rightLabel} / +1</span></small>
-    </div>
-    ${series?.points.length ? periodButtons(modelPeriods, period, "data-model-period") : ""}
-    <div class="terminal-chart terminal-model-chart" data-model-chart="${escapeHtml(signal.id)}"><span>${escapeHtml(series?.message ?? (isMrpi ? "MRPI history is not present in the connected crypto workbook." : "Historical series unavailable."))}</span></div>
-    <footer><span data-model-range>${escapeHtml(series?.sourceTab ?? signal.sourceTab ?? "Published model reading")}</span><a href="backtesting.html">Open backtest</a></footer>
-  </article>`;
-}
-
-function renderModelPanels(dashboard: WorkbookDashboard): void {
-  const root = document.querySelector<HTMLElement>("[data-model-panels]");
-  if (!root) return;
-  const signalById = new Map(dashboard.signals.map((signal) => [signal.id, signal]));
-  const seriesById = new Map(dashboard.scoreSeries.map((series) => [series.id, series]));
-  const panels = modelIds.map((id) => ({ signal: signalById.get(id), series: seriesById.get(id as WorkbookScoreSeries["id"]) })).filter(
-    (panel): panel is { signal: WorkbookModelSignal; series: WorkbookScoreSeries | undefined } => Boolean(panel.signal)
-  );
-  const periods = new Map(panels.map(({ signal, series }) => {
-    const points = (series?.points ?? []).map((point) => ({ timestamp: `${point.date}T00:00:00.000Z`, value: point.score }));
-    return [signal.id, defaultPeriod(points, modelPeriods)];
-  }));
-  root.innerHTML = panels.map(({ signal, series }) => modelPanelMarkup(signal, series, periods.get(signal.id)!)).join("");
-
-  for (const { signal, series } of panels) {
-    if (!series?.points.length) continue;
-    const panel = root.querySelector<HTMLElement>(`[data-model-card="${signal.id}"]`)!;
-    const allPoints = series.points.map((point) => ({ timestamp: `${point.date}T00:00:00.000Z`, value: point.score }));
-    const render = () => {
-      const period = periods.get(signal.id)!;
-      const points = filterPoints(allPoints, period);
-      const chart = panel.querySelector<HTMLElement>(`[data-model-chart="${signal.id}"]`)!;
-      renderLineChart(chart, points, { id: `model-${signal.id}-${period}`, fixedExtent: [-1, 1], scoreBands: true, valueLabel: formatScore });
-      const range = panel.querySelector<HTMLElement>("[data-model-range]");
-      if (range) range.textContent = points.length > 1
-        ? `${formatDate(points[0]!.timestamp)} - ${formatDate(points.at(-1)!.timestamp)}`
-        : series.message ?? series.sourceTab;
-    };
-    panel.querySelectorAll<HTMLButtonElement>("[data-model-period]").forEach((button) => {
-      button.addEventListener("click", () => {
-        periods.set(signal.id, button.dataset.modelPeriod as HistoryPeriod);
-        panel.querySelectorAll<HTMLButtonElement>("[data-model-period]").forEach((candidate) => candidate.classList.toggle("is-active", candidate === button));
-        render();
-      });
-    });
-    render();
-  }
-}
-
 function setFeedState(selector: string, state: string, label: string): void {
   const root = document.querySelector<HTMLElement>(selector);
   if (!root) return;
@@ -356,33 +282,22 @@ function setFeedState(selector: string, state: string, label: string): void {
 export async function bootTerminal(): Promise<void> {
   const root = document.querySelector<HTMLElement>("[data-market-terminal]");
   if (!root) return;
-  const [markets, workbook] = await Promise.allSettled([
-    apiRequest<MarketDashboard>("/api/markets", { signal: AbortSignal.timeout(18_000) }),
-    apiRequest<WorkbookDashboard>("/api/workbook", { signal: AbortSignal.timeout(18_000) })
-  ]);
-
-  if (markets.status === "fulfilled") {
-    renderQuotes(markets.value.metrics);
-    renderMarketPanels(markets.value.metrics, cryptoIds, "[data-crypto-panels]");
-    renderMarketPanels(markets.value.metrics, liquidityIds, "[data-liquidity-panels]");
-    renderMarketPanels(markets.value.metrics, crossAssetIds, "[data-cross-asset-panels]");
-    renderMarketPanels(markets.value.metrics, housingIds, "[data-housing-panels]");
-    setFeedState("[data-market-status]", markets.value.status, markets.value.status === "ready" ? "Feeds online" : "Partial feed");
-    trackProductEvent("terminal_data_loaded", { status: markets.value.status });
-  } else {
+  try {
+    const markets = await apiRequest<MarketDashboard>("/api/markets", { signal: AbortSignal.timeout(18_000) });
+    renderQuotes(markets.metrics);
+    renderMarketPanels(markets.metrics, cryptoIds, "[data-crypto-panels]");
+    renderMarketPanels(markets.metrics, liquidityIds, "[data-liquidity-panels]");
+    renderMarketPanels(markets.metrics, crossAssetIds, "[data-cross-asset-panels]");
+    renderMarketPanels(markets.metrics, housingIds, "[data-housing-panels]");
+    const cryptoMetrics = quoteIds.map((id) => markets.metrics.find((metric) => metric.id === id)).filter((metric): metric is MarketMetric => Boolean(metric));
+    const cryptoReady = cryptoMetrics.filter((metric) => metric.status === "ready").length;
+    const cryptoState = cryptoReady === cryptoMetrics.length ? "ready" : cryptoReady > 0 ? "partial" : "unavailable";
+    setFeedState("[data-market-status]", cryptoState, cryptoState === "ready" ? "Crypto tape online" : cryptoState === "partial" ? "Crypto tape partial" : "Crypto tape unavailable");
+    trackProductEvent("terminal_data_loaded", { status: markets.status, cryptoStatus: cryptoState });
+  } catch {
     setFeedState("[data-market-status]", "unavailable", "Feeds temporarily unavailable");
     const quotes = document.querySelector<HTMLElement>("[data-market-quotes]");
     if (quotes) quotes.innerHTML = '<p class="terminal-loading-copy">Live market feeds are temporarily unavailable. No substitute prices are shown.</p>';
     trackProductEvent("terminal_data_failed", { reason: "request_failed" });
-  }
-
-  if (workbook.status === "fulfilled") {
-    renderModelPanels(workbook.value);
-    const ready = workbook.value.status === "ready" || workbook.value.status === "partial";
-    setFeedState("[data-model-status]", ready ? "ready" : "unavailable", ready ? "Model history live" : "Model history unavailable");
-  } else {
-    setFeedState("[data-model-status]", "unavailable", "Model history unavailable");
-    const models = document.querySelector<HTMLElement>("[data-model-panels]");
-    if (models) models.innerHTML = '<p class="terminal-loading-copy">The research workbook could not be reached. No model history has been substituted.</p>';
   }
 }

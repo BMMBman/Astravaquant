@@ -9,7 +9,6 @@ const pages = [
   "backtesting.html",
   "terminal.html",
   "portfolio.html",
-  "signals.html",
   "research.html",
   "research-crypto-participation.html",
   "research-weekly-structure.html",
@@ -30,6 +29,12 @@ describe("progressive page rendering", () => {
     const html = readFileSync(new URL(page, root), "utf8");
     expect(html).not.toContain("Loading wallet");
     expect(html).toContain("Connect Wallet");
+  });
+
+  it("consolidates the legacy signals route into Models", () => {
+    const html = readFileSync(new URL("signals.html", root), "utf8");
+    expect(html).toContain('url=models.html');
+    expect(html).toContain('window.location.replace("models.html")');
   });
 
   it("keeps the local Earth fallback filled throughout its rotation", () => {

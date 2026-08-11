@@ -22,7 +22,7 @@ function successfulFetcher() {
         hyperliquid: { usd: 45, usd_market_cap: 12_000, usd_24h_change: -2, last_updated_at: 1_700_000_000 }
       });
     }
-    if (url.endsWith("/global")) {
+    if (url.includes("api.coingecko.com") && url.endsWith("/global")) {
       return response({ data: { total_market_cap: { usd: 3_000_000 }, market_cap_change_percentage_24h_usd: 1, updated_at: 1_700_000_000 } });
     }
     if (url.includes("/coins/bitcoin/")) return response({ prices: [[1_700_000_000_000, 90_000], [1_700_086_400_000, 100_000]] });
@@ -30,6 +30,21 @@ function successfulFetcher() {
     if (url.includes("/coins/solana/")) return response({ prices: [[1_700_000_000_000, 170], [1_700_086_400_000, 180]] });
     if (url.includes("/coins/sui/")) return response({ prices: [[1_700_000_000_000, 3.2], [1_700_086_400_000, 3.5]] });
     if (url.includes("/coins/hyperliquid/")) return response({ prices: [[1_700_000_000_000, 47], [1_700_086_400_000, 45]] });
+    if (url.includes("api.coinpaprika.com/v1/global")) {
+      return response({ market_cap_usd: 3_100_000, market_cap_change_24h: 1.5, last_updated: 1_700_000_000 });
+    }
+    if (url.includes("api.coinpaprika.com/v1/tickers/")) {
+      const tickers: Record<string, { price: number; marketCap: number; change: number }> = {
+        "btc-bitcoin": { price: 100_500, marketCap: 2_050_000, change: 2.1 },
+        "eth-ethereum": { price: 4_050, marketCap: 510_000, change: -0.8 },
+        "sol-solana": { price: 181, marketCap: 81_000, change: 3.2 },
+        "sui-sui": { price: 3.6, marketCap: 11_000, change: 4.2 },
+        "hype-hyperliquid": { price: 46, marketCap: 13_000, change: -1.8 }
+      };
+      const id = url.split("/").at(-1)!;
+      const ticker = tickers[id]!;
+      return response({ id, last_updated: "2026-01-08T00:00:00Z", quotes: { USD: { price: ticker.price, market_cap: ticker.marketCap, percent_change_24h: ticker.change } } });
+    }
     if (url.includes("stablecoins.llama.fi")) {
       return response([
         { date: "1700000000", totalCirculatingUSD: { peggedUSD: 150_000_000_000 } },
@@ -75,7 +90,7 @@ describe("PublicMarketProvider", () => {
     expect(source.getCalls()).toBe(17);
   });
 
-  it("keeps working metrics available when the crypto feed fails", async () => {
+  it("uses CoinPaprika current data when CoinGecko is unavailable", async () => {
     const source = successfulFetcher();
     const fetcher: typeof fetch = async (input, init) => {
       if (String(input).includes("api.coingecko.com")) throw new Error("provider offline");
@@ -83,9 +98,30 @@ describe("PublicMarketProvider", () => {
     };
     const dashboard = await new PublicMarketProvider(null, 300_000, fetcher).getDashboard();
 
-    expect(dashboard.status).toBe("partial");
-    expect(dashboard.metrics.find((metric) => metric.id === "bitcoin")?.status).toBe("unavailable");
+    expect(dashboard.status).toBe("ready");
+    expect(dashboard.metrics.find((metric) => metric.id === "bitcoin")).toMatchObject({
+      status: "ready",
+      value: 100_500,
+      source: "CoinPaprika"
+    });
+    expect(dashboard.metrics.find((metric) => metric.id === "total2")?.value).toBe(1_050_000);
     expect(dashboard.metrics.find((metric) => metric.id === "treasury10y")?.status).toBe("ready");
+  });
+
+  it("keeps the current market dashboard online when only chart history is delayed", async () => {
+    const source = successfulFetcher();
+    const fetcher: typeof fetch = async (input, init) => {
+      if (String(input).includes("/market_chart")) throw new Error("history rate limited");
+      return source.fetcher(input, init);
+    };
+
+    const dashboard = await new PublicMarketProvider(null, 300_000, fetcher).getDashboard();
+    expect(dashboard.status).toBe("ready");
+    expect(dashboard.metrics.find((metric) => metric.id === "bitcoin")).toMatchObject({
+      status: "ready",
+      historyStatus: "unavailable",
+      value: 100_000
+    });
   });
 
   it("retries a transient asset-history failure without dropping its live price", async () => {

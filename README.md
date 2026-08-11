@@ -13,13 +13,13 @@ The original project was a static multi-page site with shared `styles.css` and `
 - An Express API for SIWE authentication, sessions, portfolio retrieval, snapshots, and personalized research, published as one Vercel Function in production.
 - A shared persistence boundary backed by SQLite locally and durable Neon Postgres on Vercel.
 - A server-only GoldRush portfolio provider behind the `PortfolioProvider` interface.
-- A cached public-market provider for CoinGecko crypto data and Federal Reserve Economic Data series.
+- A cached public-market provider for CoinGecko crypto data, CoinPaprika current-data fallback, DefiLlama stablecoins, and Federal Reserve Economic Data series.
 - A server-only Google Sheets provider that normalizes all 15 research tabs through a read-only public export or optional service account.
 - A separate read-only Bitcoin valuation provider that verifies a 17-input standard-deviation composite and its forward-testing history.
 - A model-lab page for verified score history, regime distributions, threshold testing, and transition diagnostics.
 - Vercel Web Analytics with a client-side privacy filter that excludes wallet and portfolio properties.
 
-Public pages include the homepage, models, signals, backtesting, terminal, research library, individual research notes, methodology, privacy, and terms. The portfolio API requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
+Public pages include the homepage, models, backtesting, terminal, research library, individual research notes, methodology, privacy, and terms. The legacy Signals route redirects to Models, which owns current model state and history. The portfolio API requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
 
 There was no deployment configuration or existing backend, database, authentication system, or live model API in the repository before this milestone. `src/server/data/astrava.ts` now acts only as the disclosed fallback when the research workbook cannot be verified.
 
@@ -56,7 +56,7 @@ The current AstravaQuant model does not publish target portfolio weights. The da
 
 `GET /api/markets` serves a normalized market dashboard contract. `PublicMarketProvider` retrieves:
 
-- Total crypto market capitalization, crypto market capitalization excluding Bitcoin, and tracked crypto assets from CoinGecko.
+- Total crypto market capitalization, crypto market capitalization excluding Bitcoin, and tracked crypto assets from CoinGecko, with CoinPaprika as a read-only current-data fallback.
 - The 10-year Treasury (`DGS10`), Federal Reserve assets (`WALCL`), Treasury General Account (`WTREGEN`), overnight reverse repo (`RRPONTSYD`), M2 (`M2SL`), S&P 500 (`SP500`), Nasdaq Composite (`NASDAQCOM`), mortgage rates, and home prices from FRED.
 - Aggregate USD stablecoin supply and history from DefiLlama.
 - Fed net liquidity derived as `WALCL - WTREGEN - (RRPONTSYD * 1,000)` after normalizing all inputs to millions of U.S. dollars.

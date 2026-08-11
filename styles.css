@@ -1146,6 +1146,10 @@ footer {
     opacity 180ms ease;
 }
 
+.site-nav a[href="signals.html"] {
+  display: none;
+}
+
 .site-nav a::after {
   position: absolute;
   right: 0;

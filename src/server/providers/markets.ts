@@ -26,6 +26,24 @@ interface CoinGeckoChart {
   prices?: Array<[number, number]>;
 }
 
+interface CoinPaprikaGlobal {
+  market_cap_usd?: number;
+  market_cap_change_24h?: number;
+  last_updated?: number;
+}
+
+interface CoinPaprikaTicker {
+  id?: string;
+  last_updated?: string;
+  quotes?: {
+    USD?: {
+      price?: number;
+      market_cap?: number;
+      percent_change_24h?: number;
+    };
+  };
+}
+
 interface DefiLlamaStablecoinPoint {
   date?: string;
   totalCirculatingUSD?: { peggedUSD?: number };
@@ -44,18 +62,21 @@ interface FredDefinition {
 interface CryptoDefinition {
   id: "bitcoin" | "ethereum" | "solana" | "sui" | "hyperliquid";
   coinGeckoId: string;
+  coinPaprikaId: string;
   label: string;
 }
 
 const coinGeckoSource = "CoinGecko";
 const coinGeckoSourceUrl = "https://www.coingecko.com/";
+const coinPaprikaSource = "CoinPaprika";
+const coinPaprikaSourceUrl = "https://coinpaprika.com/";
 
 const cryptoAssets: CryptoDefinition[] = [
-  { id: "bitcoin", coinGeckoId: "bitcoin", label: "Bitcoin" },
-  { id: "ethereum", coinGeckoId: "ethereum", label: "Ethereum" },
-  { id: "solana", coinGeckoId: "solana", label: "Solana" },
-  { id: "sui", coinGeckoId: "sui", label: "Sui" },
-  { id: "hyperliquid", coinGeckoId: "hyperliquid", label: "Hyperliquid" }
+  { id: "bitcoin", coinGeckoId: "bitcoin", coinPaprikaId: "btc-bitcoin", label: "Bitcoin" },
+  { id: "ethereum", coinGeckoId: "ethereum", coinPaprikaId: "eth-ethereum", label: "Ethereum" },
+  { id: "solana", coinGeckoId: "solana", coinPaprikaId: "sol-solana", label: "Solana" },
+  { id: "sui", coinGeckoId: "sui", coinPaprikaId: "sui-sui", label: "Sui" },
+  { id: "hyperliquid", coinGeckoId: "hyperliquid", coinPaprikaId: "hype-hyperliquid", label: "Hyperliquid" }
 ];
 
 const fredSeries: FredDefinition[] = [
@@ -341,11 +362,8 @@ export class PublicMarketProvider {
     metrics.push(deriveFedNetLiquidity(metrics));
 
     const readyCount = metrics.filter((metric) => metric.status === "ready").length;
-    const expectedHistoryReady = metrics
-      .filter((metric) => cryptoAssets.some((asset) => asset.id === metric.id))
-      .every((metric) => metric.historyStatus === "ready");
     return {
-      status: readyCount === metrics.length && expectedHistoryReady ? "ready" : readyCount > 0 ? "partial" : "unavailable",
+      status: readyCount === metrics.length ? "ready" : readyCount > 0 ? "partial" : "unavailable",
       updatedAt: new Date().toISOString(),
       metrics
     };
@@ -358,6 +376,31 @@ export class PublicMarketProvider {
     }
     const response = await fetchWithTimeout(this.fetcher, `https://api.coingecko.com/api/v3${path}`, { headers });
     return (await response.json()) as T;
+  }
+
+  private async coinPaprikaJson<T>(path: string): Promise<T> {
+    const response = await fetchWithTimeout(this.fetcher, `https://api.coinpaprika.com/v1${path}`, {
+      headers: { Accept: "application/json" }
+    });
+    return (await response.json()) as T;
+  }
+
+  private async loadCoinPaprikaSnapshot(): Promise<{
+    global: CoinPaprikaGlobal | null;
+    tickers: Map<string, CoinPaprikaTicker>;
+  }> {
+    const [globalResult, ...tickerResults] = await Promise.allSettled([
+      this.coinPaprikaJson<CoinPaprikaGlobal>("/global"),
+      ...cryptoAssets.map((asset) => this.coinPaprikaJson<CoinPaprikaTicker>(`/tickers/${asset.coinPaprikaId}`))
+    ]);
+    const tickers = new Map<string, CoinPaprikaTicker>();
+    tickerResults.forEach((result, index) => {
+      if (result.status === "fulfilled") tickers.set(cryptoAssets[index]!.id, result.value);
+    });
+    return {
+      global: globalResult?.status === "fulfilled" ? globalResult.value : null,
+      tickers
+    };
   }
 
   private async coinGeckoChart(coinGeckoId: string): Promise<CoinGeckoChart | null> {
@@ -377,21 +420,46 @@ export class PublicMarketProvider {
 
   private async loadCrypto(): Promise<MarketMetric[]> {
     const ids = cryptoAssets.map((asset) => asset.coinGeckoId).join("%2C");
-    const [simple, global, charts] = await Promise.all([
-      this.coinGeckoJson<Record<string, CoinGeckoSimpleAsset>>(
-        `/simple/price?ids=${ids}&vs_currencies=usd&include_market_cap=true&include_24hr_change=true&include_last_updated_at=true`
-      ),
-      this.coinGeckoJson<CoinGeckoGlobal>("/global"),
+    const [snapshotResults, charts] = await Promise.all([
+      Promise.allSettled([
+        this.coinGeckoJson<Record<string, CoinGeckoSimpleAsset>>(
+          `/simple/price?ids=${ids}&vs_currencies=usd&include_market_cap=true&include_24hr_change=true&include_last_updated_at=true`
+        ),
+        this.coinGeckoJson<CoinGeckoGlobal>("/global")
+      ]),
       Promise.all(
         cryptoAssets.map((asset) => this.coinGeckoChart(asset.coinGeckoId))
       )
     ]);
+    const simple = snapshotResults[0]?.status === "fulfilled" ? snapshotResults[0].value : {};
+    const global = snapshotResults[1]?.status === "fulfilled" ? snapshotResults[1].value : {};
+    const needsFallback = global.data?.total_market_cap?.usd === undefined
+      || simple.bitcoin?.usd_market_cap === undefined
+      || cryptoAssets.some((asset) => simple[asset.coinGeckoId]?.usd === undefined);
+    const fallback = needsFallback ? await this.loadCoinPaprikaSnapshot() : null;
+    const resolvedAssets = new Map(cryptoAssets.map((definition) => {
+      const primary = simple[definition.coinGeckoId];
+      const fallbackTicker = fallback?.tickers.get(definition.id);
+      const fallbackQuote = fallbackTicker?.quotes?.USD;
+      const fallbackTimestamp = fallbackTicker?.last_updated ? Date.parse(fallbackTicker.last_updated) / 1_000 : undefined;
+      const asset: CoinGeckoSimpleAsset = {
+        usd: primary?.usd ?? fallbackQuote?.price,
+        usd_market_cap: primary?.usd_market_cap ?? fallbackQuote?.market_cap,
+        usd_24h_change: primary?.usd_24h_change ?? fallbackQuote?.percent_change_24h,
+        last_updated_at: primary?.last_updated_at ?? (Number.isFinite(fallbackTimestamp) ? fallbackTimestamp : undefined)
+      };
+      return [definition.id, {
+        asset,
+        fallback: primary?.usd === undefined && fallbackQuote?.price !== undefined
+      }] as const;
+    }));
 
-    const bitcoin = simple.bitcoin;
-    const total = global.data?.total_market_cap?.usd;
+    const bitcoin = resolvedAssets.get("bitcoin")?.asset;
+    const primaryTotal = global.data?.total_market_cap?.usd;
+    const total = primaryTotal ?? fallback?.global?.market_cap_usd;
     const bitcoinMarketCap = bitcoin?.usd_market_cap;
 
-    const totalChange = global.data?.market_cap_change_percentage_24h_usd ?? null;
+    const totalChange = global.data?.market_cap_change_percentage_24h_usd ?? fallback?.global?.market_cap_change_24h ?? null;
     const total2 = total !== undefined && bitcoinMarketCap !== undefined ? total - bitcoinMarketCap : null;
     let total2Change: number | null = null;
     if (total2 !== null && total !== undefined && bitcoinMarketCap !== undefined && totalChange !== null && bitcoin?.usd_24h_change !== undefined) {
@@ -402,16 +470,20 @@ export class PublicMarketProvider {
       }
     }
 
-    const globalAsOf = unixTimestamp(global.data?.updated_at);
+    const globalAsOf = unixTimestamp(global.data?.updated_at ?? fallback?.global?.last_updated);
+    const aggregateSource = primaryTotal === undefined && total !== undefined ? coinPaprikaSource : coinGeckoSource;
+    const aggregateSourceUrl = aggregateSource === coinPaprikaSource ? coinPaprikaSourceUrl : coinGeckoSourceUrl;
     const currentAggregateHistory = "Current aggregate only. Historical global market-cap data requires a licensed feed.";
     const createCurrentMetric = (
       id: MarketMetricId,
       label: string,
       value: number | null | undefined,
       metricChange: number | null,
-      asOf: string | null
+      asOf: string | null,
+      source: string,
+      sourceUrl: string
     ): MarketMetric => value === null || value === undefined
-      ? unavailableMetric(id, label, coinGeckoSource, coinGeckoSourceUrl)
+      ? unavailableMetric(id, label, source, sourceUrl)
       : ({
           id,
           label,
@@ -423,8 +495,8 @@ export class PublicMarketProvider {
           changeType: "percent",
           asOf,
           frequency: "Live snapshot",
-          source: coinGeckoSource,
-          sourceUrl: coinGeckoSourceUrl,
+          source,
+          sourceUrl,
           historyStatus: "unavailable",
           historyMessage: currentAggregateHistory,
           points: []
@@ -434,9 +506,12 @@ export class PublicMarketProvider {
       id: CryptoDefinition["id"],
       label: string,
       asset: CoinGeckoSimpleAsset | undefined,
-      chart: CoinGeckoChart | null
+      chart: CoinGeckoChart | null,
+      usesFallback: boolean
     ): MarketMetric => {
-      if (asset?.usd === undefined) return unavailableMetric(id, label, coinGeckoSource, coinGeckoSourceUrl);
+      const source = usesFallback ? coinPaprikaSource : coinGeckoSource;
+      const sourceUrl = usesFallback ? coinPaprikaSourceUrl : coinGeckoSourceUrl;
+      if (asset?.usd === undefined) return unavailableMetric(id, label, source, sourceUrl);
       const points = chartPoints(chart);
       return {
         id,
@@ -449,21 +524,22 @@ export class PublicMarketProvider {
         changeType: "percent",
         asOf: unixTimestamp(asset.last_updated_at),
         frequency: "Live snapshot / 90-day chart",
-        source: coinGeckoSource,
-        sourceUrl: coinGeckoSourceUrl,
+        source: usesFallback && points.length ? `${coinPaprikaSource} / ${coinGeckoSource}` : source,
+        sourceUrl,
         historyStatus: points.length > 1 ? "ready" : "unavailable",
         historyMessage: points.length > 1 ? null : "Ninety-day price history is temporarily unavailable.",
         points
       };
     };
 
-    const assetMetrics = cryptoAssets.map((definition, index) =>
-      createAssetMetric(definition.id, definition.label, simple[definition.coinGeckoId], charts[index] ?? null)
-    );
+    const assetMetrics = cryptoAssets.map((definition, index) => {
+      const resolved = resolvedAssets.get(definition.id)!;
+      return createAssetMetric(definition.id, definition.label, resolved.asset, charts[index] ?? null, resolved.fallback);
+    });
 
     return [
-      createCurrentMetric("total", "Total Crypto Market Cap", total, totalChange, globalAsOf),
-      createCurrentMetric("total2", "Crypto Market Cap ex-Bitcoin", total2, total2Change, globalAsOf),
+      createCurrentMetric("total", "Total Crypto Market Cap", total, totalChange, globalAsOf, aggregateSource, aggregateSourceUrl),
+      createCurrentMetric("total2", "Crypto Market Cap ex-Bitcoin", total2, total2Change, globalAsOf, aggregateSource, aggregateSourceUrl),
       ...assetMetrics
     ];
   }

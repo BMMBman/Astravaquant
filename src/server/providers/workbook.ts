@@ -395,7 +395,7 @@ export function buildWorkbookDashboard(
   const warnings: string[] = [];
   if (!bothPublished) warnings.push("MTPI or LTPI could not be verified; affected readings use the manual fallback snapshot.");
   if (scoreSeries[2]?.status === "ready") warnings.push("NSPI history is derived at each MTPI or LTPI update date using the latest available score from both series.");
-  warnings.push("MRPI is not present in this crypto workbook and remains a separately published manual reading.");
+  warnings.push("MRPI is sourced from a separate weekly system workbook.");
   if (tabs.some((tab) => tab.formulaErrorCount > 0)) warnings.push("Some research cells contain spreadsheet formula errors; they are reported as unavailable, never as zero.");
   return {
     status: readyTabs === tabs.length ? "ready" : readyTabs > 0 ? "partial" : "unavailable",
@@ -538,7 +538,7 @@ function unavailableWorkbook(
     ],
     ratioModels: [],
     tabs: sheetDefinitions.map((definition) => summarizeTab(definition, [])),
-    warnings: [message, "MRPI is not present in this crypto workbook and remains a separately published manual reading."]
+    warnings: [message, "MRPI is sourced from a separate weekly system workbook."]
   };
 }
 

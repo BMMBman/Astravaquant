@@ -17,6 +17,7 @@ const schema = z.object({
   MARKET_CACHE_SECONDS: z.coerce.number().int().min(60).max(3600).default(300),
   GOOGLE_SHEETS_ID: z.string().min(20).default("1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA"),
   VALUATION_GOOGLE_SHEETS_ID: z.string().min(20).default("1CDRiyNvMiQEz-YsrJT6vOEPN-CwAMj6cQrMYmY01bxE"),
+  MRPI_GOOGLE_SHEETS_ID: z.string().min(20).default("1Scc4v7j5qp_x_nU4tuPyx8BqUmTEX23eILXW6y0TIgY"),
   GOOGLE_SERVICE_ACCOUNT_EMAIL: z.email().optional(),
   GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: z.string().min(100).optional(),
   GOOGLE_SHEETS_CACHE_SECONDS: z.coerce.number().int().min(60).max(3600).default(300),
@@ -51,6 +52,7 @@ export interface AppConfig {
   } | null;
   googleSheetsId: string | null;
   valuationSheetsId: string;
+  mrpiSheetsId: string;
   googleSheetsCacheMs: number;
   rpcUrls: Record<number, string | undefined>;
 }
@@ -100,6 +102,7 @@ export function loadConfig(environment: NodeJS.ProcessEnv = process.env): AppCon
       : null,
     googleSheetsId: parsed.GOOGLE_SHEETS_ID ?? null,
     valuationSheetsId: parsed.VALUATION_GOOGLE_SHEETS_ID,
+    mrpiSheetsId: parsed.MRPI_GOOGLE_SHEETS_ID,
     googleSheetsCacheMs: parsed.GOOGLE_SHEETS_CACHE_SECONDS * 1000,
     rpcUrls: {
       1: parsed.ETHEREUM_RPC_URL,

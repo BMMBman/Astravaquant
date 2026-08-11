@@ -60,12 +60,15 @@ function setText(selector: string, value: string): void {
 }
 
 function coreSeries(series: WorkbookScoreSeries): BacktestSeries {
+  const isMrpi = series.id === "mrpi";
   return {
     ...series,
     extent: [-1, 1],
-    defaultThresholds: [-0.25, 0.25],
+    defaultThresholds: isMrpi ? [-0.1, 0.1] : [-0.25, 0.25],
     thresholdStep: 0.05,
-    regimeLabels: coreRegimeLabels,
+    regimeLabels: isMrpi
+      ? { risk_off: "Tightening", neutral: "Neutral", risk_on: "Easing" }
+      : coreRegimeLabels,
     scoreSuffix: ""
   };
 }

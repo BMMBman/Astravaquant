@@ -53,7 +53,12 @@ function periodButtons(active: HistoryPeriod): string {
   </div>`;
 }
 
-function renderChart(container: HTMLElement, points: MarketPoint[], chartId: string): void {
+function renderChart(
+  container: HTMLElement,
+  points: MarketPoint[],
+  chartId: string,
+  thresholds: [number, number]
+): void {
   if (points.length < 2) {
     container.innerHTML = "<span>Not enough verified observations in this window.</span>";
     container.classList.add("is-unavailable");
@@ -78,7 +83,7 @@ function renderChart(container: HTMLElement, points: MarketPoint[], chartId: str
     <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Dated historical model chart">
       <defs><linearGradient id="${gradientId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fc8f4" stop-opacity=".28"/><stop offset="1" stop-color="#8fc8f4" stop-opacity="0"/></linearGradient></defs>
       ${gridLines}
-      <path d="M${padding.left} ${y(0.25)}H${width - padding.right} M${padding.left} ${y(-0.25)}H${width - padding.right}" class="market-chart-threshold"/>
+      <path d="M${padding.left} ${y(thresholds[1])}H${width - padding.right} M${padding.left} ${y(thresholds[0])}H${width - padding.right}" class="market-chart-threshold"/>
       <path d="${area}" fill="url(#${gradientId})"/>
       <path d="${line}" class="market-chart-line" pathLength="1"/>
       <line x1="${x(lastIndex)}" x2="${x(lastIndex)}" y1="${padding.top}" y2="${height - padding.bottom}" class="chart-hover-guide" data-model-chart-guide/>
@@ -124,7 +129,7 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
       <small><span>${isMrpi ? "Tightening" : "Risk-off"} / -1</span><span>Neutral / 0</span><span>${isMrpi ? "Easing" : "Risk-on"} / +1</span></small>
     </div>
     ${series?.points.length ? periodButtons(period) : ""}
-    <div class="terminal-chart terminal-model-chart" data-model-history-chart="${escapeHtml(signal.id)}"><span>${escapeHtml(series?.message ?? (isMrpi ? "MRPI history is not present in the connected crypto workbook." : "Historical series unavailable."))}</span></div>
+    <div class="terminal-chart terminal-model-chart" data-model-history-chart="${escapeHtml(signal.id)}"><span>${escapeHtml(series?.message ?? (isMrpi ? "MRPI history is temporarily unavailable." : "Historical series unavailable."))}</span></div>
     <footer><span data-model-history-range>${escapeHtml(series?.sourceTab ?? signal.sourceTab ?? "Published model reading")}</span><a href="backtesting.html">Open full backtest</a></footer>
   </article>`;
 }
@@ -151,7 +156,7 @@ export function renderModelHistory(dashboard: WorkbookDashboard): void {
       const period = selectedPeriods.get(signal.id)!;
       const points = filterPoints(allPoints, period);
       const chart = panel.querySelector<HTMLElement>(`[data-model-history-chart="${signal.id}"]`)!;
-      renderChart(chart, points, `${signal.id}-${period}`);
+      renderChart(chart, points, `${signal.id}-${period}`, signal.id === "mrpi" ? [-0.1, 0.1] : [-0.25, 0.25]);
       const range = panel.querySelector<HTMLElement>("[data-model-history-range]");
       if (range) range.textContent = points.length > 1
         ? `${formatDate(points[0]!.timestamp)} - ${formatDate(points.at(-1)!.timestamp)}`

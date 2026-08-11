@@ -85,7 +85,7 @@
         <div class="shell shell-narrow">
           <article class="model-provenance glass-card reveal" data-model-publication>
             <div>
-              <span class="table-label">AQ Core v0.2</span>
+              <span class="table-label">AQ Core v0.3</span>
               <h2 data-publication-title>Current published model state</h2>
               <p data-publication-message>These values use the current manual fallback until the research workbook connection is available.</p>
             </div>
@@ -269,6 +269,31 @@
       </section>
 
       <section class="section section-compact">
+        <div class="shell shell-wide">
+          <article class="mrpi-system-card glass-card reveal" data-mrpi-system>
+            <header>
+              <div>
+                <span class="table-label">MRPI Engine</span>
+                <h2>Mortgage pressure, decomposed.</h2>
+                <p>Six weekly TNX criteria behind the current tightening or easing regime.</p>
+              </div>
+              <div class="mrpi-system-read">
+                <strong data-mrpi-system-score>-0.79</strong>
+                <span data-mrpi-system-state>Strong Tightening</span>
+              </div>
+            </header>
+            <div class="mrpi-criteria" data-mrpi-indicators>
+              <p class="mrpi-system-empty">Loading verified MRPI criteria.</p>
+            </div>
+            <footer>
+              <span data-mrpi-system-updated>Weekly LPI</span>
+              <a href="https://docs.google.com/spreadsheets/d/1Scc4v7j5qp_x_nU4tuPyx8BqUmTEX23eILXW6y0TIgY/edit" data-mrpi-system-source target="_blank" rel="noreferrer">Open source sheet</a>
+            </footer>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-compact">
         <div class="shell shell-narrow">
           <div class="legend-grid-stack">
             <article class="scale-bar-card glass-card reveal">
@@ -302,19 +327,27 @@
             <article class="scale-bar-card glass-card reveal">
               <span class="table-label">MRPI Scale</span>
               <h2>MRPI is read differently.</h2>
-              <p>MRPI is not a risk-on scale. Negative reads mean tightening on the 10-year backdrop. Positive reads mean easing.</p>
+              <p>MRPI is not a risk-on scale. It measures tightening and easing pressure in the weekly 10-year Treasury system.</p>
               <div class="scale-bar scale-bar-mrpi" aria-label="MRPI interpretation scale">
                 <div class="scale-point scale-risk">
                   <strong>-1.00 to -0.50</strong>
-                  <span>Tightening pressure</span>
+                  <span>Strong tightening</span>
+                </div>
+                <div class="scale-point scale-defensive">
+                  <strong>-0.50 to -0.10</strong>
+                  <span>Tightening</span>
                 </div>
                 <div class="scale-point scale-neutral">
-                  <strong>-0.50 to +0.25</strong>
-                  <span>Mixed transition</span>
+                  <strong>-0.10 to +0.10</strong>
+                  <span>Neutral</span>
                 </div>
                 <div class="scale-point scale-constructive">
-                  <strong>+0.25 to +1.00</strong>
-                  <span>Easing pressure</span>
+                  <strong>+0.10 to +0.50</strong>
+                  <span>Easing</span>
+                </div>
+                <div class="scale-point scale-blowoff">
+                  <strong>+0.50 to +1.00</strong>
+                  <span>Strong easing</span>
                 </div>
               </div>
             </article>

@@ -7,8 +7,16 @@ function signed(value: number): string {
   return value.toFixed(2);
 }
 
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]!);
+}
+
 function tone(signal: WorkbookModelSignal): "good" | "warn" | "bad" | "neutral" {
-  if (signal.id === "mrpi") return signal.value < -0.5 ? "bad" : signal.value > 0.25 ? "good" : "neutral";
+  if (signal.id === "mrpi") {
+    if (signal.value <= -0.5) return "bad";
+    if (signal.value < -0.1) return "warn";
+    return signal.value > 0.1 ? "good" : "neutral";
+  }
   if (signal.value <= -0.75) return "bad";
   if (signal.value < -0.25) return "warn";
   if (signal.value <= 0.25) return "neutral";
@@ -52,8 +60,11 @@ function updatePublication(dashboard: WorkbookDashboard): void {
     const status = root.querySelector<HTMLElement>("[data-publication-status]");
     if (dashboard.status === "ready" || dashboard.status === "partial") {
       if (title) title.textContent = dashboard.status === "ready" ? "Live Google Sheets feed" : "Live feed / partial coverage";
-      if (message) message.textContent = `Validated every ${dashboard.refreshSeconds / 60} minutes. MRPI remains separately published.`;
-      if (status) status.textContent = dashboard.status === "ready" ? "15 / 15 tabs online" : `${dashboard.tabs.filter((tab) => tab.status === "ready").length} / 15 tabs online`;
+      const mrpiLive = dashboard.mrpiSystem?.status === "ready" || dashboard.mrpiSystem?.status === "partial";
+      if (message) message.textContent = mrpiLive
+        ? `Crypto and MRPI workbooks validated every ${dashboard.refreshSeconds / 60} minutes.`
+        : `Crypto workbook validated every ${dashboard.refreshSeconds / 60} minutes. MRPI feed delayed.`;
+      if (status) status.textContent = dashboard.status === "ready" ? "15 / 15 crypto tabs online" : `${dashboard.tabs.filter((tab) => tab.status === "ready").length} / 15 crypto tabs online`;
       root.dataset.state = dashboard.status;
     } else {
       if (title) title.textContent = "Manual fallback snapshot";
@@ -61,6 +72,34 @@ function updatePublication(dashboard: WorkbookDashboard): void {
       if (status) status.textContent = "Workbook offline";
       root.dataset.state = "unavailable";
     }
+  });
+}
+
+function updateMrpiSystem(dashboard: WorkbookDashboard): void {
+  const system = dashboard.mrpiSystem;
+  document.querySelectorAll<HTMLElement>("[data-mrpi-system]").forEach((root) => {
+    const score = root.querySelector<HTMLElement>("[data-mrpi-system-score]");
+    const state = root.querySelector<HTMLElement>("[data-mrpi-system-state]");
+    const updated = root.querySelector<HTMLElement>("[data-mrpi-system-updated]");
+    const source = root.querySelector<HTMLAnchorElement>("[data-mrpi-system-source]");
+    const indicators = root.querySelector<HTMLElement>("[data-mrpi-indicators]");
+    root.dataset.state = system?.status ?? "unavailable";
+    if (score) score.textContent = system?.score === null || system?.score === undefined ? "--" : signed(system.score);
+    if (state) state.textContent = system?.state ?? "Feed unavailable";
+    if (updated) updated.textContent = system?.workbookUpdatedLabel ? `Updated ${system.workbookUpdatedLabel}` : "Weekly LPI";
+    if (source && system?.sourceUrl) source.href = system.sourceUrl;
+    if (!indicators) return;
+    if (!system?.indicators.length) {
+      indicators.innerHTML = '<p class="mrpi-system-empty">The MRPI criteria feed is temporarily unavailable. No substitute readings are shown.</p>';
+      return;
+    }
+    indicators.innerHTML = system.indicators.map((indicator) => `
+      <div class="mrpi-criterion">
+        <div><strong>${escapeHtml(indicator.name)}</strong><span>${escapeHtml(indicator.state)}</span></div>
+        <b>${signed(indicator.score)}</b>
+        ${indicator.sourceUrl ? `<a href="${escapeHtml(indicator.sourceUrl)}" target="_blank" rel="noreferrer">Source</a>` : "<span></span>"}
+      </div>
+    `).join("");
   });
 }
 
@@ -88,10 +127,12 @@ export async function bootModelFeed(): Promise<void> {
     const dashboard = await apiRequest<WorkbookDashboard>("/api/workbook");
     dashboard.signals.forEach(updateSignal);
     updatePublication(dashboard);
+    updateMrpiSystem(dashboard);
     updateRatios(dashboard);
     renderModelHistory(dashboard);
   } catch {
     updatePublication({ status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] });
+    updateMrpiSystem({ status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] });
     renderModelHistoryUnavailable();
   }
 }

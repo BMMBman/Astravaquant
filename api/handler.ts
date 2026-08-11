@@ -8,6 +8,7 @@ import {
   UnavailablePortfolioProvider
 } from "../src/server/providers/portfolio.js";
 import { PublicMarketProvider } from "../src/server/providers/markets.js";
+import { MrpiEnrichedWorkbookProvider, PublicGoogleSheetsMrpiProvider } from "../src/server/providers/mrpi.js";
 import { PublicGoogleSheetsValuationProvider } from "../src/server/providers/valuation.js";
 import {
   GoogleSheetsWorkbookProvider,
@@ -30,7 +31,7 @@ const provider = config.goldrushApiKey
   : new UnavailablePortfolioProvider();
 const portfolioProvider = new CachedPortfolioProvider(provider, config.portfolioCacheMs);
 const marketProvider = new PublicMarketProvider(config.coinGeckoApiKey, config.marketCacheMs);
-const workbookProvider = config.googleSheets
+const baseWorkbookProvider = config.googleSheets
   ? new GoogleSheetsWorkbookProvider(
       config.googleSheets.spreadsheetId,
       config.googleSheets.serviceAccountEmail,
@@ -40,6 +41,8 @@ const workbookProvider = config.googleSheets
   : config.googleSheetsId
     ? new PublicGoogleSheetsWorkbookProvider(config.googleSheetsId, config.googleSheetsCacheMs)
     : new UnavailableWorkbookProvider(config.googleSheetsCacheMs);
+const mrpiProvider = new PublicGoogleSheetsMrpiProvider(config.mrpiSheetsId, config.googleSheetsCacheMs);
+const workbookProvider = new MrpiEnrichedWorkbookProvider(baseWorkbookProvider, mrpiProvider);
 const valuationProvider = new PublicGoogleSheetsValuationProvider(config.valuationSheetsId, config.googleSheetsCacheMs);
 const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider });
 

@@ -25,6 +25,7 @@ const config: AppConfig = {
   googleSheets: null,
   googleSheetsId: "1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA",
   valuationSheetsId: "1CDRiyNvMiQEz-YsrJT6vOEPN-CwAMj6cQrMYmY01bxE",
+  mrpiSheetsId: "1Scc4v7j5qp_x_nU4tuPyx8BqUmTEX23eILXW6y0TIgY",
   googleSheetsCacheMs: 300_000,
   rpcUrls: { 1: undefined, 8453: undefined, 42161: undefined }
 };

@@ -69,9 +69,13 @@ Provider requests run independently and time out cleanly, so one failed series d
 
 The provider batch-reads and validates all 15 tabs: Command Center, RSPS, Alts RSPS, MTPI, LTPI, both forward-testing tabs, BTC, ETH, SOL, HYPE, SUI, Others.D TPI, ALT Selection Table, and Trash Tournament. The public response contains normalized scores, dated score observations, tab health, and formula-error counts rather than raw cells.
 
-MTPI and LTPI are sourced from their workbook summaries when available. NSPI is transparently derived as the mean of the two published readings. MRPI is not present in this crypto workbook and remains the separate manual reading. If Google is unavailable, the app keeps the existing fallback snapshot visible and labels the workbook offline.
+MTPI and LTPI are sourced from their workbook summaries when available. NSPI is transparently derived as the mean of the two published readings. MRPI remains a separate system, but its live score, six TNX criteria, and dated history are joined to the same public API response from the link-shared workbook set by `MRPI_GOOGLE_SHEETS_ID`. If either Google feed is unavailable, the app preserves the last published fallback state and clearly labels the delayed source.
 
-The Backtesting page analyzes only dated scores that exist in the connected forward-testing tabs. It supports MTPI, LTPI, derived NSPI, and the Bitcoin valuation composite with scale-specific thresholds, distributions, streaks, and transitions. A first dated valuation observation is shown as a verified tracking point; the historical line forms automatically after another scored date is published. It does not calculate returns, alpha, Sharpe, or drawdown because the current workbooks do not contain an aligned investable benchmark series. Those statistics remain disabled until real price history is supplied.
+The Backtesting page analyzes only dated scores that exist in the connected forward-testing tabs. It supports MTPI, LTPI, derived NSPI, MRPI, and the Bitcoin valuation composite with scale-specific thresholds, distributions, streaks, and transitions. MRPI uses tightening below `-0.10` and easing above `+0.10`; the crypto models retain their own risk-regime thresholds. Blank future rows are excluded until a real score is published. It does not calculate returns, alpha, Sharpe, or drawdown because the current workbooks do not contain an aligned investable benchmark series. Those statistics remain disabled until real price history is supplied.
+
+## MRPI Workbook
+
+The MRPI integration reads bounded ranges from the public `Weekly LPI` tab, validates the published TNX Regime Score against the arithmetic mean of its six criteria, and attaches 10-year Treasury pressure history to `GET /api/workbook`. Browser code never receives spreadsheet credentials, and the server cache refreshes every five minutes by default. The Models page exposes the live inputs and source links; Backtesting uses only rows with both a valid date and a score.
 
 ## Bitcoin Valuation Workbook
 
@@ -100,6 +104,7 @@ Copy `.env.example` to `.env` and configure:
 | `MARKET_CACHE_SECONDS` | Server-side terminal feed cache duration. |
 | `GOOGLE_SHEETS_ID` | Private AstravaQuant spreadsheet ID. |
 | `VALUATION_GOOGLE_SHEETS_ID` | Link-shared Bitcoin valuation workbook ID. |
+| `MRPI_GOOGLE_SHEETS_ID` | Link-shared MRPI system and backtest workbook ID. |
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | Optional server-only service-account email when the workbook is private. |
 | `GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY` | Optional server-only PEM private key; provide it with the email as a pair. |
 | `GOOGLE_SHEETS_CACHE_SECONDS` | Server-side normalized workbook cache duration. |
@@ -188,7 +193,7 @@ Vercel Web Analytics is initialized only on HTTPS deployments. Page URLs are str
 
 ## Model Publication
 
-The public model register is `AQ Core v0.2`. Current crypto readings and existing forward-test observations are normalized from the link-shared research workbook every five minutes. No missing dates, ratio histories, benchmark prices, or performance statistics are backfilled. Workbook cell errors are reported as unavailable rather than coerced to zero. See `methodology.html` for inputs, scales, derivations, and limitations.
+The public model register is `AQ Core v0.3`. Current crypto, MRPI, and existing forward-test observations are normalized from their link-shared research workbooks every five minutes. No missing dates, ratio histories, benchmark prices, or performance statistics are backfilled. Workbook cell errors are reported as unavailable rather than coerced to zero. See `methodology.html` for inputs, scales, derivations, and limitations.
 
 ## Visual Sources
 

@@ -33,6 +33,7 @@ describe("production configuration", () => {
     expect(config.googleSheets).toBeNull();
     expect(config.googleSheetsId).toBe("1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA");
     expect(config.valuationSheetsId).toBe("1CDRiyNvMiQEz-YsrJT6vOEPN-CwAMj6cQrMYmY01bxE");
+    expect(config.mrpiSheetsId).toBe("1Scc4v7j5qp_x_nU4tuPyx8BqUmTEX23eILXW6y0TIgY");
   });
 
   it("requires service-account credentials as a complete pair", () => {

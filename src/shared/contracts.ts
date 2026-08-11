@@ -111,12 +111,39 @@ export interface WorkbookScorePoint {
 }
 
 export interface WorkbookScoreSeries {
-  id: "mtpi" | "ltpi" | "nspi";
+  id: "mtpi" | "ltpi" | "nspi" | "mrpi";
   label: string;
   sourceTab: string;
   status: "ready" | "unavailable";
   message: string | null;
   points: WorkbookScorePoint[];
+}
+
+export interface MrpiIndicator {
+  id: string;
+  name: string;
+  state: string;
+  description: string;
+  score: number;
+  sourceUrl: string | null;
+}
+
+export interface MrpiDashboard {
+  status: "ready" | "partial" | "unavailable";
+  provider: "Google Sheets" | null;
+  updatedAt: string;
+  refreshSeconds: number;
+  workbookUpdatedLabel: string | null;
+  sourceUrl: string;
+  score: number | null;
+  calculatedScore: number | null;
+  state: string | null;
+  indicatorCount: number;
+  indicators: MrpiIndicator[];
+  historyStatus: "ready" | "unavailable";
+  historyMessage: string | null;
+  history: WorkbookScorePoint[];
+  warnings: string[];
 }
 
 export interface WorkbookRatioModel {
@@ -137,6 +164,7 @@ export interface WorkbookDashboard {
   ratioModels: WorkbookRatioModel[];
   tabs: WorkbookTabSummary[];
   warnings: string[];
+  mrpiSystem?: MrpiDashboard;
 }
 
 export type ValuationCategoryId = "fundamental" | "technical" | "sentiment";

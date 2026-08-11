@@ -73,4 +73,23 @@ describe("PublicMarketProvider", () => {
     expect(dashboard.metrics.find((metric) => metric.id === "bitcoin")?.status).toBe("unavailable");
     expect(dashboard.metrics.find((metric) => metric.id === "treasury10y")?.status).toBe("ready");
   });
+
+  it("retries a transient asset-history failure without dropping its live price", async () => {
+    const source = successfulFetcher();
+    let solanaAttempts = 0;
+    const fetcher: typeof fetch = async (input, init) => {
+      if (String(input).includes("/coins/solana/") && ++solanaAttempts === 1) {
+        return new Response("rate limited", { status: 429 });
+      }
+      return source.fetcher(input, init);
+    };
+
+    const dashboard = await new PublicMarketProvider(null, 300_000, fetcher).getDashboard();
+    expect(solanaAttempts).toBe(2);
+    expect(dashboard.metrics.find((metric) => metric.id === "solana")).toMatchObject({
+      status: "ready",
+      historyStatus: "ready",
+      value: 180
+    });
+  });
 });

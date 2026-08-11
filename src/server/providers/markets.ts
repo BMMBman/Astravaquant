@@ -156,6 +156,10 @@ function unixTimestamp(seconds: number | undefined): string | null {
   return seconds ? new Date(seconds * 1000).toISOString() : null;
 }
 
+function wait(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
 function chartPoints(chart: CoinGeckoChart | null): MarketPoint[] {
   return downsample(
     (chart?.prices ?? [])
@@ -231,8 +235,11 @@ export class PublicMarketProvider {
     });
 
     const readyCount = metrics.filter((metric) => metric.status === "ready").length;
+    const expectedHistoryReady = metrics
+      .filter((metric) => cryptoAssets.some((asset) => asset.id === metric.id))
+      .every((metric) => metric.historyStatus === "ready");
     return {
-      status: readyCount === metrics.length ? "ready" : readyCount > 0 ? "partial" : "unavailable",
+      status: readyCount === metrics.length && expectedHistoryReady ? "ready" : readyCount > 0 ? "partial" : "unavailable",
       updatedAt: new Date().toISOString(),
       metrics
     };
@@ -247,6 +254,21 @@ export class PublicMarketProvider {
     return (await response.json()) as T;
   }
 
+  private async coinGeckoChart(coinGeckoId: string): Promise<CoinGeckoChart | null> {
+    const retryDelays = [0, 500, 1_500];
+    for (const delay of retryDelays) {
+      if (delay) await wait(delay);
+      try {
+        return await this.coinGeckoJson<CoinGeckoChart>(
+          `/coins/${coinGeckoId}/market_chart?vs_currency=usd&days=90&interval=daily`
+        );
+      } catch {
+        // Current prices can remain available even when a chart request is rate-limited.
+      }
+    }
+    return null;
+  }
+
   private async loadCrypto(): Promise<MarketMetric[]> {
     const ids = cryptoAssets.map((asset) => asset.coinGeckoId).join("%2C");
     const [simple, global, charts] = await Promise.all([
@@ -255,11 +277,7 @@ export class PublicMarketProvider {
       ),
       this.coinGeckoJson<CoinGeckoGlobal>("/global"),
       Promise.all(
-        cryptoAssets.map((asset) =>
-          this.coinGeckoJson<CoinGeckoChart>(
-            `/coins/${asset.coinGeckoId}/market_chart?vs_currency=usd&days=90&interval=daily`
-          ).catch(() => null)
-        )
+        cryptoAssets.map((asset) => this.coinGeckoChart(asset.coinGeckoId))
       )
     ]);
 

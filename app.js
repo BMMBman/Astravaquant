@@ -13,6 +13,64 @@ document.documentElement.classList.add("js");
     return Math.min(max, Math.max(min, value));
   }
 
+  function initMobileNavigation() {
+    Array.prototype.slice.call(document.querySelectorAll(".site-header")).forEach(function (header, index) {
+      var inner = header.querySelector(".header-inner");
+      var nav = header.querySelector(".site-nav");
+      if (!inner || !nav || header.querySelector("[data-nav-toggle]")) {
+        return;
+      }
+
+      var navId = nav.id || "site-navigation-" + index;
+      nav.id = navId;
+
+      var toggle = document.createElement("button");
+      toggle.className = "nav-toggle";
+      toggle.type = "button";
+      toggle.setAttribute("data-nav-toggle", "");
+      toggle.setAttribute("aria-controls", navId);
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Open navigation");
+      toggle.innerHTML = '<span></span><span></span><span></span>';
+      inner.appendChild(toggle);
+
+      function setOpen(isOpen) {
+        header.classList.toggle("is-nav-open", isOpen);
+        toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        toggle.setAttribute("aria-label", isOpen ? "Close navigation" : "Open navigation");
+      }
+
+      toggle.addEventListener("click", function () {
+        setOpen(!header.classList.contains("is-nav-open"));
+      });
+
+      Array.prototype.slice.call(nav.querySelectorAll("a")).forEach(function (link) {
+        link.addEventListener("click", function () {
+          setOpen(false);
+        });
+      });
+
+      document.addEventListener("click", function (event) {
+        if (!header.contains(event.target)) {
+          setOpen(false);
+        }
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          setOpen(false);
+          toggle.focus();
+        }
+      });
+
+      window.addEventListener("resize", function () {
+        if (window.innerWidth > 860) {
+          setOpen(false);
+        }
+      });
+    });
+  }
+
   function formatSigned(value) {
     var safeValue = Math.abs(value).toFixed(2);
     if (value > 0) {
@@ -481,6 +539,8 @@ document.documentElement.classList.add("js");
   if (earthCanvas) {
     initEarthGlobe(earthCanvas);
   }
+
+  initMobileNavigation();
 
   chartNodes.forEach(function (node, index) {
     node.dataset.chartId = "chartGradient" + index;

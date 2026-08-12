@@ -1,4 +1,4 @@
-import type { WorkbookDashboard, WorkbookModelSignal } from "../shared/contracts.js";
+import type { BitcoinValuationDashboard, WorkbookDashboard, WorkbookModelSignal, WorkbookRatioModel } from "../shared/contracts.js";
 import { apiRequest } from "./api.js";
 import { renderModelHistory, renderModelHistoryUnavailable } from "./model-history.js";
 
@@ -75,64 +75,112 @@ function updatePublication(dashboard: WorkbookDashboard): void {
   });
 }
 
-function updateMrpiSystem(dashboard: WorkbookDashboard): void {
-  const system = dashboard.mrpiSystem;
-  document.querySelectorAll<HTMLElement>("[data-mrpi-system]").forEach((root) => {
-    const score = root.querySelector<HTMLElement>("[data-mrpi-system-score]");
-    const state = root.querySelector<HTMLElement>("[data-mrpi-system-state]");
-    const updated = root.querySelector<HTMLElement>("[data-mrpi-system-updated]");
-    const source = root.querySelector<HTMLAnchorElement>("[data-mrpi-system-source]");
-    const indicators = root.querySelector<HTMLElement>("[data-mrpi-indicators]");
-    root.dataset.state = system?.status ?? "unavailable";
-    if (score) score.textContent = system?.score === null || system?.score === undefined ? "--" : signed(system.score);
-    if (state) state.textContent = system?.state ?? "Feed unavailable";
-    if (updated) updated.textContent = system?.workbookUpdatedLabel ? `Updated ${system.workbookUpdatedLabel}` : "Weekly LPI";
-    if (source && system?.sourceUrl) source.href = system.sourceUrl;
-    if (!indicators) return;
-    if (!system?.indicators.length) {
-      indicators.innerHTML = '<p class="mrpi-system-empty">The MRPI criteria feed is temporarily unavailable. No substitute readings are shown.</p>';
-      return;
-    }
-    indicators.innerHTML = system.indicators.map((indicator) => `
-      <div class="mrpi-criterion">
-        <div><strong>${escapeHtml(indicator.name)}</strong><span>${escapeHtml(indicator.state)}</span></div>
-        <b>${signed(indicator.score)}</b>
-        ${indicator.sourceUrl ? `<a href="${escapeHtml(indicator.sourceUrl)}" target="_blank" rel="noreferrer">Source</a>` : "<span></span>"}
-      </div>
-    `).join("");
-  });
+function rotationTone(model: WorkbookRatioModel): "positive" | "negative" | "neutral" {
+  if (model.score > 0.25) return "positive";
+  if (model.score < -0.25) return "negative";
+  return "neutral";
 }
 
 function updateRatios(dashboard: WorkbookDashboard): void {
-  for (const model of dashboard.ratioModels) {
-    document.querySelectorAll<HTMLElement>(`[data-ratio-id="${model.id}"]`).forEach((root) => {
-      const value = root.querySelector<HTMLElement>("[data-ratio-value]");
-      const state = root.querySelector<HTMLElement>("[data-ratio-state]");
-      const summary = root.querySelector<HTMLElement>("[data-ratio-summary]");
-      if (value) value.textContent = signed(model.score);
-      if (state) state.textContent = model.state;
-      if (summary) summary.textContent = `Current normalized reading from ${model.sourceTab}. Historical ratio prices are not supplied by this tab.`;
-      const dial = root.querySelector<HTMLElement>("[data-dial-value]");
-      if (dial) {
-        dial.dataset.dialValue = String(model.score);
-        dial.dataset.dialTone = model.score > 0.25 ? "good" : model.score < -0.25 ? "bad" : "neutral";
-        window.dispatchEvent(new CustomEvent("astrava:model-updated", { detail: { element: dial } }));
-      }
-    });
+  const root = document.querySelector<HTMLElement>("[data-rotation-board]");
+  const leaderRoot = document.querySelector<HTMLElement>("[data-rotation-leader]");
+  if (!root) return;
+  const models = [...new Map(dashboard.ratioModels.map((model) => [model.id, model])).values()]
+    .sort((left, right) => right.score - left.score);
+  if (!models.length) {
+    root.innerHTML = '<p class="models-empty-state">The rotational workbook is temporarily unavailable. No neutral scores are substituted.</p>';
+    if (leaderRoot) leaderRoot.innerHTML = "<span>Current leader</span><strong>Unavailable</strong>";
+    return;
   }
+
+  root.innerHTML = models.map((model, index) => {
+    const position = Math.min(100, Math.max(0, ((model.score + 1) / 2) * 100));
+    const tone = rotationTone(model);
+    return `<article class="rotation-card" data-tone="${tone}">
+      <header><div><span>${String(index + 1).padStart(2, "0")}</span><h3>${escapeHtml(model.label)}</h3></div><b>${escapeHtml(model.state)}</b></header>
+      <div class="rotation-reading"><strong>${signed(model.score)}</strong><span>${escapeHtml(model.sourceTab)}</span></div>
+      <div class="rotation-rail" aria-label="${escapeHtml(model.label)} relative-strength score ${signed(model.score)}"><i></i><b style="left:${position.toFixed(1)}%"></b></div>
+      <footer><span>Weak</span><span>Neutral</span><span>Strong</span></footer>
+    </article>`;
+  }).join("");
+
+  const leader = models[0]!;
+  if (leaderRoot) leaderRoot.innerHTML = `<span>Current leader</span><strong>${escapeHtml(leader.label)} <b>${signed(leader.score)}</b></strong>`;
+}
+
+function valuationScore(value: number | null): string {
+  if (value === null) return "--";
+  return `${signed(value)}\u03c3`;
+}
+
+function valuationDate(value: string | null): string {
+  if (!value) return "Verified dates only";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(date);
+}
+
+function renderValuationBrief(dashboard: BitcoinValuationDashboard): void {
+  const root = document.querySelector<HTMLElement>("[data-valuation-brief]");
+  if (!root) return;
+  root.dataset.state = dashboard.status;
+  const score = root.querySelector<HTMLElement>("[data-valuation-brief-score]");
+  const state = root.querySelector<HTMLElement>("[data-valuation-brief-state]");
+  const date = root.querySelector<HTMLElement>("[data-valuation-brief-date]");
+  const status = root.querySelector<HTMLElement>("[data-valuation-brief-status]");
+  const inputCount = root.querySelector<HTMLElement>("[data-valuation-brief-inputs]");
+  const marker = root.querySelector<HTMLElement>("[data-valuation-brief-marker]");
+  const markerLabel = root.querySelector<HTMLElement>("[data-valuation-brief-marker-label]");
+  if (score) score.textContent = valuationScore(dashboard.score);
+  if (state) state.textContent = dashboard.state?.toUpperCase() ?? "UNAVAILABLE";
+  if (date) date.textContent = `As of ${valuationDate(dashboard.workbookUpdatedLabel)}`;
+  if (status) {
+    status.textContent = dashboard.status === "ready" ? "Live workbook" : dashboard.status === "partial" ? "Partial workbook" : "Feed unavailable";
+    status.classList.toggle("is-unavailable", dashboard.status === "unavailable");
+  }
+  if (inputCount) inputCount.textContent = dashboard.indicatorCount
+    ? `${dashboard.indicatorCount} verified input${dashboard.indicatorCount === 1 ? "" : "s"}`
+    : "Verified inputs unavailable";
+  if (marker && dashboard.score !== null) {
+    const clamped = Math.min(dashboard.scaleMax, Math.max(dashboard.scaleMin, dashboard.score));
+    const position = ((clamped - dashboard.scaleMin) / (dashboard.scaleMax - dashboard.scaleMin)) * 100;
+    marker.style.setProperty("--valuation-position", "50%");
+    requestAnimationFrame(() => requestAnimationFrame(() => marker.style.setProperty("--valuation-position", `${position.toFixed(2)}%`)));
+  }
+  if (markerLabel) markerLabel.textContent = valuationScore(dashboard.score);
+}
+
+function renderValuationBriefUnavailable(): void {
+  const root = document.querySelector<HTMLElement>("[data-valuation-brief]");
+  if (!root) return;
+  root.dataset.state = "unavailable";
+  const status = root.querySelector<HTMLElement>("[data-valuation-brief-status]");
+  const state = root.querySelector<HTMLElement>("[data-valuation-brief-state]");
+  if (status) {
+    status.textContent = "Feed unavailable";
+    status.classList.add("is-unavailable");
+  }
+  if (state) state.textContent = "NO SUBSTITUTE SCORE";
 }
 
 export async function bootModelFeed(): Promise<void> {
-  try {
-    const dashboard = await apiRequest<WorkbookDashboard>("/api/workbook");
+  const [workbookResult, valuationResult] = await Promise.allSettled([
+    apiRequest<WorkbookDashboard>("/api/workbook", { signal: AbortSignal.timeout(12_000) }),
+    apiRequest<BitcoinValuationDashboard>("/api/valuation", { signal: AbortSignal.timeout(12_000) })
+  ]);
+
+  if (workbookResult.status === "fulfilled") {
+    const dashboard = workbookResult.value;
     dashboard.signals.forEach(updateSignal);
     updatePublication(dashboard);
-    updateMrpiSystem(dashboard);
     updateRatios(dashboard);
     renderModelHistory(dashboard);
-  } catch {
+  } else {
     updatePublication({ status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] });
-    updateMrpiSystem({ status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] });
+    updateRatios({ status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] });
     renderModelHistoryUnavailable();
   }
+
+  if (valuationResult.status === "fulfilled") renderValuationBrief(valuationResult.value);
+  else renderValuationBriefUnavailable();
 }

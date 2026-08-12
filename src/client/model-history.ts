@@ -15,6 +15,12 @@ const modelScopes: Record<string, string> = {
   nspi: "Combined crypto regime",
   mrpi: "10-year Treasury pressure"
 };
+const modelDescriptions: Record<string, string> = {
+  mtpi: "TOTAL and TOTAL2 participation.",
+  ltpi: "TOTAL and Bitcoin weekly structure.",
+  nspi: "MTPI and LTPI combined.",
+  mrpi: "Weekly tightening versus easing pressure."
+};
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]!);
@@ -31,6 +37,17 @@ function formatDate(value: string): string {
 
 function formatScore(value: number): string {
   return `${value > 0 ? "+" : ""}${value.toFixed(2)}`;
+}
+
+function rateOfChange(points: MarketPoint[]): { delta: number | null; direction: string } {
+  if (points.length < 2) return { delta: null, direction: "Awaiting history" };
+  const delta = points.at(-1)!.value - points[0]!.value;
+  const direction = Math.abs(delta) < 0.025 ? "Stable" : delta > 0 ? "Rising" : "Falling";
+  return { delta, direction };
+}
+
+function periodLabel(period: HistoryPeriod): string {
+  return period === "ALL" ? "Full history" : period;
 }
 
 function filterPoints(points: MarketPoint[], period: HistoryPeriod): MarketPoint[] {
@@ -121,9 +138,16 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
   const isMrpi = signal.id === "mrpi";
   const latestDate = series?.points.at(-1)?.date;
   const asOf = latestDate ? `As of ${formatDate(`${latestDate}T00:00:00.000Z`)}` : signal.updatedLabel ?? "Current published state";
+  const allPoints = (series?.points ?? []).map((point) => ({ timestamp: `${point.date}T00:00:00.000Z`, value: point.score }));
+  const velocity = rateOfChange(filterPoints(allPoints, period));
+  const velocityTone = velocity.delta === null || Math.abs(velocity.delta) < 0.025 ? "neutral" : velocity.delta > 0 ? "positive" : "negative";
   return `<article class="terminal-model-card" data-model-history-card="${escapeHtml(signal.id)}">
-    <header><div><span>${escapeHtml(modelScopes[signal.id] ?? signal.scope)}</span><h3>${escapeHtml(signal.name)}</h3></div><time>${escapeHtml(asOf)}</time></header>
-    <div class="model-gauge-read"><strong>${formatScore(signal.value)}</strong><b>${escapeHtml(signal.regime)}</b></div>
+    <header><div><span>${escapeHtml(modelScopes[signal.id] ?? signal.scope)}</span><h3>${escapeHtml(signal.name)}</h3><p>${escapeHtml(modelDescriptions[signal.id] ?? signal.scope)}</p></div><time>${escapeHtml(asOf)}</time></header>
+    <div class="model-gauge-read">
+      <div class="model-current-read"><span>Current score</span><strong>${formatScore(signal.value)}</strong></div>
+      <div class="model-velocity-read"><span>Rate of change</span><strong data-model-velocity data-tone="${velocityTone}">${velocity.delta === null ? "--" : formatScore(velocity.delta)}</strong><small data-model-velocity-label>${escapeHtml(`${periodLabel(period)} / ${velocity.direction}`)}</small></div>
+      <b>${escapeHtml(signal.regime)}</b>
+    </div>
     <div class="model-scale-gauge" aria-label="${escapeHtml(signal.name)} score ${formatScore(signal.value)}">
       <div><i></i><i></i><i></i><i></i><i></i><b style="left:${Math.min(100, Math.max(0, position)).toFixed(1)}%"></b></div>
       <small><span>${isMrpi ? "Tightening" : "Risk-off"} / -1</span><span>Neutral / 0</span><span>${isMrpi ? "Easing" : "Risk-on"} / +1</span></small>
@@ -157,6 +181,14 @@ export function renderModelHistory(dashboard: WorkbookDashboard): void {
       const points = filterPoints(allPoints, period);
       const chart = panel.querySelector<HTMLElement>(`[data-model-history-chart="${signal.id}"]`)!;
       renderChart(chart, points, `${signal.id}-${period}`, signal.id === "mrpi" ? [-0.1, 0.1] : [-0.25, 0.25]);
+      const velocity = rateOfChange(points);
+      const velocityNode = panel.querySelector<HTMLElement>("[data-model-velocity]");
+      const velocityLabel = panel.querySelector<HTMLElement>("[data-model-velocity-label]");
+      if (velocityNode) {
+        velocityNode.textContent = velocity.delta === null ? "--" : formatScore(velocity.delta);
+        velocityNode.dataset.tone = velocity.delta === null || Math.abs(velocity.delta) < 0.025 ? "neutral" : velocity.delta > 0 ? "positive" : "negative";
+      }
+      if (velocityLabel) velocityLabel.textContent = `${periodLabel(period)} / ${velocity.direction}`;
       const range = panel.querySelector<HTMLElement>("[data-model-history-range]");
       if (range) range.textContent = points.length > 1
         ? `${formatDate(points[0]!.timestamp)} - ${formatDate(points.at(-1)!.timestamp)}`

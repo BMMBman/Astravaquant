@@ -157,7 +157,7 @@ function renderLineChart(container: HTMLElement, points: MarketPoint[], options:
       <defs><linearGradient id="${gradientId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fc8f4" stop-opacity=".28"/><stop offset="1" stop-color="#8fc8f4" stop-opacity="0"/></linearGradient></defs>
       ${gridLines}${scoreBands}
       <path d="${area}" fill="url(#${gradientId})"/>
-      <path d="${line}" class="market-chart-line" pathLength="1"/>
+      <path d="${line}" class="market-chart-line"/>
       <line x1="${x(lastIndex)}" x2="${x(lastIndex)}" y1="${padding.top}" y2="${height - padding.bottom}" class="chart-hover-guide" data-chart-guide/>
       <circle cx="${x(lastIndex)}" cy="${y(points[lastIndex]!.value)}" r="5" class="market-chart-current" data-chart-dot/>
       <text x="${padding.left}" y="${height - 10}" class="market-chart-date">${escapeHtml(formatDate(points[0]!.timestamp))}</text>

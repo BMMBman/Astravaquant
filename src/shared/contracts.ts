@@ -167,6 +167,14 @@ export interface WorkbookDashboard {
   mrpiSystem?: MrpiDashboard;
 }
 
+export interface WorkbookSignalSnapshot {
+  status: "ready" | "partial" | "not_configured" | "unavailable";
+  provider: "Google Sheets" | null;
+  updatedAt: string;
+  refreshSeconds: number;
+  signals: WorkbookModelSignal[];
+}
+
 export type ValuationCategoryId = "fundamental" | "technical" | "sentiment";
 
 export interface ValuationIndicator {

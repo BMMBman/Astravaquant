@@ -231,6 +231,16 @@ describe("wallet authentication", () => {
     expect(response.body.signals[0].id).toBe("mtpi");
   });
 
+  it("publishes a lightweight edge-cached signal snapshot", async () => {
+    const response = await request(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider }))
+      .get("/api/signals")
+      .expect(200);
+    expect(response.body.signals[0].id).toBe("mtpi");
+    expect(response.body.scoreSeries).toBeUndefined();
+    expect(response.headers["cache-control"]).toContain("max-age=0");
+    expect(response.headers["vercel-cdn-cache-control"]).toContain("stale-while-revalidate=240");
+  });
+
   it("publishes the Bitcoin valuation contract without authentication", async () => {
     const response = await request(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider }))
       .get("/api/valuation")

@@ -1,10 +1,10 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import cookieParser from "cookie-parser";
-import express, { type ErrorRequestHandler } from "express";
+import express, { type ErrorRequestHandler, type Response } from "express";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
-import type { BitcoinValuationDashboard, MarketDashboard, PortfolioDashboard, PortfolioOverview, WorkbookDashboard } from "../shared/contracts.js";
+import type { BitcoinValuationDashboard, MarketDashboard, PortfolioDashboard, PortfolioOverview, WorkbookDashboard, WorkbookSignalSnapshot } from "../shared/contracts.js";
 import { attachSession, createAuthRouter, requireAuth, sessionResponse } from "./auth.js";
 import { getSupportedChain, supportedChains, type AppConfig } from "./config.js";
 import type { AstravaDataStore } from "./database.js";
@@ -13,7 +13,7 @@ import { PortfolioProviderError } from "./providers/portfolio.js";
 import type { PublicMarketProvider } from "./providers/markets.js";
 import type { BitcoinValuationProvider } from "./providers/valuation.js";
 import type { WorkbookProvider } from "./providers/workbook.js";
-import { workbookSignals } from "./providers/workbook.js";
+import { workbookSignals, workbookSignalSnapshot } from "./providers/workbook.js";
 import { ApiError } from "./security.js";
 import { buildAllPerformanceSeries } from "./services/performance.js";
 import {
@@ -31,6 +31,15 @@ interface AppDependencies {
   workbookProvider: WorkbookProvider;
   valuationProvider: BitcoinValuationProvider;
 }
+
+function setPublicResearchCache(response: Response, freshSeconds = 60, staleSeconds = 240): void {
+  response.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+  response.setHeader(
+    "Vercel-CDN-Cache-Control",
+    `public, max-age=${freshSeconds}, stale-while-revalidate=${staleSeconds}, stale-if-error=86400`
+  );
+}
+
 function unavailablePortfolio(address: string, chainId: number, network: string): PortfolioOverview {
   return {
     status: "unavailable",
@@ -107,8 +116,20 @@ export function createApp({ config, database, portfolioProvider, marketProvider,
   app.get("/api/markets", async (_request, response, next) => {
     try {
       const dashboard: MarketDashboard = await marketProvider.getDashboard();
-      response.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=240");
+      setPublicResearchCache(response);
       response.json(dashboard);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.get("/api/signals", async (_request, response, next) => {
+    try {
+      const snapshot: WorkbookSignalSnapshot = workbookProvider.getSignalSnapshot
+        ? await workbookProvider.getSignalSnapshot()
+        : workbookSignalSnapshot(await workbookProvider.getDashboard());
+      setPublicResearchCache(response);
+      response.json(snapshot);
     } catch (error) {
       next(error);
     }
@@ -117,7 +138,7 @@ export function createApp({ config, database, portfolioProvider, marketProvider,
   app.get("/api/workbook", async (_request, response, next) => {
     try {
       const dashboard: WorkbookDashboard = await workbookProvider.getDashboard();
-      response.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=240");
+      setPublicResearchCache(response);
       response.json(dashboard);
     } catch (error) {
       next(error);
@@ -127,7 +148,7 @@ export function createApp({ config, database, portfolioProvider, marketProvider,
   app.get("/api/valuation", async (_request, response, next) => {
     try {
       const dashboard: BitcoinValuationDashboard = await valuationProvider.getDashboard();
-      response.setHeader("Cache-Control", "public, max-age=60, stale-while-revalidate=240");
+      setPublicResearchCache(response);
       response.json(dashboard);
     } catch (error) {
       next(error);

@@ -82,6 +82,25 @@ describe("MRPI workbook normalization", () => {
     expect(fetcher).toHaveBeenCalledTimes(4);
   });
 
+  it("fetches only the MRPI header and score for the homepage snapshot", async () => {
+    const csvByRange: Record<string, string> = {
+      "A1:H3": '"Market Regime Indicator - TNX","DATE UPDATED:","August 10 2026"',
+      "C12:H12": '"TNX Regime Score","","","-0.79","","Strong Tightening"'
+    };
+    const fetcher = vi.fn(async (input: string | URL | Request) => {
+      const range = new URL(String(input)).searchParams.get("range") ?? "";
+      return new Response(csvByRange[range] ?? "", { status: 200, headers: { "content-type": "text/csv" } });
+    });
+    const provider = new PublicGoogleSheetsMrpiProvider("test-mrpi-workbook-id", 300_000, fetcher);
+
+    const first = await provider.getSignalDashboard();
+    const second = await provider.getSignalDashboard();
+
+    expect(first).toMatchObject({ status: "ready", score: -0.79, state: "Strong Tightening" });
+    expect(second).toBe(first);
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+
   it("enriches the shared workbook response without changing the crypto workbook contract", async () => {
     const base: WorkbookDashboard = {
       status: "ready",

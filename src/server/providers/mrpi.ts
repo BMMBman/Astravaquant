@@ -3,11 +3,12 @@ import type {
   MrpiIndicator,
   WorkbookDashboard,
   WorkbookModelSignal,
+  WorkbookSignalSnapshot,
   WorkbookScorePoint,
   WorkbookScoreSeries
 } from "../../shared/contracts.js";
 import { currentSignals } from "../data/astrava.js";
-import { parseCsv, type WorkbookProvider } from "./workbook.js";
+import { parseCsv, type WorkbookProvider, workbookSignalSnapshot } from "./workbook.js";
 
 type SheetRows = string[][];
 
@@ -152,10 +153,16 @@ function unavailableDashboard(spreadsheetId: string, refreshSeconds: number): Mr
 
 export interface MrpiProvider {
   getDashboard(): Promise<MrpiDashboard>;
+  getSignalDashboard?(): Promise<MrpiDashboard>;
 }
 
 export class PublicGoogleSheetsMrpiProvider implements MrpiProvider {
   private cache: { expiresAt: number; dashboard: MrpiDashboard } | null = null;
+  private signalCache: { expiresAt: number; dashboard: MrpiDashboard } | null = null;
+
+  private get signalCacheMs(): number {
+    return Math.min(this.cacheMs, 60_000);
+  }
 
   constructor(
     private readonly spreadsheetId: string,
@@ -191,6 +198,35 @@ export class PublicGoogleSheetsMrpiProvider implements MrpiProvider {
       );
       this.cache = { expiresAt: Date.now() + this.cacheMs, dashboard };
       return dashboard;
+    } catch {
+      return unavailableDashboard(this.spreadsheetId, Math.round(this.cacheMs / 1000));
+    }
+  }
+
+  async getSignalDashboard(): Promise<MrpiDashboard> {
+    if (this.cache && this.cache.expiresAt - this.cacheMs + this.signalCacheMs > Date.now()) {
+      return { ...this.cache.dashboard, refreshSeconds: Math.round(this.signalCacheMs / 1000) };
+    }
+    if (this.signalCache && this.signalCache.expiresAt > Date.now()) return this.signalCache.dashboard;
+    try {
+      const [header, summary] = await Promise.all([
+        this.fetchRange("A1:H3"),
+        this.fetchRange("C12:H12")
+      ]);
+      const dashboard = buildMrpiDashboard(
+        { header, indicators: [], summary, history: [] },
+        this.spreadsheetId,
+        Math.round(this.signalCacheMs / 1000)
+      );
+      const signalDashboard: MrpiDashboard = {
+        ...dashboard,
+        status: dashboard.score === null ? "unavailable" : "ready",
+        warnings: dashboard.score === null ? dashboard.warnings : []
+      };
+      if (signalDashboard.status !== "unavailable") {
+        this.signalCache = { expiresAt: Date.now() + this.signalCacheMs, dashboard: signalDashboard };
+      }
+      return signalDashboard;
     } catch {
       return unavailableDashboard(this.spreadsheetId, Math.round(this.cacheMs / 1000));
     }
@@ -252,6 +288,34 @@ export class MrpiEnrichedWorkbookProvider implements WorkbookProvider {
       scoreSeries: [...base.scoreSeries.filter((series) => series.id !== "mrpi"), mrpiSeries(mrpi)],
       warnings,
       mrpiSystem: mrpi
+    };
+  }
+
+  async getSignalSnapshot(): Promise<WorkbookSignalSnapshot> {
+    const [base, mrpi] = await Promise.all([
+      this.baseProvider.getSignalSnapshot?.()
+        ?? this.baseProvider.getDashboard().then(workbookSignalSnapshot),
+      this.mrpiProvider.getSignalDashboard?.()
+        ?? this.mrpiProvider.getDashboard()
+    ]);
+    const fallback = base.signals.find((signal) => signal.id === "mrpi") ?? {
+      ...currentSignals.find((signal) => signal.id === "mrpi")!,
+      regime: "TIGHTENING REGIME",
+      source: "manual_fallback" as const,
+      sourceTab: null,
+      updatedLabel: null
+    };
+    const signal = mrpiSignal(mrpi, fallback);
+    const signals = base.signals.some((candidate) => candidate.id === "mrpi")
+      ? base.signals.map((candidate) => candidate.id === "mrpi" ? signal : candidate)
+      : [...base.signals, signal];
+    const publishedCount = signals.filter((candidate) => candidate.source !== "manual_fallback").length;
+    return {
+      ...base,
+      status: publishedCount === signals.length ? "ready" : publishedCount > 0 ? "partial" : "unavailable",
+      provider: publishedCount > 0 ? "Google Sheets" : null,
+      updatedAt: new Date().toISOString(),
+      signals
     };
   }
 }

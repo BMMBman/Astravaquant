@@ -164,23 +164,25 @@ function renderValuationBriefUnavailable(): void {
 }
 
 export async function bootModelFeed(): Promise<void> {
-  const [workbookResult, valuationResult] = await Promise.allSettled([
-    apiRequest<WorkbookDashboard>("/api/workbook", { signal: AbortSignal.timeout(12_000) }),
-    apiRequest<BitcoinValuationDashboard>("/api/valuation", { signal: AbortSignal.timeout(12_000) })
-  ]);
+  const workbookTask = apiRequest<WorkbookDashboard>("/api/workbook", { signal: AbortSignal.timeout(12_000) })
+    .then((dashboard) => {
+      dashboard.signals.forEach(updateSignal);
+      updatePublication(dashboard);
+      updateRatios(dashboard);
+      renderModelHistory(dashboard);
+    })
+    .catch(() => {
+      const unavailable: WorkbookDashboard = { status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] };
+      updatePublication(unavailable);
+      updateRatios(unavailable);
+      renderModelHistoryUnavailable();
+    });
 
-  if (workbookResult.status === "fulfilled") {
-    const dashboard = workbookResult.value;
-    dashboard.signals.forEach(updateSignal);
-    updatePublication(dashboard);
-    updateRatios(dashboard);
-    renderModelHistory(dashboard);
-  } else {
-    updatePublication({ status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] });
-    updateRatios({ status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] });
-    renderModelHistoryUnavailable();
-  }
+  const valuationTask = document.querySelector("[data-valuation-brief]")
+    ? apiRequest<BitcoinValuationDashboard>("/api/valuation", { signal: AbortSignal.timeout(12_000) })
+        .then(renderValuationBrief)
+        .catch(renderValuationBriefUnavailable)
+    : Promise.resolve();
 
-  if (valuationResult.status === "fulfilled") renderValuationBrief(valuationResult.value);
-  else renderValuationBriefUnavailable();
+  await Promise.allSettled([workbookTask, valuationTask]);
 }

@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { buildWorkbookDashboard, deriveNspiSeries, parseCsv, parseRatioModels, parseScoreSeries, regimeForScore } from "./workbook.js";
+import { describe, expect, it, vi } from "vitest";
+import { buildWorkbookDashboard, buildWorkbookSignalSnapshot, deriveNspiSeries, parseCsv, parseRatioModels, parseScoreSeries, PublicGoogleSheetsWorkbookProvider, regimeForScore } from "./workbook.js";
 
 describe("Google workbook normalization", () => {
   it("reads dated score observations and excludes blanks and formula errors", () => {
@@ -93,6 +93,41 @@ describe("Google workbook normalization", () => {
       { date: "2025-11-26", score: -0.3 },
       { date: "2025-12-03", score: -0.35 }
     ]);
+  });
+
+  it("builds a lightweight signal snapshot from only the two core score ranges", () => {
+    const snapshot = buildWorkbookSignalSnapshot(new Map([
+      ["MTPI", [["DATE UPDATED:", "Aug 11 2026"], ["MTPI Avg Score", "-0.58", "Short"]]],
+      ["LTPI", [["DATE UPDATED:", "Aug 11 2026"], ["LTPI Avg Score", "-0.89", "Short"]]]
+    ]), 300);
+
+    expect(snapshot.status).toBe("partial");
+    expect(snapshot.signals.map(({ id, value }) => ({ id, value }))).toEqual([
+      { id: "mtpi", value: -0.58 },
+      { id: "ltpi", value: -0.89 },
+      { id: "nspi", value: -0.73 },
+      { id: "mrpi", value: -0.79 }
+    ]);
+  });
+
+  it("fetches only bounded MTPI and LTPI ranges for the homepage snapshot", async () => {
+    const fetcher = vi.fn(async (input: string | URL | Request) => {
+      const url = new URL(String(input));
+      const sheet = url.searchParams.get("sheet");
+      const csv = sheet === "MTPI"
+        ? '"DATE UPDATED:","Aug 11 2026"\n"MTPI Avg Score","-0.58","Short"'
+        : '"DATE UPDATED:","Aug 11 2026"\n"LTPI Avg Score","-0.89","Short"';
+      return new Response(csv, { status: 200, headers: { "content-type": "text/csv" } });
+    });
+    const provider = new PublicGoogleSheetsWorkbookProvider("test-workbook-id", 300_000, fetcher);
+
+    const first = await provider.getSignalSnapshot();
+    const second = await provider.getSignalSnapshot();
+
+    expect(first.signals.find((signal) => signal.id === "nspi")?.value).toBe(-0.73);
+    expect(second).toBe(first);
+    expect(fetcher).toHaveBeenCalledTimes(2);
+    expect(fetcher.mock.calls.every(([input]) => new URL(String(input)).searchParams.get("range") === "A1:AZ100")).toBe(true);
   });
 
   it("derives dated NSPI history from the latest available MTPI and LTPI states", () => {

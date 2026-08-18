@@ -2372,6 +2372,7 @@ footer {
 }
 
 .hero-metric {
+  position: relative;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md);
   background: linear-gradient(180deg, rgba(17, 21, 27, 0.88), rgba(10, 12, 16, 0.94));
@@ -2422,6 +2423,36 @@ footer {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.hero-metric[data-feed-state="loading"] strong,
+.hero-metric[data-feed-state="loading"] b {
+  color: rgba(196, 213, 228, 0.48);
+  animation: model-sync-pulse 1.35s ease-in-out infinite;
+}
+
+.hero-metric[data-feed-state="refreshing"]::after {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 12px rgba(104, 182, 255, 0.8);
+  content: "";
+}
+
+@keyframes model-sync-pulse {
+  0%, 100% { opacity: 0.48; }
+  50% { opacity: 0.92; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-metric[data-feed-state="loading"] strong,
+  .hero-metric[data-feed-state="loading"] b {
+    animation: none;
+  }
 }
 
 .platform-card h3,

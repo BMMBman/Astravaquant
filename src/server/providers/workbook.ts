@@ -4,6 +4,7 @@ import type {
   WorkbookDashboard,
   WorkbookModelSignal,
   WorkbookRatioModel,
+  WorkbookSignalSnapshot,
   WorkbookScorePoint,
   WorkbookScoreSeries,
   WorkbookTabCategory,
@@ -410,13 +411,43 @@ export function buildWorkbookDashboard(
   };
 }
 
+export function workbookSignalSnapshot(dashboard: WorkbookDashboard): WorkbookSignalSnapshot {
+  const publishedCount = dashboard.signals.filter((signal) => signal.source !== "manual_fallback").length;
+  return {
+    status: publishedCount === dashboard.signals.length
+      ? "ready"
+      : publishedCount > 0
+        ? "partial"
+        : dashboard.status === "not_configured"
+          ? "not_configured"
+          : "unavailable",
+    provider: publishedCount > 0 ? dashboard.provider : null,
+    updatedAt: dashboard.updatedAt,
+    refreshSeconds: dashboard.refreshSeconds,
+    signals: dashboard.signals
+  };
+}
+
+export function buildWorkbookSignalSnapshot(
+  rowsBySheet: Map<string, SheetRows>,
+  refreshSeconds: number
+): WorkbookSignalSnapshot {
+  return workbookSignalSnapshot(buildWorkbookDashboard(rowsBySheet, refreshSeconds));
+}
+
 export interface WorkbookProvider {
   getDashboard(): Promise<WorkbookDashboard>;
+  getSignalSnapshot?(): Promise<WorkbookSignalSnapshot>;
 }
 
 export class GoogleSheetsWorkbookProvider implements WorkbookProvider {
   private readonly auth: JWT;
   private cache: { expiresAt: number; dashboard: WorkbookDashboard } | null = null;
+  private signalCache: { expiresAt: number; snapshot: WorkbookSignalSnapshot } | null = null;
+
+  private get signalCacheMs(): number {
+    return Math.min(this.cacheMs, 60_000);
+  }
 
   constructor(
     private readonly spreadsheetId: string,
@@ -458,41 +489,75 @@ export class GoogleSheetsWorkbookProvider implements WorkbookProvider {
       return unavailableWorkbook("AstravaQuant could not reach the private research workbook. The last manual model snapshot remains visible.", Math.round(this.cacheMs / 1000));
     }
   }
+
+  async getSignalSnapshot(): Promise<WorkbookSignalSnapshot> {
+    if (this.cache && this.cache.expiresAt - this.cacheMs + this.signalCacheMs > Date.now()) {
+      return { ...workbookSignalSnapshot(this.cache.dashboard), refreshSeconds: Math.round(this.signalCacheMs / 1000) };
+    }
+    if (this.signalCache && this.signalCache.expiresAt > Date.now()) return this.signalCache.snapshot;
+    try {
+      const query = new URLSearchParams({
+        majorDimension: "ROWS",
+        valueRenderOption: "FORMATTED_VALUE",
+        dateTimeRenderOption: "FORMATTED_STRING"
+      });
+      for (const name of ["MTPI", "LTPI"]) query.append("ranges", `'${name}'!A1:AZ100`);
+      const response = await this.auth.request<GoogleBatchGetResponse>({
+        url: `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(this.spreadsheetId)}/values:batchGet?${query}`,
+        method: "GET",
+        timeout: 8_000
+      });
+      const rowsBySheet = new Map<string, SheetRows>();
+      ["MTPI", "LTPI"].forEach((name, index) => rowsBySheet.set(name, cleanRows(response.data.valueRanges?.[index]?.values)));
+      const snapshot = buildWorkbookSignalSnapshot(rowsBySheet, Math.round(this.signalCacheMs / 1000));
+      if (snapshot.status !== "unavailable") {
+        this.signalCache = { expiresAt: Date.now() + this.signalCacheMs, snapshot };
+      }
+      return snapshot;
+    } catch {
+      return workbookSignalSnapshot(unavailableWorkbook(
+        "AstravaQuant could not reach the private research workbook.",
+        Math.round(this.cacheMs / 1000)
+      ));
+    }
+  }
 }
 
 export class PublicGoogleSheetsWorkbookProvider implements WorkbookProvider {
   private cache: { expiresAt: number; dashboard: WorkbookDashboard } | null = null;
+  private signalCache: { expiresAt: number; snapshot: WorkbookSignalSnapshot } | null = null;
+
+  private get signalCacheMs(): number {
+    return Math.min(this.cacheMs, 60_000);
+  }
 
   constructor(
     private readonly spreadsheetId: string,
-    private readonly cacheMs: number
+    private readonly cacheMs: number,
+    private readonly fetcher: typeof fetch = fetch
   ) {}
+
+  private async fetchSheet(name: string, range?: string): Promise<SheetRows> {
+    try {
+      const query = new URLSearchParams({ tqx: "out:csv", headers: "0", sheet: name });
+      if (range) query.set("range", range);
+      const response = await this.fetcher(
+        `https://docs.google.com/spreadsheets/d/${encodeURIComponent(this.spreadsheetId)}/gviz/tq?${query}`,
+        { headers: { Accept: "text/csv" }, signal: AbortSignal.timeout(8_000) }
+      );
+      if (!response.ok || !response.headers.get("content-type")?.includes("text/csv")) return [];
+      return parseCsv(await response.text());
+    } catch {
+      return [];
+    }
+  }
 
   async getDashboard(): Promise<WorkbookDashboard> {
     if (this.cache && this.cache.expiresAt > Date.now()) return this.cache.dashboard;
     try {
       const sheetResults = await Promise.all(
         sheetDefinitions.map(async (definition): Promise<[string, SheetRows]> => {
-          try {
-            const query = new URLSearchParams({
-              tqx: "out:csv",
-              headers: "0",
-              sheet: definition.name
-            });
-            const response = await fetch(
-              `https://docs.google.com/spreadsheets/d/${encodeURIComponent(this.spreadsheetId)}/gviz/tq?${query}`,
-              {
-                headers: { Accept: "text/csv" },
-                signal: AbortSignal.timeout(10_000)
-              }
-            );
-            if (!response.ok || !response.headers.get("content-type")?.includes("text/csv")) {
-              return [definition.name, []];
-            }
-            return [definition.name, parseCsv(await response.text())];
-          } catch {
-            return [definition.name, []];
-          }
+          return [definition.name, await this.fetchSheet(definition.name)];
         })
       );
       const dashboard = buildWorkbookDashboard(new Map(sheetResults), Math.round(this.cacheMs / 1000));
@@ -505,6 +570,21 @@ export class PublicGoogleSheetsWorkbookProvider implements WorkbookProvider {
       );
     }
   }
+
+  async getSignalSnapshot(): Promise<WorkbookSignalSnapshot> {
+    if (this.cache && this.cache.expiresAt - this.cacheMs + this.signalCacheMs > Date.now()) {
+      return { ...workbookSignalSnapshot(this.cache.dashboard), refreshSeconds: Math.round(this.signalCacheMs / 1000) };
+    }
+    if (this.signalCache && this.signalCache.expiresAt > Date.now()) return this.signalCache.snapshot;
+    const sheetResults = await Promise.all(
+      ["MTPI", "LTPI"].map(async (name): Promise<[string, SheetRows]> => [name, await this.fetchSheet(name, "A1:AZ100")])
+    );
+    const snapshot = buildWorkbookSignalSnapshot(new Map(sheetResults), Math.round(this.signalCacheMs / 1000));
+    if (snapshot.status !== "unavailable") {
+      this.signalCache = { expiresAt: Date.now() + this.signalCacheMs, snapshot };
+    }
+    return snapshot;
+  }
 }
 
 export class UnavailableWorkbookProvider implements WorkbookProvider {
@@ -516,6 +596,10 @@ export class UnavailableWorkbookProvider implements WorkbookProvider {
       Math.round(this.cacheMs / 1000),
       "not_configured"
     );
+  }
+
+  async getSignalSnapshot(): Promise<WorkbookSignalSnapshot> {
+    return workbookSignalSnapshot(await this.getDashboard());
   }
 }
 

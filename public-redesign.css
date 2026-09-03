@@ -1976,7 +1976,91 @@ body.aq-site .aq-spacer-top {
   }
 
   body.aq-site .aq-model-summary-table {
-    min-width: 620px;
+    display: block;
+    min-width: 0;
+  }
+
+  body.aq-site .aq-model-summary-table thead {
+    display: none;
+  }
+
+  body.aq-site .aq-model-summary-table tbody {
+    display: grid;
+    gap: 12px;
+  }
+
+  body.aq-site .aq-model-summary-table tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 18px;
+    border: 1px solid rgba(241, 236, 226, 0.12);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  body.aq-site .aq-model-summary-table td {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  body.aq-site .aq-model-summary-table td:first-child {
+    grid-column: 1 / -1;
+    gap: 6px;
+  }
+
+  body.aq-site .aq-model-summary-table td:first-child strong {
+    font-family: var(--aq-font-display);
+    font-size: 1.35rem;
+    font-weight: 500;
+  }
+
+  body.aq-site .aq-model-summary-table td:first-child p {
+    margin: 0;
+    color: var(--aq-muted);
+    font-size: 0.84rem;
+  }
+
+  body.aq-site .aq-model-summary-table td:nth-child(2)::before,
+  body.aq-site .aq-model-summary-table td:nth-child(3)::before,
+  body.aq-site .aq-model-summary-table td:nth-child(4)::before,
+  body.aq-site .aq-model-summary-table td:nth-child(5)::before,
+  body.aq-site .aq-model-summary-table td:nth-child(6)::before {
+    color: var(--aq-faint);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  body.aq-site .aq-model-summary-table td:nth-child(2)::before { content: "Updated"; }
+  body.aq-site .aq-model-summary-table td:nth-child(3)::before { content: "Reading"; }
+  body.aq-site .aq-model-summary-table td:nth-child(4)::before { content: "State"; }
+  body.aq-site .aq-model-summary-table td:nth-child(5)::before { content: "Method"; }
+  body.aq-site .aq-model-summary-table td:nth-child(6)::before { content: "History"; }
+
+  body.aq-site .aq-model-summary-table td:nth-child(5),
+  body.aq-site .aq-model-summary-table td:nth-child(6) {
+    grid-column: span 1;
+  }
+
+  body.aq-site .aq-model-summary-table td:nth-child(5) a,
+  body.aq-site .aq-model-summary-table td:nth-child(6) a {
+    min-height: 36px;
+    padding: 8px 10px;
+    border: 1px solid rgba(241, 236, 226, 0.14);
+    border-radius: 8px;
+    color: var(--aq-text);
+    background: rgba(255, 255, 255, 0.04);
+    font-size: 0.76rem;
+  }
+
+  body.aq-site .aq-home-summary .aq-table-wrap {
+    overflow: visible;
+    touch-action: pan-y;
   }
 
   body.aq-site .valuation-dot-lane {

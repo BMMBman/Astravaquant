@@ -669,6 +669,41 @@ body.aq-site .aq-ratio-rail b {
 body.aq-site .aq-ratio-card[data-tone="positive"] .aq-ratio-rail b { background: #9ecca5; }
 body.aq-site .aq-ratio-card[data-tone="negative"] .aq-ratio-rail b { background: #d9857b; }
 
+body.aq-site .aq-expandable-section {
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(241, 236, 226, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+body.aq-site .aq-expandable-section summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  color: var(--aq-text);
+  cursor: pointer;
+  list-style: none;
+}
+
+body.aq-site .aq-expandable-section summary::-webkit-details-marker { display: none; }
+
+body.aq-site .aq-expandable-section summary span,
+body.aq-site .aq-expandable-section summary strong {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+body.aq-site .aq-expandable-section summary strong { color: var(--aq-muted); }
+body.aq-site .aq-expandable-section[open] summary { border-bottom: 1px solid rgba(241, 236, 226, 0.1); }
+body.aq-site .aq-expandable-head { padding: 28px 28px 0; }
+body.aq-site .aq-expandable-body { margin: 28px; }
+body.aq-site [data-observation-list] > .button { width: 100%; margin-top: 10px; }
+
 body.aq-site .aq-method-family-grid,
 body.aq-site .aq-about-grid {
   display: grid;

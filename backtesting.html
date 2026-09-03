@@ -148,14 +148,16 @@
 
       <section class="aq-page-section">
         <div class="shell shell-wide">
-          <div class="aq-section-head reveal">
-            <div>
-              <p class="aq-section-label">Backtesting Methodology</p>
-              <h2>What AstravaQuant evaluates.</h2>
+          <details class="aq-expandable-section reveal">
+            <summary><span>Methodology and limits</span><strong>Open reference notes</strong></summary>
+            <div class="aq-section-head aq-expandable-head">
+              <div>
+                <p class="aq-section-label">Backtesting Methodology</p>
+                <h2>What AstravaQuant evaluates.</h2>
+              </div>
             </div>
-          </div>
 
-          <div class="aq-grid three">
+          <div class="aq-grid three aq-expandable-body">
             <article class="aq-grid-card reveal">
               <h3>Data</h3>
               <ul class="aq-bullet-list">
@@ -212,6 +214,7 @@
               </ul>
             </article>
           </div>
+          </details>
         </div>
       </section>
 
@@ -229,14 +232,17 @@
 
       <section class="aq-page-section">
         <div class="shell shell-wide">
-          <div class="aq-section-head reveal">
-            <div>
-              <p class="aq-section-label">Workbook Coverage</p>
-              <h2>Connected public research tabs.</h2>
+          <details class="aq-expandable-section reveal">
+            <summary><span>Workbook coverage</span><strong>View 15 research tabs</strong></summary>
+            <div class="aq-section-head aq-expandable-head">
+              <div>
+                <p class="aq-section-label">Workbook Coverage</p>
+                <h2>Connected public research tabs.</h2>
+              </div>
             </div>
-          </div>
-          <div class="workbook-grid reveal" data-workbook-tabs aria-live="polite"></div>
-          <ul class="workbook-warnings reveal" data-workbook-warnings></ul>
+            <div class="workbook-grid aq-expandable-body" data-workbook-tabs aria-live="polite"></div>
+            <ul class="workbook-warnings aq-expandable-body" data-workbook-warnings></ul>
+          </details>
         </div>
       </section>
     </main>

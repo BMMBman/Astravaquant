@@ -188,7 +188,13 @@ function renderCoverage(dashboard: WorkbookDashboard): void {
   if (warningRoot) warningRoot.innerHTML = dashboard.warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("");
 }
 
-function renderSeries(series: BacktestSeries, totalObservations: number, negativeThreshold: number, positiveThreshold: number): void {
+function renderSeries(
+  series: BacktestSeries,
+  totalObservations: number,
+  negativeThreshold: number,
+  positiveThreshold: number,
+  observationLimit: number
+): void {
   const analysis = analyzeScoreSeries(series.points, negativeThreshold, positiveThreshold);
   const chart = document.querySelector<SVGElement>("[data-backtest-chart]");
   const empty = document.querySelector<HTMLElement>("[data-backtest-empty]");
@@ -241,10 +247,14 @@ function renderSeries(series: BacktestSeries, totalObservations: number, negativ
 
   const observations = document.querySelector<HTMLElement>("[data-observation-list]");
   if (observations) {
-    observations.innerHTML = series.points.length
-      ? [...series.points].reverse().map((point) => `
+    const newestFirst = [...series.points].reverse();
+    const displayed = newestFirst.slice(0, observationLimit);
+    observations.innerHTML = newestFirst.length
+      ? `${displayed.map((point) => `
           <div><time datetime="${escapeHtml(point.date)}">${escapeHtml(formatDate(point.date))}</time><strong>${formatScore(point.score, series.scoreSuffix)}</strong></div>
-        `).join("")
+        `).join("")}${newestFirst.length > displayed.length
+          ? `<button class="button" type="button" data-show-more-observations>Show 12 more (${newestFirst.length - displayed.length} remaining)</button>`
+          : ""}`
       : '<p class="backtest-empty-copy">No dated observations in this history window.</p>';
   }
 }
@@ -298,6 +308,7 @@ export async function bootBacktesting(): Promise<void> {
   seriesSelect.value = (mtpi ?? valuation ?? nspi ?? series[0])!.id;
 
   let period: BacktestPeriod = "90D";
+  let observationLimit = 12;
   const thresholds = new Map(series.map((candidate) => [candidate.id, candidate.defaultThresholds]));
   const selectedSeries = () => series.find((candidate) => candidate.id === seriesSelect.value) ?? series[0]!;
   const syncControls = () => {
@@ -315,7 +326,8 @@ export async function bootBacktesting(): Promise<void> {
     setText("[data-negative-threshold-label]", `${active.regimeLabels.risk_off} below`);
     setText("[data-positive-threshold-label]", `${active.regimeLabels.risk_on} above`);
   };
-  const rerender = () => {
+  const rerender = (resetObservations = false) => {
+    if (resetObservations) observationLimit = 12;
     const fullSeries = selectedSeries();
     const negative = Number(negativeInput.value);
     const positive = Number(positiveInput.value);
@@ -323,11 +335,17 @@ export async function bootBacktesting(): Promise<void> {
     setText("[data-negative-value]", formatScore(negative, fullSeries.scoreSuffix));
     setText("[data-positive-value]", formatScore(positive, fullSeries.scoreSuffix));
     const visibleSeries = windowSeries(fullSeries, period);
-    if (negative < positive) renderSeries(visibleSeries, fullSeries.points.length, negative, positive);
+    if (negative < positive) {
+      renderSeries(visibleSeries, fullSeries.points.length, negative, positive, observationLimit);
+      document.querySelector<HTMLButtonElement>("[data-show-more-observations]")?.addEventListener("click", () => {
+        observationLimit += 12;
+        rerender();
+      });
+    }
   };
   seriesSelect.addEventListener("change", () => {
     syncControls();
-    rerender();
+    rerender(true);
   });
   negativeInput.addEventListener("input", rerender);
   positiveInput.addEventListener("input", rerender);
@@ -337,7 +355,7 @@ export async function bootBacktesting(): Promise<void> {
       document.querySelectorAll<HTMLButtonElement>("[data-backtest-period]").forEach((candidate) => {
         candidate.classList.toggle("is-active", candidate === button);
       });
-      rerender();
+      rerender(true);
     });
   });
   syncControls();

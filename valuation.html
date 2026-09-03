@@ -5,73 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="AstravaQuant Bitcoin valuation composite across fundamentals, technical structure, and sentiment."
+      content="AstravaQuant valuation model with standardized readings, source workbook links, and dated forward-testing history."
     />
-    <title>Bitcoin Valuation | AstravaQuant</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>AstravaQuant Valuation | Standardized Value Score</title>
+    <link rel="stylesheet" href="public-redesign.css" />
   </head>
-  <body data-valuation-page>
-    <div class="ambient-orb orb-left" aria-hidden="true"></div>
-    <div class="ambient-orb orb-right" aria-hidden="true"></div>
-
+  <body class="aq-site aq-valuation-page" data-valuation-page>
     <header class="site-header" aria-label="Primary navigation">
       <div class="shell header-inner">
         <a class="brand" href="index.html" aria-label="AstravaQuant home">
           <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
-            <defs>
-              <linearGradient id="brand-gradient-valuation" x1="18" y1="132" x2="138" y2="16" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#68b6ff" />
-                <stop offset="0.5" stop-color="#eef5ff" />
-                <stop offset="1" stop-color="#8fe0ff" />
-              </linearGradient>
-            </defs>
-            <path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke="url(#brand-gradient-valuation)" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
+            <path
+              d="M82 10 151 138 82 101 13 138Z"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="14"
+            />
           </svg>
-          <span class="brand-copy"><strong>AstravaQuant</strong><span>Valuation</span></span>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Independent Systematic Market Research</span>
+          </span>
         </a>
-
         <nav class="site-nav" aria-label="Main navigation">
           <a class="is-active" href="models.html">Models</a>
-          <a href="backtesting.html">Backtest</a>
-          <a href="portfolio.html">Portfolio</a>
-          <a href="terminal.html">Terminal</a>
+          <a href="methodology.html">Methodology</a>
           <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
         </nav>
-
-        <div class="header-cta" data-wallet-root>
-          <button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button>
-        </div>
+        <div class="header-meta">Standardized value score.</div>
       </div>
     </header>
 
     <main>
-      <section class="section valuation-hero">
-        <div class="shell shell-narrow">
-          <div class="valuation-hero-copy reveal">
-            <a class="valuation-back" href="models.html">Models / Bitcoin valuation</a>
-            <p class="eyebrow">Standard Deviation Composite</p>
-            <h1>Value, measured in deviations.</h1>
-            <p class="lead">A 17-input Bitcoin composite across fundamentals, technical structure, and sentiment.</p>
+      <section class="aq-hero">
+        <div class="shell shell-narrow aq-method-shell">
+          <div class="aq-hero-copy reveal">
+            <p class="aq-kicker">Valuation</p>
+            <h1 class="aq-page-title">Standardized value, not a price target.</h1>
+            <p class="aq-lead">
+              The current valuation system averages 17 standardized inputs across
+              fundamental, technical, and sentiment categories.
+            </p>
+          </div>
+
+          <div class="aq-inline-actions reveal">
+            <a class="button" href="valuation-methodology.html">Methodology</a>
+            <a class="button" href="backtesting.html">Backtesting</a>
           </div>
         </div>
       </section>
 
-      <section class="section section-compact">
+      <section class="aq-page-section">
         <div class="shell shell-narrow">
-          <article class="valuation-instrument glass-card reveal" data-valuation-instrument aria-live="polite">
-            <div class="valuation-primary">
-              <div class="valuation-kicker">
-                <span>BTC value score</span>
-                <span class="feed-live" data-valuation-status>Loading workbook</span>
-              </div>
-              <div class="valuation-score-row">
-                <strong class="valuation-score" data-valuation-score>--</strong>
-                <span class="valuation-state" data-valuation-state>Verifying</span>
-              </div>
-              <p class="valuation-definition">Positive readings mean greater modeled value in this system. The score is a relative position, not a dollar price target.</p>
+          <article class="aq-valuation-card reveal" data-valuation-instrument aria-live="polite">
+            <div class="aq-valuation-kicker">
+              <span class="aq-section-label">Current Reading</span>
+              <span class="feed-live" data-valuation-status>Loading workbook</span>
             </div>
 
-            <div class="valuation-market-strip">
+            <div class="aq-valuation-score">
+              <strong class="valuation-score" data-valuation-score>--</strong>
+              <span class="valuation-state" data-valuation-state>Verifying</span>
+            </div>
+
+            <p class="valuation-definition">
+              Positive readings mean greater modeled value in the current workbook
+              orientation. The score is a relative historical condition, not a dollar fair
+              value.
+            </p>
+
+            <div class="valuation-market-strip aq-spacer-top">
               <div>
                 <span>Bitcoin</span>
                 <strong data-bitcoin-price>Loading</strong>
@@ -80,7 +86,7 @@
               <div>
                 <span>Inputs</span>
                 <strong data-indicator-count>--</strong>
-                <small>Composite signals</small>
+                <small>Verified indicators</small>
               </div>
               <div>
                 <span>Updated</span>
@@ -89,9 +95,11 @@
               </div>
             </div>
 
-            <div class="valuation-scale-wrap">
+            <div class="valuation-scale-wrap aq-spacer-top">
               <div class="valuation-scale-readout">
-                <span>No value</span><span>Neutral</span><span>High value</span>
+                <span>No value</span>
+                <span>Neutral</span>
+                <span>High value</span>
               </div>
               <div class="valuation-scale" role="img" aria-label="Value scale from negative two to positive two standard deviations">
                 <div class="valuation-scale-segments" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
@@ -100,97 +108,117 @@
                 </div>
               </div>
               <div class="valuation-ticks" aria-hidden="true">
-                <span>-2σ</span><span>-1σ</span><span>0</span><span>+1σ</span><span>+2σ</span>
+                <span>-2σ</span>
+                <span>-1σ</span>
+                <span>0</span>
+                <span>+1σ</span>
+                <span>+2σ</span>
               </div>
             </div>
 
-            <div class="valuation-inverse">
+            <div class="aq-value-grid aq-spacer-top">
               <div>
-                <span class="table-label">Inverse risk lens</span>
-                <strong data-inverse-score>--</strong>
+                <span>Primary scale</span>
+                <strong>17-input average</strong>
+                <small>Fundamental, technical, sentiment</small>
               </div>
-              <p><b data-inverse-state>Verifying</b> The workbook also multiplies the value score by -1 for an inverse risk view.</p>
+              <div>
+                <span>Inverse risk lens</span>
+                <strong data-inverse-score>--</strong>
+                <small data-inverse-state>Verifying</small>
+              </div>
+              <div>
+                <span>Source workbook</span>
+                <strong>Read-only</strong>
+                <small><a data-valuation-source href="https://docs.google.com/spreadsheets/d/1CDRiyNvMiQEz-YsrJT6vOEPN-CwAMj6cQrMYmY01bxE/edit" target="_blank" rel="noreferrer">Open source workbook</a></small>
+              </div>
             </div>
           </article>
         </div>
       </section>
 
-      <section class="section section-compact">
+      <section class="aq-page-section">
         <div class="shell shell-narrow">
-          <div class="section-head reveal valuation-section-head">
-            <div><p class="eyebrow">Composite Structure</p><h2>Three lenses. One score.</h2></div>
-            <p>Each category is averaged from the current published inputs.</p>
+          <div class="aq-section-head reveal">
+            <div>
+              <p class="aq-section-label">Composite Structure</p>
+              <h2>Three lenses. One score.</h2>
+            </div>
           </div>
-          <div class="valuation-category-grid reveal" data-valuation-categories>
-            <article class="valuation-category-card glass-card"><span>Fundamental</span><strong>--</strong><small>Loading inputs</small></article>
-            <article class="valuation-category-card glass-card"><span>Technical</span><strong>--</strong><small>Loading inputs</small></article>
-            <article class="valuation-category-card glass-card"><span>Sentiment</span><strong>--</strong><small>Loading inputs</small></article>
+          <div class="aq-category-grid reveal" data-valuation-categories>
+            <article class="valuation-category-card"><span>Fundamental</span><strong>--</strong><small>Loading inputs</small></article>
+            <article class="valuation-category-card"><span>Technical</span><strong>--</strong><small>Loading inputs</small></article>
+            <article class="valuation-category-card"><span>Sentiment</span><strong>--</strong><small>Loading inputs</small></article>
           </div>
         </div>
       </section>
 
-      <section class="section section-compact">
+      <section class="aq-page-section">
         <div class="shell shell-narrow">
-          <article class="valuation-input-panel glass-card reveal">
+          <article class="valuation-input-panel reveal">
             <div class="valuation-panel-head">
-              <div><p class="eyebrow">Input Monitor</p><h2>What is driving the score.</h2></div>
+              <div>
+                <p class="aq-section-label">Input Monitor</p>
+                <h2>What is driving the score.</h2>
+              </div>
               <div class="valuation-tabs" role="tablist" aria-label="Valuation category" data-valuation-tabs>
                 <button type="button" class="is-active" data-valuation-tab="fundamental">Fundamental</button>
                 <button type="button" data-valuation-tab="technical">Technical</button>
                 <button type="button" data-valuation-tab="sentiment">Sentiment</button>
               </div>
             </div>
-            <div class="valuation-input-list" data-valuation-inputs>
-              <div class="valuation-loading"><span></span><span></span><span></span></div>
+            <div class="aq-indicator-table" data-valuation-inputs>
+              <p class="valuation-empty-copy">Loading verified inputs.</p>
             </div>
           </article>
         </div>
       </section>
 
-      <section class="section section-compact">
+      <section class="aq-page-section">
         <div class="shell shell-narrow valuation-lower-grid">
-          <article class="valuation-dispersion glass-card reveal">
+          <article class="valuation-dispersion reveal">
             <div class="valuation-panel-head">
-              <div><p class="eyebrow">Dispersion</p><h2>All inputs at a glance.</h2></div>
-              <span class="table-label">-3σ to +3σ</span>
+              <div>
+                <p class="aq-section-label">Dispersion</p>
+                <h2>All inputs at a glance.</h2>
+              </div>
+              <span class="aq-table-label">-3σ to +3σ</span>
             </div>
             <div class="valuation-dot-plot" data-dispersion-plot>
-              <p>Loading verified inputs...</p>
+              <p class="valuation-empty-copy">Loading verified inputs.</p>
             </div>
           </article>
 
-          <article class="valuation-history glass-card reveal">
+          <article class="valuation-history reveal">
             <div class="valuation-panel-head">
-              <div><p class="eyebrow">Forward Testing</p><h2>Verified history only.</h2></div>
-              <span class="feed-state" data-history-state>Checking</span>
+              <div>
+                <p class="aq-section-label">Forward Testing</p>
+                <h2>Verified history only.</h2>
+              </div>
+              <span class="aq-table-label" data-history-state>Checking</span>
             </div>
             <div class="valuation-history-stage" data-valuation-history>
-              <p>Checking for dated observations...</p>
+              <p class="valuation-empty-copy">Checking for dated observations.</p>
             </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section valuation-method-section">
-        <div class="shell shell-narrow">
-          <article class="valuation-method glass-card reveal">
-            <div><span class="table-label">Method</span><h2>Transparent by construction.</h2></div>
-            <div class="valuation-method-facts">
-              <div><span>Composite</span><strong>Average of 17 z-scores</strong></div>
-              <div><span>Primary scale</span><strong>Positive = greater value</strong></div>
-              <div><span>Risk lens</span><strong>Value score × -1</strong></div>
-            </div>
-            <p>No historical data or dollar fair value is fabricated. New dated rows in Forward Testing will publish automatically after the workbook cache refreshes.</p>
-            <div class="valuation-method-actions"><a class="button secondary" href="backtesting.html">Open valuation backtest</a><a class="button secondary" data-valuation-source href="https://docs.google.com/spreadsheets/d/1CDRiyNvMiQEz-YsrJT6vOEPN-CwAMj6cQrMYmY01bxE/edit" target="_blank" rel="noreferrer">Open source workbook</a></div>
           </article>
         </div>
       </section>
     </main>
 
-    <footer class="footer">
+    <footer class="aq-footer">
       <div class="shell footer-inner">
-        <p>AstravaQuant model outputs are informational research, not investment advice.</p>
-        <div class="footer-links"><a href="models.html">Models</a><a href="methodology.html">Methodology</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div>
+        <p>Valuation answers a different question than trend or regime.</p>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="models.html">Models</a>
+          <a href="valuation-methodology.html">Valuation Methodology</a>
+          <a href="backtesting.html">Backtesting</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
       </div>
     </footer>
 

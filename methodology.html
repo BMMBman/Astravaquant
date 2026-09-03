@@ -1,28 +1,232 @@
 <!doctype html>
 <html lang="en">
-  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="description" content="AstravaQuant model methodology, scales, data inputs, limitations, and public version history."/><title>AstravaQuant Methodology | Model Definitions and Version History</title><link rel="stylesheet" href="styles.css"/></head>
-  <body>
-    <header class="site-header" aria-label="Primary navigation"><div class="shell header-inner">
-      <a class="brand" href="index.html" aria-label="AstravaQuant home"><svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true"><path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke="#b9dfff" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/></svg><span class="brand-copy"><strong>AstravaQuant</strong><span>Methodology</span></span></a>
-      <nav class="site-nav" aria-label="Main navigation"><a href="signals.html">Signals</a><a href="models.html">Models</a><a href="backtesting.html">Backtest</a><a href="portfolio.html">Portfolio</a><a href="terminal.html">Terminal</a><a href="research.html">Research</a></nav>
-      <div class="header-cta" data-wallet-root><button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div>
-    </div></header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="AstravaQuant methodology for model construction, interpretation, limitations, versioning, and backtesting standards."
+    />
+    <title>AstravaQuant Methodology | How the Models Are Built, Tested, and Interpreted</title>
+    <link rel="stylesheet" href="public-redesign.css" />
+  </head>
+  <body class="aq-site aq-methodology-page">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <path
+              d="M82 10 151 138 82 101 13 138Z"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="14"
+            />
+          </svg>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Independent Systematic Market Research</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="models.html">Models</a>
+          <a class="is-active" href="methodology.html">Methodology</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+        </nav>
+        <div class="header-meta">How the models are built, tested, and interpreted.</div>
+      </div>
+    </header>
+
     <main>
-      <section class="section page-hero page-hero-simple"><div class="shell shell-narrow"><div class="page-hero-copy page-hero-center reveal"><p class="eyebrow">Methodology</p><h1>Know what the score means.</h1><p class="lead">Public definitions, model inputs, interpretation scales, limitations, and version history.</p></div></div></section>
-      <section class="section section-compact"><div class="shell content-shell">
-        <aside class="content-index reveal"><span>On this page</span><a href="#core">Core models</a><a href="#scales">Scales</a><a href="#data">Data</a><a href="#limits">Limitations</a><a href="#versions">Versions</a></aside>
-        <article class="methodology-document reveal">
-          <section id="core"><span class="document-kicker">01 / Core models</span><h2>AQ Core model family</h2><p>AstravaQuant publishes systematic state indicators across crypto trend and mortgage-rate pressure. The current public release identifies the input universe, aggregation layer, timeframe, output range, and interpretation. Exact transformations and weights are not disclosed in v0.1.</p>
-            <div class="definition-list"><div><strong>MTPI</strong><p>Five-day medium-term crypto trend built from total crypto market capitalization and TOTAL2, the crypto market excluding Bitcoin.</p></div><div><strong>LTPI</strong><p>Weekly long-term crypto trend built from total crypto market capitalization and the Bitcoin chart.</p></div><div><strong>NSPI</strong><p>Aggregate regime score combining MTPI and LTPI into one connected crypto state.</p></div><div><strong>MRPI</strong><p>Weekly Mortgage Rate Pressure Index anchored to the 10-year Treasury backdrop. It is interpreted as tightening versus easing.</p></div></div>
-          </section>
-          <section id="scales"><span class="document-kicker">02 / Interpretation</span><h2>Two different scales</h2><h3>Crypto regime scale</h3><div class="method-scale"><span><b>-1.00 to -0.75</b>Extreme risk-off</span><span><b>-0.75 to -0.25</b>Defensive contraction</span><span><b>-0.25 to +0.25</b>Neutral transition</span><span><b>+0.25 to +0.75</b>Constructive expansion</span><span><b>+0.75 to +1.00</b>Full risk-on</span></div><h3>MRPI scale</h3><p>Negative MRPI readings indicate tightening pressure in the 10-year backdrop. Positive readings indicate easing pressure. MRPI should not be labeled risk-on or risk-off.</p></section>
-          <section id="data"><span class="document-kicker">03 / Data</span><h2>Inputs and market feeds</h2><p>Core crypto inputs reference broad crypto market capitalization, TOTAL2, and Bitcoin. A link-shared Google workbook supplies normalized model summaries, relative-strength states, asset-model coverage, and the dated observations already present in the MTPI and LTPI forward-testing tabs. NSPI is derived as the mean of the current MTPI and LTPI readings.</p><p>MRPI remains a separate weekly 10-year Treasury system. Its link-shared Weekly LPI workbook publishes the composite, six TNX criteria, and dated backtest observations; blank future rows are excluded until a score is present. The Terminal displays CoinGecko and Federal Reserve Economic Data for context; those public feeds are not represented as the calculation feed behind a model score.</p></section>
-          <section id="limits"><span class="document-kicker">04 / Limitations</span><h2>What the models do not promise</h2><ul><li>Scores are state indicators, not forecasts or guarantees.</li><li>Google Sheets values can be delayed, revised, unavailable, or affected by workbook formula errors.</li><li>Missing dates and model transitions are not reconstructed or backfilled.</li><li>Relative-strength tabs currently provide normalized state summaries, not historical ratio-price charts.</li><li>Score history alone cannot produce return, alpha, Sharpe, or drawdown statistics; an aligned benchmark series is required.</li></ul></section>
-          <section id="versions"><span class="document-kicker">05 / Version history</span><h2>Public model register</h2><div class="version-row"><div><strong>AQ Core v0.3</strong><span>August 10, 2026</span></div><p>Read-only MRPI system ingestion, six-criterion verification, dated MRPI backtesting, and tightening/easing regime thresholds.</p></div><div class="version-row"><div><strong>AQ Core v0.2</strong><span>August 10, 2026</span></div><p>Read-only Google Sheets ingestion across all 15 crypto workbook tabs, automated MTPI and LTPI publication, transparent NSPI derivation, relative-strength normalization, and verified score diagnostics.</p></div><div class="version-row"><div><strong>AQ Core v0.1</strong><span>August 10, 2026</span></div><p>Initial public methodology release covering MTPI, LTPI, NSPI, MRPI, separate interpretation scales, and the manual fallback snapshot.</p></div></section>
-        </article>
-      </div></section>
+      <section class="aq-hero">
+        <div class="shell shell-narrow aq-method-shell">
+          <div class="aq-hero-copy reveal">
+            <p class="aq-kicker">Methodology</p>
+            <h1 class="aq-page-title">How the models are built, tested, and interpreted.</h1>
+            <p class="aq-lead">
+              AstravaQuant uses systematic frameworks designed to convert market data into
+              repeatable measurements of trend, liquidity, valuation, and regime.
+            </p>
+            <p class="aq-lead">
+              The objective is not to predict every market movement. The objective is to
+              define market conditions consistently and evaluate how those definitions have
+              behaved historically.
+            </p>
+          </div>
+
+          <nav class="aq-method-nav reveal" aria-label="Methodology sections">
+            <a href="#trend">Trend</a>
+            <a href="#mortgage-rate-pressure">Mortgage Rate Pressure</a>
+            <a href="#liquidity-regime">Liquidity / Regime</a>
+            <a href="#valuation">Valuation</a>
+            <a href="#backtesting">Backtesting</a>
+            <a href="#versioning">Versioning</a>
+          </nav>
+        </div>
+      </section>
+
+      <section class="aq-page-section" id="trend">
+        <div class="shell shell-wide">
+          <div class="aq-section-head reveal">
+            <div>
+              <p class="aq-section-label">01</p>
+              <h2>Trend</h2>
+            </div>
+          </div>
+
+          <div class="aq-method-family-grid">
+            <article class="aq-method-card reveal">
+              <p class="aq-method-index">01 / Trend Following</p>
+              <h3>Trend</h3>
+              <p>
+                The current public trend stack consists of a five-day medium-term model and
+                a weekly long-term model. Both use shared regime bands on a normalized
+                `-1.00` to `+1.00` scale.
+              </p>
+              <div class="aq-method-actions">
+                <a class="button" href="trend-following.html">Open Trend Family</a>
+                <a class="button" href="ltpi-methodology.html">Open LTPI</a>
+              </div>
+            </article>
+
+            <article class="aq-method-card reveal" id="mortgage-rate-pressure">
+              <p class="aq-method-index">02 / Mortgage Rate Pressure</p>
+              <h3>Mortgage Rate Pressure</h3>
+              <p>
+                MRPI is a separate weekly system anchored to the 10-year Treasury backdrop.
+                It is interpreted as tightening versus easing pressure rather than risk-on
+                versus risk-off.
+              </p>
+              <div class="aq-method-actions">
+                <a class="button" href="mrpi-methodology.html">Open MRPI</a>
+              </div>
+            </article>
+
+            <article class="aq-method-card reveal" id="liquidity-regime">
+              <p class="aq-method-index">03 / Liquidity / Regime</p>
+              <h3>Liquidity / Regime</h3>
+              <p>
+                The current public regime composite is NSPI, which the application derives
+                as the mean of the latest published MTPI and LTPI values at each dated
+                update. No broader liquidity formula is disclosed in the current repo.
+              </p>
+              <div class="aq-placeholder">
+                <strong>Placeholder For Troy</strong>
+                Supply any separate liquidity or macro-regime framework that should be
+                publicly documented beyond the current NSPI derivation.
+              </div>
+            </article>
+
+            <article class="aq-method-card reveal" id="valuation">
+              <p class="aq-method-index">04 / Valuation</p>
+              <h3>Valuation</h3>
+              <p>
+                The current valuation system averages 17 standardized input readings across
+                fundamental, technical, and sentiment categories. The app publishes the
+                workbook score without converting it into a dollar target.
+              </p>
+              <div class="aq-method-actions">
+                <a class="button" href="valuation-methodology.html">Open Valuation</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="aq-page-section" id="backtesting">
+        <div class="shell shell-wide">
+          <article class="aq-panel reveal">
+            <p class="aq-section-label">Backtesting</p>
+            <h2>Test the rule, not the story.</h2>
+            <p>
+              AstravaQuant evaluates historical behavior using dated score observations that
+              already exist in the published workbooks. The public app does not fabricate
+              return series, fill missing dates, or imply live track records from
+              hypothetical simulations.
+            </p>
+            <div class="aq-inline-actions aq-spacer-top">
+              <a class="button" href="backtesting.html">Open Backtesting</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="aq-page-section" id="versioning">
+        <div class="shell shell-wide">
+          <div class="aq-section-head reveal">
+            <div>
+              <p class="aq-section-label">Versioning</p>
+              <h2>Methodology changelog</h2>
+            </div>
+          </div>
+
+          <div class="aq-version-grid">
+            <article class="aq-version-item reveal">
+              <strong>AQ Core v0.3</strong>
+              <span>August 10, 2026</span>
+              <p>
+                Added read-only MRPI workbook ingestion, six-criterion verification, dated
+                MRPI history, and public tightening versus easing publication.
+              </p>
+            </article>
+
+            <article class="aq-version-item reveal">
+              <strong>AQ Core v0.2</strong>
+              <span>August 10, 2026</span>
+              <p>
+                Added read-only Google Sheets ingestion, automated MTPI and LTPI
+                publication, NSPI derivation, relative-strength normalization, and dated
+                score diagnostics.
+              </p>
+            </article>
+
+            <article class="aq-version-item reveal">
+              <strong>AQ Core v0.1</strong>
+              <span>August 10, 2026</span>
+              <p>
+                Initial public methodology release covering MTPI, LTPI, NSPI, MRPI,
+                interpretation scales, and the manual fallback snapshot.
+              </p>
+            </article>
+          </div>
+
+          <article class="aq-panel reveal aq-spacer-top">
+            <p class="aq-section-label">Auditability</p>
+            <h2>Preserve prior methodology.</h2>
+            <p>
+              Material methodology changes should create a new version entry rather than
+              silently rewriting the past. Prior versions remain part of the research
+              record.
+            </p>
+            <div class="aq-placeholder aq-spacer-top">
+              <strong>Placeholder For Troy</strong>
+              Add a formal public register for methodology revisions, threshold changes, new
+              inputs, and retired versions when the next model revision is published.
+            </div>
+          </article>
+        </div>
+      </section>
     </main>
-    <footer class="footer"><div class="shell footer-inner"><p>Methodology version AQ Core v0.2.</p><div class="footer-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div></div></footer>
-    <script type="module" src="/app.js"></script><script type="module" src="/src/client/index.ts"></script>
+
+    <footer class="aq-footer">
+      <div class="shell footer-inner">
+        <p>The methodology should make the research more inspectable, not more theatrical.</p>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="models.html">Models</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
   </body>
 </html>

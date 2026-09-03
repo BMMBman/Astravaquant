@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="AstravaQuant Mortgage Rate Pressure Index methodology." />
+    <title>MRPI | AstravaQuant Methodology</title>
+    <link rel="stylesheet" href="public-redesign.css" />
+  </head>
+  <body class="aq-site aq-method-page">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
+          </svg>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Independent Systematic Market Research</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="models.html">Models</a>
+          <a class="is-active" href="methodology.html">Methodology</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+        </nav>
+        <div class="header-meta">Mortgage Rate Pressure Index.</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="aq-hero">
+        <div class="shell shell-wide aq-hero-copy reveal">
+          <p class="aq-kicker">Methodology / MRPI</p>
+          <h1 class="aq-page-title">Mortgage Rate Pressure Index (MRPI).</h1>
+          <p class="aq-lead">
+            MRPI is a systematic framework designed to measure directional pressure in
+            mortgage-rate conditions. It is framed as a pressure or regime measure rather
+            than a direct mortgage-rate prediction.
+          </p>
+        </div>
+      </section>
+
+      <section class="aq-page-section">
+        <div class="shell shell-wide">
+          <article class="aq-panel reveal">
+            <div class="aq-definition-grid">
+              <div class="aq-definition-item">
+                <strong>Objective</strong>
+                Answer whether the current 10-year Treasury backdrop is exerting tightening,
+                neutral, or easing pressure on mortgage-rate conditions.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Inputs</strong>
+                The current public parser validates six weekly TNX criteria from the
+                `Weekly LPI` workbook.
+              </div>
+            </div>
+
+            <div class="aq-grid two aq-spacer-top">
+              <div class="aq-definition-item"><strong>T3S [Loxx] 1W - 10</strong>Trend criterion.</div>
+              <div class="aq-definition-item"><strong>FTKC EMAC 1W - 7 - 8</strong>Momentum criterion.</div>
+              <div class="aq-definition-item"><strong>EWMA 1W 14</strong>Trend criterion.</div>
+              <div class="aq-definition-item"><strong>Normalized KAMA Oscillator 1W 17- 19 -10 -12</strong>Momentum criterion.</div>
+              <div class="aq-definition-item"><strong>EWMA Oscillator 1W 7 - 18</strong>Momentum criterion.</div>
+              <div class="aq-definition-item"><strong>Regularized Moving Average Suite 1W 8 - 18 - 3</strong>Trend criterion.</div>
+            </div>
+
+            <div class="aq-definition-grid aq-spacer-top">
+              <div class="aq-definition-item">
+                <strong>Signal Construction</strong>
+                The app reads the published `TNX Regime Score`, independently recomputes the
+                arithmetic mean of the available criteria, and warns if the two differ by
+                more than `0.01`.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Normalization</strong>
+                MRPI is published on a `-1.00` to `+1.00` scale. Negative values indicate
+                tightening pressure. Positive values indicate easing pressure.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Regimes</strong>
+                `-1.00 to -0.75` Strong Tightening, `-0.75 to -0.25` Tightening, `-0.25 to
+                +0.25` Neutral, `+0.25 to +0.75` Easing, `+0.75 to +1.00` Strong Easing.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Update Frequency</strong>
+                The public site reads bounded ranges from the `Weekly LPI` workbook and
+                refreshes the normalized output every five minutes by default.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Historical Series</strong>
+                Public history uses only rows with both a valid date and a valid score. Blank
+                future rows are excluded until a real score is published.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Interpretation</strong>
+                MRPI measures directional pressure or regime. It should not be described as a
+                predictor of mortgage rates with certainty.
+              </div>
+            </div>
+
+            <div class="aq-placeholder aq-spacer-top">
+              <strong>Placeholder For Troy</strong>
+              Add the official research rationale for each criterion, any weighting nuance
+              beyond equal averaging, and the formal historical test-period disclosure.
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="aq-footer">
+      <div class="shell footer-inner">
+        <p>MRPI measures pressure, not certainty.</p>
+        <div class="footer-links">
+          <a href="models.html">Models</a>
+          <a href="research-mortgage-pressure.html">Research Note</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="backtesting.html">Backtesting</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
+  </body>
+</html>

@@ -5,32 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="AstravaQuant is a systematic research platform for crypto, liquidity, housing, and macro."
+      content="AstravaQuant is an independent systematic market research platform studying regimes across liquidity, rates, crypto, valuation, and macro conditions."
     />
-    <title>AstravaQuant | Connected Intelligence for Modern Markets</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>AstravaQuant | Independent Systematic Market Research</title>
+    <link rel="stylesheet" href="public-redesign.css" />
     <link rel="preload" href="/api/signals" as="fetch" crossorigin="anonymous" />
     <script type="module" src="/src/client/home-signals.ts"></script>
   </head>
-  <body data-model-summary>
-    <div class="ambient-orb orb-left" aria-hidden="true"></div>
-    <div class="ambient-orb orb-right" aria-hidden="true"></div>
-
+  <body class="aq-site aq-home" data-model-summary>
     <header class="site-header" aria-label="Primary navigation">
       <div class="shell header-inner">
         <a class="brand" href="index.html" aria-label="AstravaQuant home">
           <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
-            <defs>
-              <linearGradient id="brand-gradient-home" x1="18" y1="132" x2="138" y2="16" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#68b6ff" />
-                <stop offset="0.5" stop-color="#eef5ff" />
-                <stop offset="1" stop-color="#8fe0ff" />
-              </linearGradient>
-            </defs>
             <path
               d="M82 10 151 138 82 101 13 138Z"
               fill="none"
-              stroke="url(#brand-gradient-home)"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="14"
@@ -38,240 +27,189 @@
           </svg>
           <span class="brand-copy">
             <strong>AstravaQuant</strong>
-            <span>Research Platform</span>
+            <span>Independent Systematic Market Research</span>
           </span>
         </a>
-
         <nav class="site-nav" aria-label="Main navigation">
           <a href="models.html">Models</a>
-          <a href="backtesting.html">Backtest</a>
-          <a href="portfolio.html">Portfolio</a>
-          <a href="terminal.html">Terminal</a>
+          <a href="methodology.html">Methodology</a>
           <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
         </nav>
-
-        <div class="header-cta" data-wallet-root>
-          <button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button>
-        </div>
+        <div class="header-meta">Transparent quantitative frameworks.</div>
       </div>
     </header>
 
     <main>
-      <section class="shell hero hero-simple hero-home">
-        <div class="hero-world" aria-hidden="true">
-          <div class="hero-world-backdrop hero-world-backdrop-real"></div>
-          <div class="hero-world-globe hero-world-globe-real" data-earth-stage>
-            <div class="hero-world-aura"></div>
-            <div class="hero-world-frame">
-              <div class="hero-world-css-globe">
-                <div class="hero-world-css-texture"></div>
-              </div>
-              <canvas
-                class="hero-world-canvas"
-                data-earth-globe
-                width="720"
-                height="720"
-              ></canvas>
-              <svg class="hero-world-network" viewBox="0 0 100 100" aria-hidden="true">
-                <defs>
-                  <clipPath id="earth-network-clip">
-                    <circle cx="50" cy="50" r="45.2" />
-                  </clipPath>
-                  <linearGradient id="earth-network-line" x1="16" y1="22" x2="84" y2="76" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#7ecbff" stop-opacity="0.2" />
-                    <stop offset="0.48" stop-color="#e8f8ff" stop-opacity="0.92" />
-                    <stop offset="1" stop-color="#4da9ec" stop-opacity="0.24" />
-                  </linearGradient>
-                </defs>
-
-                <g class="hero-world-network-surface" clip-path="url(#earth-network-clip)">
-                  <path class="hero-world-network-link" d="M16 57Q39 24 63 34T85 48" />
-                  <path class="hero-world-network-link is-delayed" d="M23 31Q48 62 79 48" />
-                  <path class="hero-world-network-link is-slow" d="M28 71Q51 47 75 67" />
-                  <path class="hero-world-network-link is-delayed" d="M42 19Q56 42 85 41" />
-                  <path class="hero-world-network-link is-slow" d="M15 48Q39 82 67 74" />
-
-                  <g class="hero-world-node" style="--node-delay: -1.4s" transform="translate(16 57)">
-                    <circle class="hero-world-node-ring" r="2.4" />
-                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
-                  </g>
-                  <g class="hero-world-node" style="--node-delay: -3.8s" transform="translate(23 31)">
-                    <circle class="hero-world-node-ring" r="2.4" />
-                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
-                  </g>
-                  <g class="hero-world-node" style="--node-delay: -0.2s" transform="translate(42 19)">
-                    <circle class="hero-world-node-ring" r="2.4" />
-                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
-                  </g>
-                  <g class="hero-world-node" style="--node-delay: -5.1s" transform="translate(63 34)">
-                    <circle class="hero-world-node-ring" r="2.4" />
-                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
-                  </g>
-                  <g class="hero-world-node" style="--node-delay: -2.7s" transform="translate(79 48)">
-                    <circle class="hero-world-node-ring" r="2.4" />
-                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
-                  </g>
-                  <g class="hero-world-node" style="--node-delay: -4.4s" transform="translate(75 67)">
-                    <circle class="hero-world-node-ring" r="2.4" />
-                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
-                  </g>
-                  <g class="hero-world-node" style="--node-delay: -1.9s" transform="translate(28 71)">
-                    <circle class="hero-world-node-ring" r="2.4" />
-                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
-                  </g>
-                  <g class="hero-world-node" style="--node-delay: -5.8s" transform="translate(67 74)">
-                    <circle class="hero-world-node-ring" r="2.4" />
-                    <rect class="hero-world-node-core" x="-0.72" y="-0.72" width="1.44" height="1.44" rx="0.25" />
-                  </g>
-                </g>
-
-                <ellipse class="hero-world-orbit-line" cx="50" cy="50" rx="49" ry="13.5" transform="rotate(-18 50 50)" />
-                <ellipse class="hero-world-orbit-line is-secondary" cx="50" cy="50" rx="48" ry="11" transform="rotate(67 50 50)" />
-              </svg>
+      <section class="aq-hero">
+        <div class="shell aq-hero-grid">
+          <div class="aq-hero-copy reveal">
+            <p class="aq-kicker">AstravaQuant</p>
+            <h1 class="aq-title">Systematic research on market regimes.</h1>
+            <p class="aq-lead">
+              Independent quantitative research across liquidity, rates, crypto, valuation,
+              and macro conditions.
+            </p>
+            <div class="aq-hero-actions">
+              <a class="button primary" href="models.html">View Models</a>
+              <a class="button" href="methodology.html">Read Methodology</a>
             </div>
-            <div class="hero-world-atmosphere"></div>
-            <div class="hero-world-rim"></div>
-            <div class="hero-world-ground-shadow"></div>
           </div>
 
-          <div class="hero-world-legacy" hidden>
-          <div class="hero-world-backdrop"></div>
-          <div class="hero-world-globe">
-            <div class="hero-world-aura"></div>
-            <div class="hero-world-atmosphere"></div>
-            <div class="hero-world-shell">
-              <div class="hero-world-ocean"></div>
-              <div class="hero-world-current"></div>
-              <div class="hero-world-current hero-world-current-cool"></div>
-              <div class="hero-world-current hero-world-current-soft"></div>
+          <aside class="aq-side-note reveal">
+            <strong>Independent Systematic Market Research</strong>
+            <span>
+              AstravaQuant classifies market conditions using transparent rules. The work is
+              meant to be inspected, not theatrically presented.
+            </span>
+          </aside>
+        </div>
+      </section>
 
-              <div class="hero-world-map-track">
-                <svg class="hero-world-map-tile" viewBox="-360 -230 720 460" preserveAspectRatio="none" aria-hidden="true">
-                  <path class="hero-world-land-shape hero-world-land-major" d="M-300 -118c22-30 58-54 100-66 34-10 72-8 86 16 10 18 4 40-12 56-16 16-28 34-28 58 0 24 14 44 12 68-2 24-18 40-36 50-14 8-24 20-30 36-8 20-12 42-28 56-18 16-42 18-58 6-18-14-20-42-14-66 4-16 20-34 28-52 10-22 6-46-4-68-12-22-32-44-34-72-2-26 6-48 18-62z" />
-                  <path class="hero-world-land-shape hero-world-land-cool" d="M-188 -170c18-12 42-16 64-12 20 4 36 18 34 36-2 18-18 32-38 38-24 8-54-2-66-20-10-16-6-30 6-42z" />
-                  <path class="hero-world-land-shape hero-world-land-major" d="M-22 -108c48-24 102-36 164-32 62 4 122 20 166 50 38 26 68 66 54 96-10 20-40 26-74 28-34 2-72 10-92 34-20 24-14 58-24 88-10 28-30 52-62 62-40 14-90 12-128-8-38-18-54-54-56-96-2-30-22-54-46-74-20-18-48-34-52-62-4-30 22-54 56-70 26-12 60-8 94-16z" />
-                  <path class="hero-world-land-shape hero-world-land-major" d="M84 22c18-14 42-18 62-10 22 8 38 28 40 56 2 32-10 68-32 92-24 24-58 34-82 18-20-14-18-46-10-70 6-16 4-34-4-50-10-18 2-26 26-36z" />
-                  <path class="hero-world-land-shape hero-world-land-cool" d="M246 74c18-10 42-10 64 0 22 10 34 30 30 48-6 22-30 36-56 40-30 4-62-8-76-26-12-16-8-36 8-48 8-6 18-8 30-14z" />
-                  <path class="hero-world-land-shape hero-world-land-cool" d="M184 -2c8-10 18-14 30-12 10 4 16 16 10 28-6 12-18 20-30 18-12-4-18-18-10-34z" />
-                </svg>
-
-                <svg class="hero-world-map-tile" viewBox="-360 -230 720 460" preserveAspectRatio="none" aria-hidden="true">
-                  <path class="hero-world-land-shape hero-world-land-major" d="M-300 -118c22-30 58-54 100-66 34-10 72-8 86 16 10 18 4 40-12 56-16 16-28 34-28 58 0 24 14 44 12 68-2 24-18 40-36 50-14 8-24 20-30 36-8 20-12 42-28 56-18 16-42 18-58 6-18-14-20-42-14-66 4-16 20-34 28-52 10-22 6-46-4-68-12-22-32-44-34-72-2-26 6-48 18-62z" />
-                  <path class="hero-world-land-shape hero-world-land-cool" d="M-188 -170c18-12 42-16 64-12 20 4 36 18 34 36-2 18-18 32-38 38-24 8-54-2-66-20-10-16-6-30 6-42z" />
-                  <path class="hero-world-land-shape hero-world-land-major" d="M-22 -108c48-24 102-36 164-32 62 4 122 20 166 50 38 26 68 66 54 96-10 20-40 26-74 28-34 2-72 10-92 34-20 24-14 58-24 88-10 28-30 52-62 62-40 14-90 12-128-8-38-18-54-54-56-96-2-30-22-54-46-74-20-18-48-34-52-62-4-30 22-54 56-70 26-12 60-8 94-16z" />
-                  <path class="hero-world-land-shape hero-world-land-major" d="M84 22c18-14 42-18 62-10 22 8 38 28 40 56 2 32-10 68-32 92-24 24-58 34-82 18-20-14-18-46-10-70 6-16 4-34-4-50-10-18 2-26 26-36z" />
-                  <path class="hero-world-land-shape hero-world-land-cool" d="M246 74c18-10 42-10 64 0 22 10 34 30 30 48-6 22-30 36-56 40-30 4-62-8-76-26-12-16-8-36 8-48 8-6 18-8 30-14z" />
-                  <path class="hero-world-land-shape hero-world-land-cool" d="M184 -2c8-10 18-14 30-12 10 4 16 16 10 28-6 12-18 20-30 18-12-4-18-18-10-34z" />
-                </svg>
-
-                <svg class="hero-world-map-tile" viewBox="-360 -230 720 460" preserveAspectRatio="none" aria-hidden="true">
-                  <path class="hero-world-land-shape hero-world-land-major" d="M-300 -118c22-30 58-54 100-66 34-10 72-8 86 16 10 18 4 40-12 56-16 16-28 34-28 58 0 24 14 44 12 68-2 24-18 40-36 50-14 8-24 20-30 36-8 20-12 42-28 56-18 16-42 18-58 6-18-14-20-42-14-66 4-16 20-34 28-52 10-22 6-46-4-68-12-22-32-44-34-72-2-26 6-48 18-62z" />
-                  <path class="hero-world-land-shape hero-world-land-cool" d="M-188 -170c18-12 42-16 64-12 20 4 36 18 34 36-2 18-18 32-38 38-24 8-54-2-66-20-10-16-6-30 6-42z" />
-                  <path class="hero-world-land-shape hero-world-land-major" d="M-22 -108c48-24 102-36 164-32 62 4 122 20 166 50 38 26 68 66 54 96-10 20-40 26-74 28-34 2-72 10-92 34-20 24-14 58-24 88-10 28-30 52-62 62-40 14-90 12-128-8-38-18-54-54-56-96-2-30-22-54-46-74-20-18-48-34-52-62-4-30 22-54 56-70 26-12 60-8 94-16z" />
-                  <path class="hero-world-land-shape hero-world-land-major" d="M84 22c18-14 42-18 62-10 22 8 38 28 40 56 2 32-10 68-32 92-24 24-58 34-82 18-20-14-18-46-10-70 6-16 4-34-4-50-10-18 2-26 26-36z" />
-                  <path class="hero-world-land-shape hero-world-land-cool" d="M246 74c18-10 42-10 64 0 22 10 34 30 30 48-6 22-30 36-56 40-30 4-62-8-76-26-12-16-8-36 8-48 8-6 18-8 30-14z" />
-                  <path class="hero-world-land-shape hero-world-land-cool" d="M184 -2c8-10 18-14 30-12 10 4 16 16 10 28-6 12-18 20-30 18-12-4-18-18-10-34z" />
-                </svg>
-              </div>
-
-              <div class="hero-world-cloud-track">
-                <svg class="hero-world-cloud-tile" viewBox="-360 -230 720 460" preserveAspectRatio="none" aria-hidden="true">
-                  <path class="hero-world-cloud" d="M-256 -32c36-20 76-26 118-18 24 4 48 16 60 34 20 0 38 8 50 26 14 18 10 38-10 48-26 12-58 8-88 8-30 0-58 10-86 10-26 0-56-6-76-22-18-14-22-38-10-56 10-14 24-20 42-30z" />
-                  <path class="hero-world-cloud" d="M-10 -118c28-14 60-20 90-16 26 2 50 14 60 32 18-2 34 4 46 16 14 14 14 32 0 44-18 14-44 16-68 18-26 0-50 8-74 8-28 0-58-4-74-18-16-14-18-34-4-50 8-10 14-20 24-34z" />
-                  <path class="hero-world-cloud" d="M160 58c22-12 48-18 74-14 24 2 46 14 58 30 12-2 24 4 34 12 12 10 14 24 6 36-10 16-32 22-52 22-24 2-48 10-72 8-24-2-48-8-60-22-12-12-12-28-2-40 2-6 8-18 14-32z" />
-                </svg>
-
-                <svg class="hero-world-cloud-tile" viewBox="-360 -230 720 460" preserveAspectRatio="none" aria-hidden="true">
-                  <path class="hero-world-cloud" d="M-256 -32c36-20 76-26 118-18 24 4 48 16 60 34 20 0 38 8 50 26 14 18 10 38-10 48-26 12-58 8-88 8-30 0-58 10-86 10-26 0-56-6-76-22-18-14-22-38-10-56 10-14 24-20 42-30z" />
-                  <path class="hero-world-cloud" d="M-10 -118c28-14 60-20 90-16 26 2 50 14 60 32 18-2 34 4 46 16 14 14 14 32 0 44-18 14-44 16-68 18-26 0-50 8-74 8-28 0-58-4-74-18-16-14-18-34-4-50 8-10 14-20 24-34z" />
-                  <path class="hero-world-cloud" d="M160 58c22-12 48-18 74-14 24 2 46 14 58 30 12-2 24 4 34 12 12 10 14 24 6 36-10 16-32 22-52 22-24 2-48 10-72 8-24-2-48-8-60-22-12-12-12-28-2-40 2-6 8-18 14-32z" />
-                </svg>
-
-                <svg class="hero-world-cloud-tile" viewBox="-360 -230 720 460" preserveAspectRatio="none" aria-hidden="true">
-                  <path class="hero-world-cloud" d="M-256 -32c36-20 76-26 118-18 24 4 48 16 60 34 20 0 38 8 50 26 14 18 10 38-10 48-26 12-58 8-88 8-30 0-58 10-86 10-26 0-56-6-76-22-18-14-22-38-10-56 10-14 24-20 42-30z" />
-                  <path class="hero-world-cloud" d="M-10 -118c28-14 60-20 90-16 26 2 50 14 60 32 18-2 34 4 46 16 14 14 14 32 0 44-18 14-44 16-68 18-26 0-50 8-74 8-28 0-58-4-74-18-16-14-18-34-4-50 8-10 14-20 24-34z" />
-                  <path class="hero-world-cloud" d="M160 58c22-12 48-18 74-14 24 2 46 14 58 30 12-2 24 4 34 12 12 10 14 24 6 36-10 16-32 22-52 22-24 2-48 10-72 8-24-2-48-8-60-22-12-12-12-28-2-40 2-6 8-18 14-32z" />
-                </svg>
-              </div>
-
-              <div class="hero-world-shade"></div>
-              <div class="hero-world-gloss"></div>
+      <section class="aq-page-section">
+        <div class="shell aq-home-summary">
+          <div class="aq-section-head reveal">
+            <div>
+              <p class="aq-section-label">Current Model State</p>
+              <h2>Current model state</h2>
             </div>
-
-            <div class="hero-world-rim"></div>
-            <div class="hero-world-ground-shadow"></div>
+            <div class="feed-state" data-home-summary-status data-state="loading" role="status">
+              <i aria-hidden="true"></i>
+              <span data-model-summary-date>As of September 2, 2026</span>
+            </div>
           </div>
-          </div>
-        </div>
 
-        <div class="hero-copy hero-copy-simple reveal">
-          <p class="eyebrow">Systematic Market Intelligence</p>
-          <h1>Read the regime.</h1>
-          <p class="lead">Systematic signals for crypto, liquidity, housing, and macro.</p>
-          <div class="hero-actions">
-            <a class="button primary" href="models.html">View models</a>
-            <a class="button secondary" href="terminal.html">Open terminal</a>
-          </div>
-        </div>
-
-        <div class="hero-strip reveal" aria-label="Current model snapshot">
-          <article class="hero-metric" data-model-id="mtpi" data-feed-state="loading" aria-busy="true">
-            <span>Medium-Term Trend</span>
-            <strong data-model-value>--</strong>
-            <b class="status-neutral" data-model-state>Syncing</b>
-          </article>
-          <article class="hero-metric" data-model-id="ltpi" data-feed-state="loading" aria-busy="true">
-            <span>Long-Term Trend</span>
-            <strong data-model-value>--</strong>
-            <b class="status-neutral" data-model-state>Syncing</b>
-          </article>
-          <article class="hero-metric" data-model-id="nspi" data-feed-state="loading" aria-busy="true">
-            <span>NSPI</span>
-            <strong data-model-value>--</strong>
-            <b class="status-neutral" data-model-state>Syncing</b>
-          </article>
-          <article class="hero-metric" data-model-id="mrpi" data-feed-state="loading" aria-busy="true">
-            <span>MRPI</span>
-            <strong data-model-value>--</strong>
-            <b class="status-neutral" data-model-state>Syncing</b>
+          <article class="aq-panel reveal">
+            <div class="aq-table-wrap">
+              <table class="aq-table aq-model-summary-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Model</th>
+                    <th scope="col">Last updated</th>
+                    <th scope="col">Current reading</th>
+                    <th scope="col">Classification</th>
+                    <th scope="col">Methodology</th>
+                    <th scope="col">Historical series</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-model-id="mtpi" data-feed-state="loading" aria-busy="true">
+                    <td>
+                      <strong>Medium-Term Trend</strong>
+                      <p>Five-day crypto trend using total market capitalization and TOTAL2.</p>
+                    </td>
+                    <td data-model-updated>Waiting for workbook</td>
+                    <td data-model-value>--</td>
+                    <td><span class="status-neutral" data-model-state>Syncing</span></td>
+                    <td><a href="trend-following.html#medium-term-trend">Methodology</a></td>
+                    <td><a href="models.html#mtpi">Historical series</a></td>
+                  </tr>
+                  <tr data-model-id="ltpi" data-feed-state="loading" aria-busy="true">
+                    <td>
+                      <strong>Long-Term Trend</strong>
+                      <p>Weekly crypto trend using total market capitalization and Bitcoin.</p>
+                    </td>
+                    <td data-model-updated>Waiting for workbook</td>
+                    <td data-model-value>--</td>
+                    <td><span class="status-neutral" data-model-state>Syncing</span></td>
+                    <td><a href="ltpi-methodology.html">Methodology</a></td>
+                    <td><a href="models.html#ltpi">Historical series</a></td>
+                  </tr>
+                  <tr data-model-id="nspi" data-feed-state="loading" aria-busy="true">
+                    <td>
+                      <strong>NSPI</strong>
+                      <p>Derived aggregate regime score built from the latest MTPI and LTPI values.</p>
+                    </td>
+                    <td data-model-updated>Waiting for workbook</td>
+                    <td data-model-value>--</td>
+                    <td><span class="status-neutral" data-model-state>Syncing</span></td>
+                    <td><a href="methodology.html#liquidity-regime">Methodology</a></td>
+                    <td><a href="models.html#nspi">Historical series</a></td>
+                  </tr>
+                  <tr data-model-id="mrpi" data-feed-state="loading" aria-busy="true">
+                    <td>
+                      <strong>Mortgage Rate Pressure Index</strong>
+                      <p>Weekly 10-year Treasury pressure model framed as tightening versus easing.</p>
+                    </td>
+                    <td data-model-updated>Waiting for workbook</td>
+                    <td data-model-value>--</td>
+                    <td><span class="status-neutral" data-model-state>Syncing</span></td>
+                    <td><a href="mrpi-methodology.html">Methodology</a></td>
+                    <td><a href="models.html#mrpi">Historical series</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="aq-disclosure">
+              Scores classify market conditions according to predefined rules. They are not
+              claims of certainty, realized performance, or trading advice.
+            </p>
           </article>
         </div>
       </section>
 
-      <section class="section section-tight" id="signals">
-        <div class="shell shell-narrow">
-          <div class="section-head reveal">
-            <p class="eyebrow">Explore</p>
-            <h2>Go deeper.</h2>
+      <section class="aq-page-section">
+        <div class="shell">
+          <div class="aq-section-head reveal">
+            <div>
+              <p class="aq-section-label">Latest Research</p>
+              <h2>Latest research</h2>
+            </div>
+            <a class="button" href="research.html">Open Research Library</a>
           </div>
 
-          <div class="platform-grid platform-grid-links">
-            <a class="platform-card platform-card-link glass-card reveal" href="models.html">
-              <span class="table-label">Models</span>
-              <h3>History, valuation, and rotation.</h3>
-              <b>Open models <span aria-hidden="true">&rarr;</span></b>
-            </a>
-
-            <a class="platform-card platform-card-link glass-card reveal" href="terminal.html">
-              <span class="table-label">Terminal</span>
-              <h3>Markets, liquidity, and macro.</h3>
-              <b>Open terminal <span aria-hidden="true">&rarr;</span></b>
-            </a>
-
-            <a class="platform-card platform-card-link glass-card reveal" id="brief" href="https://buildthebrief.com" target="_blank" rel="noreferrer">
-              <span class="table-label">Build the Brief</span>
-              <h3>Explore housing market trends.</h3>
-              <b>Visit Build the Brief <span aria-hidden="true">&rarr;</span></b>
-            </a>
-          </div>
+          <article class="aq-panel reveal">
+            <div class="aq-publication-list">
+              <div class="aq-publication-row">
+                <time datetime="2026-09-02">Sep 02, 2026</time>
+                <div><a href="methodology.html">Public Methodology Register</a></div>
+                <span class="aq-tag">Methodology</span>
+                <p>Disclosure boundary for model families, versioning, and placeholder sections.</p>
+              </div>
+              <div class="aq-publication-row">
+                <time datetime="2026-09-02">Sep 02, 2026</time>
+                <div><a href="backtesting.html">Backtesting Standard: Test the Rule, Not the Story</a></div>
+                <span class="aq-tag">Methodology</span>
+                <p>Audit framework for dated score history, thresholds, transitions, and limitations.</p>
+              </div>
+              <div class="aq-publication-row">
+                <time datetime="2026-08-10">Aug 10, 2026</time>
+                <div><a href="research-mortgage-pressure.html">Mortgage-Rate Pressure</a></div>
+                <span class="aq-tag">Rates</span>
+                <p>Why MRPI measures directional pressure in the 10-year Treasury backdrop.</p>
+              </div>
+              <div class="aq-publication-row">
+                <time datetime="2026-08-10">Aug 10, 2026</time>
+                <div><a href="research-weekly-structure.html">Weekly Crypto Structure</a></div>
+                <span class="aq-tag">Crypto</span>
+                <p>How LTPI frames slower market structure using the broad crypto market and Bitcoin.</p>
+              </div>
+              <div class="aq-publication-row">
+                <time datetime="2026-08-10">Aug 10, 2026</time>
+                <div><a href="research-crypto-participation.html">Medium-Term Crypto Participation</a></div>
+                <span class="aq-tag">Crypto</span>
+                <p>How MTPI uses total market cap and TOTAL2 to classify shorter-horizon conditions.</p>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
     </main>
 
-    <footer class="footer">
+    <footer class="aq-footer">
       <div class="shell footer-inner">
-        <p>AstravaQuant is read-only research infrastructure. Earth imagery: NASA/GSFC SVS.</p>
-        <div class="footer-links"><a href="methodology.html">Methodology</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div>
+        <p>AstravaQuant is an independent quantitative research platform.</p>
+        <div class="footer-links">
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
       </div>
     </footer>
 

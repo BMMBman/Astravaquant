@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="AstravaQuant LTPI methodology and disclosure boundary." />
+    <title>LTPI | AstravaQuant Methodology</title>
+    <link rel="stylesheet" href="public-redesign.css" />
+  </head>
+  <body class="aq-site aq-method-page">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
+          </svg>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Independent Systematic Market Research</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="models.html">Models</a>
+          <a class="is-active" href="methodology.html">Methodology</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+        </nav>
+        <div class="header-meta">LTPI methodology.</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="aq-hero">
+        <div class="shell shell-wide aq-hero-copy reveal">
+          <p class="aq-kicker">Methodology / LTPI</p>
+          <h1 class="aq-page-title">LTPI.</h1>
+          <p class="aq-lead">
+            The public repo labels this model as `LTPI` and publishes it on the Models page
+            as the long-term trend read. The acronym expansion is not disclosed in the
+            current public implementation.
+          </p>
+        </div>
+      </section>
+
+      <section class="aq-page-section">
+        <div class="shell shell-wide">
+          <article class="aq-panel reveal">
+            <div class="aq-definition-grid">
+              <div class="aq-definition-item">
+                <strong>Objective</strong>
+                Measure slower structural crypto trend on a weekly horizon.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Universe</strong>
+                Broad crypto market structure with Bitcoin included as an explicit input.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Inputs</strong>
+                Total crypto market capitalization, the Bitcoin chart, the `LTPI` summary
+                tab, and `LT Total Forward Testing`.
+              </div>
+              <div class="aq-placeholder">
+                <strong>Placeholder For Troy</strong>
+                Supply the full LTPI input register if any additional indicators or filters
+                should be public.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Transformations</strong>
+                The current public repo does not disclose the exact transformations used to
+                turn the weekly inputs into the published score.
+              </div>
+              <div class="aq-placeholder">
+                <strong>Placeholder For Troy</strong>
+                Add the exact transformations and any preprocessing choices.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Weighting</strong>
+                No explicit weighting schedule is published in the current repo.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Normalization</strong>
+                The score is published on a normalized `-1.00` to `+1.00` scale.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Thresholds</strong>
+                `-1.00 to -0.75` Extreme Risk-Off, `-0.75 to -0.25` Defensive Contraction,
+                `-0.25 to +0.25` Neutral Transition, `+0.25 to +0.75` Constructive
+                Expansion, `+0.75 to +1.00` Full Risk-On.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Update Frequency</strong>
+                The public site re-reads the workbook every five minutes by default and
+                carries through the worksheet&rsquo;s published update label when available.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Interpretation</strong>
+                LTPI is a structural weekly condition measure. It should be compared with
+                MTPI and the derived NSPI rather than treated as a certainty claim.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Historical Testing</strong>
+                Public history comes from dated rows in `LT Total Forward Testing` only.
+              </div>
+            </div>
+
+            <div class="aq-placeholder aq-spacer-top">
+              <strong>Distinction From MRPI</strong>
+              LTPI is a crypto trend model. MRPI is a separate 10-year Treasury pressure
+              system framed as tightening versus easing. They answer different questions.
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="aq-footer">
+      <div class="shell footer-inner">
+        <p>LTPI is published as a structural trend read, not a guaranteed forecast.</p>
+        <div class="footer-links">
+          <a href="trend-following.html">Trend Following</a>
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="backtesting.html">Backtesting</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
+  </body>
+</html>

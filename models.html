@@ -5,30 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="AstravaQuant live model history, rate of change, Bitcoin valuation, and relative-strength rotation."
+      content="AstravaQuant model pages for current readings, dated history, methodology links, and valuation."
     />
-    <title>AstravaQuant Models | Regime, Valuation and Rotation</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>AstravaQuant Models | Current State, With History</title>
+    <link rel="stylesheet" href="public-redesign.css" />
   </head>
-  <body data-model-feed>
-    <div class="ambient-orb orb-left" aria-hidden="true"></div>
-    <div class="ambient-orb orb-right" aria-hidden="true"></div>
-
+  <body class="aq-site aq-models" data-model-feed>
     <header class="site-header" aria-label="Primary navigation">
       <div class="shell header-inner">
         <a class="brand" href="index.html" aria-label="AstravaQuant home">
           <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
-            <defs>
-              <linearGradient id="brand-gradient-models" x1="18" y1="132" x2="138" y2="16" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#68b6ff" />
-                <stop offset="0.5" stop-color="#eef5ff" />
-                <stop offset="1" stop-color="#8fe0ff" />
-              </linearGradient>
-            </defs>
             <path
               d="M82 10 151 138 82 101 13 138Z"
               fill="none"
-              stroke="url(#brand-gradient-models)"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="14"
@@ -36,121 +25,220 @@
           </svg>
           <span class="brand-copy">
             <strong>AstravaQuant</strong>
-            <span>Models</span>
+            <span>Independent Systematic Market Research</span>
           </span>
         </a>
-
         <nav class="site-nav" aria-label="Main navigation">
           <a class="is-active" href="models.html">Models</a>
-          <a href="backtesting.html">Backtest</a>
-          <a href="portfolio.html">Portfolio</a>
-          <a href="terminal.html">Terminal</a>
+          <a href="methodology.html">Methodology</a>
           <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
         </nav>
-
-        <div class="header-cta" data-wallet-root>
-          <button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button>
-        </div>
+        <div class="header-meta">Current state, with history.</div>
       </div>
     </header>
 
-    <main class="models-page">
-      <section class="section page-hero models-hero">
-        <div class="shell shell-narrow">
-          <div class="page-hero-copy page-hero-center reveal">
-            <p class="eyebrow">Systematic models</p>
-            <h1>State. Velocity. Rotation.</h1>
-            <p class="lead">Live crypto trend, mortgage pressure, Bitcoin valuation, and cross-asset leadership.</p>
-            <nav class="models-jump" aria-label="Models page sections">
-              <a href="#model-history">Core models</a>
-              <a href="#valuation-model">Valuation</a>
-              <a href="#rotational-system">Rotation</a>
-            </nav>
+    <main>
+      <section class="aq-hero">
+        <div class="shell aq-hero-grid">
+          <div class="aq-hero-copy reveal">
+            <p class="aq-kicker">Models</p>
+            <h1 class="aq-page-title">Current state, with history.</h1>
+            <p class="aq-lead">
+              A collection of systematic frameworks used to measure trend, liquidity,
+              rate pressure, valuation, and market regime.
+            </p>
           </div>
+
+          <aside class="aq-side-note reveal">
+            <strong>Inspect the rule</strong>
+            <span>
+              The models classify or measure market conditions according to predefined
+              rules. They do not promise certainty.
+            </span>
+          </aside>
         </div>
       </section>
 
-      <section class="section models-primary-section" id="model-history">
+      <section class="aq-page-section">
         <div class="shell shell-wide">
-          <div class="terminal-section-head models-section-head reveal">
+          <div class="aq-section-head reveal">
             <div>
-              <p class="eyebrow">Core models</p>
+              <p class="aq-section-label">Core Models</p>
               <h2>Current state, with history.</h2>
-              <p>Every reading includes its live score, rate of change, regime lever, dated path, and full backtest.</p>
             </div>
-            <div class="feed-state" data-model-history-status role="status"><i aria-hidden="true"></i><span>Loading verified history</span></div>
+            <div class="feed-state" data-model-history-status data-state="loading" role="status">
+              <i aria-hidden="true"></i>
+              <span>Loading verified history</span>
+            </div>
           </div>
-          <div class="terminal-model-grid models-history-grid" data-model-history>
-            <p class="terminal-loading-copy">Loading dated model observations.</p>
+
+          <div class="aq-model-list" data-model-history>
+            <article class="aq-model-card aq-model-catalog-card">
+              <header class="aq-model-head">
+                <div>
+                  <p class="aq-section-label">01 / Trend</p>
+                  <h3>Medium-Term Trend (MTPI)</h3>
+                  <p>Five-day trend model built from total crypto market capitalization and TOTAL2.</p>
+                </div>
+                <a class="button" href="trend-following.html#medium-term-trend">Methodology</a>
+              </header>
+              <p class="aq-disclosure">Loading the latest published reading and dated forward-test history.</p>
+            </article>
+            <article class="aq-model-card aq-model-catalog-card">
+              <header class="aq-model-head">
+                <div>
+                  <p class="aq-section-label">02 / Trend</p>
+                  <h3>Long-Term Trend (LTPI)</h3>
+                  <p>Weekly trend model built from the broad crypto market and Bitcoin.</p>
+                </div>
+                <a class="button" href="ltpi-methodology.html">Methodology</a>
+              </header>
+              <p class="aq-disclosure">Loading the latest published reading and dated forward-test history.</p>
+            </article>
+            <article class="aq-model-card aq-model-catalog-card">
+              <header class="aq-model-head">
+                <div>
+                  <p class="aq-section-label">03 / Regime</p>
+                  <h3>NSPI Aggregate</h3>
+                  <p>Derived regime aggregate of the latest published MTPI and LTPI readings.</p>
+                </div>
+                <a class="button" href="methodology.html#liquidity-regime">Methodology</a>
+              </header>
+              <p class="aq-disclosure">Loading the derived reading and dated history.</p>
+            </article>
+            <article class="aq-model-card aq-model-catalog-card">
+              <header class="aq-model-head">
+                <div>
+                  <p class="aq-section-label">04 / Rates</p>
+                  <h3>Mortgage Rate Pressure Index (MRPI)</h3>
+                  <p>Weekly 10-year Treasury pressure model, classified from tightening to easing.</p>
+                </div>
+                <a class="button" href="mrpi-methodology.html">Methodology</a>
+              </header>
+              <p class="aq-disclosure">Loading the latest published reading and dated history.</p>
+            </article>
           </div>
         </div>
       </section>
 
-      <section class="section section-compact" id="valuation-model">
+      <section class="aq-page-section">
         <div class="shell shell-wide">
-          <article class="models-valuation-card glass-card reveal" data-valuation-brief aria-live="polite">
-            <div class="models-valuation-copy">
-              <div class="models-card-kicker">
-                <span>Bitcoin valuation</span>
+          <div class="aq-section-head reveal">
+            <div>
+              <p class="aq-section-label">Relative Strength</p>
+              <h2>RSPS and Alt RSPS</h2>
+            </div>
+            <p class="aq-section-note">Live ratio-model rows from the research workbook.</p>
+          </div>
+          <div class="aq-grid three aq-ratio-catalog" data-rotation-board>
+            <article class="aq-grid-card">
+              <p class="aq-section-label">RSPS</p>
+              <h3>Core relative strength</h3>
+              <p>Crypto ratio models from the core RSPS workbook tab load here with their current score and state.</p>
+            </article>
+            <article class="aq-grid-card">
+              <p class="aq-section-label">Alt RSPS</p>
+              <h3>Alternative relative strength</h3>
+              <p>Alternative-asset ratio models from the Alt RSPS workbook tab load here with their current score and state.</p>
+            </article>
+            <article class="aq-grid-card">
+              <p class="aq-section-label">Research Use</p>
+              <h3>Rotation, not allocation</h3>
+              <p>Relative-strength readings identify comparative structure; they are not stand-alone portfolio instructions.</p>
+            </article>
+          </div>
+          <p class="aq-disclosure aq-spacer-top">Run the site through its application server to load live Sheets readings. The complete workbook coverage and dated diagnostics are on the <a href="backtesting.html">Backtesting</a> page.</p>
+        </div>
+      </section>
+
+      <section class="aq-page-section">
+        <div class="shell shell-wide">
+          <article class="aq-valuation-card aq-valuation-brief reveal" data-valuation-brief aria-live="polite">
+            <div>
+              <div class="aq-valuation-kicker">
+                <p class="aq-section-label">Valuation</p>
                 <span class="feed-live" data-valuation-brief-status>Loading workbook</span>
               </div>
-              <div class="models-valuation-score-row">
+              <h2>Valuation</h2>
+              <p class="aq-value-copy">
+                The current valuation system averages standardized readings across
+                fundamental, technical, and sentiment inputs.
+              </p>
+              <div class="aq-valuation-score">
                 <strong data-valuation-brief-score>--</strong>
-                <div><span data-valuation-brief-state>Verifying</span><small data-valuation-brief-date>Verified dates only</small></div>
+                <span data-valuation-brief-state>Verifying</span>
               </div>
-              <p>Seventeen fundamental, technical, and sentiment inputs expressed as a standardized value score.</p>
+              <p class="aq-disclosure" data-valuation-brief-date>Verified dates only</p>
             </div>
 
-            <div class="models-valuation-lever">
-              <div class="models-lever-head"><span>Expensive</span><b>Standard deviation lever</b><span>Value</span></div>
-              <div class="valuation-scale" role="img" aria-label="Bitcoin valuation scale from negative two to positive two standard deviations">
-                <div class="valuation-scale-segments" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-                <div class="valuation-marker" data-valuation-brief-marker style="--valuation-position: 50%"><span data-valuation-brief-marker-label>--</span></div>
+            <div class="aq-scale-block">
+              <div class="aq-scale-labels">
+                <span>Expensive</span>
+                <span>Value</span>
               </div>
-              <div class="models-lever-ticks" aria-hidden="true"><span>-2&sigma;</span><span>-1&sigma;</span><span>0</span><span>+1&sigma;</span><span>+2&sigma;</span></div>
-              <div class="models-valuation-actions">
-                <span data-valuation-brief-inputs>Waiting for verified inputs</span>
-                <a class="button secondary" href="valuation.html">Open full valuation</a>
+              <div
+                class="valuation-scale"
+                role="img"
+                aria-label="Bitcoin valuation scale from negative two to positive two standard deviations"
+              >
+                <div class="valuation-scale-segments" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <div class="valuation-marker" data-valuation-brief-marker style="--valuation-position: 50%">
+                  <span data-valuation-brief-marker-label>--</span>
+                </div>
+              </div>
+              <div class="models-lever-ticks" aria-hidden="true">
+                <span>-2&sigma;</span>
+                <span>-1&sigma;</span>
+                <span>0</span>
+                <span>+1&sigma;</span>
+                <span>+2&sigma;</span>
+              </div>
+              <p class="aq-disclosure" data-valuation-brief-inputs>Waiting for verified inputs.</p>
+              <div class="aq-method-actions">
+                <a class="button" href="valuation.html">View Model</a>
+                <a class="button" href="valuation-methodology.html">Methodology</a>
               </div>
             </div>
           </article>
         </div>
       </section>
 
-      <section class="section" id="rotational-system">
+      <section class="aq-page-section">
         <div class="shell shell-wide">
-          <div class="terminal-section-head models-section-head reveal">
-            <div>
-              <p class="eyebrow">Rotational system</p>
-              <h2>See what is leading.</h2>
-              <p>Normalized relative-strength scores compare leadership across every published crypto pair.</p>
+          <article class="aq-cover-card reveal">
+            <p class="aq-section-label">Publication Standard</p>
+            <h2>One template across every public model.</h2>
+            <p>
+              Each model page should answer the same questions in the same order:
+              current state, what it measures, how it works, inputs, construction,
+              interpretation, historical series, backtest, limitations, and version history.
+            </p>
+            <div class="aq-inline-actions aq-spacer-top">
+              <a class="button" href="methodology.html">Open Methodology</a>
+              <a class="button" href="backtesting.html">Open Backtesting</a>
             </div>
-            <div class="rotation-leader" data-rotation-leader><span>Current leader</span><strong>Loading</strong></div>
-          </div>
-          <div class="rotation-board reveal" data-rotation-board aria-live="polite">
-            <p class="terminal-loading-copy">Loading verified relative-strength scores.</p>
-          </div>
-          <p class="models-disclosure reveal">Positive scores indicate relative leadership; negative scores indicate relative weakness. These are research outputs, not trade instructions.</p>
-        </div>
-      </section>
-
-      <section class="section section-compact models-method-strip">
-        <div class="shell shell-wide">
-          <article class="models-method-card glass-card reveal">
-            <div><span>MTPI</span><strong>TOTAL + TOTAL2</strong><small>Five-day crypto trend</small></div>
-            <div><span>LTPI</span><strong>TOTAL + Bitcoin</strong><small>Weekly crypto trend</small></div>
-            <div><span>NSPI</span><strong>MTPI + LTPI</strong><small>Combined regime</small></div>
-            <div><span>MRPI</span><strong>10-year Treasury</strong><small>Weekly tightening / easing</small></div>
-            <a href="methodology.html">Read methodology</a>
           </article>
         </div>
       </section>
     </main>
 
-    <footer class="footer">
+    <footer class="aq-footer">
       <div class="shell footer-inner">
-        <p>AstravaQuant model outputs are informational research, not investment advice.</p>
-        <div class="footer-links"><a href="methodology.html">Methodology</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div>
+        <p>Models are research outputs, not portfolio instructions or realized performance.</p>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
       </div>
     </footer>
 

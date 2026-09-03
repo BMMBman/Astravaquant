@@ -31,7 +31,7 @@ export const currentSignals: ModelSignal[] = [
     id: "mrpi",
     name: "Mortgage Rate Pressure Index",
     value: -0.79,
-    state: "TIGHTENING",
+    state: "STRONG TIGHTENING",
     scope: "Weekly 10-year Treasury pressure model, read as tightening versus easing.",
     relevantSymbols: []
   }

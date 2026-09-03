@@ -13,9 +13,10 @@ function escapeHtml(value: string): string {
 
 function tone(signal: WorkbookModelSignal): "good" | "warn" | "bad" | "neutral" {
   if (signal.id === "mrpi") {
-    if (signal.value <= -0.5) return "bad";
-    if (signal.value < -0.1) return "warn";
-    return signal.value > 0.1 ? "good" : "neutral";
+    if (signal.value <= -0.75) return "bad";
+    if (signal.value < -0.25) return "warn";
+    if (signal.value <= 0.25) return "neutral";
+    return "good";
   }
   if (signal.value <= -0.75) return "bad";
   if (signal.value < -0.25) return "warn";
@@ -43,6 +44,9 @@ function updateSignal(signal: WorkbookModelSignal): void {
         : signal.source === "derived"
           ? "Derived from MTPI + LTPI"
           : "Manual fallback";
+    });
+    root.querySelectorAll<HTMLElement>("[data-model-updated]").forEach((node) => {
+      node.textContent = signal.updatedLabel ?? (signal.source === "derived" ? "Derived model" : "Manual fallback");
     });
     const dial = root.querySelector<HTMLElement>("[data-dial-value]");
     if (dial) {
@@ -88,7 +92,7 @@ function updateRatios(dashboard: WorkbookDashboard): void {
   const models = [...new Map(dashboard.ratioModels.map((model) => [model.id, model])).values()]
     .sort((left, right) => right.score - left.score);
   if (!models.length) {
-    root.innerHTML = '<p class="models-empty-state">The rotational workbook is temporarily unavailable. No neutral scores are substituted.</p>';
+    root.insertAdjacentHTML("beforeend", '<p class="aq-disclosure aq-ratio-unavailable">The live ratio-model feed is temporarily unavailable. The catalog remains visible; no substitute scores are shown.</p>');
     if (leaderRoot) leaderRoot.innerHTML = "<span>Current leader</span><strong>Unavailable</strong>";
     return;
   }
@@ -96,11 +100,12 @@ function updateRatios(dashboard: WorkbookDashboard): void {
   root.innerHTML = models.map((model, index) => {
     const position = Math.min(100, Math.max(0, ((model.score + 1) / 2) * 100));
     const tone = rotationTone(model);
-    return `<article class="rotation-card" data-tone="${tone}">
-      <header><div><span>${String(index + 1).padStart(2, "0")}</span><h3>${escapeHtml(model.label)}</h3></div><b>${escapeHtml(model.state)}</b></header>
-      <div class="rotation-reading"><strong>${signed(model.score)}</strong><span>${escapeHtml(model.sourceTab)}</span></div>
-      <div class="rotation-rail" aria-label="${escapeHtml(model.label)} relative-strength score ${signed(model.score)}"><i></i><b style="left:${position.toFixed(1)}%"></b></div>
-      <footer><span>Weak</span><span>Neutral</span><span>Strong</span></footer>
+    return `<article class="aq-grid-card aq-ratio-card" data-tone="${tone}">
+      <div class="aq-ratio-head"><span>${String(index + 1).padStart(2, "0")} / ${escapeHtml(model.sourceTab)}</span><b>${escapeHtml(model.state)}</b></div>
+      <h3>${escapeHtml(model.label)}</h3>
+      <div class="aq-ratio-reading"><strong>${signed(model.score)}</strong><span>Relative-strength score</span></div>
+      <div class="aq-ratio-rail" aria-label="${escapeHtml(model.label)} relative-strength score ${signed(model.score)}"><i></i><b style="left:${position.toFixed(1)}%"></b></div>
+      <footer class="aq-ratio-scale"><span>Weak</span><span>Neutral</span><span>Strong</span></footer>
     </article>`;
   }).join("");
 

@@ -6,9 +6,15 @@ export default defineConfig({
     rollupOptions: {
       input: {
         home: resolve(import.meta.dirname, "index.html"),
+        about: resolve(import.meta.dirname, "about.html"),
+        archive: resolve(import.meta.dirname, "archive.html"),
         models: resolve(import.meta.dirname, "models.html"),
         valuation: resolve(import.meta.dirname, "valuation.html"),
         backtesting: resolve(import.meta.dirname, "backtesting.html"),
+        trendFollowing: resolve(import.meta.dirname, "trend-following.html"),
+        ltpiMethodology: resolve(import.meta.dirname, "ltpi-methodology.html"),
+        mrpiMethodology: resolve(import.meta.dirname, "mrpi-methodology.html"),
+        valuationMethodology: resolve(import.meta.dirname, "valuation-methodology.html"),
         terminal: resolve(import.meta.dirname, "terminal.html"),
         portfolio: resolve(import.meta.dirname, "portfolio.html"),
         signals: resolve(import.meta.dirname, "signals.html"),

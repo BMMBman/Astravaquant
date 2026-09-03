@@ -9,18 +9,25 @@ type HistoryPeriod = "30D" | "90D" | "YTD" | "ALL";
 
 const periods: HistoryPeriod[] = ["30D", "90D", "YTD", "ALL"];
 const modelIds = ["mtpi", "ltpi", "nspi", "mrpi"];
-const modelScopes: Record<string, string> = {
-  mtpi: "Five-day crypto trend",
-  ltpi: "Weekly crypto trend",
-  nspi: "Combined crypto regime",
-  mrpi: "10-year Treasury pressure"
+const modelSections: Record<string, string> = {
+  mtpi: "01 / Trend",
+  ltpi: "02 / Trend",
+  nspi: "03 / Regime",
+  mrpi: "04 / Rates"
 };
-const modelDescriptions: Record<string, string> = {
-  mtpi: "TOTAL and TOTAL2 participation.",
-  ltpi: "TOTAL and Bitcoin weekly structure.",
-  nspi: "MTPI and LTPI combined.",
-  mrpi: "Weekly tightening versus easing pressure."
+const modelPurposes: Record<string, string> = {
+  mtpi: "Five-day trend model using total crypto market capitalization and TOTAL2.",
+  ltpi: "Weekly trend model using the broad crypto market and Bitcoin.",
+  nspi: "Measures the derived aggregate regime from the latest published MTPI and LTPI values.",
+  mrpi: "Measures tightening versus easing pressure in the 10-year Treasury backdrop."
 };
+const methodologyLinks: Record<string, string> = {
+  mtpi: "trend-following.html#medium-term-trend",
+  ltpi: "ltpi-methodology.html",
+  nspi: "methodology.html#liquidity-regime",
+  mrpi: "mrpi-methodology.html"
+};
+const scaleThresholds = [-0.75, -0.25, 0.25, 0.75];
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]!);
@@ -39,11 +46,17 @@ function formatScore(value: number): string {
   return `${value > 0 ? "+" : ""}${value.toFixed(2)}`;
 }
 
-function rateOfChange(points: MarketPoint[]): { delta: number | null; direction: string } {
-  if (points.length < 2) return { delta: null, direction: "Awaiting history" };
-  const delta = points.at(-1)!.value - points[0]!.value;
-  const direction = Math.abs(delta) < 0.025 ? "Stable" : delta > 0 ? "Rising" : "Falling";
-  return { delta, direction };
+function tone(signal: WorkbookModelSignal): "good" | "warn" | "bad" | "neutral" {
+  if (signal.id === "mrpi") {
+    if (signal.value <= -0.75) return "bad";
+    if (signal.value < -0.25) return "warn";
+    if (signal.value <= 0.25) return "neutral";
+    return "good";
+  }
+  if (signal.value <= -0.75) return "bad";
+  if (signal.value < -0.25) return "warn";
+  if (signal.value <= 0.25) return "neutral";
+  return "good";
 }
 
 function periodLabel(period: HistoryPeriod): string {
@@ -64,7 +77,7 @@ function defaultPeriod(points: MarketPoint[]): HistoryPeriod {
 }
 
 function periodButtons(active: HistoryPeriod): string {
-  return `<div class="history-range terminal-history-range" aria-label="History range">
+  return `<div class="history-range" aria-label="History range">
     <span>History</span>
     ${periods.map((period) => `<button type="button" data-model-history-period="${period}" class="${period === active ? "is-active" : ""}">${period === "ALL" ? "All" : period}</button>`).join("")}
   </div>`;
@@ -74,7 +87,7 @@ function renderChart(
   container: HTMLElement,
   points: MarketPoint[],
   chartId: string,
-  thresholds: [number, number]
+  thresholds: number[]
 ): void {
   if (points.length < 2) {
     container.innerHTML = "<span>Not enough verified observations in this window.</span>";
@@ -95,12 +108,15 @@ function renderChart(
     const gridY = padding.top + ratio * (height - padding.top - padding.bottom);
     return `<path d="M${padding.left} ${gridY}H${width - padding.right}" class="market-chart-gridline"/>`;
   }).join("");
+  const thresholdPaths = thresholds
+    .map((threshold) => `<path d="M${padding.left} ${y(threshold).toFixed(1)}H${width - padding.right}" class="market-chart-threshold"/>`)
+    .join("");
   container.innerHTML = `
     <div class="terminal-chart-readout" data-model-chart-readout><time>${escapeHtml(formatDate(points[lastIndex]!.timestamp))}</time><strong>${formatScore(points[lastIndex]!.value)}</strong></div>
     <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Dated historical model chart">
       <defs><linearGradient id="${gradientId}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fc8f4" stop-opacity=".28"/><stop offset="1" stop-color="#8fc8f4" stop-opacity="0"/></linearGradient></defs>
       ${gridLines}
-      <path d="M${padding.left} ${y(thresholds[1])}H${width - padding.right} M${padding.left} ${y(thresholds[0])}H${width - padding.right}" class="market-chart-threshold"/>
+      ${thresholdPaths}
       <path d="${area}" fill="url(#${gradientId})"/>
       <path d="${line}" class="market-chart-line" pathLength="1"/>
       <line x1="${x(lastIndex)}" x2="${x(lastIndex)}" y1="${padding.top}" y2="${height - padding.bottom}" class="chart-hover-guide" data-model-chart-guide/>
@@ -133,28 +149,67 @@ function renderChart(
   svg.addEventListener("pointerleave", () => inspect(lastIndex));
 }
 
+function formatUpdatedLabel(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? value : formatDate(parsed.toISOString());
+}
+
+function sourceLabel(signal: WorkbookModelSignal, series: WorkbookScoreSeries | undefined): string {
+  if (signal.source === "derived") return "Derived from MTPI + LTPI";
+  return series?.sourceTab ?? signal.sourceTab ?? "Published model reading";
+}
+
+function classificationNote(signal: WorkbookModelSignal): string {
+  if (signal.id === "mrpi") return "Five-band tightening versus easing scale.";
+  return signal.regime === signal.state ? "Published regime label." : `Regime translation: ${signal.regime}.`;
+}
+
 function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | undefined, period: HistoryPeriod): string {
-  const position = ((signal.value + 1) / 2) * 100;
-  const isMrpi = signal.id === "mrpi";
   const latestDate = series?.points.at(-1)?.date;
-  const asOf = latestDate ? `As of ${formatDate(`${latestDate}T00:00:00.000Z`)}` : signal.updatedLabel ?? "Current published state";
-  const allPoints = (series?.points ?? []).map((point) => ({ timestamp: `${point.date}T00:00:00.000Z`, value: point.score }));
-  const velocity = rateOfChange(filterPoints(allPoints, period));
-  const velocityTone = velocity.delta === null || Math.abs(velocity.delta) < 0.025 ? "neutral" : velocity.delta > 0 ? "positive" : "negative";
-  return `<article class="terminal-model-card" data-model-history-card="${escapeHtml(signal.id)}">
-    <header><div><span>${escapeHtml(modelScopes[signal.id] ?? signal.scope)}</span><h3>${escapeHtml(signal.name)}</h3><p>${escapeHtml(modelDescriptions[signal.id] ?? signal.scope)}</p></div><time>${escapeHtml(asOf)}</time></header>
-    <div class="model-gauge-read">
-      <div class="model-current-read"><span>Current score</span><strong>${formatScore(signal.value)}</strong></div>
-      <div class="model-velocity-read"><span>Rate of change</span><strong data-model-velocity data-tone="${velocityTone}">${velocity.delta === null ? "--" : formatScore(velocity.delta)}</strong><small data-model-velocity-label>${escapeHtml(`${periodLabel(period)} / ${velocity.direction}`)}</small></div>
-      <b>${escapeHtml(signal.regime)}</b>
+  const updated = formatUpdatedLabel(signal.updatedLabel) ?? (latestDate ? formatDate(`${latestDate}T00:00:00.000Z`) : "Current published state");
+  const classificationTone = tone(signal);
+  const methodologyHref = methodologyLinks[signal.id] ?? "methodology.html";
+  return `<article id="${escapeHtml(signal.id)}" class="aq-model-card" data-model-history-card="${escapeHtml(signal.id)}">
+    <header class="aq-model-head">
+      <div>
+        <p class="aq-section-label">${escapeHtml(modelSections[signal.id] ?? "Model")}</p>
+        <h3>${escapeHtml(signal.name)}</h3>
+        <p>${escapeHtml(modelPurposes[signal.id] ?? signal.scope)}</p>
+      </div>
+      <div class="aq-model-actions">
+        <a class="button" href="${escapeHtml(methodologyHref)}">Methodology</a>
+        <a class="button" href="backtesting.html">Open Backtesting</a>
+      </div>
+    </header>
+    <div class="aq-model-meta">
+      <div class="aq-meta-box">
+        <span>Purpose</span>
+        <p>${escapeHtml(modelPurposes[signal.id] ?? signal.scope)}</p>
+      </div>
+      <div class="aq-meta-box">
+        <span>Current reading</span>
+        <strong>${formatScore(signal.value)}</strong>
+      </div>
+      <div class="aq-meta-box">
+        <span>Classification</span>
+        <strong class="status-${classificationTone}">${escapeHtml(signal.state)}</strong>
+        <p>${escapeHtml(classificationNote(signal))}</p>
+      </div>
+      <div class="aq-meta-box">
+        <span>Updated</span>
+        <strong>${escapeHtml(updated)}</strong>
+        <p>${escapeHtml(sourceLabel(signal, series))}</p>
+      </div>
     </div>
-    <div class="model-scale-gauge" aria-label="${escapeHtml(signal.name)} score ${formatScore(signal.value)}">
-      <div><i></i><i></i><i></i><i></i><i></i><b style="left:${Math.min(100, Math.max(0, position)).toFixed(1)}%"></b></div>
-      <small><span>${isMrpi ? "Tightening" : "Risk-off"} / -1</span><span>Neutral / 0</span><span>${isMrpi ? "Easing" : "Risk-on"} / +1</span></small>
+    <div class="aq-model-chart-wrap">
+      ${series?.points.length ? periodButtons(period) : ""}
+      <div class="terminal-chart aq-chart-panel" data-model-history-chart="${escapeHtml(signal.id)}"><span>${escapeHtml(series?.message ?? "Historical series unavailable.")}</span></div>
+      <div class="aq-chart-foot">
+        <span data-model-history-range>${escapeHtml(series?.sourceTab ?? signal.sourceTab ?? "Historical range pending")}</span>
+        <span>${escapeHtml(periodLabel(period))}</span>
+      </div>
     </div>
-    ${series?.points.length ? periodButtons(period) : ""}
-    <div class="terminal-chart terminal-model-chart" data-model-history-chart="${escapeHtml(signal.id)}"><span>${escapeHtml(series?.message ?? (isMrpi ? "MRPI history is temporarily unavailable." : "Historical series unavailable."))}</span></div>
-    <footer><span data-model-history-range>${escapeHtml(series?.sourceTab ?? signal.sourceTab ?? "Published model reading")}</span><a href="backtesting.html">Open full backtest</a></footer>
   </article>`;
 }
 
@@ -180,19 +235,11 @@ export function renderModelHistory(dashboard: WorkbookDashboard): void {
       const period = selectedPeriods.get(signal.id)!;
       const points = filterPoints(allPoints, period);
       const chart = panel.querySelector<HTMLElement>(`[data-model-history-chart="${signal.id}"]`)!;
-      renderChart(chart, points, `${signal.id}-${period}`, signal.id === "mrpi" ? [-0.1, 0.1] : [-0.25, 0.25]);
-      const velocity = rateOfChange(points);
-      const velocityNode = panel.querySelector<HTMLElement>("[data-model-velocity]");
-      const velocityLabel = panel.querySelector<HTMLElement>("[data-model-velocity-label]");
-      if (velocityNode) {
-        velocityNode.textContent = velocity.delta === null ? "--" : formatScore(velocity.delta);
-        velocityNode.dataset.tone = velocity.delta === null || Math.abs(velocity.delta) < 0.025 ? "neutral" : velocity.delta > 0 ? "positive" : "negative";
-      }
-      if (velocityLabel) velocityLabel.textContent = `${periodLabel(period)} / ${velocity.direction}`;
+      renderChart(chart, points, `${signal.id}-${period}`, scaleThresholds);
       const range = panel.querySelector<HTMLElement>("[data-model-history-range]");
       if (range) range.textContent = points.length > 1
         ? `${formatDate(points[0]!.timestamp)} - ${formatDate(points.at(-1)!.timestamp)}`
-        : series.message ?? series.sourceTab;
+        : series.message ?? sourceLabel(signal, series);
     };
     panel.querySelectorAll<HTMLButtonElement>("[data-model-history-period]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -208,7 +255,7 @@ export function renderModelHistory(dashboard: WorkbookDashboard): void {
   if (state) {
     state.dataset.state = panels.some(({ series }) => series?.points.length) ? "ready" : "unavailable";
     const label = state.querySelector("span");
-    if (label) label.textContent = panels.some(({ series }) => series?.points.length) ? "Verified history live" : "History unavailable";
+    if (label) label.textContent = panels.some(({ series }) => series?.points.length) ? "Dated history available" : "History unavailable";
   }
 }
 

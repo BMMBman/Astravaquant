@@ -3,53 +3,91 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="AstravaQuant backtesting workspace for verified model-score history, regime distributions, and transition diagnostics." />
-    <title>AstravaQuant Backtesting | Signal Diagnostics</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta
+      name="description"
+      content="AstravaQuant backtesting standards and dated signal diagnostics across models and valuation."
+    />
+    <title>AstravaQuant Backtesting | Test the Rule, Not the Story</title>
+    <link rel="stylesheet" href="public-redesign.css" />
   </head>
-  <body data-backtesting-page>
-    <div class="ambient-orb orb-left" aria-hidden="true"></div>
-    <div class="ambient-orb orb-right" aria-hidden="true"></div>
+  <body class="aq-site aq-backtesting-page" data-backtesting-page>
     <header class="site-header" aria-label="Primary navigation">
       <div class="shell header-inner">
         <a class="brand" href="index.html" aria-label="AstravaQuant home">
-          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true"><defs><linearGradient id="brand-gradient-backtest" x1="18" y1="132" x2="138" y2="16" gradientUnits="userSpaceOnUse"><stop stop-color="#68b6ff"/><stop offset=".5" stop-color="#eef5ff"/><stop offset="1" stop-color="#8fe0ff"/></linearGradient></defs><path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke="url(#brand-gradient-backtest)" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/></svg>
-          <span class="brand-copy"><strong>AstravaQuant</strong><span>Backtesting</span></span>
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <path
+              d="M82 10 151 138 82 101 13 138Z"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="14"
+            />
+          </svg>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Independent Systematic Market Research</span>
+          </span>
         </a>
         <nav class="site-nav" aria-label="Main navigation">
-          <a href="models.html">Models</a><a class="is-active" href="backtesting.html">Backtest</a><a href="portfolio.html">Portfolio</a><a href="terminal.html">Terminal</a><a href="research.html">Research</a>
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
         </nav>
-        <div class="header-cta" data-wallet-root><button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div>
+        <div class="header-meta">Historical model behavior.</div>
       </div>
     </header>
 
     <main>
-      <section class="section page-hero backtest-hero">
-        <div class="shell shell-wide">
-          <div class="page-hero-copy reveal">
-            <p class="eyebrow">Model Lab</p>
-            <h1>Test the signal, not a story.</h1>
-            <p class="lead">Inspect real trend and valuation history, regime duration, and transitions. No invented returns.</p>
+      <section class="aq-hero">
+        <div class="shell shell-wide aq-hero-grid">
+          <div class="aq-hero-copy reveal">
+            <p class="aq-kicker">Backtesting</p>
+            <h1 class="aq-page-title">Test the rule, not the story.</h1>
+            <p class="aq-lead">
+              AstravaQuant evaluates historical model behavior using dated score observations
+              that are actually published. Hypothetical results remain clearly labeled as
+              hypothetical.
+            </p>
           </div>
-          <div class="feed-state" data-backtest-status data-state="loading"><i aria-hidden="true"></i><span>Connecting workbook</span></div>
+
+          <div class="feed-state reveal" data-backtest-status data-state="loading">
+            <i aria-hidden="true"></i>
+            <span>Connecting research feeds</span>
+          </div>
         </div>
       </section>
 
-      <section class="section section-compact">
+      <section class="aq-page-section">
         <div class="shell shell-wide">
-          <article class="backtest-workspace glass-card reveal">
-            <header class="backtest-toolbar">
+          <article class="aq-backtest-panel reveal">
+            <div class="aq-backtest-toolbar">
               <div>
-                <span class="table-label">Signal Diagnostics</span>
+                <p class="aq-section-label">Signal Diagnostics</p>
                 <h2>Historical regime path</h2>
-                <p data-series-source>Waiting for verified observations</p>
+                <p class="aq-value-copy" data-series-source>Waiting for verified observations.</p>
               </div>
-              <div class="backtest-controls">
-                <label>Series<select data-series-select aria-label="Model series"><option>Loading</option></select></label>
-                <label><span data-negative-threshold-label>Risk-off below</span> <output data-negative-value>-0.25</output><input data-negative-threshold type="range" min="-0.75" max="0" step="0.05" value="-0.25" /></label>
-                <label><span data-positive-threshold-label>Risk-on above</span> <output data-positive-value>+0.25</output><input data-positive-threshold type="range" min="0" max="0.75" step="0.05" value="0.25" /></label>
+
+              <div class="aq-backtest-controls">
+                <label>
+                  Series
+                  <select data-series-select aria-label="Model series">
+                    <option>Loading</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-negative-threshold-label>Risk-off below</span>
+                  <output data-negative-value>-0.25</output>
+                  <input data-negative-threshold type="range" min="-0.75" max="0" step="0.05" value="-0.25" />
+                </label>
+                <label>
+                  <span data-positive-threshold-label>Risk-on above</span>
+                  <output data-positive-value>+0.25</output>
+                  <input data-positive-threshold type="range" min="0" max="0.75" step="0.05" value="0.25" />
+                </label>
               </div>
-            </header>
+            </div>
 
             <div class="history-range" data-backtest-periods aria-label="Backtest history range">
               <span>History</span>
@@ -81,43 +119,145 @@
               <div data-distribution="risk_on"><span>Risk-on</span><div><i></i></div><strong>--</strong></div>
             </div>
 
-            <div class="backtest-detail-grid">
-              <div class="backtest-transitions">
-                <header><span class="table-label">Recent Transitions</span><p>Recalculated when thresholds change.</p></header>
+            <div class="aq-detail-grid">
+              <div class="aq-list-panel">
+                <header>
+                  <span class="aq-table-label">Recent Transitions</span>
+                  <p>Recalculated when thresholds change.</p>
+                </header>
                 <div data-transition-list><p class="backtest-empty-copy">Waiting for score history.</p></div>
               </div>
-              <div class="backtest-observations">
-                <header><span class="table-label">Dated Observations</span><p>Newest first.</p></header>
+
+              <div class="aq-list-panel">
+                <header>
+                  <span class="aq-table-label">Dated Observations</span>
+                  <p>Newest first.</p>
+                </header>
                 <div data-observation-list><p class="backtest-empty-copy">Waiting for score history.</p></div>
               </div>
             </div>
-          </article>
 
-          <article class="return-boundary reveal">
-            <div><span>Return analysis</span><strong>Data required</strong></div>
-            <p>The research feeds currently supply model scores, not an aligned investable benchmark. Return, alpha, Sharpe, and drawdown stay disabled until real price history is added.</p>
+            <p class="aq-disclosure">
+              Historical score analysis is not realized performance. It is a diagnostic view
+              of dated model states.
+            </p>
           </article>
         </div>
       </section>
 
-      <section class="section">
+      <section class="aq-page-section">
         <div class="shell shell-wide">
-          <div class="section-head reveal"><p class="eyebrow">Relative Strength</p><h2>Current ratio reads.</h2><p>Normalized from RSPS and Alts RSPS. Spreadsheet errors are excluded, never converted to zero.</p></div>
-          <article class="ratio-ledger glass-card reveal" data-ratio-models><p class="backtest-empty-copy">Connecting ratio models.</p></article>
+          <div class="aq-section-head reveal">
+            <div>
+              <p class="aq-section-label">Backtesting Methodology</p>
+              <h2>What AstravaQuant evaluates.</h2>
+            </div>
+          </div>
+
+          <div class="aq-grid three">
+            <article class="aq-grid-card reveal">
+              <h3>Data</h3>
+              <ul class="aq-bullet-list">
+                <li>Public backtests use dated score rows already present in the connected workbooks.</li>
+                <li>Blank rows, future placeholders, and formula errors are excluded rather than coerced to zero.</li>
+                <li>Source tabs are disclosed alongside each series.</li>
+              </ul>
+            </article>
+
+            <article class="aq-grid-card reveal">
+              <h3>Signal</h3>
+              <ul class="aq-bullet-list">
+                <li>Series include MTPI, LTPI, derived NSPI, MRPI, and the Bitcoin valuation composite.</li>
+                <li>Thresholds are adjustable for inspection, but the dated scores themselves are not altered.</li>
+                <li>Derived NSPI uses the latest available MTPI and LTPI value at each update date.</li>
+              </ul>
+            </article>
+
+            <article class="aq-grid-card reveal">
+              <h3>Execution Assumptions</h3>
+              <ul class="aq-bullet-list">
+                <li>The public app does not convert score changes into assumed trades, fills, or P&amp;L.</li>
+                <li>Closing-data timing, slippage, fees, and transaction costs remain undisclosed unless a benchmark test is added.</li>
+                <li>No backtest on this page should be read as realized performance.</li>
+              </ul>
+            </article>
+
+            <article class="aq-grid-card reveal">
+              <h3>Test Design</h3>
+              <ul class="aq-bullet-list">
+                <li>Observed history is limited to the dated rows published in the forward-testing sheets.</li>
+                <li>In-sample, out-of-sample, and walk-forward procedures are not fully disclosed in the current repo.</li>
+              </ul>
+              <div class="aq-placeholder">
+                <strong>Placeholder For Troy</strong>
+                Add formal parameter-selection, walk-forward, and revision-control policy for each public backtest.
+              </div>
+            </article>
+
+            <article class="aq-grid-card reveal">
+              <h3>Robustness</h3>
+              <ul class="aq-bullet-list">
+                <li>The current public page supports threshold and window inspection.</li>
+                <li>Alternative lookbacks, sensitivity analysis, and subperiod studies are not yet published.</li>
+              </ul>
+            </article>
+
+            <article class="aq-grid-card reveal">
+              <h3>Limitations</h3>
+              <ul class="aq-bullet-list">
+                <li>Hypothetical analysis is hypothetical.</li>
+                <li>Look-ahead bias, overfitting, data-mining, and regime dependence must be discussed explicitly.</li>
+                <li>Past performance does not guarantee future results.</li>
+              </ul>
+            </article>
+          </div>
         </div>
       </section>
 
-      <section class="section section-compact">
+      <section class="aq-page-section">
         <div class="shell shell-wide">
-          <div class="section-head reveal"><p class="eyebrow">Workbook Coverage</p><h2>All 15 research tabs.</h2><p>One compact health view across allocation, relative strength, model components, forward tests, breadth, and selection.</p></div>
+          <div class="aq-section-head reveal">
+            <div>
+              <p class="aq-section-label">Relative Strength</p>
+              <h2>Current ratio reads.</h2>
+            </div>
+          </div>
+          <article class="aq-panel reveal" data-ratio-models><p class="backtest-empty-copy">Connecting ratio models.</p></article>
+        </div>
+      </section>
+
+      <section class="aq-page-section">
+        <div class="shell shell-wide">
+          <div class="aq-section-head reveal">
+            <div>
+              <p class="aq-section-label">Workbook Coverage</p>
+              <h2>Connected public research tabs.</h2>
+            </div>
+          </div>
           <div class="workbook-grid reveal" data-workbook-tabs aria-live="polite"></div>
           <ul class="workbook-warnings reveal" data-workbook-warnings></ul>
         </div>
       </section>
-
-      <section class="section section-compact"><div class="shell shell-wide"><p class="research-disclaimer reveal">Diagnostics describe historical model and valuation scores. They are not a simulated trading strategy, investment advice, or evidence of future performance.</p></div></section>
     </main>
-    <footer class="footer"><div class="shell footer-inner"><p>Verified research data only. No fabricated performance.</p><div class="footer-links"><a href="methodology.html">Methodology</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div></div></footer>
-    <script type="module" src="/app.js"></script><script type="module" src="/src/client/index.ts"></script>
+
+    <footer class="aq-footer">
+      <div class="shell footer-inner">
+        <p>Backtests should expose limitations rather than hide them.</p>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
   </body>
 </html>

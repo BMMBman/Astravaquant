@@ -1,4 +1,7 @@
 document.documentElement.classList.add("js");
+if (document.body) {
+  document.body.classList.add("js");
+}
 
 (function () {
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -6,6 +9,7 @@ document.documentElement.classList.add("js");
   var chartNodes = Array.prototype.slice.call(document.querySelectorAll("[data-points]"));
   var dialNodes = Array.prototype.slice.call(document.querySelectorAll("[data-dial-value]"));
   var tabGroups = Array.prototype.slice.call(document.querySelectorAll("[data-tabs]"));
+  var filterGroups = Array.prototype.slice.call(document.querySelectorAll("[data-filter-group]"));
   var yearNodes = Array.prototype.slice.call(document.querySelectorAll("[data-year]"));
   var earthCanvas = document.querySelector("[data-earth-globe]");
 
@@ -69,6 +73,52 @@ document.documentElement.classList.add("js");
         }
       });
     });
+  }
+
+  function initFilterGroup(group) {
+    var buttons = Array.prototype.slice.call(group.querySelectorAll("[data-filter-value]"));
+    var rows = Array.prototype.slice.call(document.querySelectorAll("[data-filter-target]"));
+    var empty = document.querySelector("[data-filter-empty]");
+
+    if (!buttons.length || !rows.length) {
+      return;
+    }
+
+    function applyFilter(value) {
+      var visibleCount = 0;
+
+      buttons.forEach(function (button) {
+        var isActive = button.getAttribute("data-filter-value") === value;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+
+      rows.forEach(function (row) {
+        var categories = (row.getAttribute("data-filter-target") || "")
+          .split(/\s+/)
+          .filter(Boolean);
+        var isVisible = value === "all" || categories.indexOf(value) >= 0;
+        row.hidden = !isVisible;
+        if (isVisible) {
+          visibleCount += 1;
+        }
+      });
+
+      if (empty) {
+        empty.hidden = visibleCount > 0;
+      }
+    }
+
+    buttons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        applyFilter(button.getAttribute("data-filter-value") || "all");
+      });
+    });
+
+    var initial = buttons.find(function (button) {
+      return button.classList.contains("is-active");
+    });
+    applyFilter((initial && initial.getAttribute("data-filter-value")) || "all");
   }
 
   function formatSigned(value) {
@@ -541,6 +591,7 @@ document.documentElement.classList.add("js");
   }
 
   initMobileNavigation();
+  filterGroups.forEach(initFilterGroup);
 
   chartNodes.forEach(function (node, index) {
     node.dataset.chartId = "chartGradient" + index;

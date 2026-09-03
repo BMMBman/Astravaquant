@@ -3,30 +3,157 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="AstravaQuant research notes across crypto participation, weekly structure, mortgage-rate pressure, and housing." />
-    <title>AstravaQuant Research | Model Notes and Market Context</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta
+      name="description"
+      content="AstravaQuant research library across rates, liquidity, crypto, macro, housing, and methodology."
+    />
+    <title>AstravaQuant Research | Publication Archive</title>
+    <link rel="stylesheet" href="public-redesign.css" />
   </head>
-  <body>
-    <div class="ambient-orb orb-left" aria-hidden="true"></div><div class="ambient-orb orb-right" aria-hidden="true"></div>
-    <header class="site-header" aria-label="Primary navigation"><div class="shell header-inner">
-      <a class="brand" href="index.html" aria-label="AstravaQuant home"><svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true"><defs><linearGradient id="brand-gradient-research" x1="18" y1="132" x2="138" y2="16" gradientUnits="userSpaceOnUse"><stop stop-color="#68b6ff"/><stop offset=".5" stop-color="#eef5ff"/><stop offset="1" stop-color="#8fe0ff"/></linearGradient></defs><path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke="url(#brand-gradient-research)" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/></svg><span class="brand-copy"><strong>AstravaQuant</strong><span>Research</span></span></a>
-      <nav class="site-nav" aria-label="Main navigation"><a href="signals.html">Signals</a><a href="models.html">Models</a><a href="backtesting.html">Backtest</a><a href="portfolio.html">Portfolio</a><a href="terminal.html">Terminal</a><a class="is-active" href="research.html">Research</a></nav>
-      <div class="header-cta" data-wallet-root><button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div>
-    </div></header>
+  <body class="aq-site aq-research-page">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <path
+              d="M82 10 151 138 82 101 13 138Z"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="14"
+            />
+          </svg>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Independent Systematic Market Research</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a class="is-active" href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+        </nav>
+        <div class="header-meta">Publication archive.</div>
+      </div>
+    </header>
+
     <main>
-      <section class="section page-hero page-hero-simple"><div class="shell shell-narrow"><div class="page-hero-copy page-hero-center reveal"><p class="eyebrow">Research</p><h1>Context for the signal.</h1><p class="lead">Concise notes on what the models measure, how the current state reads, and where the limits are.</p></div></div></section>
-      <section class="section section-compact"><div class="shell shell-narrow">
-        <div class="research-feature-grid">
-          <a class="research-feature-card reveal" href="research-crypto-participation.html"><div><span>Crypto / MTPI</span><b>Aug 10, 2026</b></div><h2>Medium-Term Crypto Participation</h2><p>How total crypto market cap and TOTAL2 combine into the five-day tactical regime.</p><strong>Read note <i aria-hidden="true">&#8599;</i></strong></a>
-          <a class="research-feature-card reveal" href="research-weekly-structure.html"><div><span>Crypto / LTPI</span><b>Aug 10, 2026</b></div><h2>Weekly Crypto Structure</h2><p>How broad market structure and Bitcoin define the long-term directional state.</p><strong>Read note <i aria-hidden="true">&#8599;</i></strong></a>
-          <a class="research-feature-card reveal" href="research-mortgage-pressure.html"><div><span>Housing / MRPI</span><b>Aug 10, 2026</b></div><h2>Mortgage-Rate Pressure</h2><p>Why MRPI reads the 10-year backdrop as tightening versus easing, not risk-on versus risk-off.</p><strong>Read note <i aria-hidden="true">&#8599;</i></strong></a>
-          <a class="research-feature-card research-feature-external reveal" href="https://buildthebrief.com" target="_blank" rel="noreferrer"><div><span>Housing</span><b>External platform</b></div><h2>Build the Brief</h2><p>Explore housing market trends, mortgage pressure, affordability, and the rates backdrop.</p><strong>Visit Build the Brief <i aria-hidden="true">&#8599;</i></strong></a>
+      <section class="aq-hero">
+        <div class="shell shell-wide aq-method-shell">
+          <div class="aq-hero-copy reveal">
+            <p class="aq-kicker">Research</p>
+            <h1 class="aq-page-title">Research library.</h1>
+            <p class="aq-lead">
+              Research should read like a publication archive: dated, categorized, and easy
+              to inspect.
+            </p>
+          </div>
+
+          <div class="aq-filter-list reveal" data-filter-group>
+            <button class="aq-filter-button is-active" type="button" data-filter-value="all">All</button>
+            <button class="aq-filter-button" type="button" data-filter-value="rates">Rates</button>
+            <button class="aq-filter-button" type="button" data-filter-value="liquidity">Liquidity</button>
+            <button class="aq-filter-button" type="button" data-filter-value="crypto">Crypto</button>
+            <button class="aq-filter-button" type="button" data-filter-value="macro">Macro</button>
+            <button class="aq-filter-button" type="button" data-filter-value="housing">Housing</button>
+            <button class="aq-filter-button" type="button" data-filter-value="methodology">Methodology</button>
+          </div>
         </div>
-      </div></section>
-      <section class="section section-compact" id="relative-strength"><div class="shell shell-narrow"><article class="research-roadmap glass-card reveal"><div><span class="table-label">Research roadmap</span><h2>Relative-strength notes follow verified ratio feeds.</h2><p>ETH/BTC, SOL/ETH, SOL/BTC, SUI/BTC, SUI/ETH, and SUI/SOL remain unpublished until their charts and model states are connected. Neutral placeholders are not treated as research signals.</p></div><a class="button secondary" href="models.html#relative-strength">View workspace</a></article></div></section>
+      </section>
+
+      <section class="aq-page-section">
+        <div class="shell shell-wide">
+          <article class="aq-panel reveal" data-research-library>
+            <div class="aq-research-head">
+              <span>Date</span>
+              <span>Research note</span>
+              <span>Category</span>
+              <span>Abstract</span>
+            </div>
+
+            <div class="aq-research-table">
+              <article class="aq-research-row" data-filter-target="methodology">
+                <time datetime="2026-09-02">Sep 02, 2026</time>
+                <div><a href="methodology.html">Public Methodology Register</a></div>
+                <span class="aq-tag">Methodology</span>
+                <p>Framework family index, versioning discipline, and disclosure placeholders.</p>
+              </article>
+
+              <article class="aq-research-row" data-filter-target="methodology">
+                <time datetime="2026-09-02">Sep 02, 2026</time>
+                <div><a href="backtesting.html">Backtesting Standard: Test the Rule, Not the Story</a></div>
+                <span class="aq-tag">Methodology</span>
+                <p>Public backtesting boundary for dated signals, transitions, and limitations.</p>
+              </article>
+
+              <article class="aq-research-row" data-filter-target="liquidity methodology">
+                <time datetime="2026-09-02">Sep 02, 2026</time>
+                <div><a href="methodology.html#liquidity-regime">NSPI Derivation Note</a></div>
+                <span class="aq-tag">Liquidity</span>
+                <p>The current public regime composite is derived from MTPI and LTPI rather than a separate liquidity formula.</p>
+              </article>
+
+              <article class="aq-research-row" data-filter-target="macro methodology">
+                <time datetime="2026-09-02">Sep 02, 2026</time>
+                <div><a href="about.html#publication-standards">Macro Coverage Register</a></div>
+                <span class="aq-tag">Macro</span>
+                <p>Public macro framework disclosure is intentionally limited until Troy supplies the final methodology.</p>
+              </article>
+
+              <article class="aq-research-row" data-filter-target="rates housing">
+                <time datetime="2026-08-10">Aug 10, 2026</time>
+                <div><a href="research-mortgage-pressure.html">Mortgage-Rate Pressure</a></div>
+                <span class="aq-tag">Rates</span>
+                <p>How MRPI measures directional pressure in mortgage-rate conditions without claiming rate prediction.</p>
+              </article>
+
+              <article class="aq-research-row" data-filter-target="crypto">
+                <time datetime="2026-08-10">Aug 10, 2026</time>
+                <div><a href="research-weekly-structure.html">Weekly Crypto Structure</a></div>
+                <span class="aq-tag">Crypto</span>
+                <p>How LTPI frames longer-horizon structure using the broad market and Bitcoin.</p>
+              </article>
+
+              <article class="aq-research-row" data-filter-target="crypto">
+                <time datetime="2026-08-10">Aug 10, 2026</time>
+                <div><a href="research-crypto-participation.html">Medium-Term Crypto Participation</a></div>
+                <span class="aq-tag">Crypto</span>
+                <p>How MTPI uses total market capitalization and TOTAL2 to classify shorter-horizon conditions.</p>
+              </article>
+
+              <article class="aq-research-row" data-filter-target="housing">
+                <time datetime="2026-08-10">Aug 10, 2026</time>
+                <div><a href="https://buildthebrief.com" target="_blank" rel="noreferrer">Build the Brief</a></div>
+                <span class="aq-tag">Housing</span>
+                <p>External housing research platform covering affordability, mortgage pressure, and market structure.</p>
+              </article>
+            </div>
+
+            <p class="aq-empty-state" data-filter-empty hidden>No notes are published in this category yet.</p>
+          </article>
+        </div>
+      </section>
     </main>
-    <footer class="footer"><div class="shell footer-inner"><p>Research states what is known, sourced, and not yet available.</p><div class="footer-links"><a href="methodology.html">Methodology</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div></div></footer>
-    <script type="module" src="/app.js"></script><script type="module" src="/src/client/index.ts"></script>
+
+    <footer class="aq-footer">
+      <div class="shell footer-inner">
+        <p>Research should get more credible the deeper someone goes.</p>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
   </body>
 </html>

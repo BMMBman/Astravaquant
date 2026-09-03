@@ -1,7 +1,135 @@
 <!doctype html>
 <html lang="en">
-  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="description" content="AstravaQuant privacy notice for wallet authentication, read-only portfolio data, sessions, and analytics."/><title>Privacy | AstravaQuant</title><link rel="stylesheet" href="styles.css"/></head>
-  <body><header class="site-header" aria-label="Primary navigation"><div class="shell header-inner"><a class="brand" href="index.html" aria-label="AstravaQuant home"><svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true"><path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke="#b9dfff" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/></svg><span class="brand-copy"><strong>AstravaQuant</strong><span>Privacy</span></span></a><nav class="site-nav" aria-label="Main navigation"><a href="signals.html">Signals</a><a href="models.html">Models</a><a href="backtesting.html">Backtest</a><a href="portfolio.html">Portfolio</a><a href="terminal.html">Terminal</a><a href="research.html">Research</a></nav><div class="header-cta" data-wallet-root><button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div></div></header>
-    <main><section class="section page-hero page-hero-simple"><div class="shell shell-narrow"><div class="page-hero-copy page-hero-center reveal"><p class="eyebrow">Privacy</p><h1>Read-only by design.</h1><p class="lead">What AstravaQuant processes when you browse, connect a wallet, and view portfolio intelligence.</p></div></div></section><section class="section section-compact"><article class="legal-document shell reveal"><p class="legal-updated">Effective August 10, 2026</p><h2>Information we process</h2><p>When you connect and authenticate a wallet, AstravaQuant processes the public wallet address, selected chain, authentication nonce, signed authentication message, session identifiers, and login times. Public token balances and valuations may be retrieved from a read-only portfolio provider.</p><h2>What we store</h2><p>AstravaQuant stores the wallet-to-user relationship, authentication session records, and periodic total portfolio-value snapshots used to build performance history. The application does not need to store every token balance returned by the provider.</p><h2>Analytics</h2><p>AstravaQuant may use Vercel Web Analytics to understand aggregate page usage. Wallet addresses, holdings, balances, and signature contents are not sent as analytics properties. Product events, when enabled, are limited to non-sensitive outcomes such as a connection success or categorized failure.</p><h2>Service providers</h2><p>Neon provides the production database, Vercel provides hosting and analytics infrastructure, and GoldRush is the configured read-only portfolio indexer. CoinGecko and Federal Reserve Economic Data provide public market context displayed in the Terminal. Each provider may process requests under its own terms.</p><h2>Cookies and sessions</h2><p>Wallet authentication creates an HTTP-only session cookie with a limited lifetime. It is used for account access and is not a blockchain transaction approval.</p><h2>Security boundaries</h2><p>AstravaQuant never requests or stores private keys or seed phrases, does not create custodial wallets, and does not initiate blockchain transactions. Authentication signatures prove wallet control only.</p><h2>Your choices</h2><p>You can browse public research without connecting a wallet, disconnect your wallet in the account menu, and log out to revoke the active AstravaQuant session. Public blockchain activity remains public independently of AstravaQuant.</p><h2>Changes</h2><p>This notice may be updated as providers and product capabilities change. The effective date above identifies the current published version.</p></article></section></main>
-    <footer class="footer"><div class="shell footer-inner"><p>Wallet integrations are read-only and non-custodial.</p><div class="footer-links"><a href="methodology.html">Methodology</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div></div></footer><script type="module" src="/app.js"></script><script type="module" src="/src/client/index.ts"></script></body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="AstravaQuant privacy notice for public research, wallet authentication, sessions, and analytics."
+    />
+    <title>AstravaQuant Privacy Notice</title>
+    <link rel="stylesheet" href="public-redesign.css" />
+  </head>
+  <body class="aq-site aq-legal-page">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <path
+              d="M82 10 151 138 82 101 13 138Z"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="14"
+            />
+          </svg>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Independent Systematic Market Research</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+        </nav>
+        <div class="header-meta">Privacy notice.</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="aq-hero">
+        <div class="shell shell-narrow aq-hero-copy reveal">
+          <p class="aq-kicker">Privacy</p>
+          <h1 class="aq-page-title">Read-only by design.</h1>
+          <p class="aq-lead">
+            This notice explains what AstravaQuant processes when you browse public
+            research and, where applicable, authenticate a wallet for private portfolio
+            context.
+          </p>
+        </div>
+      </section>
+
+      <section class="aq-page-section">
+        <div class="shell shell-narrow">
+          <article class="aq-legal-card reveal">
+            <p class="legal-updated">Effective September 3, 2026</p>
+
+            <div class="aq-legal-card">
+              <h2>Information We Process</h2>
+              <p>
+                Public pages can be browsed without authentication. If a user connects a
+                wallet on the private portfolio tooling, AstravaQuant processes the public
+                wallet address, selected chain, authentication nonce, session identifiers,
+                and login timing.
+              </p>
+            </div>
+
+            <div class="aq-legal-card">
+              <h2>What We Store</h2>
+              <p>
+                AstravaQuant stores the wallet-to-user relationship, session records, and
+                periodic total-value snapshots used to build real portfolio history. It does
+                not need private keys, seed phrases, or transaction approval data.
+              </p>
+            </div>
+
+            <div class="aq-legal-card">
+              <h2>Analytics</h2>
+              <p>
+                Aggregate usage analytics may be used to understand the public research
+                product. Wallet addresses, balances, holdings, signatures, and nonces are
+                excluded from analytics properties.
+              </p>
+            </div>
+
+            <div class="aq-legal-card">
+              <h2>Third-Party Providers</h2>
+              <p>
+                Public research pages may use external data and infrastructure providers
+                such as Google Sheets, CoinGecko, FRED, Vercel, Neon, and other read-only
+                services. Those providers operate under their own terms.
+              </p>
+            </div>
+
+            <div class="aq-legal-card">
+              <h2>Security Boundary</h2>
+              <p>
+                AstravaQuant does not request or store private keys or seed phrases and does
+                not execute trades or move assets. Authentication signatures prove wallet
+                control only.
+              </p>
+            </div>
+
+            <div class="aq-legal-card">
+              <h2>Changes</h2>
+              <p>
+                This notice may change as the research platform evolves. The effective date
+                above identifies the current published version.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="aq-footer">
+      <div class="shell footer-inner">
+        <p>AstravaQuant is public research first and authenticated tooling second.</p>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="research.html">Research</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
+  </body>
 </html>

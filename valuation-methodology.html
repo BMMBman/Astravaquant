@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="AstravaQuant valuation methodology and public disclosure boundary." />
+    <title>Valuation | AstravaQuant Methodology</title>
+    <link rel="stylesheet" href="public-redesign.css" />
+  </head>
+  <body class="aq-site aq-method-page">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
+          </svg>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Independent Systematic Market Research</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="models.html">Models</a>
+          <a class="is-active" href="methodology.html">Methodology</a>
+          <a href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+        </nav>
+        <div class="header-meta">Valuation methodology.</div>
+      </div>
+    </header>
+
+    <main>
+      <section class="aq-hero">
+        <div class="shell shell-wide aq-hero-copy reveal">
+          <p class="aq-kicker">Methodology / Valuation</p>
+          <h1 class="aq-page-title">Valuation.</h1>
+          <p class="aq-lead">
+            The current valuation system uses standardized measurements to determine how far
+            current conditions sit from their historical distribution.
+          </p>
+          <p class="aq-lead">
+            Valuation answers a different question than trend or regime: it describes
+            relative historical condition rather than short-term direction or broader
+            environmental state.
+          </p>
+        </div>
+      </section>
+
+      <section class="aq-page-section">
+        <div class="shell shell-wide">
+          <article class="aq-panel reveal">
+            <div class="aq-definition-grid">
+              <div class="aq-definition-item">
+                <strong>Objective</strong>
+                Publish a standardized value score built from fundamental, technical, and
+                sentiment inputs without turning that score into a fair-value price target.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Implementation</strong>
+                The public app reads a 17-input workbook, computes the arithmetic mean of the
+                published z-scores, and compares it with the workbook&rsquo;s composite.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Categories</strong>
+                Seven fundamental inputs, seven technical inputs, and three sentiment
+                inputs.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Primary Scale</strong>
+                The score is oriented so positive values mean greater modeled value in the
+                current workbook. The inverse lens multiplies that score by `-1`.
+              </div>
+            </div>
+
+            <div class="aq-grid three aq-spacer-top">
+              <div class="aq-definition-item"><strong>Fundamental</strong>BTC: Supply in Profit Market Bands; Short-Term Holder MVRV Indicator; True Market Mean Price + AVIV Ratio; NUPL; Adjusted MVRV; Puell Multiple; MVRV Pricing Bands.</div>
+              <div class="aq-definition-item"><strong>Technical</strong>52-Week BTC Sharpe Ratio; BTC RSI; The Mayer Multiple; BTC SOPR Z-Score; BTC Short-Term Holder Supply P/L Ratio; BTC STH Cost Basis Delta; Bitcoin Macro Oscillator (BMO).</div>
+              <div class="aq-definition-item"><strong>Sentiment</strong>Crypto Fear &amp; Greed Index; Google Trends (BTC - 5 Years); Sentix BTC Sentiment.</div>
+            </div>
+
+            <div class="aq-definition-grid aq-spacer-top">
+              <div class="aq-definition-item">
+                <strong>Normalization</strong>
+                The public app accepts indicator scores in a standard-deviation framework and
+                publishes the composite on the workbook&rsquo;s declared scale.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Historical Series</strong>
+                Forward-testing history appears only when the workbook contains dated score
+                observations. The app does not backfill missing history.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Classification</strong>
+                The workbook publishes the current state label. The public application does
+                not hard-code expensive, neutral, and cheap thresholds beyond reading the
+                workbook output.
+              </div>
+              <div class="aq-definition-item">
+                <strong>Update Frequency</strong>
+                The valuation workbook is re-read every five minutes by default.
+              </div>
+            </div>
+
+            <div class="aq-placeholder aq-spacer-top">
+              <strong>Placeholder For Troy</strong>
+              Supply the exact historical windows, the mean and standard-deviation
+              definitions behind each z-score, and the official classification cutoffs for
+              expensive, neutral, and cheap.
+            </div>
+
+            <div class="aq-placeholder aq-spacer-top">
+              <strong>Distinction</strong>
+              Valuation = relative historical condition. Trend = direction and persistence.
+              Regime = broader market environment. These systems answer different questions.
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="aq-footer">
+      <div class="shell footer-inner">
+        <p>Valuation should be standardized and inspectable, not overstated.</p>
+        <div class="footer-links">
+          <a href="valuation.html">Valuation Model</a>
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="backtesting.html">Backtesting</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
+  </body>
+</html>

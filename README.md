@@ -19,7 +19,7 @@ The original project was a static multi-page site with shared `styles.css` and `
 - A model-lab page for verified score history, regime distributions, threshold testing, and transition diagnostics.
 - Vercel Web Analytics with a client-side privacy filter that excludes wallet and portfolio properties.
 
-Public pages include the homepage, models, backtesting, terminal, research library, individual research notes, methodology, privacy, and terms. The legacy Signals route redirects to Models, which owns current model state and history. The portfolio API requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
+Public pages include the homepage, models, valuation, backtesting, research library, individual research notes, the methodology register and family pages, archive, about, privacy, and terms. The legacy Signals route redirects to Models, which owns current model state and history. The terminal and portfolio experiences remain available as separate pages, while the portfolio API still requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
 
 There was no deployment configuration or existing backend, database, authentication system, or live model API in the repository before this milestone. `src/server/data/astrava.ts` now acts only as the disclosed fallback when the research workbook cannot be verified.
 
@@ -71,7 +71,7 @@ The provider batch-reads and validates all 15 tabs: Command Center, RSPS, Alts R
 
 MTPI and LTPI are sourced from their workbook summaries when available. NSPI is transparently derived as the mean of the two published readings. MRPI remains a separate system, but its live score, six TNX criteria, and dated history are joined to the same public API response from the link-shared workbook set by `MRPI_GOOGLE_SHEETS_ID`. If either Google feed is unavailable, the app preserves the last published fallback state and clearly labels the delayed source.
 
-The Backtesting page analyzes only dated scores that exist in the connected forward-testing tabs. It supports MTPI, LTPI, derived NSPI, MRPI, and the Bitcoin valuation composite with scale-specific thresholds, distributions, streaks, and transitions. MRPI uses tightening below `-0.10` and easing above `+0.10`; the crypto models retain their own risk-regime thresholds. Blank future rows are excluded until a real score is published. It does not calculate returns, alpha, Sharpe, or drawdown because the current workbooks do not contain an aligned investable benchmark series. Those statistics remain disabled until real price history is supplied.
+The Backtesting page analyzes only dated scores that exist in the connected forward-testing tabs. It supports MTPI, LTPI, derived NSPI, MRPI, and the Bitcoin valuation composite with scale-specific thresholds, distributions, streaks, and transitions. Default MRPI threshold inspection uses tightening below `-0.25` and easing above `+0.25`, while the live MRPI publication keeps the full five-band scale from Strong Tightening through Strong Easing. Blank future rows are excluded until a real score is published. It does not calculate returns, alpha, Sharpe, or drawdown because the current workbooks do not contain an aligned investable benchmark series. Those statistics remain disabled until real price history is supplied.
 
 ## MRPI Workbook
 
@@ -197,4 +197,4 @@ The public model register is `AQ Core v0.3`. Current crypto, MRPI, and existing 
 
 ## Visual Sources
 
-The live homepage globe uses NASA/Goddard Space Flight Center Scientific Visualization Studio Blue Marble imagery. The optimized project texture is derived from the NASA SVS equirectangular Earth visualization (ID 3615) and also powers the CSS fallback when WebGL is unavailable.
+The current public homepage no longer uses the animated Earth or its related fallback imagery. Historical globe assets may still exist in the workspace, but they are not part of the public research shell.

@@ -208,9 +208,15 @@ export function createApp({ config, database, portfolioProvider, marketProvider,
   if (existsSync(staticDirectory)) {
     app.use(express.static(staticDirectory, { index: "index.html", extensions: ["html"] }));
     for (const page of [
+      "about",
+      "archive",
       "models",
       "valuation",
       "backtesting",
+      "trend-following",
+      "ltpi-methodology",
+      "mrpi-methodology",
+      "valuation-methodology",
       "terminal",
       "portfolio",
       "signals",

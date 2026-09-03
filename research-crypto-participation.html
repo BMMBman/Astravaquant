@@ -1,19 +1,124 @@
 <!doctype html>
 <html lang="en">
-  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="description" content="AstravaQuant research note on medium-term crypto participation and the MTPI model."/><title>Medium-Term Crypto Participation | AstravaQuant Research</title><link rel="stylesheet" href="styles.css"/></head>
-  <body data-model-feed>
-    <header class="site-header" aria-label="Primary navigation"><div class="shell header-inner"><a class="brand" href="index.html" aria-label="AstravaQuant home"><svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true"><path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke="#b9dfff" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/></svg><span class="brand-copy"><strong>AstravaQuant</strong><span>Research</span></span></a><nav class="site-nav" aria-label="Main navigation"><a href="signals.html">Signals</a><a href="models.html">Models</a><a href="backtesting.html">Backtest</a><a href="portfolio.html">Portfolio</a><a href="terminal.html">Terminal</a><a class="is-active" href="research.html">Research</a></nav><div class="header-cta" data-wallet-root><button class="button wallet-connect-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div></div></header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="AstravaQuant research note on medium-term crypto participation and MTPI." />
+    <title>Medium-Term Crypto Participation | AstravaQuant Research</title>
+    <link rel="stylesheet" href="public-redesign.css" />
+  </head>
+  <body class="aq-site aq-note-page" data-model-feed>
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
+          </svg>
+          <span class="brand-copy">
+            <strong>AstravaQuant</strong>
+            <span>Independent Systematic Market Research</span>
+          </span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a class="is-active" href="research.html">Research</a>
+          <a href="archive.html">Archive</a>
+          <a href="about.html">About</a>
+        </nav>
+        <div class="header-meta">Research note.</div>
+      </div>
+    </header>
+
     <main>
-      <article class="research-note">
-        <header class="research-note-hero"><div class="shell content-shell"><div class="research-note-title reveal"><a href="research.html">Research / Crypto</a><div class="note-byline"><span>AstravaQuant Research</span><time datetime="2026-08-10">August 10, 2026</time></div><p class="eyebrow">MTPI model note</p><h1>Medium-Term Crypto Participation</h1><p class="lead">Reading broad-market participation through total crypto market cap and TOTAL2.</p></div><div class="note-snapshot reveal" data-model-id="mtpi"><span>Current published state</span><strong data-model-value>+0.47</strong><b class="status-good" data-model-state>Long</b><small data-model-source>Manual fallback / five-day model</small></div></div></header>
-        <div class="shell article-shell">
-          <section><span class="document-kicker">The model</span><h2>What MTPI measures</h2><p>MTPI is AstravaQuant's medium-term crypto trend model. It aggregates the total crypto market capitalization and TOTAL2 on a five-day timeframe.</p><p>Total market capitalization captures the broad crypto tape. TOTAL2 removes Bitcoin, adding context on participation beyond the market's largest asset.</p></section>
-          <section><span class="document-kicker">Current state</span><h2>Read the fast model in context</h2><p>The latest verified MTPI value and workbook state appear in the live snapshot above. Its score should be interpreted through the shared crypto regime scale rather than as a standalone instruction.</p><p>The medium-term state should be read beside LTPI and the derived NSPI. The interaction between fast participation and weekly structure is more informative than either score in isolation.</p></section>
-          <aside class="note-callout"><span>Interpretation</span><strong>Compare fast participation with weekly structure before drawing a regime conclusion.</strong></aside>
-          <section><span class="document-kicker">Limits</span><h2>Publication standard</h2><p>The current value is normalized from the read-only research workbook, with the manual fallback clearly labeled if that feed is unavailable. Missing transition dates are not backfilled. Exact transformations and weights are not disclosed in AQ Core v0.2.</p><p><a href="methodology.html">Read the full methodology</a> or <a href="backtesting.html">inspect verified score history</a>.</p></section>
+      <section class="aq-hero">
+        <div class="shell shell-narrow aq-note-shell">
+          <div class="aq-hero-copy reveal">
+            <p class="aq-kicker">Research / Crypto</p>
+            <h1 class="aq-article-title">Medium-Term Crypto Participation</h1>
+            <p class="aq-lead">Reading broad-market participation through total crypto market cap and TOTAL2.</p>
+            <div class="aq-note-meta">
+              <span>AstravaQuant Research</span>
+              <time datetime="2026-08-10">August 10, 2026</time>
+              <span>MTPI model note</span>
+            </div>
+          </div>
+
+          <aside class="aq-side-note reveal" data-model-id="mtpi">
+            <strong data-model-value>+0.47</strong>
+            <span class="status-good" data-model-state>Long</span>
+            <small data-model-source>Manual fallback / five-day model</small>
+          </aside>
         </div>
-      </article>
+      </section>
+
+      <section class="aq-page-section">
+        <div class="shell shell-narrow">
+          <article class="aq-panel reveal">
+            <div class="aq-note-body">
+              <section>
+                <h2>What MTPI measures</h2>
+                <p>
+                  MTPI is AstravaQuant&rsquo;s medium-term crypto trend model. It aggregates
+                  the total crypto market capitalization and TOTAL2 on a five-day horizon.
+                </p>
+                <p>
+                  Total market capitalization captures the broad crypto tape. TOTAL2 removes
+                  Bitcoin, adding context on participation outside the largest asset.
+                </p>
+              </section>
+
+              <section>
+                <h2>How to read it</h2>
+                <p>
+                  The score should be interpreted through the shared crypto regime scale
+                  rather than as a standalone trade instruction. MTPI is the faster horizon
+                  in the public trend stack.
+                </p>
+                <p>
+                  Its interaction with LTPI matters. Agreement and disagreement across
+                  horizons are both informative.
+                </p>
+              </section>
+
+              <aside class="aq-note-callout">
+                <span>Interpretation</span>
+                <strong>Fast participation should be compared with slower structure before drawing a regime conclusion.</strong>
+              </aside>
+
+              <section>
+                <h2>Disclosure boundary</h2>
+                <p>
+                  The public repo discloses the input universe, normalization range,
+                  interpretation bands, source tabs, and dated forward-testing history. It
+                  does not yet disclose the full formula or parameter register.
+                </p>
+                <div class="aq-note-actions">
+                  <a class="button" href="trend-following.html#medium-term-trend">Methodology</a>
+                  <a class="button" href="backtesting.html">Backtesting</a>
+                </div>
+              </section>
+            </div>
+          </article>
+        </div>
+      </section>
     </main>
-    <footer class="footer"><div class="shell footer-inner"><p>Informational research only. Not investment advice.</p><div class="footer-links"><a href="methodology.html">Methodology</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><span>Copyright <span data-year></span> AstravaQuant</span></div></div></footer><script type="module" src="/app.js"></script><script type="module" src="/src/client/index.ts"></script>
+
+    <footer class="aq-footer">
+      <div class="shell footer-inner">
+        <p>Research notes explain what is known, sourced, and still unpublished.</p>
+        <div class="footer-links">
+          <a href="research.html">Research</a>
+          <a href="models.html">Models</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
   </body>
 </html>

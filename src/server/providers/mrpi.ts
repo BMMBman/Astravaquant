@@ -56,10 +56,10 @@ function updatedLabel(rows: SheetRows): string | null {
 }
 
 export function mrpiStateForScore(score: number): string {
-  if (score <= -0.5) return "STRONG TIGHTENING";
-  if (score < -0.1) return "TIGHTENING";
-  if (score <= 0.1) return "NEUTRAL";
-  if (score < 0.5) return "EASING";
+  if (score <= -0.75) return "STRONG TIGHTENING";
+  if (score < -0.25) return "TIGHTENING";
+  if (score <= 0.25) return "NEUTRAL";
+  if (score < 0.75) return "EASING";
   return "STRONG EASING";
 }
 

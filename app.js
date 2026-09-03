@@ -1,6 +1,16 @@
 document.documentElement.classList.add("js");
 if (document.body) {
-  document.body.classList.add("js");
+document.body.classList.add("js");
+
+// Backtesting is a primary research destination on every public page.
+document.querySelectorAll(".site-nav").forEach((navigation) => {
+  if (navigation.querySelector('a[href="backtesting.html"]')) return;
+  const link = document.createElement("a");
+  link.href = "backtesting.html";
+  link.textContent = "Backtesting";
+  const research = navigation.querySelector('a[href="research.html"]');
+  navigation.insertBefore(link, research);
+});
 }
 
 (function () {

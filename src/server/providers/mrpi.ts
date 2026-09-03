@@ -254,7 +254,8 @@ function mrpiSignal(dashboard: MrpiDashboard, fallback: WorkbookModelSignal): Wo
     regime: state,
     source: "google_sheets",
     sourceTab: "Weekly LPI",
-    updatedLabel: dashboard.workbookUpdatedLabel
+    // Use the last dated history observation when available instead of a stale sheet-header date.
+    updatedLabel: dashboard.history.at(-1)?.date ?? dashboard.workbookUpdatedLabel
   };
 }
 

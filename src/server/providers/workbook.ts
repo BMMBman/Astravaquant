@@ -388,6 +388,11 @@ export function buildWorkbookDashboard(
   const mtpiSeries = parseScoreSeries("mtpi", "MT Total Forward Testing", rowsBySheet.get("MT Total Forward Testing") ?? []);
   const ltpiSeries = parseScoreSeries("ltpi", "LT Total Forward Testing", rowsBySheet.get("LT Total Forward Testing") ?? []);
   const scoreSeries = [mtpiSeries, ltpiSeries, deriveNspiSeries(mtpiSeries, ltpiSeries)];
+  const signals = [mtpi, ltpi, nspi].map((signal) => {
+    const latestObservation = scoreSeries.find((series) => series.id === signal.id)?.points.at(-1);
+    // Forward-test rows are the most recent published observations; header dates can be stale.
+    return latestObservation ? { ...signal, updatedLabel: latestObservation.date } : signal;
+  });
   const ratioModels = [
     ...parseRatioModels("RSPS", rowsBySheet.get("RSPS") ?? []),
     ...parseRatioModels("Alts RSPS", rowsBySheet.get("Alts RSPS") ?? [])
@@ -403,7 +408,7 @@ export function buildWorkbookDashboard(
     provider: "Google Sheets",
     updatedAt: new Date().toISOString(),
     refreshSeconds,
-    signals: [mtpi, ltpi, nspi, mrpi],
+    signals: [...signals, mrpi],
     scoreSeries,
     ratioModels,
     tabs,

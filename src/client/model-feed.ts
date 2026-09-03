@@ -171,10 +171,10 @@ function renderValuationBriefUnavailable(): void {
 export async function bootModelFeed(): Promise<void> {
   const workbookTask = apiRequest<WorkbookDashboard>("/api/workbook", { signal: AbortSignal.timeout(12_000) })
     .then((dashboard) => {
+      renderModelHistory(dashboard);
       dashboard.signals.forEach(updateSignal);
       updatePublication(dashboard);
       updateRatios(dashboard);
-      renderModelHistory(dashboard);
     })
     .catch(() => {
       const unavailable: WorkbookDashboard = { status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] };

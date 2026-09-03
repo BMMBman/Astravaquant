@@ -165,12 +165,47 @@ function classificationNote(signal: WorkbookModelSignal): string {
   return signal.regime === signal.state ? "Published regime label." : `Regime translation: ${signal.regime}.`;
 }
 
+function gaugeTitle(signal: WorkbookModelSignal): string {
+  if (signal.id === "mrpi") return "Pressure gauge";
+  if (signal.id === "nspi") return "Aggregate gauge";
+  return "Trend gauge";
+}
+
+function gaugeDescription(signal: WorkbookModelSignal): string {
+  if (signal.id === "mrpi") return "Live position on the tightening-to-easing range.";
+  if (signal.id === "nspi") return "Derived from the latest verified MTPI and LTPI readings.";
+  return "Live position on the short-to-long regime range.";
+}
+
+function gaugeAxis(signal: WorkbookModelSignal): [string, string, string] {
+  if (signal.id === "mrpi") return ["Tightening", "Neutral", "Easing"];
+  if (signal.id === "nspi") return ["Defensive", "Neutral", "Constructive"];
+  return ["Short", "Neutral", "Long"];
+}
+
+function gaugeAriaLabel(signal: WorkbookModelSignal): string {
+  return `${signal.name} gauge currently ${formatScore(signal.value)} with state ${signal.state}.`;
+}
+
+function derivationMarkup(signal: WorkbookModelSignal): string {
+  if (signal.id !== "nspi") return "";
+  return `<div class="aq-model-derivation" aria-label="NSPI is derived from MTPI and LTPI">
+    <div class="aq-model-derivation-inputs">
+      <span>MTPI</span>
+      <span>LTPI</span>
+    </div>
+    <div class="aq-model-derivation-arrow" aria-hidden="true">&darr;</div>
+    <strong>NSPI derives from both model reads</strong>
+  </div>`;
+}
+
 function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | undefined, period: HistoryPeriod): string {
   const latestDate = series?.points.at(-1)?.date;
   const updated = formatUpdatedLabel(signal.updatedLabel) ?? (latestDate ? formatDate(`${latestDate}T00:00:00.000Z`) : "Current published state");
   const classificationTone = tone(signal);
   const methodologyHref = methodologyLinks[signal.id] ?? "methodology.html";
-  return `<article id="${escapeHtml(signal.id)}" class="aq-model-card" data-model-history-card="${escapeHtml(signal.id)}">
+  const [leftAxis, middleAxis, rightAxis] = gaugeAxis(signal);
+  return `<article id="${escapeHtml(signal.id)}" class="aq-model-card" data-model-id="${escapeHtml(signal.id)}" data-model-history-card="${escapeHtml(signal.id)}">
     <header class="aq-model-head">
       <div>
         <p class="aq-section-label">${escapeHtml(modelSections[signal.id] ?? "Model")}</p>
@@ -182,20 +217,48 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
         <a class="button" href="backtesting.html">Open Backtesting</a>
       </div>
     </header>
-    <div class="aq-model-meta">
-      <div class="aq-meta-box">
-        <span>Current reading</span>
-        <strong>${formatScore(signal.value)}</strong>
-      </div>
-      <div class="aq-meta-box">
-        <span>Classification</span>
-        <strong class="status-${classificationTone}">${escapeHtml(signal.state)}</strong>
-        <p>${escapeHtml(classificationNote(signal))}</p>
-      </div>
-      <div class="aq-meta-box">
-        <span>Updated</span>
-        <strong>${escapeHtml(updated)}</strong>
-        <p>${escapeHtml(sourceLabel(signal, series))}</p>
+    <div class="aq-model-body">
+      <section class="aq-model-gauge-panel">
+        <div class="aq-model-gauge-copy">
+          <span>${escapeHtml(gaugeTitle(signal))}</span>
+          <p>${escapeHtml(gaugeDescription(signal))}</p>
+        </div>
+        ${derivationMarkup(signal)}
+        <div
+          class="dial dial-compact aq-model-dial"
+          data-dial-value="${signal.value.toFixed(4)}"
+          data-dial-tone="${classificationTone}"
+          role="img"
+          aria-label="${escapeHtml(gaugeAriaLabel(signal))}"
+        >
+          <svg class="dial-svg" viewBox="0 0 360 190" aria-hidden="true"></svg>
+          <div class="dial-center">
+            <strong data-model-value>${formatScore(signal.value)}</strong>
+            <span data-model-state>${escapeHtml(signal.state)}</span>
+          </div>
+          <div class="dial-axis" aria-hidden="true">
+            <span>${escapeHtml(leftAxis)}</span>
+            <span>${escapeHtml(middleAxis)}</span>
+            <span>${escapeHtml(rightAxis)}</span>
+          </div>
+        </div>
+      </section>
+      <div class="aq-model-meta">
+        <div class="aq-meta-box">
+          <span>Current reading</span>
+          <strong data-model-value>${formatScore(signal.value)}</strong>
+          <p>Standardized live score.</p>
+        </div>
+        <div class="aq-meta-box">
+          <span>Classification</span>
+          <strong class="status-${classificationTone}" data-model-state>${escapeHtml(signal.state)}</strong>
+          <p>${escapeHtml(classificationNote(signal))}</p>
+        </div>
+        <div class="aq-meta-box">
+          <span>Updated</span>
+          <strong data-model-updated>${escapeHtml(updated)}</strong>
+          <p data-model-source>${escapeHtml(sourceLabel(signal, series))}</p>
+        </div>
       </div>
     </div>
     <details class="aq-model-history-details">

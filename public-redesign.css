@@ -26,6 +26,7 @@ body.aq-site {
   font-family: var(--aq-font-body);
   line-height: 1.6;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
 body.aq-site * {
@@ -76,6 +77,7 @@ body.aq-site [hidden] {
 body.aq-site .shell {
   width: min(1120px, calc(100% - 48px));
   margin: 0 auto;
+  min-width: 0;
 }
 
 body.aq-site .shell-narrow {
@@ -1859,6 +1861,18 @@ body.aq-site .aq-spacer-top {
 }
 
 @media (max-width: 640px) {
+  html {
+    overflow-x: hidden;
+  }
+
+  body.aq-site main,
+  body.aq-site header,
+  body.aq-site footer,
+  body.aq-site section,
+  body.aq-site article {
+    min-width: 0;
+  }
+
   body.aq-site .shell,
   body.aq-site .shell-narrow,
   body.aq-site .shell-wide {
@@ -1867,6 +1881,54 @@ body.aq-site .aq-spacer-top {
 
   body.aq-site .brand-copy span {
     display: none;
+  }
+
+  body.aq-site .aq-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    contain: inline-size;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body.aq-site .aq-table {
+    min-width: 580px;
+  }
+
+  body.aq-site .aq-chart-panel,
+  body.aq-site .terminal-chart,
+  body.aq-site .backtest-chart-stage,
+  body.aq-site .valuation-history-stage,
+  body.aq-site .valuation-dot-plot {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  body.aq-site .history-range {
+    gap: 6px;
+  }
+
+  body.aq-site .history-range span {
+    flex-basis: 100%;
+  }
+
+  body.aq-site .aq-chart-foot {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  body.aq-site .aq-scale-marker,
+  body.aq-site .valuation-marker {
+    left: clamp(24px, var(--valuation-position, 50%), calc(100% - 24px));
+  }
+
+  body.aq-site .aq-scale-marker span,
+  body.aq-site .valuation-marker span {
+    max-width: min(180px, calc(100vw - 68px));
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   body.aq-site .aq-backtest-controls,

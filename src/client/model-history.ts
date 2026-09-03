@@ -184,10 +184,6 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
     </header>
     <div class="aq-model-meta">
       <div class="aq-meta-box">
-        <span>Purpose</span>
-        <p>${escapeHtml(modelPurposes[signal.id] ?? signal.scope)}</p>
-      </div>
-      <div class="aq-meta-box">
         <span>Current reading</span>
         <strong>${formatScore(signal.value)}</strong>
       </div>
@@ -202,14 +198,17 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
         <p>${escapeHtml(sourceLabel(signal, series))}</p>
       </div>
     </div>
-    <div class="aq-model-chart-wrap">
-      ${series?.points.length ? periodButtons(period) : ""}
-      <div class="terminal-chart aq-chart-panel" data-model-history-chart="${escapeHtml(signal.id)}"><span>${escapeHtml(series?.message ?? "Historical series unavailable.")}</span></div>
-      <div class="aq-chart-foot">
-        <span data-model-history-range>${escapeHtml(series?.sourceTab ?? signal.sourceTab ?? "Historical range pending")}</span>
-        <span>${escapeHtml(periodLabel(period))}</span>
+    <details class="aq-model-history-details">
+      <summary><span>Dated history</span><strong>${series?.points.length ? `${series.points.length} observations` : "Unavailable"}</strong></summary>
+      <div class="aq-model-chart-wrap">
+        ${series?.points.length ? periodButtons(period) : ""}
+        <div class="terminal-chart aq-chart-panel" data-model-history-chart="${escapeHtml(signal.id)}"><span>${escapeHtml(series?.message ?? "Historical series unavailable.")}</span></div>
+        <div class="aq-chart-foot">
+          <span data-model-history-range>${escapeHtml(series?.sourceTab ?? signal.sourceTab ?? "Historical range pending")}</span>
+          <span>${escapeHtml(periodLabel(period))}</span>
+        </div>
       </div>
-    </div>
+    </details>
   </article>`;
 }
 

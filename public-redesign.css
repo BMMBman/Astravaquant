@@ -838,7 +838,7 @@ body.aq-site .aq-model-head p {
 
 body.aq-site .aq-model-meta {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -868,6 +868,39 @@ body.aq-site .aq-model-card .aq-chart-panel {
   min-height: 190px;
   padding: 14px;
 }
+
+body.aq-site .aq-model-actions .button {
+  min-height: 34px;
+  padding: 7px 10px;
+}
+
+body.aq-site .aq-model-history-details {
+  border-top: 1px solid rgba(241, 236, 226, 0.1);
+}
+
+body.aq-site .aq-model-history-details summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  color: var(--aq-link);
+  cursor: pointer;
+  list-style: none;
+}
+
+body.aq-site .aq-model-history-details summary::-webkit-details-marker { display: none; }
+
+body.aq-site .aq-model-history-details summary span,
+body.aq-site .aq-model-history-details summary strong {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+body.aq-site .aq-model-history-details summary strong { color: var(--aq-muted); }
+body.aq-site .aq-model-history-details[open] .aq-model-chart-wrap { padding-top: 12px; }
 
 body.aq-site .aq-backtesting-page .aq-page-section {
   padding: 30px 0;
@@ -2028,10 +2061,6 @@ body.aq-site .aq-spacer-top {
   body.aq-site .aq-model-card .aq-model-meta,
   body.aq-site .aq-backtesting-page .backtest-kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  body.aq-site .aq-model-card .aq-meta-box:first-child {
-    grid-column: 1 / -1;
   }
 
   body.aq-site .aq-model-card {

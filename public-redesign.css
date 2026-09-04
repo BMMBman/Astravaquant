@@ -1675,6 +1675,22 @@ body.aq-site .aq-stat-panel strong {
   font-weight: 500;
 }
 
+body.aq-site .backtest-kpis [data-kpi-classification] {
+  font-family: var(--aq-font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+body.aq-site .backtest-kpis [data-kpi-classification].status-bad {
+  color: #d9857b;
+}
+
+body.aq-site .backtest-kpis [data-kpi-classification].status-bad::before {
+  background: #d9857b;
+}
+
 body.aq-site .chart-date-axis {
   display: flex;
   justify-content: space-between;

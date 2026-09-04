@@ -59,6 +59,24 @@ function setText(selector: string, value: string): void {
   if (node) node.textContent = value;
 }
 
+function classificationFor(
+  series: BacktestSeries,
+  score: number | null,
+  regime: BacktestRegime | null
+): { label: string; tone: "good" | "warn" | "bad" | "neutral" } {
+  if (score === null || regime === null) return { label: "Unavailable", tone: "neutral" };
+  if (series.id === "mrpi") {
+    if (score <= -0.75) return { label: "Strong Tightening", tone: "bad" };
+    if (score < -0.25) return { label: "Tightening", tone: "warn" };
+    if (score <= 0.25) return { label: "Neutral", tone: "neutral" };
+    return { label: score >= 0.75 ? "Strong Easing" : "Easing", tone: "good" };
+  }
+  if (series.id === "bitcoin-valuation") {
+    return { label: series.regimeLabels[regime], tone: regime === "risk_on" ? "good" : regime === "risk_off" ? "bad" : "neutral" };
+  }
+  return { label: regime === "risk_on" ? "Risk-on" : regime === "risk_off" ? "Risk-off" : "Neutral", tone: regime === "risk_on" ? "good" : regime === "risk_off" ? "bad" : "neutral" };
+}
+
 function coreSeries(series: WorkbookScoreSeries): BacktestSeries {
   const isMrpi = series.id === "mrpi";
   return {
@@ -209,9 +227,16 @@ function renderSeries(
   setText("[data-kpi-current]", formatScore(analysis.currentScore, series.scoreSuffix));
   setText("[data-kpi-latest-date]", formatDate(analysis.endDate));
   setText("[data-kpi-transitions]", String(analysis.transitions.length));
-  setText("[data-kpi-streak]", analysis.currentRegime ? `${analysis.currentStreak} obs / ${series.regimeLabels[analysis.currentRegime]}` : "--");
+  setText("[data-kpi-streak]", analysis.currentRegime ? `${analysis.currentStreak} observation${analysis.currentStreak === 1 ? "" : "s"}` : "--");
   setText("[data-kpi-range]", analysis.startDate === analysis.endDate ? formatDate(analysis.startDate) : analysis.startDate ? `${formatDate(analysis.startDate)} - ${formatDate(analysis.endDate)}` : "--");
   setText("[data-series-source]", `${series.sourceTab} / ${analysis.observations} of ${totalObservations} dated observations${series.message ? ` / ${series.message}` : ""}`);
+  const classification = classificationFor(series, analysis.currentScore, analysis.currentRegime);
+  const classificationNode = document.querySelector<HTMLElement>("[data-kpi-classification]");
+  if (classificationNode) {
+    classificationNode.textContent = classification.label;
+    classificationNode.classList.remove("status-good", "status-warn", "status-bad", "status-neutral");
+    classificationNode.classList.add(`status-${classification.tone}`);
+  }
 
   const axis = document.querySelector<HTMLElement>("[data-backtest-axis]");
   if (axis) {
@@ -221,18 +246,6 @@ function renderSeries(
         ? `<span></span><span>${escapeHtml(formatDate(analysis.startDate))}</span><span></span>`
         : `<span>${escapeHtml(formatDate(analysis.startDate))}</span><span>${escapeHtml(formatDate(middle?.date ?? analysis.startDate))}</span><span>${escapeHtml(formatDate(analysis.endDate))}</span>`
       : "";
-  }
-
-  for (const regime of Object.keys(coreRegimeLabels) as BacktestRegime[]) {
-    const count = analysis.counts[regime];
-    const percentage = analysis.observations ? (count / analysis.observations) * 100 : 0;
-    const row = document.querySelector<HTMLElement>(`[data-distribution="${regime}"]`);
-    const bar = row?.querySelector<HTMLElement>("i");
-    const value = row?.querySelector<HTMLElement>("strong");
-    const label = row?.querySelector<HTMLElement>("span");
-    if (bar) bar.style.width = `${percentage.toFixed(1)}%`;
-    if (value) value.textContent = `${percentage.toFixed(0)}% / ${count}`;
-    if (label) label.textContent = series.regimeLabels[regime];
   }
 
   const transitions = document.querySelector<HTMLElement>("[data-transition-list]");
@@ -347,8 +360,8 @@ export async function bootBacktesting(): Promise<void> {
     syncControls();
     rerender(true);
   });
-  negativeInput.addEventListener("input", rerender);
-  positiveInput.addEventListener("input", rerender);
+  negativeInput.addEventListener("input", () => rerender());
+  positiveInput.addEventListener("input", () => rerender());
   document.querySelectorAll<HTMLButtonElement>("[data-backtest-period]").forEach((button) => {
     button.addEventListener("click", () => {
       period = button.dataset.backtestPeriod as BacktestPeriod;

@@ -1081,6 +1081,34 @@ body.aq-site .aq-meta-box strong {
   font-weight: 500;
 }
 
+/* Model classifications must retain their regime color over the generic value style. */
+body.aq-site .aq-model-card .aq-meta-box strong.status-good {
+  color: var(--aq-positive);
+}
+
+body.aq-site .aq-model-card .aq-meta-box strong.status-warn {
+  color: var(--aq-warning);
+}
+
+body.aq-site .aq-model-card .aq-meta-box strong.status-bad {
+  color: #d9857b;
+}
+
+body.aq-site .aq-model-card .aq-meta-box strong.status-neutral {
+  color: var(--aq-neutral);
+}
+
+body.aq-site .aq-model-card .aq-meta-box strong.status-good::before,
+body.aq-site .aq-model-card .aq-meta-box strong.status-warn::before,
+body.aq-site .aq-model-card .aq-meta-box strong.status-bad::before,
+body.aq-site .aq-model-card .aq-meta-box strong.status-neutral::before {
+  display: inline-block;
+}
+
+body.aq-site .aq-model-card .aq-meta-box strong.status-bad::before {
+  background: #d9857b;
+}
+
 body.aq-site .aq-model-chart-wrap {
   display: grid;
   gap: 10px;

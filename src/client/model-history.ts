@@ -16,14 +16,14 @@ const modelSections: Record<string, string> = {
   mrpi: "04 / Rates"
 };
 const modelPurposes: Record<string, string> = {
-  mtpi: "Five-day trend model using total crypto market capitalization and TOTAL2.",
-  ltpi: "Weekly trend model using the broad crypto market and Bitcoin.",
+  mtpi: "Five-day trend read built from stacked trend-following indicators and oscillators.",
+  ltpi: "Weekly trend read for longer-horizon market structure.",
   nspi: "Measures the derived aggregate regime from the latest published MTPI and LTPI values.",
   mrpi: "Measures tightening versus easing pressure in the 10-year Treasury backdrop."
 };
 const methodologyLinks: Record<string, string> = {
   mtpi: "trend-following.html#medium-term-trend",
-  ltpi: "ltpi-methodology.html",
+  ltpi: "trend-following.html#long-term-trend",
   nspi: "methodology.html#liquidity-regime",
   mrpi: "mrpi-methodology.html"
 };
@@ -172,7 +172,7 @@ function gaugeTitle(signal: WorkbookModelSignal): string {
 }
 
 function gaugeDescription(signal: WorkbookModelSignal): string {
-  if (signal.id === "mrpi") return "Live position on the tightening-to-easing range.";
+  if (signal.id === "mrpi") return "Live position from strong tightening through strong easing.";
   if (signal.id === "nspi") return "Derived from the latest verified MTPI and LTPI readings.";
   return "Live position on the short-to-long regime range.";
 }
@@ -213,7 +213,7 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
         <p>${escapeHtml(modelPurposes[signal.id] ?? signal.scope)}</p>
       </div>
       <div class="aq-model-actions">
-        <a class="button" href="${escapeHtml(methodologyHref)}">Methodology</a>
+        <a class="button" href="${escapeHtml(methodologyHref)}">${signal.id === "mtpi" || signal.id === "ltpi" ? "Open Trend Family" : "Methodology"}</a>
         <a class="button" href="backtesting.html">Open Backtesting</a>
       </div>
     </header>
@@ -247,7 +247,7 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
         <div class="aq-meta-box">
           <span>Current reading</span>
           <strong data-model-value>${formatScore(signal.value)}</strong>
-          <p>Standardized live score.</p>
+          <p>${signal.id === "mrpi" ? "Five-band pressure score." : "Standardized live score."}</p>
         </div>
         <div class="aq-meta-box">
           <span>Classification</span>
@@ -323,7 +323,9 @@ export function renderModelHistory(dashboard: WorkbookDashboard): void {
 
 export function renderModelHistoryUnavailable(): void {
   const root = document.querySelector<HTMLElement>("[data-model-history]");
-  if (root) root.innerHTML = '<p class="terminal-loading-copy">Model history is temporarily unavailable. No substitute series is shown.</p>';
+  if (root && !root.querySelector(".aq-model-catalog-card")) {
+    root.innerHTML = '<p class="terminal-loading-copy">Model history is temporarily unavailable. No substitute series is shown.</p>';
+  }
   const state = document.querySelector<HTMLElement>("[data-model-history-status]");
   if (state) {
     state.dataset.state = "unavailable";

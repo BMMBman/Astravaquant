@@ -603,7 +603,18 @@ body.aq-site .aq-ratio-unavailable {
 }
 
 body.aq-site .aq-ratio-card {
-  gap: 12px;
+  gap: 8px;
+  padding: 14px;
+}
+
+body.aq-site .aq-ratio-catalog {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+body.aq-site .aq-ratio-catalog .aq-grid-card h3 {
+  font-size: 1.2rem;
 }
 
 body.aq-site .aq-ratio-head,
@@ -631,7 +642,7 @@ body.aq-site .aq-ratio-reading {
 
 body.aq-site .aq-ratio-reading strong {
   font-family: var(--aq-font-mono);
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 500;
 }
 
@@ -808,13 +819,15 @@ body.aq-site .workbook-warnings li::before {
 
 body.aq-site .aq-model-list {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  align-items: start;
 }
 
 body.aq-site .aq-model-card {
   display: grid;
-  gap: 14px;
-  padding: 20px;
+  gap: 10px;
+  padding: 16px;
 }
 
 body.aq-site .aq-model-bridge {
@@ -872,32 +885,32 @@ body.aq-site .aq-model-head {
   display: flex;
   align-items: start;
   justify-content: space-between;
-  gap: 18px;
+  gap: 12px;
 }
 
 body.aq-site .aq-model-head h3 {
   margin: 0;
   font-family: var(--aq-font-display);
-  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
   font-weight: 500;
 }
 
 body.aq-site .aq-model-head p {
-  margin: 6px 0 0;
+  margin: 4px 0 0;
   max-width: 700px;
 }
 
 body.aq-site .aq-model-body {
   display: grid;
-  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
-  gap: 16px;
+  grid-template-columns: minmax(180px, 0.72fr) minmax(0, 1fr);
+  gap: 12px;
   align-items: start;
 }
 
 body.aq-site .aq-model-gauge-panel {
   display: grid;
-  gap: 12px;
-  padding: 16px;
+  gap: 8px;
+  padding: 12px;
   border: 1px solid rgba(241, 236, 226, 0.1);
   border-radius: 18px;
   background:
@@ -906,7 +919,7 @@ body.aq-site .aq-model-gauge-panel {
 }
 
 body.aq-site .aq-static-gauge {
-  margin-top: 18px;
+  margin-top: 10px;
 }
 
 body.aq-site .aq-static-gauge .dial-dot {
@@ -952,7 +965,7 @@ body.aq-site .dial {
 }
 
 body.aq-site .dial-compact {
-  max-width: 236px;
+  max-width: 188px;
   margin: 0 auto;
 }
 
@@ -1003,7 +1016,7 @@ body.aq-site .dial-dot {
 
 body.aq-site .dial-center {
   position: absolute;
-  inset: 58px 0 54px;
+  inset: 46px 0 44px;
   display: grid;
   align-content: center;
   justify-items: center;
@@ -1015,7 +1028,7 @@ body.aq-site .dial-center strong {
   display: block;
   margin-bottom: 0;
   font-family: var(--aq-font-display);
-  font-size: 2.1rem;
+  font-size: 1.7rem;
   font-weight: 500;
   line-height: 0.95;
   letter-spacing: -0.06em;
@@ -1051,8 +1064,8 @@ body.aq-site .dial-axis span:nth-child(3) {
 
 body.aq-site .aq-model-meta {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 
 body.aq-site .aq-meta-box span {
@@ -1074,12 +1087,12 @@ body.aq-site .aq-model-chart-wrap {
 }
 
 body.aq-site .aq-model-card .aq-meta-box {
-  padding: 12px;
+  padding: 10px;
 }
 
 body.aq-site .aq-model-card .aq-chart-panel {
-  min-height: 190px;
-  padding: 14px;
+  min-height: 150px;
+  padding: 10px;
 }
 
 body.aq-site .aq-model-actions .button {
@@ -1096,7 +1109,7 @@ body.aq-site .aq-model-history-details summary {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding-top: 12px;
+  padding-top: 9px;
   color: var(--aq-link);
   cursor: pointer;
   list-style: none;
@@ -1308,21 +1321,21 @@ body.aq-site .aq-chart-foot a {
 
 body.aq-site .aq-valuation-brief {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+  gap: 18px;
 }
 
 body.aq-site .aq-valuation-score {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  margin: 18px 0 12px;
+  margin: 12px 0 8px;
 }
 
 body.aq-site .aq-valuation-score strong,
 body.aq-site .valuation-score {
   font-family: var(--aq-font-display);
-  font-size: clamp(3.6rem, 7vw, 5rem);
+  font-size: clamp(2.8rem, 5vw, 3.9rem);
   font-weight: 500;
   line-height: 0.84;
   letter-spacing: -0.05em;
@@ -2075,6 +2088,10 @@ body.aq-site .aq-spacer-top {
   body.aq-site .aq-model-summary-table {
     min-width: 720px;
   }
+
+  body.aq-site .aq-ratio-catalog {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 860px) {
@@ -2279,6 +2296,11 @@ body.aq-site .aq-spacer-top {
   body.aq-site .aq-model-card .aq-model-meta,
   body.aq-site .aq-backtesting-page .backtest-kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.aq-site .aq-model-list,
+  body.aq-site .aq-ratio-catalog {
+    grid-template-columns: 1fr;
   }
 
   body.aq-site .aq-model-card {

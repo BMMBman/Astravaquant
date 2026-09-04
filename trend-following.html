@@ -44,8 +44,8 @@
               of market movement rather than forecast an exact future price.
             </p>
             <p class="aq-lead">
-              AstravaQuant maintains multiple horizons because trend behavior can differ
-              materially depending on the measurement window.
+              AstravaQuant stacks multiple trend-following indicators and oscillators across
+              complementary horizons, because market structure can change with the window.
             </p>
           </div>
 
@@ -64,22 +64,17 @@
             <div class="aq-definition-grid aq-spacer-top">
               <div class="aq-definition-item">
                 <strong>Purpose</strong>
-                Measures intermediate crypto trend structure on a faster public horizon.
+                A five-day read of intermediate crypto trend structure.
               </div>
               <div class="aq-definition-item">
                 <strong>Inputs</strong>
-                Total crypto market capitalization, TOTAL2, the `MTPI` workbook summary,
-                and the `MT Total Forward Testing` dated series.
+                A stacked set of trend-following indicators and oscillators. The public
+                site publishes the normalized score and dated observations.
               </div>
               <div class="aq-definition-item">
                 <strong>Signal Construction</strong>
-                The public repo discloses the input universe and dated outputs, but not the
-                full transformation stack or parameter register.
-              </div>
-              <div class="aq-placeholder">
-                <strong>Placeholder For Troy</strong>
-                Supply the exact medium-term signal construction, transformations, and
-                parameter choices for the public methodology register.
+                Inputs are combined into one standardized five-day score. Detailed
+                transformations and parameterization remain proprietary.
               </div>
               <div class="aq-definition-item">
                 <strong>Normalization</strong>
@@ -99,12 +94,8 @@
               </div>
               <div class="aq-definition-item">
                 <strong>Historical Test Period</strong>
-                The public site uses dated rows from `MT Total Forward Testing` only.
-              </div>
-              <div class="aq-placeholder">
-                <strong>Placeholder For Troy</strong>
-                Supply the official research test start date, any pre-publication history,
-                and the exact current interpretation language.
+                The public site uses verified dated observations only; it does not fill or
+                create historical values.
               </div>
             </div>
           </article>
@@ -119,22 +110,17 @@
             <div class="aq-definition-grid aq-spacer-top">
               <div class="aq-definition-item">
                 <strong>Purpose</strong>
-                Measures slower structural crypto trend on a weekly horizon.
+                A weekly read of slower structural crypto trend.
               </div>
               <div class="aq-definition-item">
                 <strong>Inputs</strong>
-                Total crypto market capitalization, the Bitcoin chart, the `LTPI` workbook
-                summary, and the `LT Total Forward Testing` dated series.
+                A complementary stack of trend-following indicators and oscillators, read
+                on a weekly horizon.
               </div>
               <div class="aq-definition-item">
                 <strong>Signal Construction</strong>
-                The public repo discloses the inputs and dated outputs, but not the exact
-                transformation stack, weighting, or acronym expansion behind LTPI.
-              </div>
-              <div class="aq-placeholder">
-                <strong>Placeholder For Troy</strong>
-                Supply the exact long-term signal construction, weighting, and the intended
-                public LTPI definition if it should be fully expanded.
+                Inputs are combined into one standardized weekly score. Detailed
+                transformations and parameterization remain proprietary.
               </div>
               <div class="aq-definition-item">
                 <strong>Normalization</strong>

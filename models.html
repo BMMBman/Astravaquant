@@ -53,10 +53,10 @@
           </div>
 
           <aside class="aq-side-note reveal">
-            <strong>Inspect the rule</strong>
+            <strong>Model context</strong>
             <span>
-              The models classify or measure market conditions according to predefined
-              rules. They do not promise certainty.
+              Current readings, methodology, and dated observations are kept together for
+              each model.
             </span>
           </aside>
         </div>
@@ -75,24 +75,15 @@
             </div>
           </div>
 
-          <div class="aq-model-bridge reveal" aria-label="NSPI is derived from MTPI and LTPI">
-            <div class="aq-model-bridge-inputs">
-              <span>MTPI</span>
-              <span>LTPI</span>
-            </div>
-            <div class="aq-model-bridge-arrow" aria-hidden="true">&darr;</div>
-            <strong>NSPI updates from the latest MTPI and LTPI readings</strong>
-          </div>
-
           <div class="aq-model-list" data-model-history>
             <article class="aq-model-card aq-model-catalog-card">
               <header class="aq-model-head">
                 <div>
                   <p class="aq-section-label">01 / Trend</p>
                   <h3>Medium-Term Trend (MTPI)</h3>
-                  <p>Five-day trend model built from total crypto market capitalization and TOTAL2.</p>
+                  <p>Five-day trend read built from a stack of trend-following indicators and oscillators.</p>
                 </div>
-                <a class="button" href="trend-following.html#medium-term-trend">Methodology</a>
+                <a class="button" href="trend-following.html#medium-term-trend">Open Trend Family</a>
               </header>
               <div class="aq-model-gauge-panel aq-static-gauge" role="img" aria-label="Medium-Term Trend gauge awaiting its live reading">
                 <div class="aq-model-gauge-copy"><span>Model gauge</span><p>Trend posture from defensive to long.</p></div>
@@ -109,9 +100,9 @@
                 <div>
                   <p class="aq-section-label">02 / Trend</p>
                   <h3>Long-Term Trend (LTPI)</h3>
-                  <p>Weekly trend model built from the broad crypto market and Bitcoin.</p>
+                  <p>Weekly trend read for the longer-horizon market structure.</p>
                 </div>
-                <a class="button" href="ltpi-methodology.html">Methodology</a>
+                <a class="button" href="trend-following.html#long-term-trend">Open Trend Family</a>
               </header>
               <div class="aq-model-gauge-panel aq-static-gauge" role="img" aria-label="Long-Term Trend gauge awaiting its live reading">
                 <div class="aq-model-gauge-copy"><span>Model gauge</span><p>Long-horizon trend posture from defensive to long.</p></div>
@@ -203,7 +194,7 @@
               <p class="aq-section-label">Valuation</p>
               <h2>Bitcoin valuation composite</h2>
             </div>
-            <p class="aq-section-note">A separate standardized composite across fundamental, technical, and sentiment inputs.</p>
+            <p class="aq-section-note">A compact 17-input Z-score composite with a versioned methodology record.</p>
           </div>
           <article class="aq-valuation-card aq-valuation-brief reveal" data-valuation-brief aria-live="polite">
             <div>
@@ -213,8 +204,8 @@
               </div>
               <h2>Valuation</h2>
               <p class="aq-value-copy">
-                The current valuation system averages standardized readings across
-                fundamental, technical, and sentiment inputs.
+                A 17-input Z-score composite across fundamental, technical, and sentiment
+                inputs. It describes relative historical condition, not a price target.
               </p>
               <div class="aq-valuation-score">
                 <strong data-valuation-brief-score>--</strong>
@@ -251,6 +242,7 @@
               <div class="aq-method-actions">
                 <a class="button" href="valuation.html">View Model</a>
                 <a class="button" href="valuation-methodology.html">Methodology</a>
+                <a class="button" href="methodology.html#versioning">Change Log</a>
               </div>
             </div>
           </article>

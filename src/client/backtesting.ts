@@ -211,7 +211,8 @@ function renderSeries(
   totalObservations: number,
   negativeThreshold: number,
   positiveThreshold: number,
-  observationLimit: number
+  observationLimit: number,
+  transitionLimit: number
 ): void {
   const analysis = analyzeScoreSeries(series.points, negativeThreshold, positiveThreshold);
   const chart = document.querySelector<SVGElement>("[data-backtest-chart]");
@@ -251,7 +252,7 @@ function renderSeries(
   const transitions = document.querySelector<HTMLElement>("[data-transition-list]");
   if (transitions) {
     transitions.innerHTML = analysis.transitions.length
-      ? analysis.transitions.slice(-8).reverse().map((transition) => `
+      ? analysis.transitions.slice(-transitionLimit).reverse().map((transition) => `
           <div><time>${escapeHtml(formatDate(transition.date))}</time><span>${series.regimeLabels[transition.from]} to ${series.regimeLabels[transition.to]}</span><strong>${formatScore(transition.score, series.scoreSuffix)}</strong></div>
         `).join("")
       : '<p class="backtest-empty-copy">No regime transitions under the selected thresholds.</p>';
@@ -266,7 +267,7 @@ function renderSeries(
       ? `${displayed.map((point) => `
           <div><time datetime="${escapeHtml(point.date)}">${escapeHtml(formatDate(point.date))}</time><strong>${formatScore(point.score, series.scoreSuffix)}</strong></div>
         `).join("")}${newestFirst.length > displayed.length
-          ? `<button class="button" type="button" data-show-more-observations>Show 12 more (${newestFirst.length - displayed.length} remaining)</button>`
+          ? `<button class="button" type="button" data-show-more-observations>Show more (${newestFirst.length - displayed.length} remaining)</button>`
           : ""}`
       : '<p class="backtest-empty-copy">No dated observations in this history window.</p>';
   }
@@ -321,7 +322,10 @@ export async function bootBacktesting(): Promise<void> {
   seriesSelect.value = (mtpi ?? valuation ?? nspi ?? series[0])!.id;
 
   let period: BacktestPeriod = "90D";
-  let observationLimit = 12;
+  const compactMobile = window.matchMedia("(max-width: 640px)").matches;
+  const observationBatch = compactMobile ? 6 : 12;
+  const transitionLimit = compactMobile ? 4 : 8;
+  let observationLimit = observationBatch;
   const thresholds = new Map(series.map((candidate) => [candidate.id, candidate.defaultThresholds]));
   const selectedSeries = () => series.find((candidate) => candidate.id === seriesSelect.value) ?? series[0]!;
   const syncControls = () => {
@@ -340,7 +344,7 @@ export async function bootBacktesting(): Promise<void> {
     setText("[data-positive-threshold-label]", `${active.regimeLabels.risk_on} above`);
   };
   const rerender = (resetObservations = false) => {
-    if (resetObservations) observationLimit = 12;
+    if (resetObservations) observationLimit = observationBatch;
     const fullSeries = selectedSeries();
     const negative = Number(negativeInput.value);
     const positive = Number(positiveInput.value);
@@ -349,9 +353,9 @@ export async function bootBacktesting(): Promise<void> {
     setText("[data-positive-value]", formatScore(positive, fullSeries.scoreSuffix));
     const visibleSeries = windowSeries(fullSeries, period);
     if (negative < positive) {
-      renderSeries(visibleSeries, fullSeries.points.length, negative, positive, observationLimit);
+      renderSeries(visibleSeries, fullSeries.points.length, negative, positive, observationLimit, transitionLimit);
       document.querySelector<HTMLButtonElement>("[data-show-more-observations]")?.addEventListener("click", () => {
-        observationLimit += 12;
+        observationLimit += observationBatch;
         rerender();
       });
     }

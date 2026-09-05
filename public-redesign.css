@@ -528,6 +528,27 @@ body.aq-site .aq-home-summary {
   gap: 12px;
 }
 
+body.aq-site.aq-home .aq-page-section {
+  padding: 32px 0;
+}
+
+body.aq-site.aq-home .aq-page-section:first-of-type {
+  padding-top: 54px;
+}
+
+body.aq-site.aq-home .aq-section-head {
+  margin-bottom: 16px;
+}
+
+body.aq-site.aq-home .aq-panel {
+  padding: 20px;
+}
+
+body.aq-site.aq-home .aq-table th,
+body.aq-site.aq-home .aq-table td {
+  padding: 10px;
+}
+
 body.aq-site .aq-hero-note {
   color: var(--aq-muted);
   font-size: 0.84rem;
@@ -1064,8 +1085,12 @@ body.aq-site .dial-axis span:nth-child(3) {
 
 body.aq-site .aq-model-meta {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
+}
+
+body.aq-site .aq-model-meta .aq-meta-box:nth-child(3) {
+  grid-column: 1 / -1;
 }
 
 body.aq-site .aq-meta-box span {
@@ -1109,6 +1134,26 @@ body.aq-site .aq-model-card .aq-meta-box strong.status-bad::before {
   background: #d9857b;
 }
 
+body.aq-site .aq-model-card .aq-meta-box strong.status-good,
+body.aq-site .aq-model-card .aq-meta-box strong.status-warn,
+body.aq-site .aq-model-card .aq-meta-box strong.status-bad,
+body.aq-site .aq-model-card .aq-meta-box strong.status-neutral {
+  display: block;
+  min-width: 0;
+  font-size: clamp(0.9rem, 2.1vw, 1rem);
+  line-height: 1.12;
+  letter-spacing: 0.01em;
+  overflow-wrap: anywhere;
+}
+
+body.aq-site .aq-model-card .aq-meta-box strong.status-good::before,
+body.aq-site .aq-model-card .aq-meta-box strong.status-warn::before,
+body.aq-site .aq-model-card .aq-meta-box strong.status-bad::before,
+body.aq-site .aq-model-card .aq-meta-box strong.status-neutral::before {
+  margin-right: 7px;
+  vertical-align: 0.08em;
+}
+
 body.aq-site .aq-model-chart-wrap {
   display: grid;
   gap: 10px;
@@ -1116,6 +1161,7 @@ body.aq-site .aq-model-chart-wrap {
 
 body.aq-site .aq-model-card .aq-meta-box {
   padding: 10px;
+  min-width: 0;
 }
 
 body.aq-site .aq-model-card .aq-chart-panel {
@@ -2362,12 +2408,83 @@ body.aq-site .aq-spacer-top {
   }
 
   body.aq-site .aq-backtesting-page .aq-backtest-panel {
-    padding: 16px;
+    padding: 14px;
   }
 
   body.aq-site .aq-backtesting-page .backtest-chart-stage {
-    min-height: 185px;
+    min-height: 150px;
+    padding: 10px;
+  }
+
+  body.aq-site .aq-backtesting-page .aq-page-section {
+    padding: 22px 0;
+  }
+
+  body.aq-site .aq-backtesting-page .aq-backtest-toolbar {
+    gap: 12px;
+  }
+
+  body.aq-site .aq-backtesting-page .aq-backtest-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  body.aq-site .aq-backtesting-page .aq-backtest-controls label:first-child {
+    grid-column: 1 / -1;
+  }
+
+  body.aq-site .aq-backtesting-page .aq-backtest-controls label {
+    gap: 5px;
+    font-size: 0.74rem;
+  }
+
+  body.aq-site .aq-backtesting-page [data-backtest-periods] {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  body.aq-site .aq-backtesting-page [data-backtest-periods] > span {
+    display: none;
+  }
+
+  body.aq-site .aq-backtesting-page [data-backtest-periods] button {
+    min-width: 0;
+    padding: 7px 4px;
+    text-align: center;
+  }
+
+  body.aq-site .aq-backtesting-page .backtest-kpis {
+    gap: 7px;
+  }
+
+  body.aq-site .aq-backtesting-page .backtest-kpis div {
+    min-height: 66px;
+    padding: 10px;
+  }
+
+  body.aq-site .aq-backtesting-page .backtest-kpis strong {
+    margin-top: 6px;
+    font-size: 1.18rem;
+  }
+
+  body.aq-site .aq-backtesting-page .backtest-kpis [data-kpi-classification] {
+    font-size: 0.78rem;
+  }
+
+  body.aq-site .aq-backtesting-page .aq-detail-grid {
+    gap: 8px;
+  }
+
+  body.aq-site .aq-backtesting-page .aq-list-panel {
+    gap: 8px;
     padding: 12px;
+  }
+
+  body.aq-site .aq-backtesting-page [data-transition-list] > div,
+  body.aq-site .aq-backtesting-page [data-observation-list] > div {
+    padding: 8px 0;
+    font-size: 0.84rem;
   }
 
   body.aq-site .aq-panel,
@@ -2488,6 +2605,31 @@ body.aq-site .aq-spacer-top {
   body.aq-site .aq-home-summary .aq-table-wrap {
     overflow: visible;
     touch-action: pan-y;
+  }
+
+  body.aq-site.aq-home .aq-page-section {
+    padding: 22px 0;
+  }
+
+  body.aq-site.aq-home .aq-page-section:first-of-type {
+    padding-top: 34px;
+  }
+
+  body.aq-site.aq-home .aq-panel {
+    padding: 14px;
+  }
+
+  body.aq-site.aq-home .aq-model-summary-table tbody {
+    gap: 8px;
+  }
+
+  body.aq-site.aq-home .aq-model-summary-table tr {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  body.aq-site.aq-home .aq-model-summary-table td:first-child strong {
+    font-size: 1.18rem;
   }
 
   body.aq-site .valuation-dot-lane {

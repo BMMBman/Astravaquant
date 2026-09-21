@@ -114,7 +114,7 @@ describe("Google workbook normalization", () => {
     const fetcher = vi.fn(async (input: string | URL | Request) => {
       const url = new URL(String(input));
       const sheet = url.searchParams.get("sheet");
-      const csv = sheet === "MTPI"
+      const csv = sheet === "MT"
         ? '"DATE UPDATED:","Aug 11 2026"\n"MTPI Avg Score","-0.58","Short"'
         : '"DATE UPDATED:","Aug 11 2026"\n"LTPI Avg Score","-0.89","Short"';
       return new Response(csv, { status: 200, headers: { "content-type": "text/csv" } });
@@ -127,6 +127,7 @@ describe("Google workbook normalization", () => {
     expect(first.signals.find((signal) => signal.id === "nspi")?.value).toBe(-0.73);
     expect(second).toBe(first);
     expect(fetcher).toHaveBeenCalledTimes(2);
+    expect(fetcher.mock.calls.map(([input]) => new URL(String(input)).searchParams.get("sheet"))).toEqual(["MT", "LT"]);
     expect(fetcher.mock.calls.every(([input]) => new URL(String(input)).searchParams.get("range") === "A1:AZ100")).toBe(true);
   });
 

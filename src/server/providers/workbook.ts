@@ -16,6 +16,7 @@ type SheetRows = string[][];
 
 interface SheetDefinition {
   name: string;
+  sourceName?: string;
   category: WorkbookTabCategory;
   description: string;
 }
@@ -33,10 +34,10 @@ const sheetDefinitions: SheetDefinition[] = [
   { name: "Command Center", category: "allocation", description: "Published allocation and system command view." },
   { name: "RSPS", category: "relative_strength", description: "Core relative-strength portfolio ratios." },
   { name: "Alts RSPS", category: "relative_strength", description: "Alternative-asset relative-strength ratios." },
-  { name: "MTPI", category: "core_model", description: "Five-day total-market and TOTAL2 model components." },
-  { name: "LTPI", category: "core_model", description: "Weekly total-market and Bitcoin model components." },
-  { name: "MT Total Forward Testing", category: "forward_test", description: "Historical medium-term model score observations." },
-  { name: "LT Total Forward Testing", category: "forward_test", description: "Historical long-term model score observations." },
+  { name: "MTPI", sourceName: "MT", category: "core_model", description: "Five-day total-market and TOTAL2 model components." },
+  { name: "LTPI", sourceName: "LT", category: "core_model", description: "Weekly total-market and Bitcoin model components." },
+  { name: "MT Total Forward Testing", sourceName: "MT Forward Testing", category: "forward_test", description: "Historical medium-term model score observations." },
+  { name: "LT Total Forward Testing", sourceName: "LT Forward Testing", category: "forward_test", description: "Historical long-term model score observations." },
   { name: "BTC", category: "asset_model", description: "Bitcoin trend probability model components." },
   { name: "ETH", category: "asset_model", description: "Ethereum trend probability model components." },
   { name: "SOL", category: "asset_model", description: "Solana trend probability model components." },
@@ -476,7 +477,8 @@ export class GoogleSheetsWorkbookProvider implements WorkbookProvider {
         dateTimeRenderOption: "FORMATTED_STRING"
       });
       for (const definition of sheetDefinitions) {
-        query.append("ranges", `'${definition.name.replace(/'/g, "''")}'!A1:AZ2000`);
+        const sourceName = definition.sourceName ?? definition.name;
+        query.append("ranges", `'${sourceName.replace(/'/g, "''")}'!A1:AZ2000`);
       }
       const response = await this.auth.request<GoogleBatchGetResponse>({
         url: `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(this.spreadsheetId)}/values:batchGet?${query}`,
@@ -506,7 +508,7 @@ export class GoogleSheetsWorkbookProvider implements WorkbookProvider {
         valueRenderOption: "FORMATTED_VALUE",
         dateTimeRenderOption: "FORMATTED_STRING"
       });
-      for (const name of ["MTPI", "LTPI"]) query.append("ranges", `'${name}'!A1:AZ100`);
+      for (const name of ["MT", "LT"]) query.append("ranges", `'${name}'!A1:AZ100`);
       const response = await this.auth.request<GoogleBatchGetResponse>({
         url: `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(this.spreadsheetId)}/values:batchGet?${query}`,
         method: "GET",
@@ -562,7 +564,7 @@ export class PublicGoogleSheetsWorkbookProvider implements WorkbookProvider {
     try {
       const sheetResults = await Promise.all(
         sheetDefinitions.map(async (definition): Promise<[string, SheetRows]> => {
-          return [definition.name, await this.fetchSheet(definition.name)];
+          return [definition.name, await this.fetchSheet(definition.sourceName ?? definition.name)];
         })
       );
       const dashboard = buildWorkbookDashboard(new Map(sheetResults), Math.round(this.cacheMs / 1000));
@@ -581,8 +583,9 @@ export class PublicGoogleSheetsWorkbookProvider implements WorkbookProvider {
       return { ...workbookSignalSnapshot(this.cache.dashboard), refreshSeconds: Math.round(this.signalCacheMs / 1000) };
     }
     if (this.signalCache && this.signalCache.expiresAt > Date.now()) return this.signalCache.snapshot;
+    const signalSheets: Array<[string, string]> = [["MTPI", "MT"], ["LTPI", "LT"]];
     const sheetResults = await Promise.all(
-      ["MTPI", "LTPI"].map(async (name): Promise<[string, SheetRows]> => [name, await this.fetchSheet(name, "A1:AZ100")])
+      signalSheets.map(async ([name, sourceName]): Promise<[string, SheetRows]> => [name, await this.fetchSheet(sourceName, "A1:AZ100")])
     );
     const snapshot = buildWorkbookSignalSnapshot(new Map(sheetResults), Math.round(this.signalCacheMs / 1000));
     if (snapshot.status !== "unavailable") {

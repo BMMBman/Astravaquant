@@ -8,23 +8,20 @@ import type {
 type HistoryPeriod = "30D" | "90D" | "YTD" | "ALL";
 
 const periods: HistoryPeriod[] = ["30D", "90D", "YTD", "ALL"];
-const modelIds = ["mtpi", "ltpi", "nspi", "mrpi"];
+const modelIds = ["mtpi", "ltpi", "mrpi"];
 const modelSections: Record<string, string> = {
   mtpi: "01 / Trend",
   ltpi: "02 / Trend",
-  nspi: "03 / Regime",
-  mrpi: "04 / Rates"
+  mrpi: "03 / Rates"
 };
 const modelPurposes: Record<string, string> = {
   mtpi: "Five-day trend read built from stacked trend-following indicators and oscillators.",
   ltpi: "Weekly trend read for longer-horizon market structure.",
-  nspi: "Measures the derived aggregate regime from the latest published MTPI and LTPI values.",
   mrpi: "Measures tightening versus easing pressure in the 10-year Treasury backdrop."
 };
 const methodologyLinks: Record<string, string> = {
   mtpi: "trend-following.html#medium-term-trend",
   ltpi: "trend-following.html#long-term-trend",
-  nspi: "methodology.html#liquidity-regime",
   mrpi: "mrpi-methodology.html"
 };
 const scaleThresholds = [-0.75, -0.25, 0.25, 0.75];
@@ -156,7 +153,6 @@ function formatUpdatedLabel(value: string | null | undefined): string | null {
 }
 
 function sourceLabel(signal: WorkbookModelSignal, series: WorkbookScoreSeries | undefined): string {
-  if (signal.source === "derived") return "Derived from MTPI + LTPI";
   return series?.sourceTab ?? signal.sourceTab ?? "Published model reading";
 }
 
@@ -167,36 +163,21 @@ function classificationNote(signal: WorkbookModelSignal): string {
 
 function gaugeTitle(signal: WorkbookModelSignal): string {
   if (signal.id === "mrpi") return "Pressure gauge";
-  if (signal.id === "nspi") return "Aggregate gauge";
   return "Trend gauge";
 }
 
 function gaugeDescription(signal: WorkbookModelSignal): string {
   if (signal.id === "mrpi") return "Live position from strong tightening through strong easing.";
-  if (signal.id === "nspi") return "Derived from the latest verified MTPI and LTPI readings.";
   return "Live position on the short-to-long regime range.";
 }
 
 function gaugeAxis(signal: WorkbookModelSignal): [string, string, string] {
   if (signal.id === "mrpi") return ["Tightening", "Neutral", "Easing"];
-  if (signal.id === "nspi") return ["Defensive", "Neutral", "Constructive"];
   return ["Short", "Neutral", "Long"];
 }
 
 function gaugeAriaLabel(signal: WorkbookModelSignal): string {
   return `${signal.name} gauge currently ${formatScore(signal.value)} with state ${signal.state}.`;
-}
-
-function derivationMarkup(signal: WorkbookModelSignal): string {
-  if (signal.id !== "nspi") return "";
-  return `<div class="aq-model-derivation" aria-label="NSPI is derived from MTPI and LTPI">
-    <div class="aq-model-derivation-inputs">
-      <span>MTPI</span>
-      <span>LTPI</span>
-    </div>
-    <div class="aq-model-derivation-arrow" aria-hidden="true">&darr;</div>
-    <strong>NSPI derives from both model reads</strong>
-  </div>`;
 }
 
 function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | undefined, period: HistoryPeriod): string {
@@ -223,7 +204,6 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
           <span>${escapeHtml(gaugeTitle(signal))}</span>
           <p>${escapeHtml(gaugeDescription(signal))}</p>
         </div>
-        ${derivationMarkup(signal)}
         <div
           class="dial dial-compact aq-model-dial"
           data-dial-value="${signal.value.toFixed(4)}"

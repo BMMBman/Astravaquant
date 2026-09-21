@@ -91,8 +91,7 @@ function renderSignal(signal: WorkbookModelSignal): void {
       state.classList.add(`status-${tone}`);
     }
     if (updated) {
-      updated.textContent = signal.updatedLabel
-        ?? (signal.source === "derived" ? "Derived from MTPI + LTPI" : "Published fallback");
+      updated.textContent = signal.updatedLabel ?? "Published fallback";
     }
   });
 }

@@ -100,7 +100,7 @@ export interface WorkbookTabSummary {
 
 export interface WorkbookModelSignal extends ModelSignal {
   regime: string;
-  source: "google_sheets" | "manual_fallback" | "derived";
+  source: "google_sheets" | "manual_fallback";
   sourceTab: string | null;
   updatedLabel: string | null;
 }
@@ -111,7 +111,7 @@ export interface WorkbookScorePoint {
 }
 
 export interface WorkbookScoreSeries {
-  id: "mtpi" | "ltpi" | "nspi" | "mrpi";
+  id: "mtpi" | "ltpi" | "mrpi";
   label: string;
   sourceTab: string;
   status: "ready" | "unavailable";

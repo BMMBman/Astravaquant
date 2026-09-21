@@ -17,6 +17,7 @@ type SheetRows = string[][];
 interface SheetDefinition {
   name: string;
   sourceName?: string;
+  modelId?: "mtpi" | "ltpi";
   category: WorkbookTabCategory;
   description: string;
 }
@@ -34,10 +35,10 @@ const sheetDefinitions: SheetDefinition[] = [
   { name: "Command Center", category: "allocation", description: "Published allocation and system command view." },
   { name: "RSPS", category: "relative_strength", description: "Core relative-strength portfolio ratios." },
   { name: "Alts RSPS", category: "relative_strength", description: "Alternative-asset relative-strength ratios." },
-  { name: "MTPI", sourceName: "MT", category: "core_model", description: "Five-day total-market and TOTAL2 model components." },
-  { name: "LTPI", sourceName: "LT", category: "core_model", description: "Weekly total-market and Bitcoin model components." },
-  { name: "MT Total Forward Testing", sourceName: "MT Forward Testing", category: "forward_test", description: "Historical medium-term model score observations." },
-  { name: "LT Total Forward Testing", sourceName: "LT Forward Testing", category: "forward_test", description: "Historical long-term model score observations." },
+  { name: "Medium-Term Trend", sourceName: "MT", modelId: "mtpi", category: "core_model", description: "Five-day total-market and TOTAL2 model components." },
+  { name: "Long-Term Trend", sourceName: "LT", modelId: "ltpi", category: "core_model", description: "Weekly total-market and Bitcoin model components." },
+  { name: "Medium-Term Forward Testing", sourceName: "MT Forward Testing", category: "forward_test", description: "Historical medium-term model score observations." },
+  { name: "Long-Term Forward Testing", sourceName: "LT Forward Testing", category: "forward_test", description: "Historical long-term model score observations." },
   { name: "BTC", category: "asset_model", description: "Bitcoin trend probability model components." },
   { name: "ETH", category: "asset_model", description: "Ethereum trend probability model components." },
   { name: "SOL", category: "asset_model", description: "Solana trend probability model components." },
@@ -51,7 +52,6 @@ const sheetDefinitions: SheetDefinition[] = [
 const scoreScopes: Record<string, string> = {
   mtpi: "Five-day aggregate of total crypto market cap and TOTAL2.",
   ltpi: "Weekly aggregate of total crypto market cap and Bitcoin.",
-  nspi: "Derived aggregate of the published medium-term and long-term crypto trend.",
   mrpi: "Weekly 10-year Treasury pressure model, read as tightening versus easing."
 };
 
@@ -107,9 +107,10 @@ function latestSummary(rows: SheetRows): { score: number; state: string } | null
   return summaries.at(-1) ?? null;
 }
 
-function modelSummary(name: string, rows: SheetRows): { score: number; state: string } | null {
-  if (name !== "MTPI" && name !== "LTPI") return latestSummary(rows);
-  const matcher = new RegExp(`^${name}\\s+Avg\\s*Score`, "i");
+function modelSummary(modelId: SheetDefinition["modelId"], rows: SheetRows): { score: number; state: string } | null {
+  if (!modelId) return latestSummary(rows);
+  const sourceLabel = modelId === "mtpi" ? "MTPI" : "LTPI";
+  const matcher = new RegExp(`^${sourceLabel}\\s+Avg\\s*Score`, "i");
   const preferred = rows
     .filter((row) => row.some((cell) => matcher.test(cell)))
     .map(rowSummary)
@@ -141,7 +142,7 @@ function dimensions(rows: SheetRows): { rowCount: number; columnCount: number } 
 
 export function summarizeTab(definition: SheetDefinition, rows: SheetRows): WorkbookTabSummary {
   const { rowCount, columnCount } = dimensions(rows);
-  const summary = modelSummary(definition.name, rows);
+  const summary = modelSummary(definition.modelId, rows);
   return {
     id: sheetId(definition.name),
     name: definition.name,
@@ -203,48 +204,6 @@ export function parseScoreSeries(
     sourceTab,
     status: points.length > 1 ? "ready" : "unavailable",
     message: points.length > 1 ? null : "The sheet does not yet contain enough dated score observations.",
-    points
-  };
-}
-
-export function deriveNspiSeries(
-  mtpi: WorkbookScoreSeries,
-  ltpi: WorkbookScoreSeries
-): WorkbookScoreSeries {
-  const sourceTab = "Derived from MTPI + LTPI forward tests";
-  if (mtpi.points.length < 1 || ltpi.points.length < 1) {
-    return {
-      id: "nspi",
-      label: "NSPI Aggregate",
-      sourceTab,
-      status: "unavailable",
-      message: "Both dated MTPI and LTPI histories are required to derive NSPI.",
-      points: []
-    };
-  }
-
-  const mtByDate = new Map(mtpi.points.map((point) => [point.date, point.score]));
-  const ltByDate = new Map(ltpi.points.map((point) => [point.date, point.score]));
-  const dates = [...new Set([...mtByDate.keys(), ...ltByDate.keys()])].sort();
-  const points: WorkbookScorePoint[] = [];
-  let latestMt: number | null = null;
-  let latestLt: number | null = null;
-
-  for (const date of dates) {
-    if (mtByDate.has(date)) latestMt = mtByDate.get(date)!;
-    if (ltByDate.has(date)) latestLt = ltByDate.get(date)!;
-    if (latestMt === null || latestLt === null) continue;
-    points.push({ date, score: Number(((latestMt + latestLt) / 2).toFixed(4)) });
-  }
-
-  return {
-    id: "nspi",
-    label: "NSPI Aggregate",
-    sourceTab,
-    status: points.length > 1 ? "ready" : "unavailable",
-    message: points.length > 1
-      ? "Uses the latest published MTPI and LTPI value at every model update date."
-      : "The source histories do not yet overlap enough to derive NSPI.",
     points
   };
 }
@@ -368,28 +327,15 @@ export function buildWorkbookDashboard(
   refreshSeconds: number
 ): WorkbookDashboard {
   const tabs = sheetDefinitions.map((definition) => summarizeTab(definition, rowsBySheet.get(definition.name) ?? []));
-  const mtTab = tabs.find((tab) => tab.name === "MTPI")!;
-  const ltTab = tabs.find((tab) => tab.name === "LTPI")!;
+  const mtTab = tabs.find((tab) => tab.name === "Medium-Term Trend")!;
+  const ltTab = tabs.find((tab) => tab.name === "Long-Term Trend")!;
   const mtpi = mtTab.latestScore === null ? fallbackSignal("mtpi") : publishedSignal("mtpi", mtTab);
   const ltpi = ltTab.latestScore === null ? fallbackSignal("ltpi") : publishedSignal("ltpi", ltTab);
-  const bothPublished = mtpi.source === "google_sheets" && ltpi.source === "google_sheets";
-  const nspiValue = bothPublished ? Number(((mtpi.value + ltpi.value) / 2).toFixed(2)) : fallbackSignal("nspi").value;
-  const nspi: WorkbookModelSignal = bothPublished
-    ? {
-        ...currentSignals.find((signal) => signal.id === "nspi")!,
-        value: nspiValue,
-        state: regimeForScore(nspiValue),
-        regime: regimeForScore(nspiValue),
-        source: "derived",
-        sourceTab: "MTPI + LTPI",
-        updatedLabel: mtpi.updatedLabel === ltpi.updatedLabel ? mtpi.updatedLabel : null
-      }
-    : fallbackSignal("nspi");
   const mrpi = fallbackSignal("mrpi");
-  const mtpiSeries = parseScoreSeries("mtpi", "MT Total Forward Testing", rowsBySheet.get("MT Total Forward Testing") ?? []);
-  const ltpiSeries = parseScoreSeries("ltpi", "LT Total Forward Testing", rowsBySheet.get("LT Total Forward Testing") ?? []);
-  const scoreSeries = [mtpiSeries, ltpiSeries, deriveNspiSeries(mtpiSeries, ltpiSeries)];
-  const signals = [mtpi, ltpi, nspi].map((signal) => {
+  const mtpiSeries = parseScoreSeries("mtpi", "Medium-Term Forward Testing", rowsBySheet.get("Medium-Term Forward Testing") ?? []);
+  const ltpiSeries = parseScoreSeries("ltpi", "Long-Term Forward Testing", rowsBySheet.get("Long-Term Forward Testing") ?? []);
+  const scoreSeries = [mtpiSeries, ltpiSeries];
+  const signals = [mtpi, ltpi].map((signal) => {
     const latestObservation = scoreSeries.find((series) => series.id === signal.id)?.points.at(-1);
     // Forward-test rows are the most recent published observations; header dates can be stale.
     return latestObservation ? { ...signal, updatedLabel: latestObservation.date } : signal;
@@ -400,8 +346,7 @@ export function buildWorkbookDashboard(
   ];
   const readyTabs = tabs.filter((tab) => tab.status === "ready").length;
   const warnings: string[] = [];
-  if (!bothPublished) warnings.push("MTPI or LTPI could not be verified; affected readings use the manual fallback snapshot.");
-  if (scoreSeries[2]?.status === "ready") warnings.push("NSPI history is derived at each MTPI or LTPI update date using the latest available score from both series.");
+  if (mtpi.source !== "google_sheets" || ltpi.source !== "google_sheets") warnings.push("A trend reading could not be verified; affected readings use the manual fallback snapshot.");
   warnings.push("MRPI is sourced from a separate weekly system workbook.");
   if (tabs.some((tab) => tab.formulaErrorCount > 0)) warnings.push("Some research cells contain spreadsheet formula errors; they are reported as unavailable, never as zero.");
   return {
@@ -515,7 +460,7 @@ export class GoogleSheetsWorkbookProvider implements WorkbookProvider {
         timeout: 8_000
       });
       const rowsBySheet = new Map<string, SheetRows>();
-      ["MTPI", "LTPI"].forEach((name, index) => rowsBySheet.set(name, cleanRows(response.data.valueRanges?.[index]?.values)));
+      ["Medium-Term Trend", "Long-Term Trend"].forEach((name, index) => rowsBySheet.set(name, cleanRows(response.data.valueRanges?.[index]?.values)));
       const snapshot = buildWorkbookSignalSnapshot(rowsBySheet, Math.round(this.signalCacheMs / 1000));
       if (snapshot.status !== "unavailable") {
         this.signalCache = { expiresAt: Date.now() + this.signalCacheMs, snapshot };
@@ -583,7 +528,7 @@ export class PublicGoogleSheetsWorkbookProvider implements WorkbookProvider {
       return { ...workbookSignalSnapshot(this.cache.dashboard), refreshSeconds: Math.round(this.signalCacheMs / 1000) };
     }
     if (this.signalCache && this.signalCache.expiresAt > Date.now()) return this.signalCache.snapshot;
-    const signalSheets: Array<[string, string]> = [["MTPI", "MT"], ["LTPI", "LT"]];
+    const signalSheets: Array<[string, string]> = [["Medium-Term Trend", "MT"], ["Long-Term Trend", "LT"]];
     const sheetResults = await Promise.all(
       signalSheets.map(async ([name, sourceName]): Promise<[string, SheetRows]> => [name, await this.fetchSheet(sourceName, "A1:AZ100")])
     );
@@ -624,9 +569,8 @@ function unavailableWorkbook(
     refreshSeconds,
     signals,
     scoreSeries: [
-      { id: "mtpi", label: "Medium-Term Trend", sourceTab: "MT Total Forward Testing", status: "unavailable", message, points: [] },
-      { id: "ltpi", label: "Long-Term Trend", sourceTab: "LT Total Forward Testing", status: "unavailable", message, points: [] },
-      { id: "nspi", label: "NSPI Aggregate", sourceTab: "Derived from MTPI + LTPI forward tests", status: "unavailable", message, points: [] }
+      { id: "mtpi", label: "Medium-Term Trend", sourceTab: "Medium-Term Forward Testing", status: "unavailable", message, points: [] },
+      { id: "ltpi", label: "Long-Term Trend", sourceTab: "Long-Term Forward Testing", status: "unavailable", message, points: [] }
     ],
     ratioModels: [],
     tabs: sheetDefinitions.map((definition) => summarizeTab(definition, [])),

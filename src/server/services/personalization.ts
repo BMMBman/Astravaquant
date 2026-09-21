@@ -27,7 +27,7 @@ export function relevantSignals(
 ): ModelSignal[] {
   const heldSymbols = new Set(holdings.map((holding) => normalizedSymbol(holding.symbol)));
   if (heldSymbols.size === 0) {
-    return signals.filter((signal) => signal.id === "nspi");
+    return signals.filter((signal) => signal.id === "mtpi" || signal.id === "ltpi");
   }
 
   return signals.filter((signal) =>
@@ -64,5 +64,5 @@ export function allocationContext(holdings: PortfolioHolding[]): AllocationConte
 }
 
 export function portfolioRegime(signals: ModelSignal[] = currentSignals): ModelSignal {
-  return signals.find((signal) => signal.id === "nspi") ?? currentSignals.find((signal) => signal.id === "nspi")!;
+  return signals.find((signal) => signal.id === "ltpi") ?? currentSignals.find((signal) => signal.id === "ltpi")!;
 }

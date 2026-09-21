@@ -20,14 +20,6 @@ export const currentSignals: ModelSignal[] = [
     relevantSymbols: broadCryptoSymbols
   },
   {
-    id: "nspi",
-    name: "NSPI",
-    value: -0.24,
-    state: "NEUTRAL TRANSITION",
-    scope: "Aggregate of the medium-term and long-term crypto trend.",
-    relevantSymbols: broadCryptoSymbols
-  },
-  {
     id: "mrpi",
     name: "Mortgage Rate Pressure Index",
     value: -0.79,
@@ -40,14 +32,14 @@ export const researchLibrary: Omit<PersonalizedResearch, "relevance">[] = [
   {
     id: "crypto-medium-term",
     title: "Medium-Term Crypto Participation",
-    summary: "The five-day MTPI combines total crypto market cap and TOTAL2 into the current tactical regime.",
+    summary: "The five-day Medium-Term Trend model combines total crypto market cap and TOTAL2 into the current tactical regime.",
     href: "research-crypto-participation.html",
     symbols: broadCryptoSymbols
   },
   {
     id: "crypto-long-term",
     title: "Weekly Crypto Structure",
-    summary: "LTPI places broad crypto exposure against the weekly total-market and Bitcoin trend.",
+    summary: "The Long-Term Trend model places broad crypto exposure against the weekly total-market and Bitcoin trend.",
     href: "research-weekly-structure.html",
     symbols: broadCryptoSymbols
   },

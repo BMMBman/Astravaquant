@@ -41,12 +41,10 @@ function updateSignal(signal: WorkbookModelSignal): void {
     root.querySelectorAll<HTMLElement>("[data-model-source]").forEach((node) => {
       node.textContent = signal.source === "google_sheets"
         ? `${signal.sourceTab} / ${signal.updatedLabel ?? "live workbook"}`
-        : signal.source === "derived"
-          ? "Derived from MTPI + LTPI"
-          : "Manual fallback";
+        : "Manual fallback";
     });
     root.querySelectorAll<HTMLElement>("[data-model-updated]").forEach((node) => {
-      node.textContent = signal.updatedLabel ?? (signal.source === "derived" ? "Derived model" : "Manual fallback");
+      node.textContent = signal.updatedLabel ?? "Manual fallback";
     });
     const dial = root.querySelector<HTMLElement>("[data-dial-value]");
     if (dial) {

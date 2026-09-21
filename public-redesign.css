@@ -549,6 +549,44 @@ body.aq-site.aq-home .aq-table td {
   padding: 10px;
 }
 
+body.aq-site .aq-mentor-callout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 26px 28px;
+  border: 1px solid rgba(241, 236, 226, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(120deg, rgba(203, 169, 105, 0.1), transparent 42%),
+    rgba(17, 19, 24, 0.92);
+}
+
+body.aq-site .aq-mentor-callout h2 {
+  margin: 0;
+  font-family: var(--aq-font-display);
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+body.aq-site .aq-mentor-callout p:not(.aq-section-label) {
+  max-width: 710px;
+  margin: 8px 0 0;
+  color: var(--aq-muted);
+}
+
+body.aq-site .aq-mentor-disclosure {
+  display: block;
+  margin-top: 12px;
+  color: var(--aq-faint);
+  font-size: 0.74rem;
+}
+
+body.aq-site .aq-mentor-callout .button {
+  flex: 0 0 auto;
+}
+
 body.aq-site .aq-hero-note {
   color: var(--aq-muted);
   font-size: 0.84rem;
@@ -2613,6 +2651,13 @@ body.aq-site .aq-spacer-top {
 
   body.aq-site.aq-home .aq-page-section:first-of-type {
     padding-top: 34px;
+  }
+
+  body.aq-site .aq-mentor-callout {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+    padding: 18px;
   }
 
   body.aq-site.aq-home .aq-panel {

@@ -56,18 +56,6 @@ const workbookProvider = {
           sourceTab: null,
           updatedLabel: null
         },
-        {
-          id: "nspi",
-          name: "NSPI",
-          value: -0.24,
-          state: "NEUTRAL TRANSITION",
-          regime: "NEUTRAL TRANSITION",
-          scope: "Aggregate regime.",
-          relevantSymbols: ["ETH"],
-          source: "manual_fallback" as const,
-          sourceTab: null,
-          updatedLabel: null
-        }
       ],
       scoreSeries: [],
       ratioModels: [],

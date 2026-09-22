@@ -151,7 +151,7 @@ export interface WorkbookRatioModel {
   label: string;
   score: number;
   state: string;
-  sourceTab: "RSPS" | "Alts RSPS";
+  sourceTab: "SMPS" | "Alternative SMPS";
 }
 
 export interface WorkbookDashboard {

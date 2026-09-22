@@ -33,10 +33,10 @@ interface GoogleBatchGetResponse {
 
 const sheetDefinitions: SheetDefinition[] = [
   { name: "Command Center", category: "allocation", description: "Published allocation and system command view." },
-  { name: "RSPS", category: "relative_strength", description: "Core relative-strength portfolio ratios." },
-  { name: "Alts RSPS", category: "relative_strength", description: "Alternative-asset relative-strength ratios." },
-  { name: "Medium-Term Trend", sourceName: "MT", modelId: "mtpi", category: "core_model", description: "Five-day total-market and TOTAL2 model components." },
-  { name: "Long-Term Trend", sourceName: "LT", modelId: "ltpi", category: "core_model", description: "Weekly total-market and Bitcoin model components." },
+  { name: "SMPS", sourceName: "RSPS", category: "relative_strength", description: "Strength Module Portfolio System Strategy ratio models." },
+  { name: "Alternative SMPS", sourceName: "Alts RSPS", category: "relative_strength", description: "Alternative-asset Strength Module Portfolio System Strategy ratio models." },
+  { name: "Medium-Term Trend (MTTPM)", sourceName: "MT", modelId: "mtpi", category: "core_model", description: "Five-day total-market and TOTAL2 model components." },
+  { name: "Long-Term Trend (LTTPM)", sourceName: "LT", modelId: "ltpi", category: "core_model", description: "Weekly total-market and Bitcoin model components." },
   { name: "Medium-Term Forward Testing", sourceName: "MT Forward Testing", category: "forward_test", description: "Historical medium-term model score observations." },
   { name: "Long-Term Forward Testing", sourceName: "LT Forward Testing", category: "forward_test", description: "Historical long-term model score observations." },
   { name: "BTC", category: "asset_model", description: "Bitcoin trend probability model components." },
@@ -44,7 +44,7 @@ const sheetDefinitions: SheetDefinition[] = [
   { name: "SOL", category: "asset_model", description: "Solana trend probability model components." },
   { name: "HYPE", category: "asset_model", description: "HYPE trend probability model components." },
   { name: "SUI", category: "asset_model", description: "SUI trend probability model components." },
-  { name: "Others.D TPI", category: "breadth", description: "Crypto breadth and others-dominance model." },
+  { name: "Others.D TPM", sourceName: "Others.D TPI", category: "breadth", description: "Crypto breadth and others-dominance Trend Probability Module." },
   { name: "ALT Selection Table", category: "selection", description: "Alternative-asset selection research table." },
   { name: "Trash Tournament", category: "selection", description: "Experimental asset-selection tournament." }
 ];
@@ -200,7 +200,7 @@ export function parseScoreSeries(
     .sort((left, right) => left.date.localeCompare(right.date));
   return {
     id,
-    label: id === "mtpi" ? "Medium-Term Trend" : "Long-Term Trend",
+    label: id === "mtpi" ? "Medium-Term Trend (MTTPM)" : "Long-Term Trend (LTTPM)",
     sourceTab,
     status: points.length > 1 ? "ready" : "unavailable",
     message: points.length > 1 ? null : "The sheet does not yet contain enough dated score observations.",
@@ -249,7 +249,7 @@ export function parseCsv(csv: string): SheetRows {
 }
 
 function ratioLabel(value: string): string | null {
-  const cleaned = value.replace(/avg\s*score.*$/i, "").replace(/\s*tpi.*$/i, "").replace(/[^a-z0-9/]/gi, "").toUpperCase();
+  const cleaned = value.replace(/avg\s*score.*$/i, "").replace(/\s*tp[im].*$/i, "").replace(/[^a-z0-9/]/gi, "").toUpperCase();
   if (!cleaned) return null;
   if (cleaned.includes("/")) return cleaned.replace("/", " / ");
   const assets = ["BTC", "ETH", "SOL", "SUI", "HYPE", "ENA", "LINK"];
@@ -262,11 +262,11 @@ function ratioLabel(value: string): string | null {
   return null;
 }
 
-export function parseRatioModels(sourceTab: "RSPS" | "Alts RSPS", rows: SheetRows): WorkbookRatioModel[] {
+export function parseRatioModels(sourceTab: "SMPS" | "Alternative SMPS", rows: SheetRows): WorkbookRatioModel[] {
   const models = new Map<string, WorkbookRatioModel>();
   let activeLabel: string | null = null;
   for (const row of rows) {
-    const heading = row.find((cell) => /\bTPI\s*$/i.test(cell));
+    const heading = row.find((cell) => /\bTP[IM]\s*$/i.test(cell));
     if (heading) activeLabel = ratioLabel(heading);
 
     const labelCell = row.find((cell) => /avg\s*score/i.test(cell));
@@ -327,8 +327,8 @@ export function buildWorkbookDashboard(
   refreshSeconds: number
 ): WorkbookDashboard {
   const tabs = sheetDefinitions.map((definition) => summarizeTab(definition, rowsBySheet.get(definition.name) ?? []));
-  const mtTab = tabs.find((tab) => tab.name === "Medium-Term Trend")!;
-  const ltTab = tabs.find((tab) => tab.name === "Long-Term Trend")!;
+  const mtTab = tabs.find((tab) => tab.name === "Medium-Term Trend (MTTPM)")!;
+  const ltTab = tabs.find((tab) => tab.name === "Long-Term Trend (LTTPM)")!;
   const mtpi = mtTab.latestScore === null ? fallbackSignal("mtpi") : publishedSignal("mtpi", mtTab);
   const ltpi = ltTab.latestScore === null ? fallbackSignal("ltpi") : publishedSignal("ltpi", ltTab);
   const mrpi = fallbackSignal("mrpi");
@@ -341,8 +341,8 @@ export function buildWorkbookDashboard(
     return latestObservation ? { ...signal, updatedLabel: latestObservation.date } : signal;
   });
   const ratioModels = [
-    ...parseRatioModels("RSPS", rowsBySheet.get("RSPS") ?? []),
-    ...parseRatioModels("Alts RSPS", rowsBySheet.get("Alts RSPS") ?? [])
+    ...parseRatioModels("SMPS", rowsBySheet.get("SMPS") ?? []),
+    ...parseRatioModels("Alternative SMPS", rowsBySheet.get("Alternative SMPS") ?? [])
   ];
   const readyTabs = tabs.filter((tab) => tab.status === "ready").length;
   const warnings: string[] = [];
@@ -460,7 +460,7 @@ export class GoogleSheetsWorkbookProvider implements WorkbookProvider {
         timeout: 8_000
       });
       const rowsBySheet = new Map<string, SheetRows>();
-      ["Medium-Term Trend", "Long-Term Trend"].forEach((name, index) => rowsBySheet.set(name, cleanRows(response.data.valueRanges?.[index]?.values)));
+      ["Medium-Term Trend (MTTPM)", "Long-Term Trend (LTTPM)"].forEach((name, index) => rowsBySheet.set(name, cleanRows(response.data.valueRanges?.[index]?.values)));
       const snapshot = buildWorkbookSignalSnapshot(rowsBySheet, Math.round(this.signalCacheMs / 1000));
       if (snapshot.status !== "unavailable") {
         this.signalCache = { expiresAt: Date.now() + this.signalCacheMs, snapshot };
@@ -528,7 +528,7 @@ export class PublicGoogleSheetsWorkbookProvider implements WorkbookProvider {
       return { ...workbookSignalSnapshot(this.cache.dashboard), refreshSeconds: Math.round(this.signalCacheMs / 1000) };
     }
     if (this.signalCache && this.signalCache.expiresAt > Date.now()) return this.signalCache.snapshot;
-    const signalSheets: Array<[string, string]> = [["Medium-Term Trend", "MT"], ["Long-Term Trend", "LT"]];
+    const signalSheets: Array<[string, string]> = [["Medium-Term Trend (MTTPM)", "MT"], ["Long-Term Trend (LTTPM)", "LT"]];
     const sheetResults = await Promise.all(
       signalSheets.map(async ([name, sourceName]): Promise<[string, SheetRows]> => [name, await this.fetchSheet(sourceName, "A1:AZ100")])
     );
@@ -569,8 +569,8 @@ function unavailableWorkbook(
     refreshSeconds,
     signals,
     scoreSeries: [
-      { id: "mtpi", label: "Medium-Term Trend", sourceTab: "Medium-Term Forward Testing", status: "unavailable", message, points: [] },
-      { id: "ltpi", label: "Long-Term Trend", sourceTab: "Long-Term Forward Testing", status: "unavailable", message, points: [] }
+      { id: "mtpi", label: "Medium-Term Trend (MTTPM)", sourceTab: "Medium-Term Forward Testing", status: "unavailable", message, points: [] },
+      { id: "ltpi", label: "Long-Term Trend (LTTPM)", sourceTab: "Long-Term Forward Testing", status: "unavailable", message, points: [] }
     ],
     ratioModels: [],
     tabs: sheetDefinitions.map((definition) => summarizeTab(definition, [])),

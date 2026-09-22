@@ -33,20 +33,20 @@ describe("Google workbook normalization", () => {
   });
 
   it("extracts the latest relative-strength summary", () => {
-    const ratios = parseRatioModels("RSPS", [
+    const ratios = parseRatioModels("SMPS", [
       ["ETHBTC Avg Score", "0.33", "Long"],
       ["ETHBTC Avg Score", "-0.55", "Short"],
       ["SUI/SOL Avg Score", "-0.71", "Short"]
     ]);
 
     expect(ratios).toEqual([
-      { id: "eth-btc", label: "ETH / BTC", score: -0.55, state: "SHORT", sourceTab: "RSPS" },
-      { id: "sui-sol", label: "SUI / SOL", score: -0.71, state: "SHORT", sourceTab: "RSPS" }
+      { id: "eth-btc", label: "ETH / BTC", score: -0.55, state: "SHORT", sourceTab: "SMPS" },
+      { id: "sui-sol", label: "SUI / SOL", score: -0.71, state: "SHORT", sourceTab: "SMPS" }
     ]);
   });
 
   it("reads block-style relative-strength summaries from the public export", () => {
-    const ratios = parseRatioModels("RSPS", [
+    const ratios = parseRatioModels("SMPS", [
       ["", "", "SOLETH TPI"],
       ["", "Indicator", "2D", "18 - 3", "1", "Bullish"],
       ["", "", "", "", "", "0.88", "Neutral", "ETH", "20%"],
@@ -56,17 +56,17 @@ describe("Google workbook normalization", () => {
       ["", "", "", "", "", "-0.71", "Short", "SOL", "80%"]
     ]);
     expect(ratios).toEqual([
-      { id: "sol-eth", label: "SOL / ETH", score: 0.88, state: "NEUTRAL", sourceTab: "RSPS" },
-      { id: "eth-btc", label: "ETH / BTC", score: -1, state: "SHORT", sourceTab: "RSPS" },
-      { id: "sui-sol", label: "SUI / SOL", score: -0.71, state: "SHORT", sourceTab: "RSPS" }
+      { id: "sol-eth", label: "SOL / ETH", score: 0.88, state: "NEUTRAL", sourceTab: "SMPS" },
+      { id: "eth-btc", label: "ETH / BTC", score: -1, state: "SHORT", sourceTab: "SMPS" },
+      { id: "sui-sol", label: "SUI / SOL", score: -0.71, state: "SHORT", sourceTab: "SMPS" }
     ]);
   });
 
   it("publishes the two trend models without changing MRPI", () => {
     const dashboard = buildWorkbookDashboard(
       new Map([
-        ["Medium-Term Trend", [["DATE UPDATED:", "June 4 2026"], ["MTPI Avg Score", "0.21", "Long Biased"]]],
-        ["Long-Term Trend", [["DATE UPDATED:", "June 4 2026"], ["LTPI Avg Score", "-0.89", "Short"]]],
+        ["Medium-Term Trend (MTTPM)", [["DATE UPDATED:", "June 4 2026"], ["MTPI Avg Score", "0.21", "Long Biased"]]],
+        ["Long-Term Trend (LTTPM)", [["DATE UPDATED:", "June 4 2026"], ["LTPI Avg Score", "-0.89", "Short"]]],
         ["Medium-Term Forward Testing", [["Date", "TPI Score"], ["8/4/2025", "0.1"], ["8/5/2025", "0.2"]]],
         ["Long-Term Forward Testing", [["Date", "TPI Score"], ["11/26/2025", "-0.8"], ["12/3/2025", "-0.9"]]]
       ]),
@@ -88,8 +88,8 @@ describe("Google workbook normalization", () => {
 
   it("builds a lightweight signal snapshot from only the two core score ranges", () => {
     const snapshot = buildWorkbookSignalSnapshot(new Map([
-      ["Medium-Term Trend", [["DATE UPDATED:", "Aug 11 2026"], ["MTPI Avg Score", "-0.58", "Short"]]],
-      ["Long-Term Trend", [["DATE UPDATED:", "Aug 11 2026"], ["LTPI Avg Score", "-0.89", "Short"]]]
+      ["Medium-Term Trend (MTTPM)", [["DATE UPDATED:", "Aug 11 2026"], ["MTPI Avg Score", "-0.58", "Short"]]],
+      ["Long-Term Trend (LTTPM)", [["DATE UPDATED:", "Aug 11 2026"], ["LTPI Avg Score", "-0.89", "Short"]]]
     ]), 300);
 
     expect(snapshot.status).toBe("partial");

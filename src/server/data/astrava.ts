@@ -5,7 +5,7 @@ const broadCryptoSymbols = ["BTC", "WBTC", "ETH", "WETH", "HYPE", "LINK", "SOL",
 export const currentSignals: ModelSignal[] = [
   {
     id: "mtpi",
-    name: "Medium-Term Trend",
+    name: "Medium-Term Trend (MTTPM)",
     value: 0.47,
     state: "LONG",
     scope: "Five-day aggregate of total crypto market cap and TOTAL2.",
@@ -13,7 +13,7 @@ export const currentSignals: ModelSignal[] = [
   },
   {
     id: "ltpi",
-    name: "Long-Term Trend",
+    name: "Long-Term Trend (LTTPM)",
     value: -0.95,
     state: "SHORT",
     scope: "Weekly aggregate of total crypto market cap and Bitcoin.",

@@ -954,6 +954,15 @@ body.aq-site .aq-model-head h3 {
   font-weight: 500;
 }
 
+body.aq-site .aq-model-acronym {
+  color: var(--aq-muted);
+  font-family: var(--aq-font-body);
+  font-size: .58em;
+  font-weight: 700;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
 body.aq-site .aq-model-head p {
   margin: 4px 0 0;
   max-width: 700px;

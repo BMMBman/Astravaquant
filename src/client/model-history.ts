@@ -15,8 +15,8 @@ const modelSections: Record<string, string> = {
   mrpi: "03 / Rates"
 };
 const modelPurposes: Record<string, string> = {
-  mtpi: "Five-day trend read built from stacked trend-following indicators and oscillators.",
-  ltpi: "Weekly trend read for longer-horizon market structure.",
+  mtpi: "Five-day Medium-Term Trend Probability Module built from stacked trend-following indicators and oscillators.",
+  ltpi: "Weekly Long-Term Trend Probability Module for longer-horizon market structure.",
   mrpi: "Measures tightening versus easing pressure in the 10-year Treasury backdrop."
 };
 const methodologyLinks: Record<string, string> = {

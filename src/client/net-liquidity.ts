@@ -52,6 +52,41 @@ function setStatus(root: HTMLElement, text: string, unavailable = false): void {
   root.classList.toggle("is-unavailable", unavailable);
 }
 
+const components = [
+  { id: "fedLiquidity", code: "WALCL", label: "Federal Reserve assets", direction: "Adds liquidity", billions: false },
+  { id: "treasuryGeneralAccount", code: "TGA", label: "Treasury General Account", direction: "Removes liquidity", billions: false },
+  { id: "reverseRepo", code: "RRPONTSYD", label: "Overnight reverse repo", direction: "Removes liquidity", billions: true },
+  { id: "bankTermFundingProgram", code: "H41RESPPALDKNWW", label: "Bank Term Funding Program", direction: "Adds liquidity", billions: false },
+  { id: "primaryCredit", code: "WLCFLPCL", label: "Primary credit loans", direction: "Adds liquidity", billions: false }
+] as const;
+
+function componentSparkline(points: MarketPoint[]): string {
+  if (points.length < 2) return "<span>History unavailable</span>";
+  const width = 160;
+  const height = 42;
+  const values = points.map((point) => point.value);
+  const min = Math.min(...values);
+  const range = Math.max(...values) - min || 1;
+  const line = points.map((point, index) => {
+    const x = (index / (points.length - 1)) * width;
+    const y = 4 + ((Math.max(...values) - point.value) / range) * (height - 8);
+    return `${index ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`;
+  }).join(" ");
+  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Component history"><path d="${line}" class="net-liquidity-sparkline"/></svg>`;
+}
+
+function renderComponents(root: HTMLElement, dashboard: MarketDashboard, start: string, end: string): void {
+  root.innerHTML = components.map((component) => {
+    const metric = dashboard.metrics.find((candidate) => candidate.id === component.id);
+    const points = (metric?.points ?? []).filter((point) => {
+      const date = inputDate(point.timestamp);
+      return date >= start && date <= end;
+    });
+    const value = metric?.value === null || metric?.value === undefined ? "--" : formatBillions(component.billions ? metric.value * 1_000 : metric.value);
+    return `<article><code>${component.code}</code><span>${component.label}</span><b>${component.direction}</b><strong>${value}</strong><div class="aq-liquidity-sparkline">${componentSparkline(points)}</div></article>`;
+  }).join("");
+}
+
 export async function bootNetLiquidity(): Promise<void> {
   const root = document.querySelector<HTMLElement>("[data-net-liquidity]");
   if (!root) return;
@@ -62,6 +97,7 @@ export async function bootNetLiquidity(): Promise<void> {
   const start = root.querySelector<HTMLInputElement>("[data-net-liquidity-start]");
   const end = root.querySelector<HTMLInputElement>("[data-net-liquidity-end]");
   const range = root.querySelector<HTMLElement>("[data-net-liquidity-range]");
+  const componentRoot = root.querySelector<HTMLElement>("[data-net-liquidity-components]");
   if (!chart || !current || !asOf || !status || !start || !end || !range) return;
 
   try {
@@ -89,6 +125,7 @@ export async function bootNetLiquidity(): Promise<void> {
       });
       renderChart(chart, visible);
       range.textContent = visible.length ? `${formatDate(visible[0]!.timestamp)} - ${formatDate(visible.at(-1)!.timestamp)}` : "No observations in range";
+      if (componentRoot) renderComponents(componentRoot, dashboard, start.value, end.value);
     };
     start.addEventListener("change", render);
     end.addEventListener("change", render);

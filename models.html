@@ -58,7 +58,7 @@
         </div>
       </section>
 
-      <section class="aq-page-section">
+      <section class="aq-page-section" id="net-fed-liquidity">
         <div class="shell shell-wide">
           <div class="aq-section-head reveal">
             <div>
@@ -87,13 +87,7 @@
               <span data-net-liquidity-range>Awaiting aligned observations</span>
             </div>
             <div class="terminal-chart aq-chart-panel aq-net-liquidity-chart" data-net-liquidity-chart><span>Loading net liquidity history.</span></div>
-            <div class="aq-liquidity-components">
-              <div><code>WALCL</code><span>Federal Reserve assets</span><b>Adds liquidity</b></div>
-              <div><code>TGA</code><span>Treasury General Account</span><b>Removes liquidity</b></div>
-              <div><code>RRPONTSYD</code><span>Overnight reverse repo</span><b>Removes liquidity</b></div>
-              <div><code>H41RESPPALDKNWW</code><span>Bank Term Funding Program</span><b>Adds liquidity</b></div>
-              <div><code>WLCFLPCL</code><span>Primary credit loans</span><b>Adds liquidity</b></div>
-            </div>
+            <div class="aq-liquidity-components" data-net-liquidity-components><p class="aq-disclosure">Loading component trends.</p></div>
             <p class="aq-disclosure">Source: Federal Reserve H.4.1 data via FRED. BTFP is retained for historical continuity and is zero after its discontinuation. This derived series is market context, not a trading signal or a recommendation.</p>
           </article>
         </div>
@@ -113,7 +107,7 @@
           </div>
 
           <div class="aq-model-list" data-model-history>
-            <article class="aq-model-card aq-model-catalog-card">
+            <article id="mtpi" class="aq-model-card aq-model-catalog-card">
               <header class="aq-model-head">
                 <div>
                   <p class="aq-section-label">01 / Trend</p>
@@ -133,7 +127,7 @@
               </div>
               <p class="aq-disclosure">Loading the latest published reading and dated forward-test history.</p>
             </article>
-            <article class="aq-model-card aq-model-catalog-card">
+            <article id="ltpi" class="aq-model-card aq-model-catalog-card">
               <header class="aq-model-head">
                 <div>
                   <p class="aq-section-label">02 / Trend</p>
@@ -153,7 +147,7 @@
               </div>
               <p class="aq-disclosure">Loading the latest published reading and dated forward-test history.</p>
             </article>
-            <article class="aq-model-card aq-model-catalog-card">
+            <article id="mrpi" class="aq-model-card aq-model-catalog-card">
               <header class="aq-model-head">
                 <div>
                   <p class="aq-section-label">03 / Rates</p>
@@ -205,7 +199,7 @@
         </div>
       </section>
 
-      <section class="aq-page-section">
+      <section class="aq-page-section" id="valuation">
         <div class="shell shell-wide">
           <div class="aq-section-head reveal">
             <div>

@@ -33,6 +33,15 @@ function formatDate(value: string): string {
   }).format(new Date(value));
 }
 
+function renderGauge(root: HTMLElement, value: number, tone: "good" | "warn" | "bad" | "neutral"): void {
+  const clamped = Math.max(-1, Math.min(1, value));
+  const angle = Math.PI - ((clamped + 1) / 2) * Math.PI;
+  const x = 90 + 64 * Math.cos(angle);
+  const y = 88 - 64 * Math.sin(angle);
+  const color = tone === "good" ? "#95b8a6" : tone === "bad" ? "#d9857b" : tone === "warn" ? "#c8a66e" : "#9ba3ad";
+  root.innerHTML = `<svg viewBox="0 0 180 104"><path d="M26 88A64 64 0 0 1 154 88" fill="none" stroke="rgba(241,236,226,.14)" stroke-width="7"/><path d="M26 88A64 64 0 0 1 154 88" fill="none" stroke="${color}" stroke-width="3" pathLength="1" stroke-dasharray="${((clamped + 1) / 2).toFixed(3)} 1"/><circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4.5" fill="${color}" stroke="#111216" stroke-width="2"/><text x="90" y="78" text-anchor="middle" fill="#f1ece2" font-size="23" font-family="Georgia, serif">${signed(value)}</text><text x="26" y="102" fill="#8f8d88" font-size="8">-1</text><text x="90" y="102" text-anchor="middle" fill="#8f8d88" font-size="8">0</text><text x="154" y="102" text-anchor="end" fill="#8f8d88" font-size="8">+1</text></svg>`;
+}
+
 function normalizedPublicationDate(snapshot: WorkbookSignalSnapshot): string {
   const publishedDates = snapshot.signals
     .map((signal) => signal.updatedLabel?.trim() ?? "")
@@ -93,6 +102,8 @@ function renderSignal(signal: WorkbookModelSignal): void {
     if (updated) {
       updated.textContent = signal.updatedLabel ?? "Published fallback";
     }
+    const gauge = root.querySelector<HTMLElement>("[data-home-gauge]");
+    if (gauge) renderGauge(gauge, signal.value, tone);
   });
 }
 

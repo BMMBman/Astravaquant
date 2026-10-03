@@ -529,11 +529,11 @@ body.aq-site .aq-home-summary {
 }
 
 body.aq-site.aq-home .aq-page-section {
-  padding: 32px 0;
+  padding: 22px 0;
 }
 
 body.aq-site.aq-home .aq-page-section:first-of-type {
-  padding-top: 54px;
+  padding-top: 24px;
 }
 
 body.aq-site.aq-home .aq-section-head {
@@ -541,8 +541,182 @@ body.aq-site.aq-home .aq-section-head {
 }
 
 body.aq-site.aq-home .aq-panel {
-  padding: 20px;
+  padding: 12px;
 }
+
+body.aq-site.aq-home .aq-hero {
+  padding: 48px 0 18px;
+}
+
+body.aq-site.aq-home .aq-hero-grid {
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+  gap: 26px;
+}
+
+body.aq-site.aq-home .aq-title {
+  max-width: 620px;
+  font-size: clamp(2.5rem, 5.5vw, 4.45rem);
+}
+
+body.aq-site.aq-home .aq-lead {
+  max-width: 590px;
+  font-size: clamp(.94rem, 1.45vw, 1.06rem);
+}
+
+body.aq-site.aq-home .aq-hero-actions { margin-top: 18px; }
+
+body.aq-site .aq-home-model-map {
+  display: grid;
+  gap: 10px;
+  padding: 15px;
+  border: 1px solid var(--aq-border);
+  border-radius: 18px;
+  background: radial-gradient(circle at 54% 15%, rgba(143, 200, 244, .13), transparent 35%), linear-gradient(140deg, rgba(149, 184, 166, .08), transparent 58%), var(--aq-panel);
+}
+
+body.aq-site .aq-model-map-visual {
+  position: relative;
+  min-height: 118px;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(241, 236, 226, .09);
+}
+
+body.aq-site .aq-model-map-visual svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+body.aq-site .aq-model-map-visual path { fill: none; stroke: rgba(216, 203, 182, .32); stroke-width: 1.4; stroke-dasharray: 5 6; }
+body.aq-site .aq-model-map-visual circle { fill: #95b8a6; stroke: #111216; stroke-width: 4; }
+
+body.aq-site .aq-map-node {
+  appearance: none;
+  position: absolute;
+  display: grid;
+  width: 62px;
+  height: 62px;
+  padding: 0;
+  border: 1px solid rgba(149, 184, 166, .55);
+  border-radius: 50%;
+  color: var(--aq-text);
+  background: radial-gradient(circle at 35% 28%, rgba(241,236,226,.2), rgba(149,184,166,.13) 42%, rgba(18,20,24,.82) 78%);
+  font-family: var(--aq-font-body);
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  place-items: center;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+body.aq-site .aq-map-node:hover { border-color: var(--aq-link); box-shadow: 0 0 22px rgba(143, 200, 244, .2); transform: translateY(-3px) scale(1.04); }
+body.aq-site .aq-map-node-one { bottom: 7px; left: 3%; }
+body.aq-site .aq-map-node-two { top: 3px; left: 42%; }
+body.aq-site .aq-map-node-three { right: 4%; bottom: 38px; }
+body.aq-site .aq-map-node-four { right: 24%; bottom: 0; width: 50px; height: 50px; font-size: .58rem; border-color: rgba(216, 203, 182, .45); }
+
+body.aq-site .aq-home-model-map > strong { font-family: var(--aq-font-display); font-size: 1.28rem; font-weight: 500; line-height: 1.05; }
+
+body.aq-site .aq-home-model-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+body.aq-site .aq-home-model-links button { display: grid; gap: 4px; min-width: 0; padding: 8px; border: 1px solid rgba(241, 236, 226, .1); border-radius: 9px; color: var(--aq-text); background: rgba(255,255,255,.025); text-align: left; cursor: pointer; }
+body.aq-site .aq-home-model-links button:hover,
+body.aq-site .aq-home-model-links button.is-active { border-color: rgba(149, 184, 166, .55); }
+body.aq-site .aq-home-model-links span { font-size: .68rem; font-weight: 700; line-height: 1.2; }
+body.aq-site .aq-home-model-links b { color: var(--aq-muted); font-size: .62rem; font-weight: 500; line-height: 1.25; }
+
+body.aq-site .aq-atlas-dialog {
+  width: min(960px, calc(100vw - 32px));
+  max-width: none;
+  max-height: min(760px, calc(100vh - 32px));
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(149, 184, 166, .34);
+  border-radius: 24px;
+  color: var(--aq-text);
+  background: #101217;
+  box-shadow: 0 28px 100px rgba(0, 0, 0, .7), 0 0 80px rgba(143, 200, 244, .08);
+}
+
+body.aq-site .aq-atlas-dialog::backdrop { background: rgba(3, 5, 8, .82); backdrop-filter: blur(8px); }
+
+body.aq-site .aq-atlas-shell {
+  position: relative;
+  display: grid;
+  gap: 16px;
+  min-height: 500px;
+  padding: 26px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background:
+    linear-gradient(rgba(255,255,255,.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.026) 1px, transparent 1px),
+    radial-gradient(circle at 72% 8%, rgba(143,200,244,.12), transparent 32%),
+    radial-gradient(circle at 18% 94%, rgba(149,184,166,.11), transparent 28%),
+    #101217;
+  background-size: 30px 30px, 30px 30px, auto, auto, auto;
+}
+
+body.aq-site .aq-atlas-halo { position: absolute; top: -130px; right: -110px; width: 360px; height: 360px; pointer-events: none; }
+body.aq-site .aq-atlas-halo i { position: absolute; inset: 0; border: 1px solid rgba(143,200,244,.16); border-radius: 50%; }
+body.aq-site .aq-atlas-halo i:nth-child(2) { inset: 48px; border-color: rgba(149,184,166,.2); }
+body.aq-site .aq-atlas-halo i:nth-child(3) { inset: 96px; border-color: rgba(216,203,182,.24); }
+
+body.aq-site .aq-atlas-head,
+body.aq-site .aq-atlas-foot { position: relative; display: flex; align-items: end; justify-content: space-between; gap: 16px; }
+body.aq-site .aq-atlas-head h2 { margin: 3px 0 0; font-family: var(--aq-font-display); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 500; letter-spacing: -.045em; line-height: .95; }
+body.aq-site .aq-atlas-close { min-height: 34px; padding: 7px 11px; border: 1px solid rgba(241,236,226,.18); border-radius: 999px; color: var(--aq-muted); background: rgba(255,255,255,.035); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+body.aq-site .aq-atlas-close:hover { color: var(--aq-text); border-color: rgba(143,200,244,.55); }
+
+body.aq-site .aq-atlas-nav { position: relative; display: flex; flex-wrap: wrap; gap: 7px; padding: 7px 0; border-top: 1px solid rgba(241,236,226,.1); border-bottom: 1px solid rgba(241,236,226,.1); }
+body.aq-site .aq-atlas-nav button { padding: 7px 10px; border: 1px solid transparent; border-radius: 999px; color: var(--aq-muted); background: transparent; font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+body.aq-site .aq-atlas-nav button:hover,
+body.aq-site .aq-atlas-nav button.is-active { border-color: rgba(149,184,166,.5); color: var(--aq-text); background: rgba(149,184,166,.1); }
+
+body.aq-site .aq-atlas-content { position: relative; display: grid; align-content: start; gap: 16px; min-height: 300px; }
+body.aq-site .aq-atlas-intro { display: grid; gap: 4px; max-width: 640px; }
+body.aq-site .aq-atlas-intro span,
+body.aq-site .aq-atlas-score > span { color: var(--aq-faint); font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+body.aq-site .aq-atlas-intro p { margin: 0; color: var(--aq-muted); }
+
+body.aq-site .aq-atlas-grid { display: grid; gap: 12px; }
+body.aq-site .aq-atlas-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+body.aq-site .aq-atlas-card { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; min-width: 0; padding: 16px; border: 1px solid rgba(241,236,226,.12); border-radius: 15px; background: linear-gradient(135deg, rgba(255,255,255,.055), rgba(255,255,255,.012)); }
+body.aq-site .aq-atlas-card p { margin: 0; color: var(--aq-muted); font-size: .76rem; }
+body.aq-site .aq-atlas-card > strong { font-family: var(--aq-font-display); font-size: 2.1rem; font-weight: 500; letter-spacing: -.05em; line-height: 1; }
+body.aq-site .aq-atlas-card > b { justify-self: end; align-self: center; color: var(--aq-positive); font-size: .68rem; letter-spacing: .07em; text-transform: uppercase; }
+body.aq-site .aq-atlas-card > small { grid-column: 1 / -1; color: var(--aq-faint); font-size: .68rem; }
+
+body.aq-site .aq-atlas-sparkline { grid-column: 1 / -1; height: 72px; margin: 5px 0; border-top: 1px solid rgba(241,236,226,.08); border-bottom: 1px solid rgba(241,236,226,.08); }
+body.aq-site .aq-atlas-sparkline svg { width: 100%; height: 100%; overflow: visible; }
+body.aq-site .aq-atlas-sparkline path { fill: none; stroke: #8fc8f4; stroke-width: 2; vector-effect: non-scaling-stroke; }
+body.aq-site .aq-atlas-sparkline.is-unavailable { display: grid; place-items: center; color: var(--aq-faint); font-size: .74rem; }
+
+body.aq-site .aq-atlas-score { display: grid; gap: 5px; padding: 20px; border-left: 3px solid #95b8a6; background: linear-gradient(90deg, rgba(149,184,166,.12), rgba(255,255,255,.02)); }
+body.aq-site .aq-atlas-score > strong { font-family: var(--aq-font-display); font-size: clamp(3rem, 7vw, 5rem); font-weight: 500; letter-spacing: -.07em; line-height: .85; }
+body.aq-site .aq-atlas-score > b { color: var(--aq-positive); font-size: .74rem; letter-spacing: .09em; text-transform: uppercase; }
+body.aq-site .aq-atlas-score > small { color: var(--aq-muted); }
+
+body.aq-site .aq-atlas-categories,
+body.aq-site .aq-atlas-components { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+body.aq-site .aq-atlas-categories > div,
+body.aq-site .aq-atlas-components > div { display: grid; gap: 4px; min-width: 0; padding: 11px; border: 1px solid rgba(241,236,226,.1); border-radius: 10px; background: rgba(255,255,255,.025); }
+body.aq-site .aq-atlas-categories span,
+body.aq-site .aq-atlas-components span { color: var(--aq-muted); font-size: .7rem; }
+body.aq-site .aq-atlas-categories strong,
+body.aq-site .aq-atlas-components strong { font-family: var(--aq-font-display); font-size: 1.2rem; font-weight: 500; }
+body.aq-site .aq-atlas-categories small,
+body.aq-site .aq-atlas-components b { color: var(--aq-faint); font-size: .62rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+body.aq-site .aq-atlas-components code { color: var(--aq-link); font-size: .66rem; overflow-wrap: anywhere; }
+
+body.aq-site .aq-atlas-formula { display: grid; gap: 4px; padding: 12px; border: 1px dashed rgba(216,203,182,.28); color: var(--aq-text); font-family: var(--aq-font-mono); font-size: .8rem; overflow-wrap: anywhere; }
+body.aq-site .aq-atlas-formula small { color: var(--aq-muted); font-family: var(--aq-font-body); font-size: .72rem; }
+body.aq-site .aq-atlas-foot { flex-wrap: wrap; padding-top: 4px; }
+body.aq-site .aq-atlas-foot a { color: var(--aq-link); font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+body.aq-site .aq-atlas-loading,
+body.aq-site .aq-atlas-empty { display: grid; justify-items: start; gap: 8px; min-height: 250px; align-content: center; color: var(--aq-muted); }
+body.aq-site .aq-atlas-loading i { width: 30px; height: 30px; border: 2px solid rgba(143,200,244,.2); border-top-color: #8fc8f4; border-radius: 50%; animation: aq-atlas-spin 1.1s linear infinite; }
+body.aq-site .aq-atlas-empty strong { color: var(--aq-text); font-family: var(--aq-font-display); font-size: 1.5rem; font-weight: 500; }
+body.aq-site .aq-atlas-empty p { max-width: 500px; margin: 0; }
+
+@keyframes aq-atlas-spin { to { transform: rotate(360deg); } }
 
 body.aq-site.aq-home .aq-table th,
 body.aq-site.aq-home .aq-table td {
@@ -1056,15 +1230,6 @@ body.aq-site .aq-liquidity-components {
   gap: 8px;
 }
 
-body.aq-site .aq-liquidity-components > div {
-  display: grid;
-  gap: 5px;
-  min-width: 0;
-  padding: 10px;
-  border-left: 2px solid rgba(149, 184, 166, 0.42);
-  background: rgba(255, 255, 255, 0.025);
-}
-
 body.aq-site .aq-liquidity-components code {
   color: var(--aq-text);
   font-family: var(--aq-font-mono);
@@ -1077,6 +1242,31 @@ body.aq-site .aq-liquidity-components span {
   font-size: 0.73rem;
   line-height: 1.32;
 }
+
+body.aq-site .aq-liquidity-components article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px 8px;
+  min-width: 0;
+  padding: 10px;
+  border-left: 2px solid rgba(149, 184, 166, 0.42);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+body.aq-site .aq-liquidity-components article > span,
+body.aq-site .aq-liquidity-components article > b,
+body.aq-site .aq-liquidity-sparkline { grid-column: 1 / -1; }
+
+body.aq-site .aq-liquidity-components article > strong {
+  color: var(--aq-text);
+  font-family: var(--aq-font-display);
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+body.aq-site .aq-liquidity-sparkline { height: 34px; }
+body.aq-site .aq-liquidity-sparkline svg { width: 100%; height: 100%; overflow: visible; }
+body.aq-site .net-liquidity-sparkline { fill: none; stroke: #95b8a6; stroke-width: 1.8; }
 
 body.aq-site .aq-model-card {
   display: grid;
@@ -1451,9 +1641,9 @@ body.aq-site .aq-home-state-grid {
 body.aq-site .aq-home-state-card {
   display: grid;
   align-content: start;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
-  padding: 16px;
+  padding: 12px;
   border: 1px solid rgba(241, 236, 226, 0.11);
   border-radius: 14px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
@@ -1468,11 +1658,22 @@ body.aq-site .aq-home-state-card h3 {
 }
 
 body.aq-site .aq-home-state-card > p:not(.aq-section-label) {
-  min-height: 2.8em;
+  min-height: 0;
   margin: 0;
   color: var(--aq-muted);
   font-size: 0.8rem;
   line-height: 1.45;
+}
+
+body.aq-site .aq-home-dial {
+  height: 72px;
+  margin: -2px 0 -8px;
+}
+
+body.aq-site .aq-home-dial svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
 body.aq-site .aq-home-state-reading {
@@ -2553,6 +2754,15 @@ body.aq-site .aq-spacer-top {
 }
 
 @media (max-width: 860px) {
+  body.aq-site.aq-home .aq-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  body.aq-site.aq-home .aq-title {
+    font-size: clamp(2.35rem, 9vw, 3.7rem);
+  }
+
   body.aq-site .header-inner {
     position: relative;
     display: grid;
@@ -2690,6 +2900,42 @@ body.aq-site .aq-spacer-top {
   body.aq-site .brand-copy span {
     display: none;
   }
+
+  body.aq-site.aq-home .aq-hero {
+    padding: 34px 0 12px;
+  }
+
+  body.aq-site .aq-home-model-links {
+    grid-template-columns: 1fr;
+  }
+
+  body.aq-site .aq-atlas-dialog {
+    width: min(100vw - 18px, 680px);
+    max-height: calc(100vh - 18px);
+    border-radius: 18px;
+  }
+
+  body.aq-site .aq-atlas-shell {
+    min-height: 0;
+    padding: 18px;
+  }
+
+  body.aq-site .aq-atlas-head { align-items: start; }
+  body.aq-site .aq-atlas-head h2 { font-size: 2rem; }
+  body.aq-site .aq-atlas-grid.two,
+  body.aq-site .aq-atlas-categories,
+  body.aq-site .aq-atlas-components { grid-template-columns: 1fr; }
+  body.aq-site .aq-atlas-score > strong { font-size: 3.4rem; }
+
+  body.aq-site .aq-model-map-visual {
+    min-height: 128px;
+  }
+
+  body.aq-site .aq-map-node { width: 56px; height: 56px; font-size: .59rem; }
+  body.aq-site .aq-map-node-one { left: 1%; }
+  body.aq-site .aq-map-node-two { left: 39%; }
+  body.aq-site .aq-map-node-three { right: 1%; }
+  body.aq-site .aq-map-node-four { right: 26%; width: 45px; height: 45px; font-size: .52rem; }
 
   body.aq-site .aq-table-wrap {
     width: 100%;
@@ -3081,4 +3327,6 @@ body.aq-site .aq-spacer-top {
     transition: none;
     transform: none;
   }
+
+  body.aq-site .aq-atlas-loading i { animation: none; }
 }

@@ -32,6 +32,7 @@
         </a>
         <nav class="site-nav" aria-label="Main navigation">
           <a href="models.html">Models</a>
+          <a href="backtesting.html">Backtesting</a>
           <a href="about.html">About</a>
         </nav>
         <div class="header-meta">Transparent quantitative frameworks.</div>
@@ -43,20 +44,32 @@
         <div class="shell aq-hero-grid">
           <div class="aq-hero-copy reveal">
             <p class="aq-kicker">AstravaQuant</p>
-            <h1 class="aq-title">Systematic research on market regimes.</h1>
+            <h1 class="aq-title">Research systems for changing market conditions.</h1>
             <p class="aq-lead">
               Independent quantitative research across liquidity, rates, crypto, and valuation.
             </p>
             <div class="aq-hero-actions">
-              <a class="button primary" href="models.html">View Models</a>
-              <a class="button" href="methodology.html">Read Methodology</a>
+              <a class="button primary" href="#current-models">Current models</a>
+              <a class="button" href="models.html">Open research library</a>
             </div>
           </div>
-
+          <aside class="aq-home-model-map reveal" aria-label="Research model map">
+            <div class="aq-model-map-visual">
+              <svg viewBox="0 0 360 210" aria-hidden="true"><path d="M50 152C94 40 250 38 308 108"/><path d="M53 154C144 205 260 179 310 110"/><path d="M181 62C205 126 240 154 286 166"/></svg>
+              <button class="aq-map-node aq-map-node-one" type="button" data-atlas-open="trend">Trend</button><button class="aq-map-node aq-map-node-two" type="button" data-atlas-open="valuation">Valuation</button><button class="aq-map-node aq-map-node-three" type="button" data-atlas-open="liquidity">Liquidity</button><button class="aq-map-node aq-map-node-four" type="button" data-atlas-open="backtesting">Backtests</button>
+            </div>
+            <p class="aq-section-label">Research map</p>
+            <strong>Follow the question, then inspect the evidence.</strong>
+            <div class="aq-home-model-links">
+              <button type="button" data-atlas-open="trend"><span>Trend following</span><b>Medium + long horizon</b></button>
+              <button type="button" data-atlas-open="valuation"><span>Bitcoin valuation</span><b>Z-score composite</b></button>
+              <button type="button" data-atlas-open="liquidity"><span>Net Fed liquidity</span><b>FRED-derived series</b></button>
+            </div>
+          </aside>
         </div>
       </section>
 
-      <section class="aq-page-section">
+      <section class="aq-page-section" id="current-models">
         <div class="shell aq-home-summary">
           <div class="aq-section-head reveal">
             <div>
@@ -74,7 +87,8 @@
               <article class="aq-home-state-card" data-model-id="mtpi" data-feed-state="loading" aria-busy="true">
                 <p class="aq-section-label">01 / Trend</p>
                 <h3>Medium-Term Trend <span class="aq-model-acronym">MTTPM</span></h3>
-                <p>Five-day crypto trend probability module.</p>
+                <p>Five-day trend probability module.</p>
+                <div class="aq-home-dial" data-home-gauge aria-hidden="true"><svg viewBox="0 0 180 104"></svg></div>
                 <div class="aq-home-state-reading"><strong data-model-value>--</strong><span>Standardized score</span></div>
                 <div class="aq-home-state-status"><span class="status-neutral" data-model-state>Syncing</span><time data-model-updated>Waiting for workbook</time></div>
                 <a class="aq-row-model-link" href="models.html#mtpi">Inspect model</a>
@@ -82,7 +96,8 @@
               <article class="aq-home-state-card" data-model-id="ltpi" data-feed-state="loading" aria-busy="true">
                 <p class="aq-section-label">02 / Trend</p>
                 <h3>Long-Term Trend <span class="aq-model-acronym">LTTPM</span></h3>
-                <p>Weekly crypto trend probability module.</p>
+                <p>Weekly trend probability module.</p>
+                <div class="aq-home-dial" data-home-gauge aria-hidden="true"><svg viewBox="0 0 180 104"></svg></div>
                 <div class="aq-home-state-reading"><strong data-model-value>--</strong><span>Standardized score</span></div>
                 <div class="aq-home-state-status"><span class="status-neutral" data-model-state>Syncing</span><time data-model-updated>Waiting for workbook</time></div>
                 <a class="aq-row-model-link" href="models.html#ltpi">Inspect model</a>
@@ -91,6 +106,7 @@
                 <p class="aq-section-label">03 / Rates</p>
                 <h3>Mortgage Rate Pressure Index</h3>
                 <p>Weekly 10-year Treasury pressure model.</p>
+                <div class="aq-home-dial" data-home-gauge aria-hidden="true"><svg viewBox="0 0 180 104"></svg></div>
                 <div class="aq-home-state-reading"><strong data-model-value>--</strong><span>Standardized score</span></div>
                 <div class="aq-home-state-status"><span class="status-neutral" data-model-state>Syncing</span><time data-model-updated>Waiting for workbook</time></div>
                 <a class="aq-row-model-link" href="models.html#mrpi">Inspect model</a>
@@ -113,6 +129,20 @@
         </div>
       </section>
     </main>
+
+    <dialog class="aq-atlas-dialog" data-atlas-dialog aria-labelledby="atlas-title">
+      <div class="aq-atlas-shell">
+        <div class="aq-atlas-halo" aria-hidden="true"><i></i><i></i><i></i></div>
+        <header class="aq-atlas-head">
+          <div><p class="aq-section-label">AstravaQuant Atlas</p><h2 id="atlas-title" data-atlas-title>Research system</h2></div>
+          <button class="aq-atlas-close" type="button" data-atlas-close aria-label="Close research atlas">Close</button>
+        </header>
+        <div class="aq-atlas-nav" aria-label="Atlas systems">
+          <button type="button" data-atlas-open="trend">Trend</button><button type="button" data-atlas-open="valuation">Valuation</button><button type="button" data-atlas-open="liquidity">Liquidity</button><button type="button" data-atlas-open="backtesting">Backtesting</button>
+        </div>
+        <div class="aq-atlas-content" data-atlas-content aria-live="polite"><p>Opening research system.</p></div>
+      </div>
+    </dialog>
 
     <footer class="aq-footer">
       <div class="shell footer-inner">

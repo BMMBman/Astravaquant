@@ -39,6 +39,11 @@ function billions(value: number | null, valueIsBillions = false): string {
   return `$${inBillions.toLocaleString("en-US", { maximumFractionDigits: 0 })}B`;
 }
 
+function trillions(value: number | null): string {
+  if (value === null) return "--";
+  return "$" + (value / 1_000_000).toLocaleString("en-US", { minimumFractionDigits: 3, maximumFractionDigits: 3 }) + "T";
+}
+
 function sparkline(points: Array<{ date: string; score: number }>): string {
   if (points.length < 2) return '<div class="aq-atlas-sparkline is-unavailable">History unavailable</div>';
   const width = 300;
@@ -126,9 +131,11 @@ function liquidityMarkup(markets: MarketDashboard): string {
     return `<div><code>${component.code}</code><span>${component.label}</span><strong>${billions(metric?.value ?? null, metric?.unit === "usd_billions")}</strong><b>${component.subtract ? "Subtract" : "Add"}</b>${sparkline(points)}</div>`;
   }).join("");
   const netPoints = net ? net.points.map((point) => ({ date: point.timestamp, score: point.value })) : [];
-  return `<div class="aq-atlas-score"><span>Derived net liquidity</span><strong>${billions(net?.value ?? null)}</strong><b>${net?.status === "ready" ? "FRED-derived weekly series" : "Feed unavailable"}</b><small>${net?.asOf ? `As of ${date(net.asOf)}` : "No substitute reading"}</small></div>
+  const netValue = net?.value ?? null;
+  return `<div class="aq-atlas-score"><span>Derived net liquidity</span><strong>${trillions(netValue)}</strong><b>${net?.status === "ready" ? "FRED-derived weekly series" : "Feed unavailable"}</b><small>${net?.asOf ? `As of ${date(net.asOf)}` : "No substitute reading"}</small><em>${billions(netValue)} / approx. ${netValue === null ? "--" : "$" + (netValue * 1_000_000).toLocaleString("en-US")}</em></div>
     <section class="aq-atlas-series-panel"><div><span>Net liquidity history</span><p>Weekly derived series from the five formula components.</p></div>${sparkline(netPoints)}</section>
     <div class="aq-atlas-formula"><span>WALCL - TGA - RRPONTSYD + H41RESPPALDKNWW + WLCFLPCL</span><small>All inputs aligned in millions of U.S. dollars.</small></div>
+    <details class="aq-atlas-info-panel"><summary>What this measures and why it matters</summary><div><p><strong>What it measures.</strong> Net Fed Liquidity starts with total Federal Reserve assets, subtracts cash held in the Treasury General Account and the reverse-repo facility, then adds active Fed funding facilities.</p><p><strong>Why it matters.</strong> It is a balance-sheet context measure for the liquidity available to the financial system. It can help frame risk conditions, but it does not establish causation, predict returns, or function as a trading recommendation.</p></div></details>
     <div class="aq-atlas-components">${components}</div>
     <div class="aq-atlas-foot"><span>Five first-party FRED inputs, aligned to a weekly liquidity series.</span></div>`;
 }

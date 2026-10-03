@@ -931,7 +931,9 @@ body.aq-site.aq-home .aq-market-atlas-footer p:first-child span {
 body.aq-site .aq-atlas-dialog {
   width: min(960px, calc(100vw - 32px));
   max-width: none;
+  height: min(760px, calc(100vh - 32px));
   max-height: min(760px, calc(100vh - 32px));
+  box-sizing: border-box;
   padding: 0;
   overflow: hidden;
   border: 1px solid rgba(149, 184, 166, .34);
@@ -947,10 +949,14 @@ body.aq-site .aq-atlas-shell {
   position: relative;
   display: grid;
   gap: 16px;
+  height: 100%;
   min-height: 500px;
   padding: 26px;
+  box-sizing: border-box;
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   background:
     linear-gradient(rgba(255,255,255,.026) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.026) 1px, transparent 1px),
@@ -1007,6 +1013,7 @@ body.aq-site .aq-atlas-score { display: grid; gap: 5px; padding: 20px; border-le
 body.aq-site .aq-atlas-score > strong { font-family: var(--aq-font-display); font-size: clamp(3rem, 7vw, 5rem); font-weight: 500; letter-spacing: -.07em; line-height: .85; }
 body.aq-site .aq-atlas-score > b { color: var(--aq-positive); font-size: .74rem; letter-spacing: .09em; text-transform: uppercase; }
 body.aq-site .aq-atlas-score > small { color: var(--aq-muted); }
+body.aq-site .aq-atlas-score > em { color: var(--aq-faint); font-size: .7rem; font-style: normal; }
 
 body.aq-site .aq-atlas-categories,
 body.aq-site .aq-atlas-components { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
@@ -1047,6 +1054,14 @@ body.aq-site .aq-atlas-indicator-list article > b { align-self: end; color: var(
 body.aq-site .aq-atlas-indicator-list article > span { grid-column: 2; align-self: start; text-align: right; font-size: .58rem; }
 body.aq-site .aq-atlas-indicator-rail { position: relative; grid-column: 1 / -1; height: 3px; margin-top: 4px; border-radius: 999px; background: linear-gradient(90deg, rgba(210,139,132,.65), rgba(241,236,226,.25) 50%, rgba(149,184,166,.75)); }
 body.aq-site .aq-atlas-indicator-rail i { position: absolute; top: 50%; width: 8px; height: 8px; border: 1px solid #f4f0e6; border-radius: 50%; background: #111319; transform: translate(-50%, -50%); }
+body.aq-site .aq-atlas-info-panel { border: 1px solid rgba(143,200,244,.24); border-radius: 12px; background: linear-gradient(90deg, rgba(143,200,244,.08), rgba(255,255,255,.02)); }
+body.aq-site .aq-atlas-info-panel summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 14px; color: var(--aq-text); font-size: .76rem; font-weight: 700; cursor: pointer; }
+body.aq-site .aq-atlas-info-panel summary::after { content: "+"; color: var(--aq-link); font-size: 1.1rem; line-height: 1; }
+body.aq-site .aq-atlas-info-panel[open] summary { border-bottom: 1px solid rgba(143,200,244,.16); }
+body.aq-site .aq-atlas-info-panel[open] summary::after { content: "−"; }
+body.aq-site .aq-atlas-info-panel > div { display: grid; gap: 8px; padding: 13px 14px 15px; }
+body.aq-site .aq-atlas-info-panel p { margin: 0; color: var(--aq-muted); font-size: .76rem; line-height: 1.5; }
+body.aq-site .aq-atlas-info-panel p strong { color: var(--aq-text); }
 body.aq-site .aq-atlas-foot { flex-wrap: wrap; padding-top: 4px; }
 body.aq-site .aq-atlas-foot a { color: var(--aq-link); font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
 body.aq-site .aq-atlas-foot span { color: var(--aq-muted); font-size: .74rem; }
@@ -3364,6 +3379,7 @@ body.aq-site .aq-spacer-top {
 
   body.aq-site .aq-atlas-dialog {
     width: min(100vw - 18px, 680px);
+    height: calc(100vh - 18px);
     max-height: calc(100vh - 18px);
     border-radius: 18px;
   }

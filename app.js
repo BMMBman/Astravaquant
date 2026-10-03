@@ -2,15 +2,17 @@ document.documentElement.classList.add("js");
 if (document.body) {
 document.body.classList.add("js");
 
-// Backtesting is a primary destination on every public page.
-document.querySelectorAll(".site-nav").forEach((navigation) => {
-  if (navigation.querySelector('a[href="backtesting.html"]')) return;
-  const link = document.createElement("a");
-  link.href = "backtesting.html";
-  link.textContent = "Backtesting";
-  const models = navigation.querySelector('a[href="models.html"]');
-  navigation.insertBefore(link, models?.nextSibling ?? null);
-});
+// The homepage keeps research navigation inside the Market Atlas.
+if (!document.body.classList.contains("aq-home")) {
+  document.querySelectorAll(".site-nav").forEach((navigation) => {
+    if (navigation.querySelector('a[href="backtesting.html"]')) return;
+    const link = document.createElement("a");
+    link.href = "backtesting.html";
+    link.textContent = "Backtesting";
+    const models = navigation.querySelector('a[href="models.html"]');
+    navigation.insertBefore(link, models?.nextSibling ?? null);
+  });
+}
 }
 
 (function () {
@@ -58,7 +60,7 @@ document.querySelectorAll(".site-nav").forEach((navigation) => {
         setOpen(!header.classList.contains("is-nav-open"));
       });
 
-      Array.prototype.slice.call(nav.querySelectorAll("a")).forEach(function (link) {
+      Array.prototype.slice.call(nav.querySelectorAll("a, button[data-atlas-open]")).forEach(function (link) {
         link.addEventListener("click", function () {
           setOpen(false);
         });

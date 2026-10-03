@@ -63,7 +63,7 @@ function trendMarkup(workbook: WorkbookDashboard): string {
   const long = signals.get("ltpi");
   return `<div class="aq-atlas-intro"><span>Two horizons, one research family</span><p>The five-day and weekly probability modules are published with their dated forward-test records.</p></div>
     <div class="aq-atlas-grid two">${signalCard(series.get("mtpi"), "Medium-Term Trend / MTTPM", medium?.state ?? "Unavailable", medium?.updatedLabel)}${signalCard(series.get("ltpi"), "Long-Term Trend / LTTPM", long?.state ?? "Unavailable", long?.updatedLabel)}</div>
-    <div class="aq-atlas-foot"><a href="models.html#mtpi">Open full trend models</a><a href="backtesting.html">Inspect forward testing</a></div>`;
+    <div class="aq-atlas-foot"><span>Published signal state and dated forward-test record.</span></div>`;
 }
 
 function valuationMarkup(valuation: BitcoinValuationDashboard): string {
@@ -71,7 +71,7 @@ function valuationMarkup(valuation: BitcoinValuationDashboard): string {
   return `<div class="aq-atlas-score"><span>Current Z-score</span><strong>${score(valuation.score, "σ")}</strong><b>${escapeHtml(valuation.state ?? "Unavailable")}</b><small>Published ${date(valuation.workbookUpdatedLabel)}</small></div>
     ${sparkline(valuation.history)}
     <div class="aq-atlas-categories">${categories || '<span>Category inputs unavailable</span>'}</div>
-    <div class="aq-atlas-foot"><a href="valuation.html">Open valuation model</a><a href="valuation-methodology.html">Read methodology</a></div>`;
+    <div class="aq-atlas-foot"><span>Composite reading across fundamental, technical, and sentiment inputs.</span></div>`;
 }
 
 const liquidityComponents: Array<{ id: MarketMetric["id"]; code: string; label: string; subtract?: boolean }> = [
@@ -91,7 +91,7 @@ function liquidityMarkup(markets: MarketDashboard): string {
   return `<div class="aq-atlas-score"><span>Derived net liquidity</span><strong>${billions(net?.value ?? null)}</strong><b>${net?.status === "ready" ? "FRED-derived weekly series" : "Feed unavailable"}</b><small>${net?.asOf ? `As of ${date(net.asOf)}` : "No substitute reading"}</small></div>
     <div class="aq-atlas-formula"><span>WALCL - TGA - RRPONTSYD + H41RESPPALDKNWW + WLCFLPCL</span><small>All inputs aligned in millions of U.S. dollars.</small></div>
     <div class="aq-atlas-components">${components}</div>
-    <div class="aq-atlas-foot"><a href="models.html#net-fed-liquidity">Open component charts</a></div>`;
+    <div class="aq-atlas-foot"><span>Five first-party FRED inputs, aligned to a weekly liquidity series.</span></div>`;
 }
 
 function diagnosticsCard(series: WorkbookScoreSeries): string {
@@ -104,7 +104,7 @@ function backtestingMarkup(workbook: WorkbookDashboard): string {
   const series = workbook.scoreSeries.filter((item) => item.id === "mtpi" || item.id === "ltpi");
   return `<div class="aq-atlas-intro"><span>Forward-testing diagnostics</span><p>Counts and transitions describe the published score history. They are not performance claims.</p></div>
     <div class="aq-atlas-grid two">${series.length ? series.map(diagnosticsCard).join("") : '<p class="aq-atlas-empty">Dated trend observations are unavailable.</p>'}</div>
-    <div class="aq-atlas-foot"><a href="backtesting.html">Open complete backtesting</a></div>`;
+    <div class="aq-atlas-foot"><span>Classification history is shown as a dated research record, not a performance claim.</span></div>`;
 }
 
 export function bootHomeAtlas(): void {

@@ -9,10 +9,8 @@
     />
     <title>AstravaQuant | Independent Systematic Market Research</title>
     <link rel="stylesheet" href="public-redesign.css" />
-    <link rel="preload" href="/api/signals" as="fetch" crossorigin="anonymous" />
-    <script type="module" src="/src/client/home-signals.ts"></script>
   </head>
-  <body class="aq-site aq-home" data-model-summary>
+  <body class="aq-site aq-home">
     <header class="site-header" aria-label="Primary navigation">
       <div class="shell header-inner">
         <a class="brand" href="index.html" aria-label="AstravaQuant home">
@@ -31,101 +29,78 @@
           </span>
         </a>
         <nav class="site-nav" aria-label="Main navigation">
-          <a href="models.html">Models</a>
-          <a href="backtesting.html">Backtesting</a>
-          <a href="about.html">About</a>
+          <button type="button" data-atlas-open="trend">Trend</button>
+          <button type="button" data-atlas-open="valuation">Valuation</button>
+          <button type="button" data-atlas-open="liquidity">Liquidity</button>
+          <button type="button" data-atlas-open="backtesting">Diagnostics</button>
         </nav>
-        <div class="header-meta">Transparent quantitative frameworks.</div>
+        <div class="header-meta">Market Atlas / Research systems</div>
       </div>
     </header>
 
     <main>
-      <section class="aq-hero">
-        <div class="shell aq-hero-grid">
-          <div class="aq-hero-copy reveal">
-            <p class="aq-kicker">AstravaQuant</p>
-            <h1 class="aq-title">Research systems for changing market conditions.</h1>
-            <p class="aq-lead">
-              Independent quantitative research across liquidity, rates, crypto, and valuation.
-            </p>
-            <div class="aq-hero-actions">
-              <a class="button primary" href="#current-models">Current models</a>
-              <a class="button" href="models.html">Open research library</a>
-            </div>
-          </div>
-          <aside class="aq-home-model-map reveal" aria-label="Research model map">
-            <div class="aq-model-map-visual">
-              <svg viewBox="0 0 360 210" aria-hidden="true"><path d="M50 152C94 40 250 38 308 108"/><path d="M53 154C144 205 260 179 310 110"/><path d="M181 62C205 126 240 154 286 166"/></svg>
-              <button class="aq-map-node aq-map-node-one" type="button" data-atlas-open="trend">Trend</button><button class="aq-map-node aq-map-node-two" type="button" data-atlas-open="valuation">Valuation</button><button class="aq-map-node aq-map-node-three" type="button" data-atlas-open="liquidity">Liquidity</button><button class="aq-map-node aq-map-node-four" type="button" data-atlas-open="backtesting">Backtests</button>
-            </div>
-            <p class="aq-section-label">Research map</p>
-            <strong>Follow the question, then inspect the evidence.</strong>
-            <div class="aq-home-model-links">
-              <button type="button" data-atlas-open="trend"><span>Trend following</span><b>Medium + long horizon</b></button>
-              <button type="button" data-atlas-open="valuation"><span>Bitcoin valuation</span><b>Z-score composite</b></button>
-              <button type="button" data-atlas-open="liquidity"><span>Net Fed liquidity</span><b>FRED-derived series</b></button>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section class="aq-page-section" id="current-models">
-        <div class="shell aq-home-summary">
-          <div class="aq-section-head reveal">
-            <div>
-              <p class="aq-section-label">Current Model State</p>
-              <h2>Current model state</h2>
-            </div>
-            <div class="feed-state" data-home-summary-status data-state="loading" role="status">
-              <i aria-hidden="true"></i>
-              <span data-model-summary-date>Connecting research workbook</span>
-            </div>
-          </div>
-
-          <article class="aq-panel aq-home-state-panel reveal">
-            <div class="aq-home-state-grid">
-              <article class="aq-home-state-card" data-model-id="mtpi" data-feed-state="loading" aria-busy="true">
-                <p class="aq-section-label">01 / Trend</p>
-                <h3>Medium-Term Trend <span class="aq-model-acronym">MTTPM</span></h3>
-                <p>Five-day trend probability module.</p>
-                <div class="aq-home-dial" data-home-gauge aria-hidden="true"><svg viewBox="0 0 180 104"></svg></div>
-                <div class="aq-home-state-reading"><strong data-model-value>--</strong><span>Standardized score</span></div>
-                <div class="aq-home-state-status"><span class="status-neutral" data-model-state>Syncing</span><time data-model-updated>Waiting for workbook</time></div>
-                <a class="aq-row-model-link" href="models.html#mtpi">Inspect model</a>
-              </article>
-              <article class="aq-home-state-card" data-model-id="ltpi" data-feed-state="loading" aria-busy="true">
-                <p class="aq-section-label">02 / Trend</p>
-                <h3>Long-Term Trend <span class="aq-model-acronym">LTTPM</span></h3>
-                <p>Weekly trend probability module.</p>
-                <div class="aq-home-dial" data-home-gauge aria-hidden="true"><svg viewBox="0 0 180 104"></svg></div>
-                <div class="aq-home-state-reading"><strong data-model-value>--</strong><span>Standardized score</span></div>
-                <div class="aq-home-state-status"><span class="status-neutral" data-model-state>Syncing</span><time data-model-updated>Waiting for workbook</time></div>
-                <a class="aq-row-model-link" href="models.html#ltpi">Inspect model</a>
-              </article>
-              <article class="aq-home-state-card" data-model-id="mrpi" data-feed-state="loading" aria-busy="true">
-                <p class="aq-section-label">03 / Rates</p>
-                <h3>Mortgage Rate Pressure Index</h3>
-                <p>Weekly 10-year Treasury pressure model.</p>
-                <div class="aq-home-dial" data-home-gauge aria-hidden="true"><svg viewBox="0 0 180 104"></svg></div>
-                <div class="aq-home-state-reading"><strong data-model-value>--</strong><span>Standardized score</span></div>
-                <div class="aq-home-state-status"><span class="status-neutral" data-model-state>Syncing</span><time data-model-updated>Waiting for workbook</time></div>
-                <a class="aq-row-model-link" href="models.html#mrpi">Inspect model</a>
-              </article>
-            </div>
-            <p class="aq-disclosure">
-              Scores classify market conditions according to predefined rules. They are not
-              claims of certainty, realized performance, or trading advice.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="aq-page-section aq-home-disclaimer">
+      <section class="aq-market-atlas" aria-labelledby="atlas-home-title">
         <div class="shell">
-          <aside class="aq-note-callout reveal">
-            <span>Disclaimer</span>
-            <strong>AstravaQuant provides general market research for educational and informational purposes only. Nothing on this site is investment, financial, mortgage, legal, or tax advice, and it is not a recommendation to buy, sell, hold, or transact in any asset.</strong>
-          </aside>
+          <div class="aq-market-atlas-stage reveal">
+            <div class="aq-market-atlas-head">
+              <div>
+                <p class="aq-kicker">AstravaQuant / Market Atlas</p>
+                <h1 id="atlas-home-title">Map the systems<br />moving the market.</h1>
+              </div>
+              <p>Four independent research systems. Select a system to inspect its current published state, history, and diagnostics without leaving the atlas.</p>
+            </div>
+
+            <div class="aq-atlas-field" aria-label="Market Atlas systems">
+              <svg class="aq-atlas-tracks" viewBox="0 0 1200 620" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M144 202C300 34 876 34 1055 206" />
+                <path d="M142 421C356 590 856 585 1053 420" />
+                <path d="M257 91C157 257 173 447 359 547" />
+                <path d="M943 93C1045 261 1032 448 841 546" />
+                <circle cx="600" cy="310" r="138" />
+                <circle cx="600" cy="310" r="92" />
+              </svg>
+
+              <div class="aq-atlas-core" aria-hidden="true">
+                <span>Research</span>
+                <strong>AQ</strong>
+                <small>Market Atlas</small>
+              </div>
+
+              <button class="aq-atlas-system aq-atlas-system-trend" type="button" data-atlas-open="trend">
+                <span class="aq-atlas-system-index">01 / Trend</span>
+                <strong>Trend Probability</strong>
+                <b>MTTPM + LTTPM</b>
+                <small>Two horizons. One forward-test record.</small>
+                <i aria-hidden="true">Open system</i>
+              </button>
+              <button class="aq-atlas-system aq-atlas-system-valuation" type="button" data-atlas-open="valuation">
+                <span class="aq-atlas-system-index">02 / Valuation</span>
+                <strong>Bitcoin Valuation</strong>
+                <b>Z-score composite</b>
+                <small>Fundamental, technical, and sentiment inputs.</small>
+                <i aria-hidden="true">Open system</i>
+              </button>
+              <button class="aq-atlas-system aq-atlas-system-liquidity" type="button" data-atlas-open="liquidity">
+                <span class="aq-atlas-system-index">03 / Liquidity</span>
+                <strong>Net Fed Liquidity</strong>
+                <b>Five-component series</b>
+                <small>Balance-sheet conditions mapped weekly.</small>
+                <i aria-hidden="true">Open system</i>
+              </button>
+              <button class="aq-atlas-system aq-atlas-system-backtesting" type="button" data-atlas-open="backtesting">
+                <span class="aq-atlas-system-index">04 / Diagnostics</span>
+                <strong>Forward-Test Record</strong>
+                <b>Dated observations</b>
+                <small>Transition count, regime history, and streaks.</small>
+                <i aria-hidden="true">Open system</i>
+              </button>
+            </div>
+
+            <div class="aq-market-atlas-footer">
+              <p><span></span> Published research state. No simulated performance.</p>
+              <p>AstravaQuant provides research for educational and informational purposes only, not investment, financial, mortgage, legal, or tax advice.</p>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -148,13 +123,6 @@
       <div class="shell footer-inner">
         <p>AstravaQuant is an independent quantitative research platform.</p>
         <div class="footer-links">
-          <a href="models.html">Models</a>
-          <a href="methodology.html">Methodology</a>
-          <a href="research.html">Research</a>
-          <a href="archive.html">Archive</a>
-          <a href="about.html">About</a>
-          <a href="privacy.html">Privacy</a>
-          <a href="terms.html">Terms</a>
           <span>Copyright <span data-year></span> AstravaQuant</span>
         </div>
       </div>

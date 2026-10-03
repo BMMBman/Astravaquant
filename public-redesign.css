@@ -622,6 +622,312 @@ body.aq-site .aq-home-model-links button.is-active { border-color: rgba(149, 184
 body.aq-site .aq-home-model-links span { font-size: .68rem; font-weight: 700; line-height: 1.2; }
 body.aq-site .aq-home-model-links b { color: var(--aq-muted); font-size: .62rem; font-weight: 500; line-height: 1.25; }
 
+/* Homepage: the Atlas is a single research instrument, not a collection of landing-page cards. */
+body.aq-site.aq-home .site-nav button {
+  appearance: none;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--aq-faint);
+  background: transparent;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+body.aq-site.aq-home .site-nav button:hover,
+body.aq-site.aq-home .site-nav button:focus-visible {
+  color: var(--aq-text);
+  background: rgba(255, 255, 255, .05);
+}
+
+body.aq-site.aq-home .aq-market-atlas {
+  padding: 18px 0 28px;
+}
+
+body.aq-site.aq-home .aq-market-atlas-stage {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  min-height: min(760px, calc(100vh - 136px));
+  padding: clamp(22px, 3.2vw, 42px);
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(202, 217, 224, .18);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 51% 46%, rgba(116, 177, 211, .13), transparent 22%),
+    radial-gradient(circle at 8% 8%, rgba(196, 174, 130, .09), transparent 28%),
+    linear-gradient(132deg, rgba(22, 29, 36, .98), rgba(10, 12, 16, .99));
+  box-shadow: inset 0 1px rgba(255, 255, 255, .04), 0 30px 70px rgba(0, 0, 0, .2);
+}
+
+body.aq-site.aq-home .aq-market-atlas-stage::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: "";
+  opacity: .48;
+  background-image:
+    linear-gradient(rgba(226, 238, 245, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(226, 238, 245, .045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
+}
+
+body.aq-site.aq-home .aq-market-atlas-stage::after {
+  position: absolute;
+  inset: 12px;
+  z-index: -1;
+  border: 1px solid rgba(226, 238, 245, .06);
+  border-radius: 20px;
+  content: "";
+  pointer-events: none;
+}
+
+body.aq-site.aq-home .aq-market-atlas-head {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(270px, .55fr);
+  align-items: end;
+  gap: 34px;
+}
+
+body.aq-site.aq-home .aq-market-atlas-head .aq-kicker {
+  margin-bottom: 8px;
+  color: #c6b182;
+}
+
+body.aq-site.aq-home .aq-market-atlas-head h1 {
+  max-width: 680px;
+  margin: 0;
+  font-family: var(--aq-font-display);
+  font-size: clamp(2.8rem, 5.6vw, 5.4rem);
+  font-weight: 500;
+  letter-spacing: -.065em;
+  line-height: .86;
+}
+
+body.aq-site.aq-home .aq-market-atlas-head > p {
+  max-width: 400px;
+  margin: 0 0 4px;
+  color: var(--aq-muted);
+  font-size: .93rem;
+  line-height: 1.6;
+}
+
+body.aq-site.aq-home .aq-atlas-field {
+  position: relative;
+  min-height: 465px;
+  margin: -10px 0 0;
+}
+
+body.aq-site.aq-home .aq-atlas-tracks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+body.aq-site.aq-home .aq-atlas-tracks path,
+body.aq-site.aq-home .aq-atlas-tracks circle {
+  fill: none;
+  stroke: rgba(174, 205, 221, .24);
+  stroke-width: 1.1;
+}
+
+body.aq-site.aq-home .aq-atlas-tracks path {
+  stroke-dasharray: 3 9;
+}
+
+body.aq-site.aq-home .aq-atlas-core {
+  position: absolute;
+  top: 51%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  width: 188px;
+  height: 188px;
+  place-content: center;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  border: 1px solid rgba(190, 214, 229, .42);
+  border-radius: 50%;
+  text-align: center;
+  background:
+    radial-gradient(circle at 36% 27%, rgba(236, 242, 242, .29), transparent 10%),
+    radial-gradient(circle, rgba(65, 102, 120, .5), rgba(17, 25, 32, .95) 64%);
+  box-shadow: 0 0 0 14px rgba(143, 200, 244, .025), 0 0 0 28px rgba(143, 200, 244, .02), 0 0 56px rgba(94, 169, 212, .22);
+}
+
+body.aq-site.aq-home .aq-atlas-core::before {
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(222, 235, 239, .18);
+  border-radius: 50%;
+  content: "";
+}
+
+body.aq-site.aq-home .aq-atlas-core span,
+body.aq-site.aq-home .aq-atlas-core small {
+  position: relative;
+  color: #bcc9cf;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+body.aq-site.aq-home .aq-atlas-core strong {
+  position: relative;
+  margin: -3px 0 -5px;
+  color: #f2eee5;
+  font-family: var(--aq-font-display);
+  font-size: 4.4rem;
+  font-weight: 500;
+  letter-spacing: -.1em;
+}
+
+body.aq-site.aq-home .aq-atlas-system {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  width: min(31%, 318px);
+  min-height: 148px;
+  padding: 17px 19px 18px;
+  overflow: hidden;
+  border: 1px solid rgba(221, 233, 238, .17);
+  border-radius: 15px;
+  color: var(--aq-text);
+  background: linear-gradient(125deg, rgba(44, 57, 66, .83), rgba(15, 19, 24, .92) 68%);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .04), 0 14px 34px rgba(0, 0, 0, .16);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+body.aq-site.aq-home .aq-atlas-system::before {
+  position: absolute;
+  top: 0;
+  right: 18px;
+  left: 18px;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(183, 218, 236, .72), transparent);
+}
+
+body.aq-site.aq-home .aq-atlas-system::after {
+  position: absolute;
+  right: -18px;
+  bottom: -23px;
+  width: 105px;
+  height: 105px;
+  border: 1px solid rgba(142, 201, 235, .14);
+  border-radius: 50%;
+  content: "";
+}
+
+body.aq-site.aq-home .aq-atlas-system:hover,
+body.aq-site.aq-home .aq-atlas-system:focus-visible,
+body.aq-site.aq-home .aq-atlas-system.is-active {
+  border-color: rgba(157, 214, 244, .66);
+  background: linear-gradient(125deg, rgba(52, 74, 85, .92), rgba(15, 20, 26, .96) 68%);
+  box-shadow: inset 0 1px rgba(255, 255, 255, .08), 0 0 0 3px rgba(143, 200, 244, .06), 0 18px 42px rgba(0, 0, 0, .25);
+  transform: translateY(-4px);
+}
+
+body.aq-site.aq-home .aq-atlas-system-index,
+body.aq-site.aq-home .aq-atlas-system b,
+body.aq-site.aq-home .aq-atlas-system i {
+  position: relative;
+  z-index: 1;
+  color: #bfcbd0;
+  font-size: .63rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+}
+
+body.aq-site.aq-home .aq-atlas-system strong {
+  position: relative;
+  z-index: 1;
+  margin-top: 8px;
+  font-family: var(--aq-font-display);
+  font-size: clamp(1.35rem, 2vw, 1.72rem);
+  font-weight: 500;
+  letter-spacing: -.045em;
+  line-height: 1;
+}
+
+body.aq-site.aq-home .aq-atlas-system b {
+  margin-top: 6px;
+  color: #a8d1e8;
+}
+
+body.aq-site.aq-home .aq-atlas-system small {
+  position: relative;
+  z-index: 1;
+  max-width: 210px;
+  margin-top: 7px;
+  color: var(--aq-muted);
+  font-size: .73rem;
+  line-height: 1.35;
+}
+
+body.aq-site.aq-home .aq-atlas-system i {
+  position: absolute;
+  right: 19px;
+  top: 17px;
+  color: #d6c39a;
+}
+
+body.aq-site.aq-home .aq-atlas-system-trend { top: 48px; left: 4%; }
+body.aq-site.aq-home .aq-atlas-system-valuation { top: 90px; right: 3%; }
+body.aq-site.aq-home .aq-atlas-system-liquidity { bottom: 55px; left: 3%; }
+body.aq-site.aq-home .aq-atlas-system-backtesting { right: 5%; bottom: 18px; }
+
+body.aq-site.aq-home .aq-market-atlas-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(230, 240, 244, .1);
+  color: var(--aq-faint);
+  font-size: .68rem;
+  line-height: 1.45;
+}
+
+body.aq-site.aq-home .aq-market-atlas-footer p {
+  max-width: 510px;
+  margin: 0;
+}
+
+body.aq-site.aq-home .aq-market-atlas-footer p:first-child {
+  color: #cbd6d8;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+body.aq-site.aq-home .aq-market-atlas-footer p:first-child span {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: #95b8a6;
+  box-shadow: 0 0 12px rgba(149, 184, 166, .7);
+}
+
 body.aq-site .aq-atlas-dialog {
   width: min(960px, calc(100vw - 32px));
   max-width: none;
@@ -710,6 +1016,7 @@ body.aq-site .aq-atlas-formula { display: grid; gap: 4px; padding: 12px; border:
 body.aq-site .aq-atlas-formula small { color: var(--aq-muted); font-family: var(--aq-font-body); font-size: .72rem; }
 body.aq-site .aq-atlas-foot { flex-wrap: wrap; padding-top: 4px; }
 body.aq-site .aq-atlas-foot a { color: var(--aq-link); font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+body.aq-site .aq-atlas-foot span { color: var(--aq-muted); font-size: .74rem; }
 body.aq-site .aq-atlas-loading,
 body.aq-site .aq-atlas-empty { display: grid; justify-items: start; gap: 8px; min-height: 250px; align-content: center; color: var(--aq-muted); }
 body.aq-site .aq-atlas-loading i { width: 30px; height: 30px; border: 2px solid rgba(143,200,244,.2); border-top-color: #8fc8f4; border-radius: 50%; animation: aq-atlas-spin 1.1s linear infinite; }
@@ -2754,6 +3061,70 @@ body.aq-site .aq-spacer-top {
 }
 
 @media (max-width: 860px) {
+  body.aq-site.aq-home .aq-market-atlas {
+    padding-top: 12px;
+  }
+
+  body.aq-site.aq-home .aq-market-atlas-stage {
+    min-height: 0;
+  }
+
+  body.aq-site.aq-home .aq-market-atlas-head {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  body.aq-site.aq-home .aq-atlas-field {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    min-height: 0;
+    margin-top: 2px;
+    padding: 4px 0;
+  }
+
+  body.aq-site.aq-home .aq-atlas-tracks {
+    display: none;
+  }
+
+  body.aq-site.aq-home .aq-atlas-core {
+    position: relative;
+    top: auto;
+    left: auto;
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 142px;
+    height: 142px;
+    margin: 6px 0 10px;
+    transform: none;
+  }
+
+  body.aq-site.aq-home .aq-atlas-core strong {
+    font-size: 3.3rem;
+  }
+
+  body.aq-site.aq-home .aq-atlas-system {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: auto;
+    min-height: 142px;
+  }
+
+  body.aq-site.aq-home .aq-atlas-system:hover,
+  body.aq-site.aq-home .aq-atlas-system:focus-visible,
+  body.aq-site.aq-home .aq-atlas-system.is-active {
+    transform: none;
+  }
+
+  body.aq-site.aq-home .aq-market-atlas-footer {
+    align-items: start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
   body.aq-site.aq-home .aq-hero-grid {
     grid-template-columns: 1fr;
     gap: 18px;
@@ -2847,6 +3218,12 @@ body.aq-site .aq-spacer-top {
     text-align: left;
   }
 
+  body.aq-site.aq-home .site-nav button {
+    justify-self: stretch;
+    width: 100%;
+    text-align: left;
+  }
+
   body.aq-site .aq-page-section {
     padding: 34px 0;
   }
@@ -2903,6 +3280,49 @@ body.aq-site .aq-spacer-top {
 
   body.aq-site.aq-home .aq-hero {
     padding: 34px 0 12px;
+  }
+
+  body.aq-site.aq-home .aq-market-atlas {
+    padding: 10px 0 20px;
+  }
+
+  body.aq-site.aq-home .aq-market-atlas-stage {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  body.aq-site.aq-home .aq-market-atlas-head h1 {
+    font-size: clamp(2.55rem, 13vw, 3.6rem);
+  }
+
+  body.aq-site.aq-home .aq-market-atlas-head > p {
+    font-size: .84rem;
+  }
+
+  body.aq-site.aq-home .aq-atlas-field {
+    grid-template-columns: 1fr;
+  }
+
+  body.aq-site.aq-home .aq-atlas-core {
+    width: 128px;
+    height: 128px;
+  }
+
+  body.aq-site.aq-home .aq-atlas-core strong {
+    font-size: 3rem;
+  }
+
+  body.aq-site.aq-home .aq-atlas-system {
+    min-height: 132px;
+    padding: 15px 16px;
+  }
+
+  body.aq-site.aq-home .aq-atlas-system strong {
+    font-size: 1.42rem;
+  }
+
+  body.aq-site.aq-home .aq-market-atlas-footer {
+    font-size: .62rem;
   }
 
   body.aq-site .aq-home-model-links {

@@ -218,7 +218,7 @@ function trendMarkup(workbook: WorkbookDashboard): string {
   const series = new Map(workbook.scoreSeries.map((item) => [item.id, item]));
   const medium = signals.get("mtpi");
   const long = signals.get("ltpi");
-  return `<div class="aq-atlas-intro"><span>Two horizons, one research family</span><p>The five-day and weekly probability modules are published with their dated forward-test records.</p></div>
+  return `<div class="aq-atlas-intro"><span>Two horizons, one research family</span><p>Medium-term trend follows Total Crypto Market Cap and Total2. Long-term trend combines Bitcoin long-term behavior with Total Crypto Market Cap.</p></div>
     <div class="aq-atlas-grid two">${signalCard(series.get("mtpi"), "Medium-Term Trend / MTTPM", medium?.state ?? "Unavailable", medium?.updatedLabel)}${signalCard(series.get("ltpi"), "Long-Term Trend / LTTPM", long?.state ?? "Unavailable", long?.updatedLabel)}</div>
     <div class="aq-atlas-foot"><span>Published signal state and dated forward-test record.</span></div>`;
 }

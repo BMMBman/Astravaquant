@@ -692,9 +692,9 @@ body.aq-site.aq-home .aq-market-atlas-head {
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(270px, .55fr);
-  align-items: end;
-  gap: 34px;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
 }
 
 body.aq-site.aq-home .aq-market-atlas-head .aq-kicker {
@@ -713,11 +713,11 @@ body.aq-site.aq-home .aq-market-atlas-head h1 {
 }
 
 body.aq-site.aq-home .aq-market-atlas-head > p {
-  max-width: 400px;
-  margin: 0 0 4px;
+  max-width: 510px;
+  margin: 0;
   color: var(--aq-muted);
-  font-size: .93rem;
-  line-height: 1.6;
+  font-size: .88rem;
+  line-height: 1.5;
 }
 
 body.aq-site.aq-home .aq-atlas-field {
@@ -3388,25 +3388,45 @@ body.aq-site .aq-spacer-top {
   }
 
   body.aq-site.aq-home .aq-atlas-field {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
   body.aq-site.aq-home .aq-atlas-core {
-    width: 128px;
-    height: 128px;
+    width: 112px;
+    height: 112px;
+    margin: 0 0 3px;
   }
 
   body.aq-site.aq-home .aq-atlas-core strong {
-    font-size: 3rem;
+    font-size: 2.6rem;
   }
 
   body.aq-site.aq-home .aq-atlas-system {
-    min-height: 132px;
-    padding: 15px 16px;
+    min-height: 138px;
+    padding: 13px;
   }
 
   body.aq-site.aq-home .aq-atlas-system strong {
-    font-size: 1.42rem;
+    margin-top: 6px;
+    font-size: 1.18rem;
+    line-height: 1.02;
+  }
+
+  body.aq-site.aq-home .aq-atlas-system b {
+    margin-top: 5px;
+    font-size: .56rem;
+    letter-spacing: .07em;
+  }
+
+  body.aq-site.aq-home .aq-atlas-system small {
+    margin-top: 5px;
+    font-size: .64rem;
+    line-height: 1.25;
+  }
+
+  body.aq-site.aq-home .aq-atlas-system i {
+    display: none;
   }
 
   body.aq-site.aq-home .aq-market-atlas-footer {

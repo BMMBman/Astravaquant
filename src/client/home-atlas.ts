@@ -20,7 +20,7 @@ const panelLabels: Record<AtlasPanel, string> = {
 };
 
 function escapeHtml(value: string): string {
-  return value.replace(/[&<>\"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]!);
+  return value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]!);
 }
 
 function score(value: number | null, suffix = ""): string {
@@ -60,6 +60,137 @@ function sparkline(points: Array<{ date: string; score: number }>): string {
   return `<div class="aq-atlas-sparkline"><svg viewBox="0 0 ${width} ${height}" aria-hidden="true"><path d="${line}"/></svg></div>`;
 }
 
+function observationState(value: number): { label: string; tone: "positive" | "negative" | "neutral" } {
+  if (value >= 0.25) return { label: "Risk-on", tone: "positive" };
+  if (value <= -0.25) return { label: "Risk-off", tone: "negative" };
+  return { label: "Neutral", tone: "neutral" };
+}
+
+function interactiveHistoryMarkup(series: WorkbookScoreSeries): string {
+  const points = series.points;
+  if (!points.length) return '<div class="aq-atlas-sparkline is-unavailable">No dated observations published</div>';
+
+  const width = 640;
+  const height = 148;
+  const padding = { x: 20, y: 18 };
+  const scores = points.map((point) => point.score);
+  const minimum = Math.min(-1, ...scores);
+  const maximum = Math.max(1, ...scores);
+  const span = maximum - minimum || 1;
+  const dates = points.map((point) => Date.parse(`${point.date}T00:00:00Z`));
+  const firstDate = dates[0]!;
+  const lastDate = dates.at(-1)!;
+  const dateSpan = lastDate - firstDate || 1;
+  const x = (index: number) => points.length === 1
+    ? width / 2
+    : padding.x + ((dates[index]! - firstDate) / dateSpan) * (width - padding.x * 2);
+  const y = (value: number) => padding.y + ((maximum - value) / span) * (height - padding.y * 2);
+  const line = points.map((point, index) => `${index ? "L" : "M"}${x(index).toFixed(1)} ${y(point.score).toFixed(1)}`).join(" ");
+  const currentIndex = points.length - 1;
+  const current = points[currentIndex]!;
+  const currentState = observationState(current.score);
+  const observations = [...points].reverse().map((point) => {
+    const state = observationState(point.score);
+    return `<li><time datetime="${escapeHtml(point.date)}">${escapeHtml(date(point.date))}</time><strong>${score(point.score)}</strong><span class="is-${state.tone}">${state.label}</span></li>`;
+  }).join("");
+
+  return `<section class="aq-atlas-history" data-atlas-history-series="${escapeHtml(series.id)}">
+    <div class="aq-atlas-history-head"><span>Dated score history</span><small>Hover or drag across the chart. Tap a point on mobile.</small></div>
+    <div class="aq-atlas-history-chart">
+      <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(series.label)} dated score history" data-atlas-history-chart>
+        <path d="M${padding.x} ${y(0).toFixed(1)} H${width - padding.x}" class="aq-atlas-history-zero"/>
+        <path d="${line}" class="aq-atlas-history-line"/>
+        <line x1="${x(currentIndex).toFixed(1)}" x2="${x(currentIndex).toFixed(1)}" y1="${padding.y}" y2="${height - padding.y}" class="aq-atlas-history-guide" data-atlas-history-guide/>
+        <circle cx="${x(currentIndex).toFixed(1)}" cy="${y(current.score).toFixed(1)}" r="5" class="aq-atlas-history-dot" data-atlas-history-dot/>
+        <rect x="0" y="0" width="${width}" height="${height}" fill="transparent" data-atlas-history-hit/>
+      </svg>
+      <div class="aq-atlas-history-readout" data-atlas-history-readout aria-live="polite"><time>${escapeHtml(date(current.date))}</time><strong>${score(current.score)}</strong><span class="is-${currentState.tone}">${currentState.label}</span></div>
+    </div>
+    <div class="aq-atlas-history-controls">
+      <button type="button" data-atlas-history-previous aria-label="Previous dated observation">Previous</button>
+      <input type="range" min="0" max="${currentIndex}" value="${currentIndex}" step="1" aria-label="Select a dated observation" data-atlas-history-scrubber />
+      <button type="button" data-atlas-history-next aria-label="Next dated observation">Next</button>
+    </div>
+    <div class="aq-atlas-history-range"><span>${escapeHtml(date(points[0]!.date))}</span><output data-atlas-history-position>${points.length} of ${points.length}</output><span>${escapeHtml(date(current.date))}</span></div>
+    <details class="aq-atlas-observation-record"><summary>View ${points.length} dated observation${points.length === 1 ? "" : "s"}</summary><ol>${observations}</ol></details>
+  </section>`;
+}
+
+function bindInteractiveHistory(content: HTMLElement, series: WorkbookScoreSeries[]): void {
+  content.querySelectorAll<HTMLElement>("[data-atlas-history-series]").forEach((root) => {
+    const activeSeries = series.find((item) => item.id === root.dataset.atlasHistorySeries);
+    if (!activeSeries?.points.length) return;
+    const points = activeSeries.points;
+    const chart = root.querySelector<SVGElement>("[data-atlas-history-chart]");
+    const guide = root.querySelector<SVGLineElement>("[data-atlas-history-guide]");
+    const dot = root.querySelector<SVGCircleElement>("[data-atlas-history-dot]");
+    const readout = root.querySelector<HTMLElement>("[data-atlas-history-readout]");
+    const scrubber = root.querySelector<HTMLInputElement>("[data-atlas-history-scrubber]");
+    const position = root.querySelector<HTMLOutputElement>("[data-atlas-history-position]");
+    const previous = root.querySelector<HTMLButtonElement>("[data-atlas-history-previous]");
+    const next = root.querySelector<HTMLButtonElement>("[data-atlas-history-next]");
+    if (!chart || !readout || !scrubber) return;
+
+    const width = 640;
+    const height = 148;
+    const padding = { x: 20, y: 18 };
+    const scores = points.map((point) => point.score);
+    const minimum = Math.min(-1, ...scores);
+    const maximum = Math.max(1, ...scores);
+    const scoreSpan = maximum - minimum || 1;
+    const dates = points.map((point) => Date.parse(`${point.date}T00:00:00Z`));
+    const firstDate = dates[0]!;
+    const dateSpan = dates.at(-1)! - firstDate || 1;
+    const x = (index: number) => points.length === 1
+      ? width / 2
+      : padding.x + ((dates[index]! - firstDate) / dateSpan) * (width - padding.x * 2);
+    const y = (value: number) => padding.y + ((maximum - value) / scoreSpan) * (height - padding.y * 2);
+    let selectedIndex = points.length - 1;
+
+    const select = (index: number) => {
+      selectedIndex = Math.min(points.length - 1, Math.max(0, index));
+      const point = points[selectedIndex]!;
+      const state = observationState(point.score);
+      const pointX = x(selectedIndex).toFixed(1);
+      guide?.setAttribute("x1", pointX);
+      guide?.setAttribute("x2", pointX);
+      dot?.setAttribute("cx", pointX);
+      dot?.setAttribute("cy", y(point.score).toFixed(1));
+      readout.innerHTML = `<time>${escapeHtml(date(point.date))}</time><strong>${score(point.score)}</strong><span class="is-${state.tone}">${state.label}</span>`;
+      scrubber.value = String(selectedIndex);
+      if (position) position.textContent = `${selectedIndex + 1} of ${points.length}`;
+      if (previous) previous.disabled = selectedIndex === 0;
+      if (next) next.disabled = selectedIndex === points.length - 1;
+    };
+
+    const selectFromPointer = (event: PointerEvent) => {
+      const rect = chart.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+      const targetX = ratio * width;
+      let nearestIndex = 0;
+      let nearestDistance = Number.POSITIVE_INFINITY;
+      points.forEach((_, index) => {
+        const distance = Math.abs(x(index) - targetX);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = index;
+        }
+      });
+      select(nearestIndex);
+    };
+
+    chart.addEventListener("pointermove", selectFromPointer);
+    chart.addEventListener("pointerdown", (event) => {
+      chart.setPointerCapture?.(event.pointerId);
+      selectFromPointer(event);
+    });
+    scrubber.addEventListener("input", () => select(Number(scrubber.value)));
+    previous?.addEventListener("click", () => select(selectedIndex - 1));
+    next?.addEventListener("click", () => select(selectedIndex + 1));
+    select(selectedIndex);
+  });
+}
+
 function scalePosition(value: number | null, minimum: number, maximum: number): number {
   if (value === null) return 50;
   return Math.min(100, Math.max(0, (value - minimum) / (maximum - minimum) * 100));
@@ -77,7 +208,7 @@ function signalCard(series: WorkbookScoreSeries | undefined, label: string, stat
   const latest = series?.points.at(-1) ?? null;
   return `<article class="aq-atlas-card">
     <p>${escapeHtml(label)}</p><strong>${score(latest?.score ?? null)}</strong><b>${escapeHtml(state)}</b>
-    ${sparkline(series?.points ?? [])}
+    ${series ? interactiveHistoryMarkup(series) : '<div class="aq-atlas-sparkline is-unavailable">History unavailable</div>'}
     ${riskScale(latest?.score ?? null)}
     <small>${latest ? `${date(latest.date)} / ${series?.points.length ?? 0} dated observations` : `Published ${date(updated)}`}</small>
   </article>`;
@@ -144,7 +275,7 @@ function diagnosticsCard(series: WorkbookScoreSeries): string {
   const analysis = analyzeScoreSeries(series.points);
   const current = analysis.currentRegime === "risk_on" ? "Risk-on" : analysis.currentRegime === "risk_off" ? "Risk-off" : "Neutral";
   const latest = series.points.at(-1)?.score ?? null;
-  return `<article class="aq-atlas-card"><p>${escapeHtml(series.label)}</p><strong>${score(latest)}</strong><b>${current}</b>${sparkline(series.points)}${riskScale(latest)}<small>${analysis.observations} dated observations / ${analysis.transitions.length} transitions / ${analysis.currentStreak} observation current streak</small></article>`;
+  return `<article class="aq-atlas-card"><p>${escapeHtml(series.label)}</p><strong>${score(latest)}</strong><b>${current}</b>${interactiveHistoryMarkup(series)}${riskScale(latest)}<small>${analysis.observations} dated observations / ${analysis.transitions.length} transitions / ${analysis.currentStreak} observation current streak</small></article>`;
 }
 
 function backtestingMarkup(workbook: WorkbookDashboard): string {
@@ -184,6 +315,7 @@ export function bootHomeAtlas(): void {
     try {
       let markup: string;
       let valuation: BitcoinValuationDashboard | null = null;
+      let workbook: WorkbookDashboard | null = null;
       if (panel === "valuation") {
         valuation = await apiRequest<BitcoinValuationDashboard>("/api/valuation", { signal: AbortSignal.timeout(12_000) });
         markup = valuationMarkup(valuation);
@@ -191,12 +323,13 @@ export function bootHomeAtlas(): void {
         const markets = await apiRequest<MarketDashboard>("/api/markets", { signal: AbortSignal.timeout(12_000) });
         markup = liquidityMarkup(markets);
       } else {
-        const workbook = await apiRequest<WorkbookDashboard>("/api/workbook", { signal: AbortSignal.timeout(12_000) });
+        workbook = await apiRequest<WorkbookDashboard>("/api/workbook", { signal: AbortSignal.timeout(12_000) });
         markup = panel === "trend" ? trendMarkup(workbook) : backtestingMarkup(workbook);
       }
       if (requestVersion === selectionVersion) {
         content.innerHTML = markup;
         if (valuation) bindValuationControls(content, valuation);
+        if (workbook) bindInteractiveHistory(content, workbook.scoreSeries);
       }
     } catch {
       if (requestVersion !== selectionVersion) return;

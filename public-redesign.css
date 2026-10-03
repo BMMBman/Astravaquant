@@ -1001,6 +1001,39 @@ body.aq-site .aq-atlas-sparkline svg { width: 100%; height: 100%; overflow: visi
 body.aq-site .aq-atlas-sparkline path { fill: none; stroke: #8fc8f4; stroke-width: 2; vector-effect: non-scaling-stroke; }
 body.aq-site .aq-atlas-sparkline.is-unavailable { display: grid; place-items: center; color: var(--aq-faint); font-size: .74rem; }
 
+body.aq-site .aq-atlas-history { grid-column: 1 / -1; display: grid; gap: 8px; min-width: 0; padding: 12px; border: 1px solid rgba(143,200,244,.18); border-radius: 10px; background: rgba(5,7,10,.36); }
+body.aq-site .aq-atlas-history-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+body.aq-site .aq-atlas-history-head span { color: var(--aq-faint); font-size: .61rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+body.aq-site .aq-atlas-history-head small { color: var(--aq-muted); font-size: .65rem; }
+body.aq-site .aq-atlas-history-chart { position: relative; height: 136px; border-top: 1px solid rgba(241,236,226,.08); border-bottom: 1px solid rgba(241,236,226,.08); background: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px); background-size: 100% 50%; }
+body.aq-site .aq-atlas-history-chart svg { width: 100%; height: 100%; overflow: visible; touch-action: none; cursor: crosshair; }
+body.aq-site .aq-atlas-history-line { fill: none; stroke: #8fc8f4; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+body.aq-site .aq-atlas-history-zero { stroke: rgba(241,236,226,.18); stroke-width: 1; vector-effect: non-scaling-stroke; }
+body.aq-site .aq-atlas-history-guide { stroke: rgba(241,236,226,.42); stroke-width: 1; vector-effect: non-scaling-stroke; }
+body.aq-site .aq-atlas-history-dot { fill: #f4f0e6; stroke: #101217; stroke-width: 2; vector-effect: non-scaling-stroke; }
+body.aq-site .aq-atlas-history-readout { position: absolute; top: 8px; right: 8px; display: grid; justify-items: end; gap: 1px; padding: 6px 8px; border: 1px solid rgba(241,236,226,.1); border-radius: 6px; background: rgba(10,12,16,.88); pointer-events: none; }
+body.aq-site .aq-atlas-history-readout time { color: var(--aq-faint); font-size: .58rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+body.aq-site .aq-atlas-history-readout strong { color: var(--aq-text); font-family: var(--aq-font-display); font-size: 1.08rem; font-weight: 500; line-height: 1; }
+body.aq-site .aq-atlas-history-readout span { font-size: .57rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+body.aq-site .aq-atlas-history .is-positive { color: var(--aq-positive); }
+body.aq-site .aq-atlas-history .is-negative { color: #d28b84; }
+body.aq-site .aq-atlas-history .is-neutral { color: var(--aq-muted); }
+body.aq-site .aq-atlas-history-controls { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+body.aq-site .aq-atlas-history-controls button { min-height: 28px; padding: 5px 7px; border: 1px solid rgba(241,236,226,.16); border-radius: 5px; color: var(--aq-muted); background: rgba(255,255,255,.025); font-size: .58rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+body.aq-site .aq-atlas-history-controls button:hover:not(:disabled) { border-color: rgba(143,200,244,.6); color: var(--aq-text); }
+body.aq-site .aq-atlas-history-controls button:disabled { opacity: .35; cursor: not-allowed; }
+body.aq-site .aq-atlas-history-controls input { width: 100%; accent-color: #8fc8f4; }
+body.aq-site .aq-atlas-history-range { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; color: var(--aq-faint); font-size: .58rem; }
+body.aq-site .aq-atlas-history-range output { color: var(--aq-muted); font-size: inherit; }
+body.aq-site .aq-atlas-history-range span:last-child { text-align: right; }
+body.aq-site .aq-atlas-observation-record { border-top: 1px solid rgba(241,236,226,.08); }
+body.aq-site .aq-atlas-observation-record summary { padding-top: 8px; color: var(--aq-link); font-size: .65rem; font-weight: 700; cursor: pointer; }
+body.aq-site .aq-atlas-observation-record ol { display: grid; gap: 0; max-height: 200px; margin: 8px 0 0; padding: 0; overflow: auto; list-style: none; border-top: 1px solid rgba(241,236,226,.08); }
+body.aq-site .aq-atlas-observation-record li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(241,236,226,.08); font-size: .68rem; }
+body.aq-site .aq-atlas-observation-record time { color: var(--aq-muted); }
+body.aq-site .aq-atlas-observation-record strong { color: var(--aq-text); font-family: var(--aq-font-display); font-weight: 500; }
+body.aq-site .aq-atlas-observation-record li span { font-size: .58rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+
 body.aq-site .aq-atlas-risk-scale { grid-column: 1 / -1; display: grid; gap: 6px; }
 body.aq-site .aq-atlas-risk-scale-labels { display: flex; justify-content: space-between; gap: 8px; color: var(--aq-faint); font-size: .58rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
 body.aq-site .aq-atlas-risk-scale-labels span:last-child { color: #9bc7aa; text-align: right; }
@@ -2452,6 +2485,12 @@ body.aq-site .backtest-empty-copy,
 body.aq-site .valuation-empty-copy {
   margin: 0;
   color: var(--aq-muted);
+}
+
+body.aq-site .aq-chart-interaction-note {
+  margin: 6px 0 0;
+  color: var(--aq-faint);
+  font-size: .68rem;
 }
 
 body.aq-site .aq-empty-state {

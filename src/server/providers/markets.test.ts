@@ -57,6 +57,8 @@ function successfulFetcher() {
       WALCL: [6_500_000, 6_600_000],
       WTREGEN: [800_000, 810_000],
       RRPONTSYD: [10, 9],
+      H41RESPPALDKNWW: [50_000, 45_000],
+      WLCFLPCL: [5_000, 6_000],
       M2SL: [22_000, 22_100],
       SP500: [7_500, 7_550],
       NASDAQCOM: [25_000, 25_250],
@@ -77,7 +79,7 @@ describe("PublicMarketProvider", () => {
     const second = await provider.getDashboard();
 
     expect(first.status).toBe("ready");
-    expect(first.metrics).toHaveLength(18);
+    expect(first.metrics).toHaveLength(20);
     expect(first.metrics.find((metric) => metric.id === "total2")?.value).toBe(1_000_000);
     expect(first.metrics.find((metric) => metric.id === "treasury10y")?.change).toBeCloseTo(10);
     expect(first.metrics.find((metric) => metric.id === "bitcoin")?.points).toHaveLength(2);
@@ -85,9 +87,9 @@ describe("PublicMarketProvider", () => {
     expect(first.metrics.find((metric) => metric.id === "solana")?.value).toBe(180);
     expect(first.metrics.find((metric) => metric.id === "hyperliquid")?.points).toHaveLength(2);
     expect(first.metrics.find((metric) => metric.id === "stablecoinSupply")?.value).toBe(151_000_000_000);
-    expect(first.metrics.find((metric) => metric.id === "fedNetLiquidity")?.value).toBe(5_781_000);
+    expect(first.metrics.find((metric) => metric.id === "fedNetLiquidity")?.value).toBe(5_832_000);
     expect(first.metrics.find((metric) => metric.id === "sp500")?.value).toBe(7_550);
-    expect(source.getCalls()).toBe(17);
+    expect(source.getCalls()).toBe(19);
   });
 
   it("uses CoinPaprika current data when CoinGecko is unavailable", async () => {

@@ -7,7 +7,7 @@
       name="description"
       content="AstravaQuant model pages for current readings, dated history, methodology links, and valuation."
     />
-    <title>AstravaQuant Models | Current State, With History</title>
+    <title>AstravaQuant Models | Published Model State</title>
     <link rel="stylesheet" href="public-redesign.css" />
   </head>
   <body class="aq-site aq-models" data-model-feed>
@@ -33,7 +33,7 @@
           <a href="backtesting.html">Backtesting</a>
           <a href="about.html">About</a>
         </nav>
-        <div class="header-meta">Current state, with history.</div>
+        <div class="header-meta">Published state and dated history.</div>
       </div>
     </header>
 
@@ -41,19 +41,18 @@
       <section class="aq-hero">
         <div class="shell aq-hero-grid">
           <div class="aq-hero-copy reveal">
-            <p class="aq-kicker">Models</p>
-            <h1 class="aq-page-title">Current state, with history.</h1>
+            <p class="aq-kicker">Published Models</p>
+            <h1 class="aq-page-title">Current readings, with dated history.</h1>
             <p class="aq-lead">
-              A collection of systematic frameworks used to measure trend, liquidity,
-              rate pressure, valuation, and market regime.
+              Systematic frameworks for trend, rate pressure, valuation, and crypto relative strength.
             </p>
           </div>
 
           <aside class="aq-side-note reveal">
             <strong>Model context</strong>
             <span>
-              Current readings, methodology, and dated observations are kept together for
-              each model.
+              Every reading is paired with its standardized scale, published classification,
+              and dated observation history.
             </span>
           </aside>
         </div>
@@ -63,8 +62,49 @@
         <div class="shell shell-wide">
           <div class="aq-section-head reveal">
             <div>
+              <p class="aq-section-label">Liquidity</p>
+              <h2>Net Fed liquidity</h2>
+            </div>
+            <p class="aq-section-note">A first-party calculation from public FRED series, updated on the Federal Reserve release schedule.</p>
+          </div>
+          <article class="aq-net-liquidity reveal" data-net-liquidity aria-live="polite">
+            <div class="aq-net-liquidity-overview">
+              <div>
+                <p class="aq-section-label">Latest net liquidity</p>
+                <strong data-net-liquidity-current>--</strong>
+                <p data-net-liquidity-as-of>Loading public observations</p>
+              </div>
+              <div class="aq-net-liquidity-status" data-net-liquidity-status>Loading FRED series</div>
+            </div>
+            <div class="aq-liquidity-formula">
+              <span>Formula</span>
+              <code>WALCL - TGA - RRPONTSYD + H41RESPPALDKNWW + WLCFLPCL</code>
+              <p>All inputs are normalized to millions of U.S. dollars; reverse repo is converted from billions before calculation.</p>
+            </div>
+            <div class="aq-net-liquidity-controls">
+              <label>Start date<input type="date" data-net-liquidity-start /></label>
+              <label>End date<input type="date" data-net-liquidity-end /></label>
+              <span data-net-liquidity-range>Awaiting aligned observations</span>
+            </div>
+            <div class="terminal-chart aq-chart-panel aq-net-liquidity-chart" data-net-liquidity-chart><span>Loading net liquidity history.</span></div>
+            <div class="aq-liquidity-components">
+              <div><code>WALCL</code><span>Federal Reserve assets</span><b>Adds liquidity</b></div>
+              <div><code>TGA</code><span>Treasury General Account</span><b>Removes liquidity</b></div>
+              <div><code>RRPONTSYD</code><span>Overnight reverse repo</span><b>Removes liquidity</b></div>
+              <div><code>H41RESPPALDKNWW</code><span>Bank Term Funding Program</span><b>Adds liquidity</b></div>
+              <div><code>WLCFLPCL</code><span>Primary credit loans</span><b>Adds liquidity</b></div>
+            </div>
+            <p class="aq-disclosure">Source: Federal Reserve H.4.1 data via FRED. BTFP is retained for historical continuity and is zero after its discontinuation. This derived series is market context, not a trading signal or a recommendation.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="aq-page-section">
+        <div class="shell shell-wide">
+          <div class="aq-section-head reveal">
+            <div>
               <p class="aq-section-label">Core Models</p>
-              <h2>Current state, with history.</h2>
+              <h2>Published model state</h2>
             </div>
             <div class="feed-state" data-model-history-status data-state="loading" role="status">
               <i aria-hidden="true"></i>
@@ -83,12 +123,13 @@
                 <a class="button" href="trend-following.html#medium-term-trend">Open Trend Family</a>
               </header>
               <div class="aq-model-gauge-panel aq-static-gauge" role="img" aria-label="Medium-Term Trend gauge awaiting its live reading">
-                <div class="aq-model-gauge-copy"><span>Model gauge</span><p>Trend posture from defensive to long.</p></div>
+                <div class="aq-model-gauge-copy"><span>Published trend score</span><p>Standardized from -1.00 defensive to +1.00 long.</p></div>
                 <div class="dial dial-compact" data-dial-tone="neutral">
                   <svg class="dial-svg" viewBox="0 0 360 190" aria-hidden="true"><path class="dial-track" d="M62 164 A118 118 0 0 1 298 164"/><path class="dial-zone" d="M62 164 A118 118 0 0 1 70.96 118.85" stroke="#b86b61"/><path class="dial-zone" d="M70.96 118.85 A118 118 0 0 1 134.85 54.96" stroke="#9f7552"/><path class="dial-zone" d="M134.85 54.96 A118 118 0 0 1 225.15 54.96" stroke="#6e747c"/><path class="dial-zone" d="M225.15 54.96 A118 118 0 0 1 289.04 118.85" stroke="#7c95af"/><path class="dial-zone" d="M289.04 118.85 A118 118 0 0 1 298 164" stroke="#98b7d8"/><circle class="dial-dot" cx="180" cy="46" r="8"/></svg>
-                  <div class="dial-center"><strong>--</strong><span>Loading live read</span></div>
-                  <div class="dial-axis" aria-hidden="true"><span>Defensive</span><span>Neutral</span><span>Long</span></div>
+                  <div class="dial-center"><strong>--</strong><span>Loading published read</span></div>
+                  <div class="dial-axis" aria-hidden="true"><span>-1.00</span><span>0.00</span><span>+1.00</span></div>
                 </div>
+                <div class="aq-model-scale-note"><span>Model scale</span><strong>Defensive / neutral / long</strong></div>
               </div>
               <p class="aq-disclosure">Loading the latest published reading and dated forward-test history.</p>
             </article>
@@ -102,12 +143,13 @@
                 <a class="button" href="trend-following.html#long-term-trend">Open Trend Family</a>
               </header>
               <div class="aq-model-gauge-panel aq-static-gauge" role="img" aria-label="Long-Term Trend gauge awaiting its live reading">
-                <div class="aq-model-gauge-copy"><span>Model gauge</span><p>Long-horizon trend posture from defensive to long.</p></div>
+                <div class="aq-model-gauge-copy"><span>Published trend score</span><p>Standardized from -1.00 defensive to +1.00 long.</p></div>
                 <div class="dial dial-compact" data-dial-tone="neutral">
                   <svg class="dial-svg" viewBox="0 0 360 190" aria-hidden="true"><path class="dial-track" d="M62 164 A118 118 0 0 1 298 164"/><path class="dial-zone" d="M62 164 A118 118 0 0 1 70.96 118.85" stroke="#b86b61"/><path class="dial-zone" d="M70.96 118.85 A118 118 0 0 1 134.85 54.96" stroke="#9f7552"/><path class="dial-zone" d="M134.85 54.96 A118 118 0 0 1 225.15 54.96" stroke="#6e747c"/><path class="dial-zone" d="M225.15 54.96 A118 118 0 0 1 289.04 118.85" stroke="#7c95af"/><path class="dial-zone" d="M289.04 118.85 A118 118 0 0 1 298 164" stroke="#98b7d8"/><circle class="dial-dot" cx="180" cy="46" r="8"/></svg>
-                  <div class="dial-center"><strong>--</strong><span>Loading live read</span></div>
-                  <div class="dial-axis" aria-hidden="true"><span>Defensive</span><span>Neutral</span><span>Long</span></div>
+                  <div class="dial-center"><strong>--</strong><span>Loading published read</span></div>
+                  <div class="dial-axis" aria-hidden="true"><span>-1.00</span><span>0.00</span><span>+1.00</span></div>
                 </div>
+                <div class="aq-model-scale-note"><span>Model scale</span><strong>Defensive / neutral / long</strong></div>
               </div>
               <p class="aq-disclosure">Loading the latest published reading and dated forward-test history.</p>
             </article>
@@ -121,12 +163,13 @@
                 <a class="button" href="mrpi-methodology.html">Methodology</a>
               </header>
               <div class="aq-model-gauge-panel aq-static-gauge" role="img" aria-label="Mortgage Rate Pressure Index gauge awaiting its live reading">
-                <div class="aq-model-gauge-copy"><span>Model gauge</span><p>Rate pressure from tightening to easing.</p></div>
+                <div class="aq-model-gauge-copy"><span>Published pressure score</span><p>Standardized from -1.00 tightening to +1.00 easing.</p></div>
                 <div class="dial dial-compact" data-dial-tone="neutral">
                   <svg class="dial-svg" viewBox="0 0 360 190" aria-hidden="true"><path class="dial-track" d="M62 164 A118 118 0 0 1 298 164"/><path class="dial-zone" d="M62 164 A118 118 0 0 1 70.96 118.85" stroke="#b86b61"/><path class="dial-zone" d="M70.96 118.85 A118 118 0 0 1 134.85 54.96" stroke="#9f7552"/><path class="dial-zone" d="M134.85 54.96 A118 118 0 0 1 225.15 54.96" stroke="#6e747c"/><path class="dial-zone" d="M225.15 54.96 A118 118 0 0 1 289.04 118.85" stroke="#7c95af"/><path class="dial-zone" d="M289.04 118.85 A118 118 0 0 1 298 164" stroke="#98b7d8"/><circle class="dial-dot" cx="180" cy="46" r="8"/></svg>
-                  <div class="dial-center"><strong>--</strong><span>Loading live read</span></div>
-                  <div class="dial-axis" aria-hidden="true"><span>Tightening</span><span>Neutral</span><span>Easing</span></div>
+                  <div class="dial-center"><strong>--</strong><span>Loading published read</span></div>
+                  <div class="dial-axis" aria-hidden="true"><span>-1.00</span><span>0.00</span><span>+1.00</span></div>
                 </div>
+                <div class="aq-model-scale-note"><span>Model scale</span><strong>Tightening / neutral / easing</strong></div>
               </div>
               <p class="aq-disclosure">Loading the latest published reading and dated history.</p>
             </article>
@@ -141,26 +184,24 @@
               <p class="aq-section-label">Relative Strength</p>
               <h2>SMPS</h2>
             </div>
-            <p class="aq-section-note">Live ratio-model rows from the research workbook.</p>
+            <p class="aq-section-note">Pick an asset to inspect only its live relative-strength relationships.</p>
           </div>
-          <div class="aq-grid three aq-ratio-catalog" data-rotation-board>
-            <article class="aq-grid-card">
-              <p class="aq-section-label">SMPS</p>
-              <h3>Core relative strength</h3>
-              <p>Strength Module Portfolio System Strategy ratios load here with their current score and state.</p>
-            </article>
-            <article class="aq-grid-card">
-              <p class="aq-section-label">Alternative SMPS</p>
-              <h3>Alternative relative strength</h3>
-              <p>Alternative-asset Strength Module Portfolio System Strategy ratios load here with their current score and state.</p>
-            </article>
-            <article class="aq-grid-card">
-              <p class="aq-section-label">Research Use</p>
-              <h3>Rotation, not allocation</h3>
-              <p>Relative-strength readings identify comparative structure; they are not stand-alone portfolio instructions.</p>
-            </article>
+          <div class="aq-smps-toolbar reveal">
+            <div>
+              <p class="aq-section-label">Select A Crypto Asset</p>
+              <div class="aq-smps-picker" data-smps-asset-picker aria-label="Select a crypto asset">
+                <span>Loading available assets</span>
+              </div>
+            </div>
+            <div class="aq-smps-leader" data-rotation-leader aria-live="polite">
+              <span>Selected asset</span>
+              <strong>Waiting for SMPS feed</strong>
+            </div>
           </div>
-          <p class="aq-disclosure aq-spacer-top">Run the site through its application server to load live Sheets readings. The complete workbook coverage and dated diagnostics are on the <a href="backtesting.html">Backtesting</a> page.</p>
+          <div class="aq-grid aq-ratio-catalog aq-smps-results" data-rotation-board>
+            <p class="aq-disclosure aq-ratio-unavailable">Loading asset-specific strength relationships.</p>
+          </div>
+          <p class="aq-disclosure aq-spacer-top">SMPS compares relative strength; it is not an allocation model or a stand-alone portfolio instruction. The complete workbook coverage and dated diagnostics are on the <a href="backtesting.html">Backtesting</a> page.</p>
         </div>
       </section>
 

@@ -96,7 +96,7 @@ const fredSeries: FredDefinition[] = [
     unit: "usd_millions",
     frequency: "Weekly",
     changeType: "percent",
-    historyDays: 730
+    historyDays: 1825
   },
   {
     id: "treasuryGeneralAccount",
@@ -113,6 +113,24 @@ const fredSeries: FredDefinition[] = [
     seriesId: "RRPONTSYD",
     unit: "usd_billions",
     frequency: "Daily",
+    changeType: "percent",
+    historyDays: 1825
+  },
+  {
+    id: "bankTermFundingProgram",
+    label: "Bank Term Funding Program",
+    seriesId: "H41RESPPALDKNWW",
+    unit: "usd_millions",
+    frequency: "Weekly",
+    changeType: "percent",
+    historyDays: 1825
+  },
+  {
+    id: "primaryCredit",
+    label: "Primary Credit Loans",
+    seriesId: "WLCFLPCL",
+    unit: "usd_millions",
+    frequency: "Weekly",
     changeType: "percent",
     historyDays: 1825
   },
@@ -252,17 +270,21 @@ export function deriveFedNetLiquidity(metrics: MarketMetric[]): MarketMetric {
   const fed = metrics.find((metric) => metric.id === "fedLiquidity" && metric.status === "ready");
   const tga = metrics.find((metric) => metric.id === "treasuryGeneralAccount" && metric.status === "ready");
   const rrp = metrics.find((metric) => metric.id === "reverseRepo" && metric.status === "ready");
+  const btfp = metrics.find((metric) => metric.id === "bankTermFundingProgram" && metric.status === "ready");
+  const primaryCredit = metrics.find((metric) => metric.id === "primaryCredit" && metric.status === "ready");
   const sourceUrl = "https://fred.stlouisfed.org/series/WALCL";
-  if (!fed || !tga || !rrp) {
+  if (!fed || !tga || !rrp || !btfp || !primaryCredit) {
     return unavailableMetric("fedNetLiquidity", "Fed Net Liquidity", "Derived from Federal Reserve Economic Data", sourceUrl, "Weekly derived");
   }
 
   const points = fed.points.flatMap((point) => {
     const tgaValue = latestAtOrBefore(tga.points, point.timestamp);
     const rrpBillions = latestAtOrBefore(rrp.points, point.timestamp);
-    return tgaValue === null || rrpBillions === null
+    const btfpValue = latestAtOrBefore(btfp.points, point.timestamp);
+    const primaryCreditValue = latestAtOrBefore(primaryCredit.points, point.timestamp);
+    return tgaValue === null || rrpBillions === null || btfpValue === null || primaryCreditValue === null
       ? []
-      : [{ timestamp: point.timestamp, value: point.value - tgaValue - rrpBillions * 1_000 }];
+      : [{ timestamp: point.timestamp, value: point.value - tgaValue - rrpBillions * 1_000 + btfpValue + primaryCreditValue }];
   });
   if (!points.length) {
     return unavailableMetric("fedNetLiquidity", "Fed Net Liquidity", "Derived from Federal Reserve Economic Data", sourceUrl, "Weekly derived");
@@ -273,7 +295,7 @@ export function deriveFedNetLiquidity(metrics: MarketMetric[]): MarketMetric {
     id: "fedNetLiquidity",
     label: "Fed Net Liquidity",
     status: "ready",
-    message: "Derived as Federal Reserve assets minus the Treasury General Account minus overnight reverse repo.",
+    message: "Derived as WALCL minus TGA minus overnight reverse repo, plus Bank Term Funding Program and primary credit loans.",
     value: current.value,
     unit: "usd_millions",
     change: previous ? change(previous.value, current.value, "percent") : null,

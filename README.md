@@ -59,7 +59,7 @@ The current AstravaQuant model does not publish target portfolio weights. The da
 - Total crypto market capitalization, crypto market capitalization excluding Bitcoin, and tracked crypto assets from CoinGecko, with CoinPaprika as a read-only current-data fallback.
 - The 10-year Treasury (`DGS10`), Federal Reserve assets (`WALCL`), Treasury General Account (`WTREGEN`), overnight reverse repo (`RRPONTSYD`), M2 (`M2SL`), S&P 500 (`SP500`), Nasdaq Composite (`NASDAQCOM`), mortgage rates, and home prices from FRED.
 - Aggregate USD stablecoin supply and history from DefiLlama.
-- Fed net liquidity derived as `WALCL - WTREGEN - (RRPONTSYD * 1,000)` after normalizing all inputs to millions of U.S. dollars.
+- Net Fed liquidity derived as `WALCL - WTREGEN - (RRPONTSYD * 1,000) + H41RESPPALDKNWW + WLCFLPCL` after normalizing all inputs to millions of U.S. dollars. The BTFP series is retained historically and is zero after its discontinuation.
 
 Provider requests run independently and time out cleanly, so one failed series does not blank the dashboard. Responses are cached for five minutes by default. Global crypto market-cap history is not fabricated when it is unavailable from the public feed; TOTAL and TOTAL2 remain current-snapshot cards while BTC, ETH, and FRED series include sourced history.
 

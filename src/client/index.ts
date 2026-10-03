@@ -14,6 +14,10 @@ if (document.querySelector("[data-model-feed]")) {
   void import("./model-feed.js").then(({ bootModelFeed }) => bootModelFeed());
 }
 
+if (document.querySelector("[data-net-liquidity]")) {
+  void import("./net-liquidity.js").then(({ bootNetLiquidity }) => bootNetLiquidity());
+}
+
 if (document.querySelector("[data-backtesting-page]")) {
   void import("./backtesting.js").then(({ bootBacktesting }) => bootBacktesting());
 }

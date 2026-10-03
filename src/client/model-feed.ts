@@ -83,32 +83,80 @@ function rotationTone(model: WorkbookRatioModel): "positive" | "negative" | "neu
   return "neutral";
 }
 
+let selectedSmpsAsset: string | null = null;
+
+function ratioAssets(models: WorkbookRatioModel[]): string[] {
+  return [...new Set(models.flatMap((model) => model.label.split(" / ").map((asset) => asset.trim()).filter(Boolean)))].sort();
+}
+
+function perspective(model: WorkbookRatioModel, asset: string): { score: number; peer: string } | null {
+  const [numerator, denominator] = model.label.split(" / ").map((value) => value.trim());
+  if (!numerator || !denominator) return null;
+  if (asset === numerator) return { score: model.score, peer: denominator };
+  if (asset === denominator) return { score: -model.score, peer: numerator };
+  return null;
+}
+
+function strengthState(score: number): string {
+  if (score > 0.25) return "LEADING";
+  if (score < -0.25) return "LAGGING";
+  return "NEUTRAL";
+}
+
 function updateRatios(dashboard: WorkbookDashboard): void {
   const root = document.querySelector<HTMLElement>("[data-rotation-board]");
   const leaderRoot = document.querySelector<HTMLElement>("[data-rotation-leader]");
+  const pickerRoot = document.querySelector<HTMLElement>("[data-smps-asset-picker]");
   if (!root) return;
   const models = [...new Map(dashboard.ratioModels.map((model) => [model.id, model])).values()]
     .sort((left, right) => right.score - left.score);
   if (!models.length) {
-    root.insertAdjacentHTML("beforeend", '<p class="aq-disclosure aq-ratio-unavailable">The live ratio-model feed is temporarily unavailable. The catalog remains visible; no substitute scores are shown.</p>');
+    root.innerHTML = '<p class="aq-disclosure aq-ratio-unavailable">The live SMPS feed is temporarily unavailable. No substitute scores are shown.</p>';
+    if (pickerRoot) pickerRoot.innerHTML = "<span>Assets unavailable</span>";
     if (leaderRoot) leaderRoot.innerHTML = "<span>Current leader</span><strong>Unavailable</strong>";
     return;
   }
 
-  root.innerHTML = models.map((model, index) => {
-    const position = Math.min(100, Math.max(0, ((model.score + 1) / 2) * 100));
-    const tone = rotationTone(model);
-    return `<article class="aq-grid-card aq-ratio-card" data-tone="${tone}">
-      <div class="aq-ratio-head"><span>${String(index + 1).padStart(2, "0")} / ${escapeHtml(model.sourceTab)}</span><b>${escapeHtml(model.state)}</b></div>
-      <h3>${escapeHtml(model.label)}</h3>
-      <div class="aq-ratio-reading"><strong>${signed(model.score)}</strong><span>Relative-strength score</span></div>
-      <div class="aq-ratio-rail" aria-label="${escapeHtml(model.label)} relative-strength score ${signed(model.score)}"><i></i><b style="left:${position.toFixed(1)}%"></b></div>
-      <footer class="aq-ratio-scale"><span>Weak</span><span>Neutral</span><span>Strong</span></footer>
-    </article>`;
-  }).join("");
+  const assets = ratioAssets(models);
+  if (!selectedSmpsAsset || !assets.includes(selectedSmpsAsset)) selectedSmpsAsset = assets.includes("BTC") ? "BTC" : assets[0]!;
 
-  const leader = models[0]!;
-  if (leaderRoot) leaderRoot.innerHTML = `<span>Current leader</span><strong>${escapeHtml(leader.label)} <b>${signed(leader.score)}</b></strong>`;
+  const render = () => {
+    const selected = selectedSmpsAsset!;
+    const filtered = models
+      .map((model) => ({ model, perspective: perspective(model, selected) }))
+      .filter((entry): entry is { model: WorkbookRatioModel; perspective: { score: number; peer: string } } => entry.perspective !== null)
+      .sort((left, right) => right.perspective.score - left.perspective.score);
+
+    if (pickerRoot) {
+      pickerRoot.innerHTML = assets.map((asset) => `<button type="button" class="${asset === selected ? "is-active" : ""}" data-smps-asset="${escapeHtml(asset)}" aria-pressed="${asset === selected}">${escapeHtml(asset)}</button>`).join("");
+      pickerRoot.querySelectorAll<HTMLButtonElement>("[data-smps-asset]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedSmpsAsset = button.dataset.smpsAsset ?? selected;
+          render();
+        });
+      });
+    }
+
+    root.innerHTML = filtered.map(({ model, perspective: selectedPerspective }, index) => {
+      const position = Math.min(100, Math.max(0, ((selectedPerspective.score + 1) / 2) * 100));
+      const tone = rotationTone({ ...model, score: selectedPerspective.score });
+      const state = strengthState(selectedPerspective.score);
+      return `<article class="aq-grid-card aq-ratio-card" data-tone="${tone}">
+        <div class="aq-ratio-head"><span>${String(index + 1).padStart(2, "0")} / ${escapeHtml(model.sourceTab)}</span><b>${state}</b></div>
+        <h3>${escapeHtml(selected)} <span>vs ${escapeHtml(selectedPerspective.peer)}</span></h3>
+        <div class="aq-ratio-reading"><strong>${signed(selectedPerspective.score)}</strong><span>${escapeHtml(selected)} relative-strength score</span></div>
+        <div class="aq-ratio-rail" aria-label="${escapeHtml(selected)} relative strength versus ${escapeHtml(selectedPerspective.peer)} ${signed(selectedPerspective.score)}"><i></i><b style="left:${position.toFixed(1)}%"></b></div>
+        <footer class="aq-ratio-scale"><span>Lagging</span><span>Neutral</span><span>Leading</span></footer>
+      </article>`;
+    }).join("") || `<p class="aq-disclosure aq-ratio-unavailable">No published SMPS relationships include ${escapeHtml(selected)}.</p>`;
+
+    const leader = filtered[0];
+    if (leaderRoot) leaderRoot.innerHTML = leader
+      ? `<span>${escapeHtml(selected)} strongest relationship</span><strong>vs ${escapeHtml(leader.perspective.peer)} <b>${signed(leader.perspective.score)}</b></strong>`
+      : `<span>Selected asset</span><strong>${escapeHtml(selected)} unavailable</strong>`;
+  };
+
+  render();
 }
 
 function valuationScore(value: number | null): string {

@@ -162,22 +162,22 @@ function classificationNote(signal: WorkbookModelSignal): string {
 }
 
 function gaugeTitle(signal: WorkbookModelSignal): string {
-  if (signal.id === "mrpi") return "Pressure gauge";
-  return "Trend gauge";
+  if (signal.id === "mrpi") return "Published pressure score";
+  return "Published trend score";
 }
 
 function gaugeDescription(signal: WorkbookModelSignal): string {
-  if (signal.id === "mrpi") return "Live position from strong tightening through strong easing.";
-  return "Live position on the short-to-long regime range.";
+  if (signal.id === "mrpi") return "Standardized from -1.00 tightening to +1.00 easing.";
+  return "Standardized from -1.00 defensive to +1.00 long.";
 }
 
 function gaugeAxis(signal: WorkbookModelSignal): [string, string, string] {
-  if (signal.id === "mrpi") return ["Tightening", "Neutral", "Easing"];
-  return ["Short", "Neutral", "Long"];
+  if (signal.id === "mrpi") return ["-1.00", "0.00", "+1.00"];
+  return ["-1.00", "0.00", "+1.00"];
 }
 
 function gaugeAriaLabel(signal: WorkbookModelSignal): string {
-  return `${signal.name} gauge currently ${formatScore(signal.value)} with state ${signal.state}.`;
+  return `${signal.name} published standardized score is ${formatScore(signal.value)} with classification ${signal.state}.`;
 }
 
 function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | undefined, period: HistoryPeriod): string {
@@ -222,27 +222,31 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
             <span>${escapeHtml(rightAxis)}</span>
           </div>
         </div>
+        <div class="aq-model-scale-note">
+          <span>Model scale</span>
+          <strong>${signal.id === "mrpi" ? "Tightening / neutral / easing" : "Defensive / neutral / long"}</strong>
+        </div>
       </section>
       <div class="aq-model-meta">
         <div class="aq-meta-box">
-          <span>Current reading</span>
+          <span>Standardized score</span>
           <strong data-model-value>${formatScore(signal.value)}</strong>
-          <p>${signal.id === "mrpi" ? "Five-band pressure score." : "Standardized live score."}</p>
+          <p>Published on a -1.00 to +1.00 scale.</p>
         </div>
         <div class="aq-meta-box">
-          <span>Classification</span>
+          <span>Published classification</span>
           <strong class="status-${classificationTone}" data-model-state>${escapeHtml(signal.state)}</strong>
           <p>${escapeHtml(classificationNote(signal))}</p>
         </div>
         <div class="aq-meta-box">
-          <span>Updated</span>
+          <span>Latest publication</span>
           <strong data-model-updated>${escapeHtml(updated)}</strong>
           <p data-model-source>${escapeHtml(sourceLabel(signal, series))}</p>
         </div>
       </div>
     </div>
     <details class="aq-model-history-details">
-      <summary><span>Dated history</span><strong>${series?.points.length ? `${series.points.length} observations` : "Unavailable"}</strong></summary>
+      <summary><span>View dated history</span><strong>${series?.points.length ? `${series.points.length} observations` : "Unavailable"}</strong></summary>
       <div class="aq-model-chart-wrap">
         ${series?.points.length ? periodButtons(period) : ""}
         <div class="terminal-chart aq-chart-panel" data-model-history-chart="${escapeHtml(signal.id)}"><span>${escapeHtml(series?.message ?? "Historical series unavailable.")}</span></div>

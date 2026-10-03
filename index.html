@@ -69,55 +69,32 @@
             </div>
           </div>
 
-          <article class="aq-panel reveal">
-            <div class="aq-table-wrap">
-              <table class="aq-table aq-model-summary-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Model</th>
-                    <th scope="col">Last updated</th>
-                    <th scope="col">Current reading</th>
-                    <th scope="col">Classification</th>
-                    <th scope="col">Methodology</th>
-                    <th scope="col">Historical series</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr data-model-id="mtpi" data-feed-state="loading" aria-busy="true">
-                    <td>
-                      <strong>Medium-Term Trend <span class="aq-model-acronym">MTTPM</span></strong>
-                      <p>Five-day crypto trend using total market capitalization and TOTAL2.</p>
-                    </td>
-                    <td data-model-updated>Waiting for workbook</td>
-                    <td data-model-value>--</td>
-                    <td><span class="status-neutral" data-model-state>Syncing</span></td>
-                    <td><a href="trend-following.html#medium-term-trend">Methodology</a></td>
-                    <td><a class="aq-row-model-link" href="models.html#mtpi">View model</a></td>
-                  </tr>
-                  <tr data-model-id="ltpi" data-feed-state="loading" aria-busy="true">
-                    <td>
-                      <strong>Long-Term Trend <span class="aq-model-acronym">LTTPM</span></strong>
-                      <p>Weekly crypto trend using total market capitalization and Bitcoin.</p>
-                    </td>
-                    <td data-model-updated>Waiting for workbook</td>
-                    <td data-model-value>--</td>
-                    <td><span class="status-neutral" data-model-state>Syncing</span></td>
-                    <td><a href="trend-following.html#long-term-trend">Trend Following</a></td>
-                    <td><a class="aq-row-model-link" href="models.html#ltpi">View model</a></td>
-                  </tr>
-                  <tr data-model-id="mrpi" data-feed-state="loading" aria-busy="true">
-                    <td>
-                      <strong>Mortgage Rate Pressure Index</strong>
-                      <p>Weekly 10-year Treasury pressure model framed as tightening versus easing.</p>
-                    </td>
-                    <td data-model-updated>Waiting for workbook</td>
-                    <td data-model-value>--</td>
-                    <td><span class="status-neutral" data-model-state>Syncing</span></td>
-                    <td><a href="mrpi-methodology.html">Methodology</a></td>
-                    <td><a class="aq-row-model-link" href="models.html#mrpi">View model</a></td>
-                  </tr>
-                </tbody>
-              </table>
+          <article class="aq-panel aq-home-state-panel reveal">
+            <div class="aq-home-state-grid">
+              <article class="aq-home-state-card" data-model-id="mtpi" data-feed-state="loading" aria-busy="true">
+                <p class="aq-section-label">01 / Trend</p>
+                <h3>Medium-Term Trend <span class="aq-model-acronym">MTTPM</span></h3>
+                <p>Five-day crypto trend probability module.</p>
+                <div class="aq-home-state-reading"><strong data-model-value>--</strong><span>Standardized score</span></div>
+                <div class="aq-home-state-status"><span class="status-neutral" data-model-state>Syncing</span><time data-model-updated>Waiting for workbook</time></div>
+                <a class="aq-row-model-link" href="models.html#mtpi">Inspect model</a>
+              </article>
+              <article class="aq-home-state-card" data-model-id="ltpi" data-feed-state="loading" aria-busy="true">
+                <p class="aq-section-label">02 / Trend</p>
+                <h3>Long-Term Trend <span class="aq-model-acronym">LTTPM</span></h3>
+                <p>Weekly crypto trend probability module.</p>
+                <div class="aq-home-state-reading"><strong data-model-value>--</strong><span>Standardized score</span></div>
+                <div class="aq-home-state-status"><span class="status-neutral" data-model-state>Syncing</span><time data-model-updated>Waiting for workbook</time></div>
+                <a class="aq-row-model-link" href="models.html#ltpi">Inspect model</a>
+              </article>
+              <article class="aq-home-state-card" data-model-id="mrpi" data-feed-state="loading" aria-busy="true">
+                <p class="aq-section-label">03 / Rates</p>
+                <h3>Mortgage Rate Pressure Index</h3>
+                <p>Weekly 10-year Treasury pressure model.</p>
+                <div class="aq-home-state-reading"><strong data-model-value>--</strong><span>Standardized score</span></div>
+                <div class="aq-home-state-status"><span class="status-neutral" data-model-state>Syncing</span><time data-model-updated>Waiting for workbook</time></div>
+                <a class="aq-row-model-link" href="models.html#mrpi">Inspect model</a>
+              </article>
             </div>
             <p class="aq-disclosure">
               Scores classify market conditions according to predefined rules. They are not

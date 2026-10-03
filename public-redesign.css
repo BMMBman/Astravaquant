@@ -537,7 +537,7 @@ body.aq-site.aq-home .aq-page-section:first-of-type {
 }
 
 body.aq-site.aq-home .aq-section-head {
-  margin-bottom: 16px;
+  margin-bottom: 6px;
 }
 
 body.aq-site.aq-home .aq-panel {
@@ -634,8 +634,87 @@ body.aq-site .aq-ratio-catalog {
   align-items: start;
 }
 
+body.aq-site .aq-smps-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, .4fr);
+  gap: 14px;
+  align-items: end;
+  margin-bottom: 14px;
+  padding: 16px;
+  border: 1px solid var(--aq-border);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(149, 184, 166, .08), transparent 48%), var(--aq-panel);
+}
+
+body.aq-site .aq-smps-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+}
+
+body.aq-site .aq-smps-picker button {
+  min-width: 52px;
+  padding: 7px 10px;
+  border: 1px solid var(--aq-border);
+  border-radius: 999px;
+  color: var(--aq-muted);
+  background: rgba(255, 255, 255, .025);
+  font-family: var(--aq-font-mono);
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  cursor: pointer;
+}
+
+body.aq-site .aq-smps-picker button:hover,
+body.aq-site .aq-smps-picker button.is-active {
+  border-color: rgba(149, 184, 166, .68);
+  color: var(--aq-text);
+  background: rgba(149, 184, 166, .16);
+}
+
+body.aq-site .aq-smps-picker > span {
+  color: var(--aq-muted);
+  font-size: .82rem;
+}
+
+body.aq-site .aq-smps-leader {
+  display: grid;
+  gap: 3px;
+  padding-left: 16px;
+  border-left: 1px solid var(--aq-border);
+}
+
+body.aq-site .aq-smps-leader span {
+  color: var(--aq-muted);
+  font-size: .7rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+body.aq-site .aq-smps-leader strong {
+  color: var(--aq-text);
+  font-family: var(--aq-font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+body.aq-site .aq-smps-leader b {
+  color: var(--aq-positive);
+  font-family: var(--aq-font-mono);
+  font-size: .82em;
+}
+
 body.aq-site .aq-ratio-catalog .aq-grid-card h3 {
   font-size: 1.2rem;
+}
+
+body.aq-site .aq-ratio-catalog .aq-grid-card h3 span {
+  color: var(--aq-muted);
+  font-family: var(--aq-font-body);
+  font-size: .72em;
+  font-weight: 500;
 }
 
 body.aq-site .aq-ratio-head,
@@ -845,6 +924,160 @@ body.aq-site .aq-model-list {
   align-items: start;
 }
 
+body.aq-site .aq-net-liquidity {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--aq-border);
+  border-radius: 18px;
+  background:
+    linear-gradient(130deg, rgba(149, 184, 166, 0.1), transparent 42%),
+    var(--aq-panel);
+}
+
+body.aq-site .aq-net-liquidity-overview {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+body.aq-site .aq-net-liquidity-overview > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+body.aq-site .aq-net-liquidity-overview strong {
+  font-family: var(--aq-font-display);
+  font-size: clamp(2rem, 4.4vw, 3.3rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 0.9;
+}
+
+body.aq-site .aq-net-liquidity-overview p {
+  margin: 0;
+  color: var(--aq-muted);
+  font-size: 0.78rem;
+}
+
+body.aq-site .aq-net-liquidity-status {
+  padding: 7px 10px;
+  border: 1px solid rgba(149, 184, 166, 0.3);
+  border-radius: 999px;
+  color: var(--aq-positive);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body.aq-site .aq-net-liquidity-status.is-unavailable {
+  border-color: rgba(216, 133, 123, 0.35);
+  color: #d9857b;
+}
+
+body.aq-site .aq-liquidity-formula {
+  display: grid;
+  gap: 6px;
+  padding: 13px 14px;
+  border-top: 1px solid rgba(241, 236, 226, 0.1);
+  border-bottom: 1px solid rgba(241, 236, 226, 0.1);
+}
+
+body.aq-site .aq-liquidity-formula > span,
+body.aq-site .aq-liquidity-components b {
+  color: var(--aq-faint);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+body.aq-site .aq-liquidity-formula code {
+  color: var(--aq-text);
+  font-family: var(--aq-font-mono);
+  font-size: clamp(0.74rem, 1.7vw, 0.96rem);
+  overflow-wrap: anywhere;
+}
+
+body.aq-site .aq-liquidity-formula p {
+  margin: 0;
+  color: var(--aq-muted);
+  font-size: 0.76rem;
+}
+
+body.aq-site .aq-net-liquidity-controls {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+body.aq-site .aq-net-liquidity-controls label {
+  display: grid;
+  gap: 5px;
+  color: var(--aq-faint);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body.aq-site .aq-net-liquidity-controls input {
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 1px solid var(--aq-border);
+  border-radius: 8px;
+  color: var(--aq-text);
+  background: rgba(255, 255, 255, 0.035);
+  color-scheme: dark;
+  font: inherit;
+  letter-spacing: 0;
+}
+
+body.aq-site .aq-net-liquidity-controls > span {
+  margin-left: auto;
+  color: var(--aq-muted);
+  font-size: 0.74rem;
+}
+
+body.aq-site .aq-net-liquidity-chart {
+  min-height: 246px;
+}
+
+body.aq-site .net-liquidity-line {
+  stroke: #95b8a6;
+}
+
+body.aq-site .aq-liquidity-components {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+body.aq-site .aq-liquidity-components > div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 10px;
+  border-left: 2px solid rgba(149, 184, 166, 0.42);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+body.aq-site .aq-liquidity-components code {
+  color: var(--aq-text);
+  font-family: var(--aq-font-mono);
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
+}
+
+body.aq-site .aq-liquidity-components span {
+  color: var(--aq-muted);
+  font-size: 0.73rem;
+  line-height: 1.32;
+}
+
 body.aq-site .aq-model-card {
   display: grid;
   gap: 10px;
@@ -944,7 +1177,7 @@ body.aq-site .aq-model-gauge-panel {
   border: 1px solid rgba(241, 236, 226, 0.1);
   border-radius: 18px;
   background:
-    radial-gradient(circle at top center, rgba(149, 184, 166, 0.08), transparent 36%),
+    linear-gradient(90deg, rgba(149, 184, 166, 0.1), transparent 42%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01));
 }
 
@@ -975,6 +1208,30 @@ body.aq-site .aq-model-gauge-copy p {
   margin: 0;
   color: var(--aq-muted);
   font-size: 0.82rem;
+}
+
+body.aq-site .aq-model-scale-note {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(241, 236, 226, 0.09);
+}
+
+body.aq-site .aq-model-scale-note span {
+  color: var(--aq-faint);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+body.aq-site .aq-model-scale-note strong {
+  color: var(--aq-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: right;
 }
 
 body.aq-site .aq-model-derivation {
@@ -1169,8 +1426,98 @@ body.aq-site .aq-model-chart-wrap {
 }
 
 body.aq-site .aq-model-card .aq-meta-box {
-  padding: 10px;
+  padding: 12px;
   min-width: 0;
+  border-left: 2px solid rgba(241, 236, 226, 0.12);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+body.aq-site .aq-model-card .aq-meta-box:nth-child(1) { border-left-color: rgba(143, 200, 244, 0.72); }
+body.aq-site .aq-model-card .aq-meta-box:nth-child(2) { border-left-color: rgba(216, 203, 182, 0.55); }
+body.aq-site .aq-model-card .aq-meta-box:nth-child(3) { border-left-color: rgba(241, 236, 226, 0.22); }
+
+body.aq-site .aq-model-card .aq-meta-box p {
+  margin: 5px 0 0;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+body.aq-site .aq-home-state-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+body.aq-site .aq-home-state-card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(241, 236, 226, 0.11);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+}
+
+body.aq-site .aq-home-state-card h3 {
+  margin: 0;
+  font-family: var(--aq-font-display);
+  font-size: clamp(1.18rem, 1.8vw, 1.45rem);
+  font-weight: 500;
+  line-height: 1.08;
+}
+
+body.aq-site .aq-home-state-card > p:not(.aq-section-label) {
+  min-height: 2.8em;
+  margin: 0;
+  color: var(--aq-muted);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+body.aq-site .aq-home-state-reading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(241, 236, 226, 0.1);
+  border-bottom: 1px solid rgba(241, 236, 226, 0.1);
+}
+
+body.aq-site .aq-home-state-reading strong {
+  font-family: var(--aq-font-display);
+  font-size: 1.65rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+body.aq-site .aq-home-state-reading span,
+body.aq-site .aq-home-state-status time {
+  color: var(--aq-faint);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+body.aq-site .aq-home-state-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+body.aq-site .aq-home-state-status time {
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.aq-site .aq-home-state-card .aq-row-model-link {
+  margin-top: 2px;
 }
 
 body.aq-site .aq-model-card .aq-chart-panel {
@@ -2191,6 +2538,18 @@ body.aq-site .aq-spacer-top {
   body.aq-site .aq-ratio-catalog {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  body.aq-site .aq-liquidity-components {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  body.aq-site .aq-home-state-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.aq-site .aq-home-state-card:nth-child(3) {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 860px) {
@@ -2400,6 +2759,44 @@ body.aq-site .aq-spacer-top {
   body.aq-site .aq-model-list,
   body.aq-site .aq-ratio-catalog {
     grid-template-columns: 1fr;
+  }
+
+  body.aq-site .aq-net-liquidity {
+    padding: 14px;
+  }
+
+  body.aq-site .aq-net-liquidity-overview {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  body.aq-site .aq-net-liquidity-controls {
+    align-items: stretch;
+  }
+
+  body.aq-site .aq-net-liquidity-controls label {
+    flex: 1 1 130px;
+  }
+
+  body.aq-site .aq-net-liquidity-controls > span {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+
+  body.aq-site .aq-liquidity-components {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.aq-site .aq-home-state-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.aq-site .aq-home-state-card:nth-child(3) {
+    grid-column: auto;
+  }
+
+  body.aq-site .aq-home-state-card > p:not(.aq-section-label) {
+    min-height: 0;
   }
 
   body.aq-site .aq-model-card {
@@ -2662,6 +3059,19 @@ body.aq-site .aq-spacer-top {
   body.aq-site .aq-research-head > :nth-child(3),
   body.aq-site .aq-research-head > :nth-child(4) {
     grid-column: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  body.aq-site .aq-smps-toolbar {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  body.aq-site .aq-smps-leader {
+    padding: 12px 0 0;
+    border-top: 1px solid var(--aq-border);
+    border-left: 0;
   }
 }
 

@@ -263,6 +263,8 @@ export type MarketMetricId =
   | "fedNetLiquidity"
   | "treasuryGeneralAccount"
   | "reverseRepo"
+  | "bankTermFundingProgram"
+  | "primaryCredit"
   | "m2MoneySupply"
   | "stablecoinSupply"
   | "sp500"

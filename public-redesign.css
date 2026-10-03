@@ -1002,7 +1002,8 @@ body.aq-site .aq-atlas-sparkline path { fill: none; stroke: #8fc8f4; stroke-widt
 body.aq-site .aq-atlas-sparkline.is-unavailable { display: grid; place-items: center; color: var(--aq-faint); font-size: .74rem; }
 
 body.aq-site .aq-atlas-history { grid-column: 1 / -1; display: grid; gap: 8px; min-width: 0; padding: 12px; border: 1px solid rgba(143,200,244,.18); border-radius: 10px; background: rgba(5,7,10,.36); }
-body.aq-site .aq-atlas-history-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
+body.aq-site .aq-atlas-history-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 12px; }
+body.aq-site .aq-atlas-history-head > div:first-child { display: grid; gap: 3px; }
 body.aq-site .aq-atlas-history-head span { color: var(--aq-faint); font-size: .61rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
 body.aq-site .aq-atlas-history-head small { color: var(--aq-muted); font-size: .65rem; }
 body.aq-site .aq-atlas-history-chart { position: relative; height: 136px; border-top: 1px solid rgba(241,236,226,.08); border-bottom: 1px solid rgba(241,236,226,.08); background: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px); background-size: 100% 50%; }
@@ -1011,7 +1012,7 @@ body.aq-site .aq-atlas-history-line { fill: none; stroke: #8fc8f4; stroke-width:
 body.aq-site .aq-atlas-history-zero { stroke: rgba(241,236,226,.18); stroke-width: 1; vector-effect: non-scaling-stroke; }
 body.aq-site .aq-atlas-history-guide { stroke: rgba(241,236,226,.42); stroke-width: 1; vector-effect: non-scaling-stroke; }
 body.aq-site .aq-atlas-history-dot { fill: #f4f0e6; stroke: #101217; stroke-width: 2; vector-effect: non-scaling-stroke; }
-body.aq-site .aq-atlas-history-readout { position: absolute; top: 8px; right: 8px; display: grid; justify-items: end; gap: 1px; padding: 6px 8px; border: 1px solid rgba(241,236,226,.1); border-radius: 6px; background: rgba(10,12,16,.88); pointer-events: none; }
+body.aq-site .aq-atlas-history-readout { display: flex; align-items: baseline; justify-content: end; gap: 6px; padding: 6px 8px; border: 1px solid rgba(241,236,226,.1); border-radius: 6px; background: rgba(10,12,16,.88); pointer-events: none; }
 body.aq-site .aq-atlas-history-readout time { color: var(--aq-faint); font-size: .58rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
 body.aq-site .aq-atlas-history-readout strong { color: var(--aq-text); font-family: var(--aq-font-display); font-size: 1.08rem; font-weight: 500; line-height: 1; }
 body.aq-site .aq-atlas-history-readout span { font-size: .57rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }

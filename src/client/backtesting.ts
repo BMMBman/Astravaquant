@@ -177,7 +177,6 @@ function bindChartInspector(series: BacktestSeries): void {
     inspect(Math.round(ratio * (series.points.length - 1)));
   };
   chart.onpointerdown = (event) => {
-    chart.setPointerCapture?.(event.pointerId);
     const rect = chart.getBoundingClientRect();
     const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
     inspect(Math.round(ratio * (series.points.length - 1)));

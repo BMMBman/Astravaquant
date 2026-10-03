@@ -95,7 +95,7 @@ function interactiveHistoryMarkup(series: WorkbookScoreSeries): string {
   }).join("");
 
   return `<section class="aq-atlas-history" data-atlas-history-series="${escapeHtml(series.id)}">
-    <div class="aq-atlas-history-head"><span>Dated score history</span><small>Hover or drag across the chart. Tap a point on mobile.</small></div>
+    <div class="aq-atlas-history-head"><div><span>Dated score history</span><small>Hover or click the chart. Tap a point on mobile.</small></div><div class="aq-atlas-history-readout" data-atlas-history-readout aria-live="polite"><time>${escapeHtml(date(current.date))}</time><strong>${score(current.score)}</strong><span class="is-${currentState.tone}">${currentState.label}</span></div></div>
     <div class="aq-atlas-history-chart">
       <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(series.label)} dated score history" data-atlas-history-chart>
         <path d="M${padding.x} ${y(0).toFixed(1)} H${width - padding.x}" class="aq-atlas-history-zero"/>
@@ -104,7 +104,6 @@ function interactiveHistoryMarkup(series: WorkbookScoreSeries): string {
         <circle cx="${x(currentIndex).toFixed(1)}" cy="${y(current.score).toFixed(1)}" r="5" class="aq-atlas-history-dot" data-atlas-history-dot/>
         <rect x="0" y="0" width="${width}" height="${height}" fill="transparent" data-atlas-history-hit/>
       </svg>
-      <div class="aq-atlas-history-readout" data-atlas-history-readout aria-live="polite"><time>${escapeHtml(date(current.date))}</time><strong>${score(current.score)}</strong><span class="is-${currentState.tone}">${currentState.label}</span></div>
     </div>
     <div class="aq-atlas-history-controls">
       <button type="button" data-atlas-history-previous aria-label="Previous dated observation">Previous</button>
@@ -181,9 +180,9 @@ function bindInteractiveHistory(content: HTMLElement, series: WorkbookScoreSerie
 
     chart.addEventListener("pointermove", selectFromPointer);
     chart.addEventListener("pointerdown", (event) => {
-      chart.setPointerCapture?.(event.pointerId);
       selectFromPointer(event);
     });
+    chart.addEventListener("pointerup", selectFromPointer);
     scrubber.addEventListener("input", () => select(Number(scrubber.value)));
     previous?.addEventListener("click", () => select(selectedIndex - 1));
     next?.addEventListener("click", () => select(selectedIndex + 1));

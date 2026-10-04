@@ -195,10 +195,10 @@ function scalePosition(value: number | null, minimum: number, maximum: number): 
   return Math.min(100, Math.max(0, (value - minimum) / (maximum - minimum) * 100));
 }
 
-function riskScale(value: number | null): string {
+function riskScale(value: number | null, labels = ["−1 Risk-off", "0 Neutral", "+1 Risk-on"]): string {
   const position = scalePosition(value, -1, 1);
-  return `<div class="aq-atlas-risk-scale" aria-label="Risk scale from negative one risk-off to positive one risk-on">
-    <div class="aq-atlas-risk-scale-labels"><span>−1 Risk-off</span><span>0 Neutral</span><span>+1 Risk-on</span></div>
+  return `<div class="aq-atlas-risk-scale" aria-label="${escapeHtml(labels.join(", "))}">
+    <div class="aq-atlas-risk-scale-labels"><span>${escapeHtml(labels[0]!)}</span><span>${escapeHtml(labels[1]!)}</span><span>${escapeHtml(labels[2]!)}</span></div>
     <div class="aq-atlas-risk-rail"><i style="left:${position.toFixed(2)}%"></i></div>
   </div>`;
 }
@@ -272,13 +272,17 @@ function liquidityMarkup(markets: MarketDashboard): string {
 
 function diagnosticsCard(series: WorkbookScoreSeries): string {
   const analysis = analyzeScoreSeries(series.points);
-  const current = analysis.currentRegime === "risk_on" ? "Risk-on" : analysis.currentRegime === "risk_off" ? "Risk-off" : "Neutral";
+  const isMrpi = series.id === "mrpi";
+  const current = isMrpi
+    ? analysis.currentRegime === "risk_on" ? "Easing" : analysis.currentRegime === "risk_off" ? "Tightening" : "Neutral"
+    : analysis.currentRegime === "risk_on" ? "Risk-on" : analysis.currentRegime === "risk_off" ? "Risk-off" : "Neutral";
   const latest = series.points.at(-1)?.score ?? null;
-  return `<article class="aq-atlas-card"><p>${escapeHtml(series.label)}</p><strong>${score(latest)}</strong><b>${current}</b>${interactiveHistoryMarkup(series)}${riskScale(latest)}<small>${analysis.observations} dated observations / ${analysis.transitions.length} transitions / ${analysis.currentStreak} observation current streak</small></article>`;
+  const scaleLabels = isMrpi ? ["−1 Tightening", "0 Neutral", "+1 Easing"] : undefined;
+  return `<article class="aq-atlas-card"><p>${escapeHtml(series.label)}</p><strong>${score(latest)}</strong><b>${current}</b>${interactiveHistoryMarkup(series)}${riskScale(latest, scaleLabels)}<small>${analysis.observations} dated observations / ${analysis.transitions.length} transitions / ${analysis.currentStreak} observation current streak</small></article>`;
 }
 
 function backtestingMarkup(workbook: WorkbookDashboard): string {
-  const series = workbook.scoreSeries.filter((item) => item.id === "mtpi" || item.id === "ltpi");
+  const series = workbook.scoreSeries.filter((item) => item.id === "mtpi" || item.id === "ltpi" || item.id === "mrpi");
   return `<div class="aq-atlas-intro"><span>Forward-testing diagnostics</span><p>Counts and transitions describe the published score history. They are not performance claims.</p></div>
     <div class="aq-atlas-grid two">${series.length ? series.map(diagnosticsCard).join("") : '<p class="aq-atlas-empty">Dated trend observations are unavailable.</p>'}</div>
     <div class="aq-atlas-foot"><span>Classification history is shown as a dated research record, not a performance claim.</span></div>`;

@@ -3389,10 +3389,16 @@ body.aq-site .aq-spacer-top {
 
   body.aq-site.aq-home .aq-atlas-field {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "trend valuation"
+      "core core"
+      "liquidity diagnostics";
     gap: 8px;
   }
 
   body.aq-site.aq-home .aq-atlas-core {
+    grid-column: auto;
+    grid-area: core;
     width: 112px;
     height: 112px;
     margin: 0 0 3px;
@@ -3406,6 +3412,11 @@ body.aq-site .aq-spacer-top {
     min-height: 138px;
     padding: 13px;
   }
+
+  body.aq-site.aq-home .aq-atlas-system-trend { grid-area: trend; }
+  body.aq-site.aq-home .aq-atlas-system-valuation { grid-area: valuation; }
+  body.aq-site.aq-home .aq-atlas-system-liquidity { grid-area: liquidity; }
+  body.aq-site.aq-home .aq-atlas-system-backtesting { grid-area: diagnostics; }
 
   body.aq-site.aq-home .aq-atlas-system strong {
     margin-top: 6px;

@@ -4062,7 +4062,7 @@ body.aq-site.aq-overview-home .aq-history-area { fill: rgba(100, 229, 224, .08);
 body.aq-site.aq-overview-home .aq-history-line { fill: none; stroke: #84e3e1; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 body.aq-site.aq-overview-home .aq-history-guide { stroke: rgba(239, 238, 227, .42); stroke-width: 1; vector-effect: non-scaling-stroke; }
 body.aq-site.aq-overview-home .aq-history-dot { fill: #dff3ed; stroke: #0c1a29; stroke-width: 3; vector-effect: non-scaling-stroke; }
-body.aq-site.aq-overview-home .aq-history-readout { position: absolute; top: 8px; right: 10px; z-index: 1; display: grid; justify-items: end; gap: 2px; padding: 8px 10px; border: 1px solid rgba(189, 221, 220, .2); border-radius: 5px; background: rgba(8, 19, 30, .9); pointer-events: none; }
+body.aq-site.aq-overview-home .aq-history-readout { display: grid; width: max-content; margin: 0 0 8px auto; justify-items: end; gap: 2px; padding: 8px 10px; border: 1px solid rgba(189, 221, 220, .2); border-radius: 5px; background: rgba(8, 19, 30, .9); pointer-events: none; }
 body.aq-site.aq-overview-home .aq-history-readout span { color: #8fa0aa; font-size: .56rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
 body.aq-site.aq-overview-home .aq-history-readout time { color: #c5d1d4; font-size: .68rem; }
 body.aq-site.aq-overview-home .aq-history-readout strong { color: #91e6e6; font-family: var(--aq-font-mono); font-size: 1.15rem; font-weight: 500; }
@@ -4107,7 +4107,7 @@ body.aq-site.aq-overview-home .aq-atlas-halo { display: none; }
   body.aq-site.aq-overview-home .aq-history-selector { width: 100%; }
   body.aq-site.aq-overview-home .aq-history-selector button { flex: 1; min-height: 44px; }
   body.aq-site.aq-overview-home .aq-history-panel { min-height: 300px; padding: 11px 7px; }
-  body.aq-site.aq-overview-home .aq-history-readout { top: 7px; right: 7px; padding: 6px 7px; }
+  body.aq-site.aq-overview-home .aq-history-readout { margin: 0 7px 7px auto; padding: 6px 7px; }
   body.aq-site.aq-overview-home .aq-history-x-label { font-size: 11px; }
   body.aq-site.aq-overview-home .aq-history-y-label { font-size: 11px; }
   body.aq-site.aq-overview-home .aq-history-legend { padding: 0 7px; }
@@ -4115,6 +4115,97 @@ body.aq-site.aq-overview-home .aq-atlas-halo { display: none; }
   body.aq-site.aq-overview-home .aq-history-observations { margin: 16px 7px 0; }
   body.aq-site.aq-overview-home .aq-history-observations ol { grid-template-columns: 1fr; }
   body.aq-site.aq-overview-home .footer-inner { align-items: start; flex-direction: column; gap: 13px; }
+}
+
+/* Founder page: typography-led, deliberately without a fabricated portrait. */
+body.aq-site.aq-founder-page .aq-founder-layout {
+  display: grid;
+  grid-template-columns: minmax(190px, .55fr) minmax(0, 1.45fr);
+  align-items: start;
+  gap: clamp(28px, 6vw, 76px);
+}
+
+body.aq-site.aq-founder-page .aq-founder-facts {
+  position: sticky;
+  top: 104px;
+  display: grid;
+  gap: 8px;
+  padding: 19px 0 0 18px;
+  border-left: 1px solid #7ccdd4;
+}
+
+body.aq-site.aq-founder-page .aq-founder-facts > span,
+body.aq-site.aq-founder-page .aq-founder-facts dt {
+  color: #8bcbd2;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+body.aq-site.aq-founder-page .aq-founder-facts > strong {
+  color: #f1ede5;
+  font-family: var(--aq-font-display);
+  font-size: 1.9rem;
+  font-weight: 500;
+  letter-spacing: -.03em;
+}
+
+body.aq-site.aq-founder-page .aq-founder-facts dl { display: grid; gap: 14px; margin: 16px 0 0; }
+body.aq-site.aq-founder-page .aq-founder-facts dl > div { display: grid; gap: 3px; }
+body.aq-site.aq-founder-page .aq-founder-facts dd { margin: 0; color: #aebbc1; font-size: .8rem; line-height: 1.45; }
+
+body.aq-site.aq-founder-page .aq-founder-story { display: grid; gap: 18px; }
+body.aq-site.aq-founder-page .aq-founder-story h2 {
+  max-width: 700px;
+  margin: 0;
+  color: #f2ede5;
+  font-family: var(--aq-font-display);
+  font-size: clamp(2rem, 3.4vw, 3.05rem);
+  font-weight: 500;
+  letter-spacing: -.045em;
+  line-height: .98;
+}
+
+body.aq-site.aq-founder-page .aq-founder-story > p:not(.aq-section-label) {
+  max-width: 700px;
+  margin: 0;
+  color: #b6c2c7;
+  font-size: 1.03rem;
+  line-height: 1.72;
+}
+
+body.aq-site.aq-founder-page .aq-founder-philosophy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 22px;
+  padding: 24px;
+  border: 1px solid rgba(185, 207, 216, .18);
+  border-radius: 7px;
+  background: linear-gradient(135deg, rgba(23, 53, 67, .78), rgba(10, 25, 39, .9));
+}
+
+body.aq-site.aq-founder-page .aq-founder-philosophy > p:not(.aq-section-label) {
+  grid-column: 1 / 2;
+  max-width: 720px;
+  margin: 0;
+  color: #c1ced1;
+  font-family: var(--aq-font-display);
+  font-size: clamp(1.25rem, 2.2vw, 1.65rem);
+  line-height: 1.28;
+}
+
+body.aq-site.aq-founder-page .aq-founder-philosophy .button { grid-column: 2; grid-row: 1 / 3; }
+
+@media (max-width: 760px) {
+  body.aq-site.aq-founder-page .aq-founder-layout { grid-template-columns: 1fr; gap: 28px; }
+  body.aq-site.aq-founder-page .aq-founder-facts { position: static; grid-template-columns: 1fr; }
+  body.aq-site.aq-founder-page .aq-founder-story > p:not(.aq-section-label) { font-size: 1rem; }
+  body.aq-site.aq-founder-page .aq-founder-philosophy { grid-template-columns: 1fr; padding: 18px; }
+  body.aq-site.aq-founder-page .aq-founder-philosophy > p:not(.aq-section-label),
+  body.aq-site.aq-founder-page .aq-founder-philosophy .button { grid-column: auto; grid-row: auto; }
+  body.aq-site.aq-founder-page .aq-founder-philosophy .button { width: 100%; }
 }
 
 /* Market Atlas detail pages: the same quiet research shell, without changing the published systems. */

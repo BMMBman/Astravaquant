@@ -3,7 +3,7 @@ if (document.body) {
 document.body.classList.add("js");
 
 // The homepage keeps research navigation inside the Market Atlas.
-if (!document.body.classList.contains("aq-home")) {
+if (!document.body.classList.contains("aq-home") && !document.body.classList.contains("aq-atlas-detail")) {
   document.querySelectorAll(".site-nav").forEach((navigation) => {
     if (navigation.querySelector('a[href="backtesting.html"]')) return;
     const link = document.createElement("a");

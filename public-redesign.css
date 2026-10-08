@@ -4116,3 +4116,221 @@ body.aq-site.aq-overview-home .aq-atlas-halo { display: none; }
   body.aq-site.aq-overview-home .aq-history-observations ol { grid-template-columns: 1fr; }
   body.aq-site.aq-overview-home .footer-inner { align-items: start; flex-direction: column; gap: 13px; }
 }
+
+/* Market Atlas detail pages: the same quiet research shell, without changing the published systems. */
+body.aq-site.aq-atlas-detail {
+  --aq-bg: #07111d;
+  --aq-bg-soft: #0b1724;
+  --aq-panel: #0c1a29;
+  --aq-panel-alt: #102235;
+  --aq-panel-strong: #081522;
+  --aq-text: #f1ede5;
+  --aq-muted: #afbbc1;
+  --aq-faint: #82929a;
+  --aq-border: rgba(185, 207, 216, .16);
+  --aq-border-strong: rgba(127, 214, 220, .48);
+  --aq-positive: #91ded3;
+  --aq-warning: #dfa39b;
+  --aq-link: #92e0e2;
+  background: #07111d;
+}
+
+body.aq-site.aq-atlas-detail::before { display: none; }
+
+body.aq-site.aq-atlas-detail .site-header {
+  border-bottom-color: rgba(207, 225, 230, .14);
+  background: rgba(7, 17, 29, .96);
+  box-shadow: none;
+}
+
+body.aq-site.aq-atlas-detail .site-nav { gap: 22px; }
+body.aq-site.aq-atlas-detail .site-nav a {
+  position: relative;
+  min-height: 44px;
+  padding: 12px 0;
+  border-radius: 0;
+  color: #b8c1c6;
+  background: transparent;
+  font: 600 .68rem/1 var(--aq-font-body);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+body.aq-site.aq-atlas-detail .site-nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: #8edce1;
+  opacity: 0;
+  transform: scaleX(.45);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+body.aq-site.aq-atlas-detail .site-nav a:hover,
+body.aq-site.aq-atlas-detail .site-nav a.is-active {
+  color: #f1ede5;
+  background: transparent;
+}
+
+body.aq-site.aq-atlas-detail .site-nav a:hover::after,
+body.aq-site.aq-atlas-detail .site-nav a.is-active::after { opacity: 1; transform: scaleX(1); }
+body.aq-site.aq-atlas-detail .header-meta { min-width: 0; color: #82919a; font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+body.aq-site.aq-atlas-detail .brand { color: #f1ede5; }
+body.aq-site.aq-atlas-detail .brand-copy span { color: #839099; }
+
+body.aq-site.aq-atlas-detail .aq-hero { padding: clamp(42px, 6vw, 76px) 0 28px; }
+body.aq-site.aq-atlas-detail .aq-hero-grid,
+body.aq-site.aq-atlas-detail .aq-method-shell {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 32px;
+  width: min(1120px, calc(100% - 48px));
+  max-width: none;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(207, 225, 230, .15);
+}
+
+body.aq-site.aq-atlas-detail .aq-kicker,
+body.aq-site.aq-atlas-detail .aq-section-label { color: #8bcbd2; }
+body.aq-site.aq-atlas-detail .aq-page-title,
+body.aq-site.aq-atlas-detail .aq-section-head h2,
+body.aq-site.aq-atlas-detail .valuation-panel-head h2 {
+  color: #f2ede5;
+  font-family: var(--aq-font-display);
+  font-weight: 500;
+  letter-spacing: -.04em;
+}
+body.aq-site.aq-atlas-detail .aq-page-title { max-width: 760px; font-size: clamp(3rem, 6vw, 5.65rem); line-height: .91; }
+body.aq-site.aq-atlas-detail .aq-lead { max-width: 690px; color: #b3c0c6; font-size: 1rem; }
+body.aq-site.aq-atlas-detail .aq-side-note {
+  max-width: 285px;
+  padding: 10px 0 10px 18px;
+  border: 0;
+  border-left: 1px solid #7ccdd4;
+  background: transparent;
+  box-shadow: none;
+}
+body.aq-site.aq-atlas-detail .aq-side-note strong { color: #f0ece3; }
+body.aq-site.aq-atlas-detail .aq-side-note span { color: #9aabb3; }
+body.aq-site.aq-atlas-detail .aq-inline-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+body.aq-site.aq-atlas-detail .button {
+  min-height: 40px;
+  border-color: rgba(153, 204, 208, .28);
+  border-radius: 5px;
+  color: #d9eff0;
+  background: rgba(50, 109, 124, .12);
+}
+body.aq-site.aq-atlas-detail .button:hover { border-color: #8edce1; background: rgba(82, 171, 181, .15); }
+
+body.aq-site.aq-atlas-detail .aq-page-section { padding: 24px 0 0; }
+body.aq-site.aq-atlas-detail .aq-section-head { align-items: end; margin-bottom: 14px; }
+body.aq-site.aq-atlas-detail .aq-section-head h2 { font-size: clamp(2rem, 3vw, 2.7rem); line-height: .95; }
+body.aq-site.aq-atlas-detail .aq-section-note { color: #8f9da5; font-size: .84rem; }
+body.aq-site.aq-atlas-detail .aq-disclosure { color: #84959d; }
+
+body.aq-site.aq-trend-page main { display: flex; flex-direction: column; }
+body.aq-site.aq-trend-page main > section:nth-child(1) { order: 1; }
+body.aq-site.aq-trend-page #trend { order: 2; scroll-margin-top: 96px; }
+body.aq-site.aq-trend-page #liquidity { order: 3; scroll-margin-top: 96px; }
+body.aq-site.aq-trend-page main > section:nth-child(4) { order: 4; }
+body.aq-site.aq-trend-page #valuation { order: 5; }
+body.aq-site.aq-trend-page main > section:nth-child(6) { order: 6; }
+
+body.aq-site.aq-atlas-detail .aq-model-list { gap: 12px; }
+body.aq-site.aq-atlas-detail .aq-model-card,
+body.aq-site.aq-atlas-detail .aq-net-liquidity,
+body.aq-site.aq-atlas-detail .aq-valuation-card,
+body.aq-site.aq-atlas-detail .valuation-input-panel,
+body.aq-site.aq-atlas-detail .valuation-dispersion,
+body.aq-site.aq-atlas-detail .valuation-history,
+body.aq-site.aq-atlas-detail .aq-panel,
+body.aq-site.aq-atlas-detail .aq-cover-card {
+  border-color: rgba(185, 207, 216, .16);
+  border-radius: 7px;
+  background: linear-gradient(145deg, rgba(22, 43, 59, .78), rgba(10, 25, 39, .9));
+  box-shadow: none;
+}
+
+body.aq-site.aq-atlas-detail .aq-model-catalog-card { padding: 22px; }
+body.aq-site.aq-atlas-detail .aq-model-head { gap: 16px; }
+body.aq-site.aq-atlas-detail .aq-model-head h3 { color: #f0ece3; font-family: var(--aq-font-display); font-size: 1.55rem; font-weight: 500; }
+body.aq-site.aq-atlas-detail .aq-model-head p { max-width: 460px; color: #aab8be; }
+body.aq-site.aq-atlas-detail .aq-model-acronym { color: #8bcbd2; font-family: var(--aq-font-mono); font-size: .65em; font-weight: 500; letter-spacing: .02em; }
+body.aq-site.aq-atlas-detail .aq-model-gauge-panel { margin-top: 14px; border-color: rgba(164, 212, 216, .15); background: rgba(5, 17, 28, .34); }
+body.aq-site.aq-atlas-detail .aq-model-gauge-copy span { color: #9eb0b8; }
+body.aq-site.aq-atlas-detail .aq-model-gauge-copy p { color: #83959e; }
+body.aq-site.aq-atlas-detail .aq-model-scale-note { color: #9cabB2; }
+body.aq-site.aq-atlas-detail .aq-model-scale-note strong { color: #d4e5e5; }
+
+body.aq-site.aq-atlas-detail .aq-net-liquidity { padding: 24px; }
+body.aq-site.aq-atlas-detail .aq-net-liquidity-overview strong { color: #91e6e6; font-family: var(--aq-font-mono); font-weight: 500; }
+body.aq-site.aq-atlas-detail .aq-net-liquidity-status { color: #91ded3; border-color: rgba(145, 222, 211, .25); background: rgba(77, 154, 146, .12); }
+body.aq-site.aq-atlas-detail .aq-liquidity-formula { border-color: rgba(185, 207, 216, .15); background: rgba(5, 17, 28, .34); }
+body.aq-site.aq-atlas-detail .aq-liquidity-formula code { color: #bfe9e8; }
+body.aq-site.aq-atlas-detail .aq-net-liquidity-controls label { color: #aab8be; }
+body.aq-site.aq-atlas-detail .aq-net-liquidity-controls input { color-scheme: dark; border-color: rgba(185, 207, 216, .22); background: #091725; }
+body.aq-site.aq-atlas-detail .terminal-chart.aq-chart-panel { border-color: rgba(185, 207, 216, .15); background: rgba(5, 17, 28, .34); }
+body.aq-site.aq-atlas-detail .aq-liquidity-components article { border-color: rgba(185, 207, 216, .15); background: rgba(8, 24, 38, .48); }
+
+body.aq-site.aq-atlas-detail .aq-valuation-card { padding: 24px; }
+body.aq-site.aq-atlas-detail .valuation-score,
+body.aq-site.aq-atlas-detail .aq-valuation-score > strong { color: #91e6e6; font-family: var(--aq-font-mono); font-weight: 500; }
+body.aq-site.aq-atlas-detail .valuation-state { color: #9ae3d5; }
+body.aq-site.aq-atlas-detail .valuation-market-strip,
+body.aq-site.aq-atlas-detail .aq-value-grid { border-color: rgba(185, 207, 216, .15); }
+body.aq-site.aq-atlas-detail .valuation-market-strip > div,
+body.aq-site.aq-atlas-detail .aq-value-grid > div { background: rgba(6, 19, 31, .28); }
+body.aq-site.aq-atlas-detail .valuation-category-card { border-color: rgba(185, 207, 216, .16); border-radius: 7px; background: linear-gradient(145deg, rgba(22, 43, 59, .78), rgba(10, 25, 39, .9)); box-shadow: none; }
+body.aq-site.aq-atlas-detail .valuation-tabs { border-color: rgba(185, 207, 216, .21); }
+body.aq-site.aq-atlas-detail .valuation-tabs button { color: #aab8be; }
+body.aq-site.aq-atlas-detail .valuation-tabs button.is-active { color: #e3f5f3; background: rgba(70, 156, 166, .22); }
+body.aq-site.aq-atlas-detail .valuation-input-row { border-color: rgba(185, 207, 216, .13); }
+body.aq-site.aq-atlas-detail .valuation-input-copy h3 { color: #e6e4dc; }
+body.aq-site.aq-atlas-detail .valuation-input-reading strong { color: #b7edeb; font-family: var(--aq-font-mono); font-weight: 500; }
+
+body.aq-site.aq-atlas-detail .aq-filter-list { gap: 7px; }
+body.aq-site.aq-atlas-detail .aq-filter-button { min-height: 38px; border-color: rgba(185, 207, 216, .2); border-radius: 999px; color: #aebbc1; background: transparent; }
+body.aq-site.aq-atlas-detail .aq-filter-button.is-active { border-color: rgba(143, 220, 225, .7); color: #eaf7f6; background: rgba(104, 191, 199, .17); }
+body.aq-site.aq-atlas-detail .aq-research-head { color: #82929a; border-bottom-color: rgba(185, 207, 216, .15); }
+body.aq-site.aq-atlas-detail .aq-research-row { border-bottom-color: rgba(185, 207, 216, .12); }
+body.aq-site.aq-atlas-detail .aq-research-row time { color: #8bcbd2; font-family: var(--aq-font-mono); }
+body.aq-site.aq-atlas-detail .aq-research-row a { color: #e8e5dc; font-family: var(--aq-font-display); font-size: 1.2rem; }
+body.aq-site.aq-atlas-detail .aq-research-row a:hover { color: #92e0e2; }
+body.aq-site.aq-atlas-detail .aq-research-row p { color: #9dabB2; }
+body.aq-site.aq-atlas-detail .aq-tag { border-color: rgba(132, 215, 220, .26); color: #9be3e3; background: rgba(55, 142, 153, .12); }
+
+body.aq-site.aq-atlas-detail .aq-footer { margin-top: 42px; padding: 24px 0; border-top-color: rgba(196, 216, 220, .14); }
+body.aq-site.aq-atlas-detail .footer-links { gap: 12px 18px; }
+body.aq-site.aq-atlas-detail .footer-links a { color: #a8b7bd; }
+body.aq-site.aq-atlas-detail .footer-links a:hover { color: #92e0e2; }
+
+@media (max-width: 760px) {
+  body.aq-site.aq-atlas-detail .site-nav { gap: 0; }
+  body.aq-site.aq-atlas-detail .site-nav a { min-height: 44px; padding: 12px; text-align: left; }
+  body.aq-site.aq-atlas-detail .header-meta { display: none; }
+  body.aq-site.aq-atlas-detail .aq-hero { padding: 34px 0 20px; }
+  body.aq-site.aq-atlas-detail .aq-hero-grid,
+  body.aq-site.aq-atlas-detail .aq-method-shell { display: grid; align-items: start; gap: 19px; width: min(100% - 32px, 1120px); padding-bottom: 22px; }
+  body.aq-site.aq-atlas-detail .aq-page-title { font-size: clamp(3rem, 16vw, 4.35rem); }
+  body.aq-site.aq-atlas-detail .aq-lead { font-size: 1rem; line-height: 1.55; }
+  body.aq-site.aq-atlas-detail .aq-side-note { max-width: none; }
+  body.aq-site.aq-atlas-detail .aq-page-section { padding-top: 20px; }
+  body.aq-site.aq-atlas-detail .aq-section-head { display: grid; align-items: start; gap: 10px; }
+  body.aq-site.aq-atlas-detail .aq-section-note { margin: 0; font-size: .92rem; }
+  body.aq-site.aq-atlas-detail .aq-model-catalog-card,
+  body.aq-site.aq-atlas-detail .aq-net-liquidity,
+  body.aq-site.aq-atlas-detail .aq-valuation-card { padding: 17px; }
+  body.aq-site.aq-atlas-detail .aq-model-head { display: grid; }
+  body.aq-site.aq-atlas-detail .aq-model-head .button { width: 100%; }
+  body.aq-site.aq-atlas-detail .aq-model-gauge-panel { grid-template-columns: 1fr; }
+  body.aq-site.aq-atlas-detail .aq-model-scale-note { border-top: 1px solid rgba(185, 207, 216, .14); border-left: 0; }
+  body.aq-site.aq-atlas-detail .aq-research-head { display: none; }
+  body.aq-site.aq-atlas-detail .aq-research-row { display: grid; gap: 8px; padding: 17px 0; }
+  body.aq-site.aq-atlas-detail .aq-research-row p { margin: 0; }
+  body.aq-site.aq-atlas-detail .aq-research-row a { font-size: 1.22rem; }
+  body.aq-site.aq-atlas-detail .footer-inner { align-items: start; flex-direction: column; gap: 13px; }
+}

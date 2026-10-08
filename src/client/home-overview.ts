@@ -73,7 +73,7 @@ function trendCard(workbook: WorkbookDashboard | null): string {
   const series = new Map(workbook?.scoreSeries.map((item) => [item.id, item]));
   const signals = new Map(workbook?.signals.map((item) => [item.id, item]));
   return `<article class="aq-overview-card aq-overview-card-trend">
-    <div class="aq-overview-card-head"><div><span>Trend</span><p>Published probability modules</p></div><a href="models.html">Explore trend <i>↗</i></a></div>
+    <div class="aq-overview-card-head"><div><span>Trend</span><p>Published probability modules</p></div><a href="models.html#trend">Explore trend <i>↗</i></a></div>
     <div class="aq-trend-readings">${trendReading(series.get("mtpi"), signals.get("mtpi"), "Medium-term")}${trendReading(series.get("ltpi"), signals.get("ltpi"), "Long-term")}</div>
   </article>`;
 }
@@ -97,7 +97,7 @@ function liquidityCard(markets: MarketDashboard | null): string {
   const liquidity = markets?.metrics.find((metric) => metric.id === "fedNetLiquidity");
   const points = liquidity?.points.map((point) => ({ date: point.timestamp, value: point.value })) ?? [];
   return `<article class="aq-overview-card">
-    <div class="aq-overview-card-head"><div><span>Net Fed liquidity</span><p>Five-component balance-sheet series</p></div><a href="models.html#net-fed-liquidity">Explore liquidity <i>↗</i></a></div>
+    <div class="aq-overview-card-head"><div><span>Net Fed liquidity</span><p>Five-component balance-sheet series</p></div><a href="models.html#liquidity">Explore liquidity <i>↗</i></a></div>
     <div class="aq-liquidity-summary"><strong>${formatLiquidity(liquidity)}</strong><small>${liquidity?.asOf ? `Updated ${formatDate(liquidity.asOf)}` : "No published reading"}</small></div>
     ${sparkline(points, "Net Fed liquidity")}
   </article>`;
@@ -107,7 +107,7 @@ function researchCard(): string {
   return `<article class="aq-overview-card aq-research-record-card">
     <div class="aq-overview-card-head"><div><span>Research record</span><p>Inspect the published evidence</p></div><a href="research.html">View research record <i>↗</i></a></div>
     <div class="aq-research-record-links">
-      <a href="models.html"><span>Published score history</span><i>↗</i></a>
+      <a href="models.html#trend"><span>Published score history</span><i>↗</i></a>
       <a href="backtesting.html"><span>Forward-test diagnostics</span><i>↗</i></a>
       <a href="research.html"><span>Research records</span><i>↗</i></a>
     </div>

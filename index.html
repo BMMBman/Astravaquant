@@ -3,117 +3,83 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="AstravaQuant is an independent systematic market research platform studying regimes across liquidity, rates, crypto, and valuation."
-    />
-    <title>AstravaQuant | Independent Systematic Market Research</title>
+    <meta name="description" content="AstravaQuant publishes independent quantitative research across trend, valuation, liquidity, and market regimes." />
+    <title>AstravaQuant | Market Atlas</title>
     <link rel="stylesheet" href="public-redesign.css" />
   </head>
-  <body class="aq-site aq-home">
+  <body class="aq-site aq-home aq-overview-home">
     <header class="site-header" aria-label="Primary navigation">
       <div class="shell header-inner">
-        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+        <a class="brand" href="#overview" aria-label="AstravaQuant overview">
           <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
-            <path
-              d="M82 10 151 138 82 101 13 138Z"
-              fill="none"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="14"
-            />
+            <path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
           </svg>
-          <span class="brand-copy">
-            <strong>AstravaQuant</strong>
-            <span>Independent Systematic Market Research</span>
-          </span>
+          <span class="brand-copy"><strong>AstravaQuant</strong><span>Independent systematic research</span></span>
         </a>
         <nav class="site-nav" aria-label="Main navigation">
+          <a class="is-active" href="#overview">Overview</a>
           <button type="button" data-atlas-open="trend">Trend</button>
           <button type="button" data-atlas-open="valuation">Valuation</button>
           <button type="button" data-atlas-open="liquidity">Liquidity</button>
-          <button type="button" data-atlas-open="backtesting">Diagnostics</button>
+          <button type="button" data-atlas-open="backtesting">Research</button>
         </nav>
-        <div class="header-meta">Market Atlas / Research systems</div>
+        <div class="header-meta">Published research</div>
       </div>
     </header>
 
-    <main>
-      <section class="aq-market-atlas" aria-labelledby="atlas-home-title">
+    <main id="overview">
+      <section class="aq-overview-hero" aria-labelledby="atlas-home-title">
+        <div class="shell aq-overview-hero-inner reveal">
+          <div>
+            <p class="aq-overview-kicker">AstravaQuant</p>
+            <h1 id="atlas-home-title">Market Atlas</h1>
+            <p class="aq-overview-subtitle">A systematic view of market regimes.</p>
+            <p class="aq-overview-copy">Published readings. Transparent history. Independent research.</p>
+          </div>
+          <div class="aq-publication-stamp" aria-live="polite">
+            <span>Latest publication</span>
+            <time data-overview-updated>Loading published data</time>
+          </div>
+        </div>
+      </section>
+
+      <section class="aq-overview-section" aria-labelledby="current-regimes-title">
         <div class="shell">
-          <div class="aq-market-atlas-stage reveal">
-            <div class="aq-market-atlas-head">
-              <div>
-                <p class="aq-kicker">AstravaQuant / Market Atlas</p>
-                <h1 id="atlas-home-title">A systematic map<br />for market regimes.</h1>
-              </div>
-              <p>Open a system to view its published reading, history, and research record.</p>
-            </div>
+          <div class="aq-overview-section-head">
+            <div><p class="aq-overview-kicker">Current research</p><h2 id="current-regimes-title">Current regime overview</h2></div>
+            <p>Live readings from the published model feeds. No synthetic values are substituted.</p>
+          </div>
+          <div class="aq-overview-grid" data-home-overview aria-live="polite">
+            <article class="aq-overview-card aq-overview-card-trend aq-overview-loading-card"><span>Trend</span><p>Loading published trend readings.</p></article>
+            <article class="aq-overview-card aq-overview-loading-card"><span>Bitcoin valuation</span><p>Loading published valuation reading.</p></article>
+            <article class="aq-overview-card aq-overview-loading-card"><span>Net Fed liquidity</span><p>Loading published liquidity reading.</p></article>
+            <article class="aq-overview-card aq-overview-loading-card"><span>Research record</span><p>Loading research record.</p></article>
+          </div>
+        </div>
+      </section>
 
-            <div class="aq-atlas-field" aria-label="Market Atlas systems">
-              <svg class="aq-atlas-tracks" viewBox="0 0 1200 620" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M144 202C300 34 876 34 1055 206" />
-                <path d="M142 421C356 590 856 585 1053 420" />
-                <path d="M257 91C157 257 173 447 359 547" />
-                <path d="M943 93C1045 261 1032 448 841 546" />
-                <circle cx="600" cy="310" r="138" />
-                <circle cx="600" cy="310" r="92" />
-              </svg>
-
-              <div class="aq-atlas-core" aria-hidden="true">
-                <span>Research</span>
-                <strong>AQ</strong>
-                <small>Market Atlas</small>
-              </div>
-
-              <button class="aq-atlas-system aq-atlas-system-trend" type="button" data-atlas-open="trend">
-                <span class="aq-atlas-system-index">Trend system</span>
-                <strong>Trend Probability</strong>
-                <b>Medium: Total + Total2</b>
-                <small>Long: Bitcoin long-term + total crypto market cap.</small>
-                <i aria-hidden="true">Open system</i>
-              </button>
-              <button class="aq-atlas-system aq-atlas-system-valuation" type="button" data-atlas-open="valuation">
-                <span class="aq-atlas-system-index">Valuation system</span>
-                <strong>Bitcoin Valuation</strong>
-                <b>Z-score composite</b>
-                <small>Fundamental, technical, and sentiment inputs.</small>
-                <i aria-hidden="true">Open system</i>
-              </button>
-              <button class="aq-atlas-system aq-atlas-system-liquidity" type="button" data-atlas-open="liquidity">
-                <span class="aq-atlas-system-index">Liquidity system</span>
-                <strong>Net Fed Liquidity</strong>
-                <b>Five-component series</b>
-                <small>Balance-sheet conditions mapped weekly.</small>
-                <i aria-hidden="true">Open system</i>
-              </button>
-              <button class="aq-atlas-system aq-atlas-system-backtesting" type="button" data-atlas-open="backtesting">
-                <span class="aq-atlas-system-index">Research record</span>
-                <strong>Forward-Test Record</strong>
-                <b>Trend + MRPI diagnostics</b>
-                <small>Dated trend and mortgage-rate pressure history.</small>
-                <i aria-hidden="true">Open system</i>
-              </button>
-            </div>
-
-            <div class="aq-market-atlas-footer">
-              <p><span></span> Published research state. No simulated performance.</p>
-              <p>AstravaQuant provides research for educational and informational purposes only, not investment, financial, mortgage, legal, or tax advice.</p>
+      <section class="aq-overview-section aq-overview-history-section" aria-labelledby="trend-history-title">
+        <div class="shell">
+          <div class="aq-overview-section-head aq-history-heading">
+            <div><p class="aq-overview-kicker">Published observations</p><h2 id="trend-history-title">Trend regime history</h2></div>
+            <div class="aq-history-selector" role="group" aria-label="Trend history series">
+              <button class="is-active" type="button" data-home-history-series="mtpi">Medium-term</button>
+              <button type="button" data-home-history-series="ltpi">Long-term</button>
             </div>
           </div>
+          <article class="aq-history-panel" data-home-history aria-live="polite"><p class="aq-history-empty">Loading dated trend observations.</p></article>
         </div>
       </section>
     </main>
 
     <dialog class="aq-atlas-dialog" data-atlas-dialog aria-labelledby="atlas-title">
       <div class="aq-atlas-shell">
-        <div class="aq-atlas-halo" aria-hidden="true"><i></i><i></i><i></i></div>
         <header class="aq-atlas-head">
-          <div><p class="aq-section-label">AstravaQuant Atlas</p><h2 id="atlas-title" data-atlas-title>Research system</h2></div>
-          <button class="aq-atlas-close" type="button" data-atlas-close aria-label="Close research atlas">Close</button>
+          <div><p class="aq-section-label">AstravaQuant research</p><h2 id="atlas-title" data-atlas-title>Research system</h2></div>
+          <button class="aq-atlas-close" type="button" data-atlas-close aria-label="Close research">Close</button>
         </header>
-        <div class="aq-atlas-nav" aria-label="Atlas systems">
-          <button type="button" data-atlas-open="trend">Trend</button><button type="button" data-atlas-open="valuation">Valuation</button><button type="button" data-atlas-open="liquidity">Liquidity</button><button type="button" data-atlas-open="backtesting">Backtesting</button>
+        <div class="aq-atlas-nav" aria-label="Research systems">
+          <button type="button" data-atlas-open="trend">Trend</button><button type="button" data-atlas-open="valuation">Valuation</button><button type="button" data-atlas-open="liquidity">Liquidity</button><button type="button" data-atlas-open="backtesting">Research</button>
         </div>
         <div class="aq-atlas-content" data-atlas-content aria-live="polite"><p>Opening research system.</p></div>
       </div>
@@ -121,8 +87,12 @@
 
     <footer class="aq-footer">
       <div class="shell footer-inner">
-        <p>AstravaQuant is an independent quantitative research platform.</p>
+        <a class="aq-footer-brand" href="#overview">AstravaQuant</a>
         <div class="footer-links">
+          <a href="methodology.html">Methodology</a>
+          <a href="research.html">Data</a>
+          <a href="terms.html">Disclosures</a>
+          <a href="about.html">About</a>
           <span>Copyright <span data-year></span> AstravaQuant</span>
         </div>
       </div>

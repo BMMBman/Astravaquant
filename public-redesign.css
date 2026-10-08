@@ -3871,3 +3871,248 @@ body.aq-site .aq-spacer-top {
 
   body.aq-site .aq-atlas-loading i { animation: none; }
 }
+
+/* Market Atlas overview: calm, data-forward presentation for the public homepage. */
+body.aq-site.aq-overview-home {
+  background: #07111d;
+  color: #eee9df;
+}
+
+body.aq-site.aq-overview-home::before {
+  display: none;
+}
+
+body.aq-site.aq-overview-home .site-header {
+  border-bottom-color: rgba(207, 225, 230, .14);
+  background: rgba(7, 17, 29, .96);
+  box-shadow: none;
+}
+
+body.aq-site.aq-overview-home .site-nav { gap: 22px; }
+body.aq-site.aq-overview-home .site-nav a,
+body.aq-site.aq-overview-home .site-nav button {
+  position: relative;
+  min-height: 44px;
+  padding: 12px 0;
+  border: 0;
+  border-radius: 0;
+  color: #b8c1c6;
+  background: transparent;
+  font: 600 .68rem/1 var(--aq-font-body);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+body.aq-site.aq-overview-home .site-nav a::after,
+body.aq-site.aq-overview-home .site-nav button::after {
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  left: 0;
+  height: 1px;
+  content: "";
+  background: #8edce1;
+  opacity: 0;
+  transform: scaleX(.45);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+body.aq-site.aq-overview-home .site-nav a:hover,
+body.aq-site.aq-overview-home .site-nav a.is-active,
+body.aq-site.aq-overview-home .site-nav button:hover,
+body.aq-site.aq-overview-home .site-nav button:focus-visible {
+  color: #f1ede5;
+  background: transparent;
+}
+
+body.aq-site.aq-overview-home .site-nav a:hover::after,
+body.aq-site.aq-overview-home .site-nav a.is-active::after,
+body.aq-site.aq-overview-home .site-nav button:hover::after,
+body.aq-site.aq-overview-home .site-nav button:focus-visible::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+body.aq-site.aq-overview-home .header-meta { color: #82919a; }
+body.aq-site.aq-overview-home .brand { color: #f1ede5; }
+body.aq-site.aq-overview-home .brand-copy span { color: #839099; }
+
+body.aq-site.aq-overview-home .aq-overview-hero { padding: clamp(48px, 7vw, 94px) 0 30px; }
+body.aq-site.aq-overview-home .aq-overview-hero-inner {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 32px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid rgba(207, 225, 230, .15);
+}
+
+body.aq-site.aq-overview-home .aq-overview-kicker {
+  margin: 0 0 10px;
+  color: #8bcbd2;
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+body.aq-site.aq-overview-home .aq-overview-hero h1,
+body.aq-site.aq-overview-home .aq-overview-section-head h2 {
+  margin: 0;
+  color: #f2ede5;
+  font-family: var(--aq-font-display);
+  font-weight: 500;
+  letter-spacing: -.045em;
+}
+
+body.aq-site.aq-overview-home .aq-overview-hero h1 { font-size: clamp(3.7rem, 7vw, 6.6rem); line-height: .86; }
+body.aq-site.aq-overview-home .aq-overview-subtitle { margin: 13px 0 0; color: #ede8df; font-family: var(--aq-font-display); font-size: clamp(1.42rem, 2.2vw, 2rem); line-height: 1.1; }
+body.aq-site.aq-overview-home .aq-overview-copy { margin: 9px 0 0; color: #b1bec5; font-size: 1rem; }
+
+body.aq-site.aq-overview-home .aq-publication-stamp {
+  display: grid;
+  min-width: 190px;
+  gap: 7px;
+  padding: 9px 0 9px 18px;
+  border-left: 1px solid #7ccdd4;
+}
+
+body.aq-site.aq-overview-home .aq-publication-stamp span { color: #7f9099; font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+body.aq-site.aq-overview-home .aq-publication-stamp time { color: #f1ede5; font-family: var(--aq-font-display); font-size: 1.15rem; }
+
+body.aq-site.aq-overview-home .aq-overview-section { padding: 28px 0 0; }
+body.aq-site.aq-overview-home .aq-overview-history-section { padding-bottom: 42px; }
+body.aq-site.aq-overview-home .aq-overview-section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 15px; }
+body.aq-site.aq-overview-home .aq-overview-section-head h2 { font-size: clamp(2rem, 3.2vw, 2.85rem); line-height: .95; }
+body.aq-site.aq-overview-section-head > p { max-width: 370px; margin: 0; color: #8f9da5; font-size: .84rem; line-height: 1.55; }
+
+body.aq-site.aq-overview-home .aq-overview-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+body.aq-site.aq-overview-home .aq-overview-card {
+  display: grid;
+  min-height: 236px;
+  padding: 22px;
+  border: 1px solid rgba(185, 207, 216, .16);
+  border-radius: 7px;
+  background: linear-gradient(145deg, rgba(30, 49, 64, .84), rgba(16, 28, 41, .9));
+  box-shadow: none;
+}
+
+body.aq-site.aq-overview-home .aq-overview-card-trend { border-color: rgba(111, 210, 218, .52); background: linear-gradient(135deg, rgba(25, 61, 78, .92), rgba(16, 29, 42, .94)); }
+body.aq-site.aq-overview-home .aq-overview-loading-card { align-content: start; gap: 8px; color: #8f9da5; }
+body.aq-site.aq-overview-home .aq-overview-loading-card > span { color: #d8e3e6; font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+body.aq-site.aq-overview-home .aq-overview-loading-card p { margin: 0; }
+
+body.aq-site.aq-overview-home .aq-overview-card-head { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+body.aq-site.aq-overview-home .aq-overview-card-head > div > span { color: #f0ece3; font-family: var(--aq-font-display); font-size: 1.55rem; }
+body.aq-site.aq-overview-home .aq-overview-card-head p { margin: 5px 0 0; color: #a8b4bc; font-size: .78rem; }
+body.aq-site.aq-overview-home .aq-overview-card-head > a { min-height: 36px; color: #93e1e2; font-size: .72rem; font-weight: 700; text-align: right; white-space: nowrap; }
+body.aq-site.aq-overview-home .aq-overview-card-head i,
+body.aq-site.aq-overview-home .aq-research-record-links i { font-size: 1rem; font-style: normal; }
+
+body.aq-site.aq-overview-home .aq-trend-readings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 15px; }
+body.aq-site.aq-overview-home .aq-trend-reading + .aq-trend-reading { padding-left: 20px; border-left: 1px solid rgba(199, 221, 224, .16); }
+body.aq-site.aq-overview-home .aq-trend-reading > span { color: #c5d0d5; font-size: .76rem; }
+body.aq-site.aq-overview-home .aq-trend-reading strong,
+body.aq-site.aq-overview-home .aq-valuation-summary strong,
+body.aq-site.aq-overview-home .aq-liquidity-summary strong { display: block; margin-top: 5px; color: #91e6e6; font-family: var(--aq-font-mono); font-size: clamp(1.6rem, 2.4vw, 2.15rem); font-weight: 500; letter-spacing: -.04em; }
+body.aq-site.aq-overview-home .aq-trend-reading b,
+body.aq-site.aq-overview-home .aq-valuation-summary b { display: block; margin-top: 2px; font-size: .72rem; font-weight: 600; }
+body.aq-site.aq-overview-home .is-positive { color: #96ded0; }
+body.aq-site.aq-overview-home .is-negative { color: #e3a5a0; }
+body.aq-site.aq-overview-home .is-neutral { color: #d7d0bb; }
+body.aq-site.aq-overview-home .aq-trend-reading small,
+body.aq-site.aq-overview-home .aq-valuation-summary small,
+body.aq-site.aq-overview-home .aq-liquidity-summary small { display: block; margin-top: 4px; color: #81919b; font-size: .68rem; }
+
+body.aq-site.aq-overview-home .aq-overview-sparkline { height: 58px; margin-top: 10px; }
+body.aq-site.aq-overview-home .aq-overview-sparkline svg { width: 100%; height: 100%; overflow: visible; }
+body.aq-site.aq-overview-home .aq-overview-sparkline.is-unavailable { display: grid; place-items: center; color: #82919a; font-size: .72rem; }
+body.aq-site.aq-overview-home .aq-overview-spark-area { fill: rgba(100, 229, 224, .07); }
+body.aq-site.aq-overview-home .aq-overview-spark-line { fill: none; stroke: #83e1e0; stroke-width: 1.8; vector-effect: non-scaling-stroke; }
+
+body.aq-site.aq-overview-home .aq-valuation-summary { margin-top: 17px; }
+body.aq-site.aq-overview-home .aq-overview-scale { position: relative; height: 7px; margin-top: 17px; border: 1px solid rgba(176, 215, 218, .36); background: linear-gradient(90deg, rgba(139, 202, 211, .4), rgba(202, 220, 210, .24) 50%, rgba(93, 137, 157, .42)); }
+body.aq-site.aq-overview-home .aq-overview-scale::before { position: absolute; top: -1px; bottom: -1px; left: 50%; width: 1px; content: ""; background: rgba(238, 237, 224, .72); }
+body.aq-site.aq-overview-home .aq-overview-scale i { position: absolute; top: 50%; width: 12px; height: 12px; border: 2px solid #dff2ed; border-radius: 50%; background: #79d9d9; box-shadow: 0 0 0 2px #0e1e2d; transform: translate(-50%, -50%); }
+body.aq-site.aq-overview-home .aq-overview-scale-labels { display: flex; justify-content: space-between; margin-top: 7px; color: #91a2ab; font-size: .67rem; }
+body.aq-site.aq-overview-home .aq-liquidity-summary { margin-top: 16px; }
+body.aq-site.aq-overview-home .aq-liquidity-summary + .aq-overview-sparkline { height: 74px; margin-top: 8px; }
+
+body.aq-site.aq-overview-home .aq-research-record-links { display: grid; margin-top: 13px; border-top: 1px solid rgba(202, 219, 221, .15); }
+body.aq-site.aq-overview-home .aq-research-record-links a { display: flex; align-items: center; justify-content: space-between; min-height: 41px; border-bottom: 1px solid rgba(202, 219, 221, .12); color: #d5e1e2; font-size: .84rem; }
+body.aq-site.aq-overview-home .aq-research-record-links a:hover { color: #91e3e5; }
+
+body.aq-site.aq-overview-home .aq-history-heading { align-items: center; }
+body.aq-site.aq-overview-home .aq-history-selector { display: inline-flex; padding: 3px; border: 1px solid rgba(187, 210, 215, .25); border-radius: 999px; }
+body.aq-site.aq-overview-home .aq-history-selector button { min-height: 36px; padding: 0 15px; border: 1px solid transparent; border-radius: 999px; color: #aebbc1; background: transparent; font: 600 .7rem/1 var(--aq-font-body); cursor: pointer; }
+body.aq-site.aq-overview-home .aq-history-selector button.is-active { border-color: rgba(143, 220, 225, .7); color: #eaf7f6; background: rgba(104, 191, 199, .17); }
+body.aq-site.aq-overview-home .aq-history-panel { position: relative; min-height: 350px; padding: 18px; border: 1px solid rgba(185, 207, 216, .16); border-radius: 7px; background: #0c1a29; overflow: hidden; }
+body.aq-site.aq-overview-home .aq-history-empty { margin: 0; color: #8fa0aa; }
+body.aq-site.aq-overview-home .aq-history-chart-wrap { position: relative; }
+body.aq-site.aq-overview-home .aq-history-chart { width: 100%; height: auto; overflow: visible; touch-action: none; cursor: crosshair; }
+body.aq-site.aq-overview-home .aq-history-band.is-positive { fill: rgba(96, 165, 137, .13); }
+body.aq-site.aq-overview-home .aq-history-band.is-neutral { fill: rgba(183, 193, 190, .04); }
+body.aq-site.aq-overview-home .aq-history-band.is-negative { fill: rgba(181, 108, 108, .10); }
+body.aq-site.aq-overview-home .aq-history-gridline { stroke: rgba(197, 218, 220, .16); stroke-width: 1; vector-effect: non-scaling-stroke; }
+body.aq-site.aq-overview-home .aq-history-gridline.is-vertical { stroke: rgba(197, 218, 220, .08); }
+body.aq-site.aq-overview-home .aq-history-y-label,
+body.aq-site.aq-overview-home .aq-history-x-label { fill: #8fa0aa; font-family: var(--aq-font-body); font-size: 13px; }
+body.aq-site.aq-overview-home .aq-history-area { fill: rgba(100, 229, 224, .08); }
+body.aq-site.aq-overview-home .aq-history-line { fill: none; stroke: #84e3e1; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+body.aq-site.aq-overview-home .aq-history-guide { stroke: rgba(239, 238, 227, .42); stroke-width: 1; vector-effect: non-scaling-stroke; }
+body.aq-site.aq-overview-home .aq-history-dot { fill: #dff3ed; stroke: #0c1a29; stroke-width: 3; vector-effect: non-scaling-stroke; }
+body.aq-site.aq-overview-home .aq-history-readout { position: absolute; top: 8px; right: 10px; z-index: 1; display: grid; justify-items: end; gap: 2px; padding: 8px 10px; border: 1px solid rgba(189, 221, 220, .2); border-radius: 5px; background: rgba(8, 19, 30, .9); pointer-events: none; }
+body.aq-site.aq-overview-home .aq-history-readout span { color: #8fa0aa; font-size: .56rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
+body.aq-site.aq-overview-home .aq-history-readout time { color: #c5d1d4; font-size: .68rem; }
+body.aq-site.aq-overview-home .aq-history-readout strong { color: #91e6e6; font-family: var(--aq-font-mono); font-size: 1.15rem; font-weight: 500; }
+body.aq-site.aq-overview-home .aq-history-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 4px; color: #a3b0b7; font-size: .72rem; }
+body.aq-site.aq-overview-home .aq-history-legend span { display: inline-flex; align-items: center; gap: 5px; }
+body.aq-site.aq-overview-home .aq-history-legend i { width: 7px; height: 7px; border-radius: 50%; }
+body.aq-site.aq-overview-home .aq-history-legend i.is-positive { background: #87d2be; }
+body.aq-site.aq-overview-home .aq-history-legend i.is-neutral { background: #b9b5a8; }
+body.aq-site.aq-overview-home .aq-history-legend i.is-negative { background: #d99591; }
+body.aq-site.aq-overview-home .aq-history-legend small { margin-left: auto; color: #7d8d96; }
+body.aq-site.aq-overview-home .aq-history-observations { margin-top: 16px; border-top: 1px solid rgba(190, 211, 215, .15); }
+body.aq-site.aq-overview-home .aq-history-observations summary { min-height: 44px; padding-top: 14px; color: #97e1e2; font-size: .76rem; font-weight: 700; cursor: pointer; }
+body.aq-site.aq-overview-home .aq-history-observations ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 18px; max-height: 280px; margin: 0; padding: 0; overflow: auto; list-style: none; }
+body.aq-site.aq-overview-home .aq-history-observations li { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(190, 211, 215, .1); color: #aab8be; font-size: .72rem; }
+body.aq-site.aq-overview-home .aq-history-observations strong { color: #d8eeee; font-family: var(--aq-font-mono); font-weight: 500; }
+
+body.aq-site.aq-overview-home .aq-footer { margin-top: 0; padding: 24px 0; border-top-color: rgba(196, 216, 220, .14); }
+body.aq-site.aq-overview-home .aq-footer-brand { color: #e9e4db; font-family: var(--aq-font-display); font-size: 1.1rem; letter-spacing: .08em; text-transform: uppercase; }
+body.aq-site.aq-overview-home .aq-atlas-halo { display: none; }
+
+@media (max-width: 760px) {
+  body.aq-site.aq-overview-home .site-nav { gap: 0; }
+  body.aq-site.aq-overview-home .site-nav a,
+  body.aq-site.aq-overview-home .site-nav button { min-height: 44px; padding: 12px; text-align: left; }
+  body.aq-site.aq-overview-home .aq-overview-hero { padding: 36px 0 20px; }
+  body.aq-site.aq-overview-home .aq-overview-hero-inner { display: grid; align-items: start; gap: 21px; padding-bottom: 22px; }
+  body.aq-site.aq-overview-home .aq-overview-hero h1 { font-size: clamp(3.25rem, 17vw, 4.5rem); }
+  body.aq-site.aq-overview-home .aq-overview-subtitle { font-size: 1.45rem; }
+  body.aq-site.aq-overview-home .aq-overview-copy { font-size: 1rem; line-height: 1.5; }
+  body.aq-site.aq-overview-home .aq-publication-stamp { min-width: 0; }
+  body.aq-site.aq-overview-home .aq-overview-section { padding-top: 23px; }
+  body.aq-site.aq-overview-home .aq-overview-section-head { display: grid; align-items: start; gap: 13px; margin-bottom: 13px; }
+  body.aq-site.aq-overview-home .aq-overview-section-head > p { max-width: none; font-size: .94rem; }
+  body.aq-site.aq-overview-home .aq-overview-grid { grid-template-columns: 1fr; gap: 10px; }
+  body.aq-site.aq-overview-home .aq-overview-card { min-height: 0; padding: 18px; }
+  body.aq-site.aq-overview-home .aq-overview-card-head { gap: 10px; }
+  body.aq-site.aq-overview-home .aq-overview-card-head > a { min-height: 44px; padding-top: 5px; }
+  body.aq-site.aq-overview-home .aq-trend-readings { gap: 12px; }
+  body.aq-site.aq-overview-home .aq-trend-reading + .aq-trend-reading { padding-left: 12px; }
+  body.aq-site.aq-overview-home .aq-trend-reading strong { font-size: 1.55rem; }
+  body.aq-site.aq-overview-home .aq-history-heading { align-items: start; }
+  body.aq-site.aq-overview-home .aq-history-selector { width: 100%; }
+  body.aq-site.aq-overview-home .aq-history-selector button { flex: 1; min-height: 44px; }
+  body.aq-site.aq-overview-home .aq-history-panel { min-height: 300px; padding: 11px 7px; }
+  body.aq-site.aq-overview-home .aq-history-readout { top: 7px; right: 7px; padding: 6px 7px; }
+  body.aq-site.aq-overview-home .aq-history-x-label { font-size: 11px; }
+  body.aq-site.aq-overview-home .aq-history-y-label { font-size: 11px; }
+  body.aq-site.aq-overview-home .aq-history-legend { padding: 0 7px; }
+  body.aq-site.aq-overview-home .aq-history-legend small { width: 100%; margin-left: 0; }
+  body.aq-site.aq-overview-home .aq-history-observations { margin: 16px 7px 0; }
+  body.aq-site.aq-overview-home .aq-history-observations ol { grid-template-columns: 1fr; }
+  body.aq-site.aq-overview-home .footer-inner { align-items: start; flex-direction: column; gap: 13px; }
+}

@@ -86,6 +86,10 @@ export function regimeForScore(score: number): string {
   return "FULL RISK-ON";
 }
 
+function trendRiskStateForScore(score: number): "RISK-ON" | "RISK-OFF" {
+  return score >= 0 ? "RISK-ON" : "RISK-OFF";
+}
+
 function rowSummary(row: string[]): { score: number; state: string } | null {
   const labelIndex = row.findIndex((cell) => /avg\s*score/i.test(cell));
   if (labelIndex < 0) return null;
@@ -143,6 +147,11 @@ function dimensions(rows: SheetRows): { rowCount: number; columnCount: number } 
 export function summarizeTab(definition: SheetDefinition, rows: SheetRows): WorkbookTabSummary {
   const { rowCount, columnCount } = dimensions(rows);
   const summary = modelSummary(definition.modelId, rows);
+  const latestState = summary?.score === undefined
+    ? null
+    : definition.modelId
+      ? trendRiskStateForScore(summary.score)
+      : summary.state;
   return {
     id: sheetId(definition.name),
     name: definition.name,
@@ -152,7 +161,7 @@ export function summarizeTab(definition: SheetDefinition, rows: SheetRows): Work
     rowCount,
     columnCount,
     latestScore: summary?.score ?? null,
-    latestState: summary?.state ?? null,
+    latestState,
     updatedLabel: updatedLabel(rows),
     formulaErrorCount: rows.flat().filter((cell) => /^#(?:N\/A|DIV\/0!|REF!|VALUE!)/i.test(cell)).length
   };
@@ -302,7 +311,8 @@ function fallbackSignal(id: string): WorkbookModelSignal {
   const fallback = currentSignals.find((signal) => signal.id === id)!;
   return {
     ...fallback,
-    regime: id === "mrpi" ? "TIGHTENING REGIME" : regimeForScore(fallback.value),
+    state: id === "mrpi" ? fallback.state : trendRiskStateForScore(fallback.value),
+    regime: id === "mrpi" ? "TIGHTENING REGIME" : trendRiskStateForScore(fallback.value),
     source: "manual_fallback",
     sourceTab: null,
     updatedLabel: null
@@ -314,8 +324,8 @@ function publishedSignal(id: "mtpi" | "ltpi", tab: WorkbookTabSummary): Workbook
   return {
     ...fallback,
     value: tab.latestScore!,
-    state: tab.latestState ?? regimeForScore(tab.latestScore!),
-    regime: regimeForScore(tab.latestScore!),
+    state: trendRiskStateForScore(tab.latestScore!),
+    regime: trendRiskStateForScore(tab.latestScore!),
     source: "google_sheets",
     sourceTab: tab.name,
     updatedLabel: tab.updatedLabel

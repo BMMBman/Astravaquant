@@ -76,8 +76,8 @@ describe("Google workbook normalization", () => {
     expect(dashboard.status).toBe("partial");
     expect(dashboard.signals.find((signal) => signal.id === "mtpi")).toMatchObject({
       value: 0.21,
-      state: "LONG BIASED",
-      regime: "NEUTRAL TRANSITION",
+      state: "RISK-ON",
+      regime: "RISK-ON",
       source: "google_sheets"
     });
     expect(dashboard.signals.find((signal) => signal.id === "mrpi")).toMatchObject({

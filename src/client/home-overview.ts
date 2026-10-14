@@ -3,7 +3,6 @@ import type {
   MarketDashboard,
   MarketMetric,
   WorkbookDashboard,
-  WorkbookModelSignal,
   WorkbookScoreSeries
 } from "../shared/contracts.js";
 import { apiRequest } from "./api.js";
@@ -57,9 +56,17 @@ function stateTone(state: string | null | undefined): string {
   return "is-neutral";
 }
 
-function trendReading(series: WorkbookScoreSeries | undefined, signal: WorkbookModelSignal | undefined, label: string): string {
+function trendRegime(score: number): "Risk-on" | "Risk-off" {
+  return score >= 0 ? "Risk-on" : "Risk-off";
+}
+
+function trendTone(score: number): "positive" | "negative" {
+  return score >= 0 ? "positive" : "negative";
+}
+
+function trendReading(series: WorkbookScoreSeries | undefined, label: string): string {
   const latest = series?.points.at(-1);
-  const state = signal?.state ?? "Unavailable";
+  const state = latest ? trendRegime(latest.score) : "Unavailable";
   return `<div class="aq-trend-reading">
     <span>${escapeHtml(label)}</span>
     <strong>${formatScore(latest?.score ?? null)}</strong>
@@ -71,10 +78,9 @@ function trendReading(series: WorkbookScoreSeries | undefined, signal: WorkbookM
 
 function trendCard(workbook: WorkbookDashboard | null): string {
   const series = new Map(workbook?.scoreSeries.map((item) => [item.id, item]));
-  const signals = new Map(workbook?.signals.map((item) => [item.id, item]));
   return `<article class="aq-overview-card aq-overview-card-trend">
     <div class="aq-overview-card-head"><div><span>Trend</span><p>Published probability modules</p></div><a href="models.html#trend">Explore trend <i>↗</i></a></div>
-    <div class="aq-trend-readings">${trendReading(series.get("mtpi"), signals.get("mtpi"), "Medium-term")}${trendReading(series.get("ltpi"), signals.get("ltpi"), "Long-term")}</div>
+    <div class="aq-trend-readings">${trendReading(series.get("mtpi"), "Medium-term")}${trendReading(series.get("ltpi"), "Long-term")}</div>
   </article>`;
 }
 
@@ -139,11 +145,10 @@ function historyMarkup(series: WorkbookScoreSeries): string {
   const latest = points[latestIndex]!;
 
   return `<div class="aq-history-chart-wrap">
-    <div class="aq-history-readout" data-home-history-readout><span>Selected observation</span><time>${escapeHtml(formatDate(latest.date))}</time><strong>${formatScore(latest.score)}</strong></div>
+    <div class="aq-history-readout" data-home-history-readout data-tone="${trendTone(latest.score)}"><span>Selected observation</span><time>${escapeHtml(formatDate(latest.date))}</time><b>${trendRegime(latest.score)}</b><strong>${formatScore(latest.score)}</strong></div>
     <svg class="aq-history-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(series.label)} historical score chart" data-home-history-chart>
-      <rect x="${padding.left}" y="${y(1).toFixed(1)}" width="${width - padding.left - padding.right}" height="${Math.max(0, y(.25) - y(1)).toFixed(1)}" class="aq-history-band is-positive"/>
-      <rect x="${padding.left}" y="${y(.25).toFixed(1)}" width="${width - padding.left - padding.right}" height="${Math.max(0, y(-.25) - y(.25)).toFixed(1)}" class="aq-history-band is-neutral"/>
-      <rect x="${padding.left}" y="${y(-.25).toFixed(1)}" width="${width - padding.left - padding.right}" height="${Math.max(0, y(-1) - y(-.25)).toFixed(1)}" class="aq-history-band is-negative"/>
+      <rect x="${padding.left}" y="${y(1).toFixed(1)}" width="${width - padding.left - padding.right}" height="${Math.max(0, y(0) - y(1)).toFixed(1)}" class="aq-history-band is-positive"/>
+      <rect x="${padding.left}" y="${y(0).toFixed(1)}" width="${width - padding.left - padding.right}" height="${Math.max(0, y(-1) - y(0)).toFixed(1)}" class="aq-history-band is-negative"/>
       ${yTicks.map((value) => `<g><line x1="${padding.left}" x2="${width - padding.right}" y1="${y(value).toFixed(1)}" y2="${y(value).toFixed(1)}" class="aq-history-gridline"/><text x="${padding.left - 10}" y="${(y(value) + 4).toFixed(1)}" text-anchor="end" class="aq-history-y-label">${formatScore(value)}</text></g>`).join("")}
       ${dateTicks.map((index) => `<g><line x1="${x(index).toFixed(1)}" x2="${x(index).toFixed(1)}" y1="${padding.top}" y2="${height - padding.bottom}" class="aq-history-gridline is-vertical"/><text x="${x(index).toFixed(1)}" y="${height - 16}" text-anchor="middle" class="aq-history-x-label">${escapeHtml(formatDate(points[index]!.date))}</text></g>`).join("")}
       <path d="${area}" class="aq-history-area"/>
@@ -153,7 +158,7 @@ function historyMarkup(series: WorkbookScoreSeries): string {
       <rect x="${padding.left}" y="${padding.top}" width="${width - padding.left - padding.right}" height="${height - padding.top - padding.bottom}" fill="transparent" data-home-history-hit/>
     </svg>
   </div>
-  <div class="aq-history-legend"><span><i class="is-positive"></i>Risk-on</span><span><i class="is-neutral"></i>Neutral</span><span><i class="is-negative"></i>Risk-off</span><small>${escapeHtml(series.label)} / ${points.length} dated observations</small></div>
+  <div class="aq-history-legend"><span class="is-positive"><i></i>Risk-on <em>0 to +1</em></span><span class="is-negative"><i></i>Risk-off <em>0 to -1</em></span><small>${escapeHtml(series.label)} / ${points.length} dated observations</small></div>
   <details class="aq-history-observations"><summary>View dated observations</summary><ol>${observations}</ol></details>`;
 }
 
@@ -185,7 +190,13 @@ function bindHistory(root: HTMLElement, series: WorkbookScoreSeries): void {
     guide.setAttribute("x2", pointX);
     dot.setAttribute("cx", pointX);
     dot.setAttribute("cy", y(point.score).toFixed(1));
-    readout.innerHTML = `<span>Selected observation</span><time>${escapeHtml(formatDate(point.date))}</time><strong>${formatScore(point.score)}</strong>`;
+    const tone = trendTone(point.score);
+    guide.classList.toggle("is-positive", tone === "positive");
+    guide.classList.toggle("is-negative", tone === "negative");
+    dot.classList.toggle("is-positive", tone === "positive");
+    dot.classList.toggle("is-negative", tone === "negative");
+    readout.dataset.tone = tone;
+    readout.innerHTML = `<span>Selected observation</span><time>${escapeHtml(formatDate(point.date))}</time><b>${trendRegime(point.score)}</b><strong>${formatScore(point.score)}</strong>`;
   };
 
   const inspectPointer = (event: PointerEvent) => {
@@ -206,6 +217,7 @@ function bindHistory(root: HTMLElement, series: WorkbookScoreSeries): void {
 
   chart.addEventListener("pointermove", inspectPointer);
   chart.addEventListener("pointerdown", inspectPointer);
+  inspect(points.length - 1);
 }
 
 function newestPublishedDate(workbook: WorkbookDashboard | null, valuation: BitcoinValuationDashboard | null, markets: MarketDashboard | null): string | null {

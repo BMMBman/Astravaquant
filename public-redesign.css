@@ -4051,27 +4051,40 @@ body.aq-site.aq-overview-home .aq-history-panel { position: relative; min-height
 body.aq-site.aq-overview-home .aq-history-empty { margin: 0; color: #8fa0aa; }
 body.aq-site.aq-overview-home .aq-history-chart-wrap { position: relative; }
 body.aq-site.aq-overview-home .aq-history-chart { width: 100%; height: auto; overflow: visible; touch-action: none; cursor: crosshair; }
-body.aq-site.aq-overview-home .aq-history-band.is-positive { fill: rgba(96, 165, 137, .13); }
-body.aq-site.aq-overview-home .aq-history-band.is-neutral { fill: rgba(183, 193, 190, .04); }
-body.aq-site.aq-overview-home .aq-history-band.is-negative { fill: rgba(181, 108, 108, .10); }
+body.aq-site.aq-overview-home .aq-history-band.is-positive { fill: rgba(57, 179, 128, .30); }
+body.aq-site.aq-overview-home .aq-history-band.is-negative { fill: rgba(214, 84, 85, .29); }
 body.aq-site.aq-overview-home .aq-history-gridline { stroke: rgba(197, 218, 220, .16); stroke-width: 1; vector-effect: non-scaling-stroke; }
 body.aq-site.aq-overview-home .aq-history-gridline.is-vertical { stroke: rgba(197, 218, 220, .08); }
 body.aq-site.aq-overview-home .aq-history-y-label,
 body.aq-site.aq-overview-home .aq-history-x-label { fill: #8fa0aa; font-family: var(--aq-font-body); font-size: 13px; }
 body.aq-site.aq-overview-home .aq-history-area { fill: rgba(100, 229, 224, .08); }
 body.aq-site.aq-overview-home .aq-history-line { fill: none; stroke: #84e3e1; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-body.aq-site.aq-overview-home .aq-history-guide { stroke: rgba(239, 238, 227, .42); stroke-width: 1; vector-effect: non-scaling-stroke; }
+body.aq-site.aq-overview-home .aq-history-guide { stroke: rgba(239, 238, 227, .42); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+body.aq-site.aq-overview-home .aq-history-guide.is-positive { stroke: #79e5ab; }
+body.aq-site.aq-overview-home .aq-history-guide.is-negative { stroke: #ff8d88; }
 body.aq-site.aq-overview-home .aq-history-dot { fill: #dff3ed; stroke: #0c1a29; stroke-width: 3; vector-effect: non-scaling-stroke; }
+body.aq-site.aq-overview-home .aq-history-dot.is-positive { fill: #79e5ab; }
+body.aq-site.aq-overview-home .aq-history-dot.is-negative { fill: #ff8d88; }
 body.aq-site.aq-overview-home .aq-history-readout { display: grid; width: max-content; margin: 0 0 8px auto; justify-items: end; gap: 2px; padding: 8px 10px; border: 1px solid rgba(189, 221, 220, .2); border-radius: 5px; background: rgba(8, 19, 30, .9); pointer-events: none; }
 body.aq-site.aq-overview-home .aq-history-readout span { color: #8fa0aa; font-size: .56rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; }
 body.aq-site.aq-overview-home .aq-history-readout time { color: #c5d1d4; font-size: .68rem; }
 body.aq-site.aq-overview-home .aq-history-readout strong { color: #91e6e6; font-family: var(--aq-font-mono); font-size: 1.15rem; font-weight: 500; }
+body.aq-site.aq-overview-home .aq-history-readout b { font-size: .62rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+body.aq-site.aq-overview-home .aq-history-readout[data-tone="positive"] { border-color: rgba(121, 229, 171, .6); }
+body.aq-site.aq-overview-home .aq-history-readout[data-tone="positive"] b { color: #8cf0ba; }
+body.aq-site.aq-overview-home .aq-history-readout[data-tone="positive"] strong { color: #8cf0ba; }
+body.aq-site.aq-overview-home .aq-history-readout[data-tone="negative"] { border-color: rgba(255, 141, 136, .62); }
+body.aq-site.aq-overview-home .aq-history-readout[data-tone="negative"] b { color: #ff9e98; }
+body.aq-site.aq-overview-home .aq-history-readout[data-tone="negative"] strong { color: #ff9e98; }
 body.aq-site.aq-overview-home .aq-history-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; margin-top: 4px; color: #a3b0b7; font-size: .72rem; }
 body.aq-site.aq-overview-home .aq-history-legend span { display: inline-flex; align-items: center; gap: 5px; }
-body.aq-site.aq-overview-home .aq-history-legend i { width: 7px; height: 7px; border-radius: 50%; }
-body.aq-site.aq-overview-home .aq-history-legend i.is-positive { background: #87d2be; }
-body.aq-site.aq-overview-home .aq-history-legend i.is-neutral { background: #b9b5a8; }
-body.aq-site.aq-overview-home .aq-history-legend i.is-negative { background: #d99591; }
+body.aq-site.aq-overview-home .aq-history-legend i { width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(230, 242, 240, .1); }
+body.aq-site.aq-overview-home .aq-history-legend span { font-weight: 700; }
+body.aq-site.aq-overview-home .aq-history-legend span.is-positive { color: #8ce9b8; }
+body.aq-site.aq-overview-home .aq-history-legend span.is-positive i { background: #79e5ab; }
+body.aq-site.aq-overview-home .aq-history-legend span.is-negative { color: #ff9d96; }
+body.aq-site.aq-overview-home .aq-history-legend span.is-negative i { background: #ff8d88; }
+body.aq-site.aq-overview-home .aq-history-legend em { color: #b8c5ca; font-size: .9em; font-style: normal; font-weight: 500; }
 body.aq-site.aq-overview-home .aq-history-legend small { margin-left: auto; color: #7d8d96; }
 body.aq-site.aq-overview-home .aq-history-observations { margin-top: 16px; border-top: 1px solid rgba(190, 211, 215, .15); }
 body.aq-site.aq-overview-home .aq-history-observations summary { min-height: 44px; padding-top: 14px; color: #97e1e2; font-size: .76rem; font-weight: 700; cursor: pointer; }

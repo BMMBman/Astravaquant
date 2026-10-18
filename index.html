@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="AstravaQuant publishes independent quantitative research across trend, valuation, liquidity, and market regimes." />
     <title>AstravaQuant | Market Atlas</title>
+    <link rel="icon" href="assets/astravaquant-favicon-temporary.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="public-redesign.css" />
+    <link rel="stylesheet" href="brand.css" />
   </head>
   <body class="aq-site aq-home aq-overview-home">
     <header class="site-header" aria-label="Primary navigation">
@@ -14,7 +16,7 @@
           <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
             <path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
           </svg>
-          <span class="brand-copy"><strong>AstravaQuant</strong><span>Independent systematic research</span></span>
+          <span class="brand-copy"><strong>AstravaQuant</strong><span>Quantitative intelligence</span></span>
         </a>
         <nav class="site-nav" aria-label="Main navigation">
           <a class="is-active" href="#overview">Overview</a>
@@ -31,23 +33,30 @@
     <main id="overview">
       <section class="aq-overview-hero" aria-labelledby="atlas-home-title">
         <div class="shell aq-overview-hero-inner reveal">
-          <div>
-            <p class="aq-overview-kicker">AstravaQuant</p>
-            <h1 id="atlas-home-title">Market Atlas</h1>
-            <p class="aq-overview-subtitle">A systematic view of market regimes.</p>
-            <p class="aq-overview-copy">Published readings. Transparent history. Independent research.</p>
+          <div class="aq-overview-hero-copy">
+            <p class="aq-overview-kicker">Independent quantitative research</p>
+            <h1 class="aq-hero-wordmark" id="atlas-home-title"><span>AstravaQuant</span></h1>
+            <p class="aq-overview-subtitle">Quantitative Intelligence. Systematic Precision.</p>
+            <p class="aq-overview-copy">Independent quantitative research across digital assets, market regimes, and fixed income.</p>
+            <div class="aq-overview-actions" aria-label="AstravaQuant research actions">
+              <a class="button primary" href="#market-atlas">Explore Market Atlas</a>
+              <a class="button" href="methodology.html">Research Methodology</a>
+            </div>
           </div>
-          <div class="aq-publication-stamp" aria-live="polite">
-            <span>Latest publication</span>
-            <time data-overview-updated>Loading published data</time>
+          <div class="aq-brand-hero-visual" aria-label="AstravaQuant publication status">
+            <img class="aq-brand-hero-mark" src="assets/astravaquant-mark-temporary.svg" alt="" width="164" height="150" />
+            <div class="aq-publication-stamp" aria-live="polite">
+              <span>Latest publication</span>
+              <time data-overview-updated>Loading published data</time>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="aq-overview-section" aria-labelledby="current-regimes-title">
+      <section class="aq-overview-section" id="market-atlas" aria-labelledby="current-regimes-title">
         <div class="shell">
           <div class="aq-overview-section-head">
-            <div><p class="aq-overview-kicker">Current research</p><h2 id="current-regimes-title">Current regime overview</h2></div>
+            <div><p class="aq-overview-kicker">Market Atlas · Current research</p><h2 id="current-regimes-title">Current regime overview</h2></div>
             <p>Live readings from the published model feeds. No synthetic values are substituted.</p>
           </div>
           <div class="aq-overview-grid" data-home-overview aria-live="polite">
@@ -69,6 +78,13 @@
             </div>
           </div>
           <article class="aq-history-panel" data-home-history aria-live="polite"><p class="aq-history-empty">Loading dated trend observations.</p></article>
+          <aside class="aq-methodology-bridge" aria-labelledby="methodology-bridge-title">
+            <div>
+              <h2 id="methodology-bridge-title">Research designed to be inspected.</h2>
+              <p>Review system definitions, inputs, scales, limitations, and publication standards behind AstravaQuant’s market observations.</p>
+            </div>
+            <a class="button" href="methodology.html">Review methodology</a>
+          </aside>
         </div>
       </section>
     </main>

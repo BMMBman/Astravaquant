@@ -1,0 +1,13 @@
+<!-- Temporary legacy vector mark. Replace only with the approved AstravaQuant angular-A source asset. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 150" role="img" aria-labelledby="title description">
+  <title id="title">AstravaQuant mark</title>
+  <desc id="description">Temporary AstravaQuant geometric A mark pending the approved brand asset.</desc>
+  <defs>
+    <linearGradient id="aq-mark-gradient" x1="16" y1="136" x2="150" y2="12" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00E5FF" />
+      <stop offset="0.48" stop-color="#2563EB" />
+      <stop offset="1" stop-color="#EF28DC" />
+    </linearGradient>
+  </defs>
+  <path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke="url(#aq-mark-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
+</svg>

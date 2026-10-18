@@ -1,0 +1,517 @@
+/*
+ * AstravaQuant Phase 1 brand layer.
+ * Presentation-only overrides shared by the public research and legacy dashboard shells.
+ * The referenced mark is intentionally temporary until the approved angular-A asset is supplied.
+ */
+
+:root {
+  color-scheme: dark;
+  --brand-bg: #080b14;
+  --brand-bg-deep: #050711;
+  --brand-surface: #111827;
+  --brand-surface-elevated: #152033;
+  --brand-cyan: #00e5ff;
+  --brand-blue: #2563eb;
+  --brand-magenta: #ef28dc;
+  --brand-text: #f5f7fa;
+  --brand-muted: #a8b3c5;
+  --brand-faint: #748198;
+  --brand-line: rgba(168, 179, 197, 0.15);
+  --brand-line-strong: rgba(0, 229, 255, 0.34);
+  --brand-gradient: linear-gradient(100deg, var(--brand-cyan), var(--brand-blue) 52%, var(--brand-magenta));
+  --brand-font-sans: Aptos, "Segoe UI Variable", "Segoe UI", sans-serif;
+  --brand-font-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --brand-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+body.aq-site {
+  --aq-bg: var(--brand-bg);
+  --aq-bg-soft: #0d1321;
+  --aq-panel: var(--brand-surface);
+  --aq-panel-alt: var(--brand-surface-elevated);
+  --aq-panel-strong: var(--brand-bg-deep);
+  --aq-text: var(--brand-text);
+  --aq-muted: var(--brand-muted);
+  --aq-faint: var(--brand-faint);
+  --aq-border: var(--brand-line);
+  --aq-border-strong: var(--brand-line-strong);
+  --aq-link: #8deeff;
+  --aq-font-display: var(--brand-font-serif);
+  --aq-font-body: var(--brand-font-sans);
+  --aq-font-mono: var(--brand-font-mono);
+  background-color: var(--brand-bg);
+}
+
+body:not(.aq-site) {
+  --bg: var(--brand-bg);
+  --bg-deep: var(--brand-bg-deep);
+  --panel: rgba(17, 24, 39, 0.88);
+  --panel-strong: rgba(8, 11, 20, 0.97);
+  --text: var(--brand-text);
+  --muted: var(--brand-muted);
+  --faint: var(--brand-faint);
+  --line: var(--brand-line);
+  --line-strong: var(--brand-line-strong);
+  --accent: var(--brand-cyan);
+  --accent-soft: #b8f7ff;
+  --font-display: var(--brand-font-serif);
+  --font-body: var(--brand-font-sans);
+}
+
+.site-header {
+  border-bottom-color: var(--brand-line) !important;
+  background: rgba(8, 11, 20, 0.9) !important;
+  box-shadow: 0 12px 38px rgba(2, 4, 12, 0.2);
+  backdrop-filter: blur(18px) saturate(135%);
+}
+
+.brand {
+  flex: 0 1 auto;
+}
+
+.brand-mark {
+  width: 34px !important;
+  height: 32px !important;
+  flex: 0 0 auto;
+  background: center / contain no-repeat url("assets/astravaquant-mark-temporary.svg");
+  filter: drop-shadow(0 0 9px rgba(0, 229, 255, 0.14));
+}
+
+.brand-mark > * {
+  display: none;
+}
+
+.brand-copy strong {
+  color: var(--brand-text);
+  font-family: var(--brand-font-sans);
+  font-size: 0.8rem !important;
+  font-weight: 750;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase;
+}
+
+.brand-copy span {
+  color: var(--brand-faint) !important;
+  font-size: 0.63rem !important;
+  letter-spacing: 0.045em;
+}
+
+.site-nav a,
+.site-nav button {
+  transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease, opacity 160ms ease;
+}
+
+body.aq-site .site-nav a:hover,
+body.aq-site .site-nav a.is-active,
+body.aq-site .site-nav button:hover,
+body.aq-site .site-nav button:focus-visible,
+body:not(.aq-site) .site-nav a:hover,
+body:not(.aq-site) .site-nav a.is-active {
+  color: var(--brand-text);
+}
+
+body.aq-site .site-nav a::after,
+body.aq-site .site-nav button::after,
+body:not(.aq-site) .site-nav a::after {
+  background: var(--brand-gradient) !important;
+}
+
+.nav-toggle {
+  border-color: var(--brand-line) !important;
+  color: var(--brand-text) !important;
+  background: rgba(17, 24, 39, 0.92) !important;
+}
+
+.nav-toggle:focus-visible,
+.site-nav a:focus-visible,
+.site-nav button:focus-visible,
+.button:focus-visible,
+.aq-history-selector button:focus-visible {
+  outline: 2px solid var(--brand-cyan);
+  outline-offset: 3px;
+}
+
+body.aq-site .button.primary,
+body:not(.aq-site) .button.primary {
+  border-color: transparent;
+  color: #050914;
+  background: linear-gradient(105deg, #8cf4ff, var(--brand-cyan));
+  box-shadow: 0 10px 28px rgba(0, 229, 255, 0.12);
+}
+
+body.aq-site .button.primary:hover,
+body:not(.aq-site) .button.primary:hover {
+  color: #02060d;
+  background: linear-gradient(105deg, #b7f8ff, #37eaff);
+}
+
+/* Public research surfaces */
+body.aq-site.aq-overview-home,
+body.aq-site.aq-atlas-detail {
+  background:
+    radial-gradient(circle at 84% -8%, rgba(37, 99, 235, 0.12), transparent 31rem),
+    radial-gradient(circle at 10% 28%, rgba(239, 40, 220, 0.035), transparent 24rem),
+    var(--brand-bg);
+  color: var(--brand-text);
+}
+
+body.aq-site.aq-overview-home .site-header,
+body.aq-site.aq-atlas-detail .site-header {
+  background: rgba(8, 11, 20, 0.91) !important;
+}
+
+body.aq-site.aq-overview-home .aq-overview-kicker,
+body.aq-site.aq-atlas-detail .aq-kicker,
+body.aq-site.aq-atlas-detail .aq-section-label {
+  color: #76edff;
+}
+
+body.aq-site.aq-overview-home .aq-overview-hero h1,
+body.aq-site.aq-overview-home .aq-overview-section-head h2,
+body.aq-site.aq-atlas-detail .aq-page-title,
+body.aq-site.aq-atlas-detail .aq-section-head h2 {
+  color: var(--brand-text);
+}
+
+body.aq-site.aq-overview-home .aq-overview-section-head > p {
+  max-width: 430px;
+  color: var(--brand-muted);
+}
+
+body.aq-site.aq-overview-home .aq-overview-card,
+body.aq-site.aq-overview-home .aq-history-panel,
+body.aq-site.aq-atlas-detail .aq-model-card,
+body.aq-site.aq-atlas-detail .aq-net-liquidity,
+body.aq-site.aq-atlas-detail .aq-valuation-card,
+body.aq-site.aq-atlas-detail .valuation-input-panel,
+body.aq-site.aq-atlas-detail .valuation-dispersion,
+body.aq-site.aq-atlas-detail .valuation-history,
+body.aq-site.aq-atlas-detail .aq-panel,
+body.aq-site.aq-atlas-detail .aq-cover-card {
+  border-color: var(--brand-line);
+  background: linear-gradient(145deg, rgba(21, 32, 51, 0.9), rgba(11, 17, 31, 0.94));
+  box-shadow: 0 18px 48px rgba(2, 5, 14, 0.16);
+}
+
+body.aq-site.aq-overview-home .aq-overview-card {
+  position: relative;
+  overflow: hidden;
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+body.aq-site.aq-overview-home .aq-overview-card::before {
+  position: absolute;
+  top: 0;
+  right: 18px;
+  left: 18px;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.42), transparent);
+  opacity: 0.65;
+}
+
+body.aq-site.aq-overview-home .aq-overview-card:hover {
+  border-color: rgba(0, 229, 255, 0.27);
+  box-shadow: 0 22px 52px rgba(2, 5, 14, 0.26);
+  transform: translateY(-2px);
+}
+
+body.aq-site.aq-overview-home .aq-overview-card-trend {
+  border-color: rgba(0, 229, 255, 0.34);
+  background: linear-gradient(135deg, rgba(16, 49, 72, 0.92), rgba(11, 21, 38, 0.96));
+}
+
+body.aq-site.aq-overview-home .aq-overview-card-head > a,
+body.aq-site.aq-overview-home .aq-research-record-links a:hover,
+body.aq-site.aq-overview-home .aq-history-observations summary {
+  color: #77edff;
+}
+
+body.aq-site.aq-overview-home .aq-trend-reading strong,
+body.aq-site.aq-overview-home .aq-valuation-summary strong,
+body.aq-site.aq-overview-home .aq-liquidity-summary strong,
+body.aq-site.aq-overview-home .aq-history-readout strong,
+body.aq-site.aq-atlas-detail .aq-net-liquidity-overview strong,
+body.aq-site.aq-atlas-detail .aq-valuation-score > strong {
+  color: #8ef1ff;
+  font-family: var(--brand-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+body.aq-site.aq-overview-home .aq-overview-spark-line,
+body.aq-site.aq-overview-home .aq-history-line {
+  stroke: var(--brand-cyan);
+}
+
+body.aq-site.aq-overview-home .aq-overview-spark-area,
+body.aq-site.aq-overview-home .aq-history-area {
+  fill: rgba(0, 229, 255, 0.07);
+}
+
+body.aq-site.aq-overview-home .aq-history-selector button.is-active {
+  border-color: rgba(0, 229, 255, 0.62);
+  color: var(--brand-text);
+  background: rgba(0, 229, 255, 0.1);
+}
+
+/* Homepage brand introduction */
+body.aq-site.aq-overview-home .aq-overview-hero {
+  position: relative;
+  padding: clamp(46px, 7vw, 88px) 0 28px;
+  overflow: hidden;
+}
+
+body.aq-site.aq-overview-home .aq-overview-hero::after {
+  position: absolute;
+  top: -10rem;
+  right: max(-10rem, calc((100vw - 1120px) / 2 - 12rem));
+  width: 34rem;
+  height: 34rem;
+  border-radius: 50%;
+  content: "";
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.14), rgba(239, 40, 220, 0.045) 42%, transparent 70%);
+  pointer-events: none;
+}
+
+body.aq-site.aq-overview-home .aq-overview-hero-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(250px, 0.55fr);
+  align-items: center;
+  gap: clamp(28px, 6vw, 74px);
+  padding-bottom: clamp(34px, 5vw, 58px);
+  border-bottom-color: var(--brand-line);
+}
+
+body.aq-site.aq-overview-home .aq-hero-wordmark {
+  margin: 0;
+  font-family: var(--brand-font-sans) !important;
+  font-size: clamp(2.75rem, 7.1vw, 6.6rem);
+  font-weight: 760;
+  letter-spacing: -0.045em;
+  line-height: 0.9;
+  text-transform: uppercase;
+}
+
+body.aq-site.aq-overview-home .aq-hero-wordmark span {
+  color: transparent;
+  background: linear-gradient(100deg, #f5f7fa 8%, #dffbff 53%, #f6ddf6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+body.aq-site.aq-overview-home .aq-overview-subtitle {
+  max-width: 760px;
+  margin-top: 20px;
+  color: var(--brand-text);
+  font-size: clamp(1.35rem, 2.6vw, 2.2rem);
+  line-height: 1.08;
+}
+
+body.aq-site.aq-overview-home .aq-overview-copy {
+  max-width: 660px;
+  margin-top: 14px;
+  color: var(--brand-muted);
+  font-size: clamp(0.98rem, 1.4vw, 1.08rem);
+  line-height: 1.65;
+}
+
+body.aq-site.aq-overview-home .aq-overview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+body.aq-site.aq-overview-home .aq-overview-actions .button {
+  min-height: 44px;
+  border-radius: 6px;
+}
+
+body.aq-site.aq-overview-home .aq-overview-actions .button:not(.primary) {
+  border-color: var(--brand-line);
+  color: var(--brand-text);
+  background: rgba(17, 24, 39, 0.58);
+}
+
+body.aq-site.aq-overview-home .aq-overview-actions .button:not(.primary):hover {
+  border-color: rgba(239, 40, 220, 0.34);
+  background: rgba(21, 32, 51, 0.86);
+}
+
+body.aq-site.aq-overview-home .aq-brand-hero-visual {
+  display: grid;
+  justify-items: center;
+  gap: 22px;
+}
+
+body.aq-site.aq-overview-home .aq-brand-hero-mark {
+  width: clamp(132px, 18vw, 218px);
+  height: auto;
+  filter: drop-shadow(0 16px 38px rgba(37, 99, 235, 0.18));
+}
+
+body.aq-site.aq-overview-home .aq-publication-stamp {
+  width: min(100%, 240px);
+  min-width: 0;
+  padding-left: 16px;
+  border-left-color: transparent;
+  border-image: var(--brand-gradient) 1;
+  justify-self: center;
+}
+
+body.aq-site.aq-overview-home .aq-publication-stamp time {
+  color: var(--brand-text);
+  font-family: var(--brand-font-mono);
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+}
+
+body.aq-site.aq-overview-home #market-atlas {
+  scroll-margin-top: 90px;
+}
+
+body.aq-site.aq-overview-home .aq-methodology-bridge {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 28px;
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid var(--brand-line);
+  border-radius: 8px;
+  background: linear-gradient(115deg, rgba(21, 32, 51, 0.82), rgba(9, 15, 28, 0.92));
+}
+
+body.aq-site.aq-overview-home .aq-methodology-bridge h2 {
+  margin: 0;
+  color: var(--brand-text);
+  font-family: var(--brand-font-serif);
+  font-size: clamp(1.55rem, 2.8vw, 2.25rem);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+
+body.aq-site.aq-overview-home .aq-methodology-bridge p {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: var(--brand-muted);
+}
+
+body.aq-site.aq-overview-home .aq-methodology-bridge .button {
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+/* Restrained accent updates for the terminal and portfolio shells. */
+body:not(.aq-site) {
+  color: var(--brand-text);
+  background-color: var(--brand-bg);
+}
+
+body:not(.aq-site) .glass-card,
+body:not(.aq-site) .terminal-panel,
+body:not(.aq-site) .portfolio-gate {
+  border-color: var(--brand-line);
+}
+
+@media (max-width: 860px) {
+  body.aq-site.js .site-nav,
+  body:not(.aq-site).js .site-header .site-nav {
+    border-color: var(--brand-line);
+    background: rgba(8, 11, 20, 0.985);
+    box-shadow: 0 24px 52px rgba(2, 5, 14, 0.45);
+  }
+
+  body.aq-site.aq-overview-home .aq-overview-hero-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(160px, 0.36fr);
+    gap: 28px;
+  }
+
+  body.aq-site.aq-overview-home .aq-brand-hero-mark {
+    width: clamp(120px, 20vw, 164px);
+  }
+}
+
+@media (max-width: 640px) {
+  body.aq-site.aq-overview-home .aq-overview-hero {
+    padding: 32px 0 18px;
+  }
+
+  body.aq-site.aq-overview-home .aq-overview-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding-bottom: 26px;
+  }
+
+  body.aq-site.aq-overview-home .aq-hero-wordmark {
+    font-size: clamp(2.25rem, 11vw, 3rem) !important;
+    overflow-wrap: normal;
+  }
+
+  body.aq-site.aq-overview-home .aq-overview-subtitle {
+    margin-top: 16px;
+    font-size: 1.42rem;
+  }
+
+  body.aq-site.aq-overview-home .aq-overview-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  body.aq-site.aq-overview-home .aq-overview-actions .button {
+    width: 100%;
+  }
+
+  body.aq-site.aq-overview-home .aq-brand-hero-visual {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    justify-items: start;
+    gap: 16px;
+  }
+
+  body.aq-site.aq-overview-home .aq-brand-hero-mark {
+    width: 76px;
+  }
+
+  body.aq-site.aq-overview-home .aq-publication-stamp {
+    width: 100%;
+    justify-self: stretch;
+  }
+
+  body.aq-site.aq-overview-home .aq-methodology-bridge {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 19px;
+  }
+
+  body.aq-site.aq-overview-home .aq-methodology-bridge .button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand-copy span {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+
+  body.aq-site.aq-overview-home .aq-overview-card,
+  .site-nav a,
+  .site-nav button,
+  .nav-toggle span {
+    transition: none !important;
+  }
+
+  body.aq-site.aq-overview-home .aq-overview-card:hover {
+    transform: none;
+  }
+}

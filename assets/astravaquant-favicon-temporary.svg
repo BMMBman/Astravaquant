@@ -1,0 +1,12 @@
+<!-- Temporary favicon derived from the existing AstravaQuant vector mark. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="aq-favicon-gradient" x1="7" y1="57" x2="58" y2="6" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00E5FF" />
+      <stop offset="0.5" stop-color="#2563EB" />
+      <stop offset="1" stop-color="#EF28DC" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#080B14" />
+  <path d="M32 9 55 54 32 41 9 54Z" fill="none" stroke="url(#aq-favicon-gradient)" stroke-linecap="round" stroke-linejoin="round" stroke-width="6" />
+</svg>

@@ -64,8 +64,8 @@ function updatePublication(dashboard: WorkbookDashboard): void {
       if (title) title.textContent = dashboard.status === "ready" ? "Live Google Sheets feed" : "Live feed / partial coverage";
       const mrpiLive = dashboard.mrpiSystem?.status === "ready" || dashboard.mrpiSystem?.status === "partial";
       if (message) message.textContent = mrpiLive
-        ? `Crypto and MRPI workbooks validated every ${dashboard.refreshSeconds / 60} minutes.`
-        : `Crypto workbook validated every ${dashboard.refreshSeconds / 60} minutes. MRPI feed delayed.`;
+        ? `Crypto and 10US Treasury Module workbooks validated every ${dashboard.refreshSeconds / 60} minutes.`
+        : `Crypto workbook validated every ${dashboard.refreshSeconds / 60} minutes. 10US Treasury Module feed delayed.`;
       if (status) status.textContent = dashboard.status === "ready" ? "15 / 15 crypto tabs online" : `${dashboard.tabs.filter((tab) => tab.status === "ready").length} / 15 crypto tabs online`;
       root.dataset.state = dashboard.status;
     } else {
@@ -111,7 +111,7 @@ function updateRatios(dashboard: WorkbookDashboard): void {
   const models = [...new Map(dashboard.ratioModels.map((model) => [model.id, model])).values()]
     .sort((left, right) => right.score - left.score);
   if (!models.length) {
-    root.innerHTML = '<p class="aq-disclosure aq-ratio-unavailable">The live SMPS feed is temporarily unavailable. No substitute scores are shown.</p>';
+    root.innerHTML = '<p class="aq-disclosure aq-ratio-unavailable">The live Major Rotational Vector feed is temporarily unavailable. No substitute scores are shown.</p>';
     if (pickerRoot) pickerRoot.innerHTML = "<span>Assets unavailable</span>";
     if (leaderRoot) leaderRoot.innerHTML = "<span>Current leader</span><strong>Unavailable</strong>";
     return;
@@ -142,13 +142,13 @@ function updateRatios(dashboard: WorkbookDashboard): void {
       const tone = rotationTone({ ...model, score: selectedPerspective.score });
       const state = strengthState(selectedPerspective.score);
       return `<article class="aq-grid-card aq-ratio-card" data-tone="${tone}">
-        <div class="aq-ratio-head"><span>${String(index + 1).padStart(2, "0")} / ${escapeHtml(model.sourceTab)}</span><b>${state}</b></div>
+        <div class="aq-ratio-head"><span>${String(index + 1).padStart(2, "0")} / Major Rotational Vector</span><b>${state}</b></div>
         <h3>${escapeHtml(selected)} <span>vs ${escapeHtml(selectedPerspective.peer)}</span></h3>
         <div class="aq-ratio-reading"><strong>${signed(selectedPerspective.score)}</strong><span>${escapeHtml(selected)} relative-strength score</span></div>
         <div class="aq-ratio-rail" aria-label="${escapeHtml(selected)} relative strength versus ${escapeHtml(selectedPerspective.peer)} ${signed(selectedPerspective.score)}"><i></i><b style="left:${position.toFixed(1)}%"></b></div>
         <footer class="aq-ratio-scale"><span>Lagging</span><span>Neutral</span><span>Leading</span></footer>
       </article>`;
-    }).join("") || `<p class="aq-disclosure aq-ratio-unavailable">No published SMPS relationships include ${escapeHtml(selected)}.</p>`;
+    }).join("") || `<p class="aq-disclosure aq-ratio-unavailable">No published Major Rotational Vector relationships include ${escapeHtml(selected)}.</p>`;
 
     const leader = filtered[0];
     if (leaderRoot) leaderRoot.innerHTML = leader

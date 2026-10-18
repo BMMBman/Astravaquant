@@ -5,7 +5,7 @@ const broadCryptoSymbols = ["BTC", "WBTC", "ETH", "WETH", "HYPE", "LINK", "SOL",
 export const currentSignals: ModelSignal[] = [
   {
     id: "mtpi",
-    name: "Medium-Term Trend (MTTPM)",
+    name: "Total ES 1D",
     value: 0.47,
     state: "LONG",
     scope: "Five-day aggregate of total crypto market cap and TOTAL2.",
@@ -13,7 +13,7 @@ export const currentSignals: ModelSignal[] = [
   },
   {
     id: "ltpi",
-    name: "Long-Term Trend (LTTPM)",
+    name: "BTC 1W",
     value: -0.95,
     state: "SHORT",
     scope: "Weekly aggregate of total crypto market cap and Bitcoin.",
@@ -21,7 +21,7 @@ export const currentSignals: ModelSignal[] = [
   },
   {
     id: "mrpi",
-    name: "Mortgage Rate Pressure Index",
+    name: "10US Treasury Module",
     value: -0.79,
     state: "STRONG TIGHTENING",
     scope: "Weekly 10-year Treasury pressure model, read as tightening versus easing.",
@@ -32,14 +32,14 @@ export const researchLibrary: Omit<PersonalizedResearch, "relevance">[] = [
   {
     id: "crypto-medium-term",
     title: "Medium-Term Crypto Participation",
-    summary: "The five-day Medium-Term Trend model combines total crypto market cap and TOTAL2 into the current tactical regime.",
+    summary: "The Total ES 1D model combines total crypto market cap and TOTAL2 into the current tactical regime.",
     href: "research-crypto-participation.html",
     symbols: broadCryptoSymbols
   },
   {
     id: "crypto-long-term",
     title: "Weekly Crypto Structure",
-    summary: "The Long-Term Trend model places broad crypto exposure against the weekly total-market and Bitcoin trend.",
+    summary: "The BTC 1W model places broad crypto exposure against the weekly total-market and Bitcoin trend.",
     href: "research-weekly-structure.html",
     symbols: broadCryptoSymbols
   },

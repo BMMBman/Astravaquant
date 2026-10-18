@@ -65,20 +65,34 @@ describe("Google workbook normalization", () => {
   it("publishes the two trend models without changing MRPI", () => {
     const dashboard = buildWorkbookDashboard(
       new Map([
-        ["Medium-Term Trend (MTTPM)", [["DATE UPDATED:", "June 4 2026"], ["MTPI Avg Score", "0.21", "Long Biased"]]],
-        ["Long-Term Trend (LTTPM)", [["DATE UPDATED:", "June 4 2026"], ["LTPI Avg Score", "-0.89", "Short"]]],
-        ["Medium-Term Forward Testing", [["Date", "TPI Score"], ["8/4/2025", "0.1"], ["8/5/2025", "0.2"]]],
-        ["Long-Term Forward Testing", [["Date", "TPI Score"], ["11/26/2025", "-0.8"], ["12/3/2025", "-0.9"]]]
+        ["Total ES 1D", [["DATE UPDATED:", "June 4 2026"], ["MTPI Avg Score", "0.21", "Long Biased"]]],
+        ["BTC 1W", [["DATE UPDATED:", "June 4 2026"], ["LTPI Avg Score", "-0.89", "Short"]]],
+        ["Total ES 1D Forward Test", [["Date", "TPI Score"], ["8/4/2025", "0.1"], ["8/5/2025", "0.2"]]],
+        ["BTC 1W Forward Test", [["Date", "TPI Score"], ["11/26/2025", "-0.8"], ["12/3/2025", "-0.9"]]]
       ]),
       300
     );
 
     expect(dashboard.status).toBe("partial");
     expect(dashboard.signals.find((signal) => signal.id === "mtpi")).toMatchObject({
+      name: "Total ES 1D",
       value: 0.21,
       state: "RISK-ON",
       regime: "RISK-ON",
-      source: "google_sheets"
+      source: "google_sheets",
+      sourceTab: "1D SNIPER"
+    });
+    expect(dashboard.signals.find((signal) => signal.id === "ltpi")).toMatchObject({
+      name: "BTC 1W",
+      sourceTab: "LT"
+    });
+    expect(dashboard.scoreSeries.find((series) => series.id === "mtpi")).toMatchObject({
+      label: "Total ES 1D",
+      sourceTab: "MT Forward Testing"
+    });
+    expect(dashboard.scoreSeries.find((series) => series.id === "ltpi")).toMatchObject({
+      label: "BTC 1W",
+      sourceTab: "LT Forward Testing"
     });
     expect(dashboard.signals.find((signal) => signal.id === "mrpi")).toMatchObject({
       value: -0.79,
@@ -88,8 +102,8 @@ describe("Google workbook normalization", () => {
 
   it("builds a lightweight signal snapshot from only the two core score ranges", () => {
     const snapshot = buildWorkbookSignalSnapshot(new Map([
-      ["Medium-Term Trend (MTTPM)", [["DATE UPDATED:", "Aug 11 2026"], ["MTPI Avg Score", "-0.58", "Short"]]],
-      ["Long-Term Trend (LTTPM)", [["DATE UPDATED:", "Aug 11 2026"], ["LTPI Avg Score", "-0.89", "Short"]]]
+      ["Total ES 1D", [["DATE UPDATED:", "Aug 11 2026"], ["MTPI Avg Score", "-0.58", "Short"]]],
+      ["BTC 1W", [["DATE UPDATED:", "Aug 11 2026"], ["LTPI Avg Score", "-0.89", "Short"]]]
     ]), 300);
 
     expect(snapshot.status).toBe("partial");
@@ -104,7 +118,7 @@ describe("Google workbook normalization", () => {
     const fetcher = vi.fn(async (input: string | URL | Request) => {
       const url = new URL(String(input));
       const sheet = url.searchParams.get("sheet");
-      const csv = sheet === "MT"
+      const csv = sheet === "1D SNIPER"
         ? '"DATE UPDATED:","Aug 11 2026"\n"MTPI Avg Score","-0.58","Short"'
         : '"DATE UPDATED:","Aug 11 2026"\n"LTPI Avg Score","-0.89","Short"';
       return new Response(csv, { status: 200, headers: { "content-type": "text/csv" } });
@@ -117,7 +131,7 @@ describe("Google workbook normalization", () => {
     expect(first.signals.map((signal) => signal.id)).not.toContain("nspi");
     expect(second).toBe(first);
     expect(fetcher).toHaveBeenCalledTimes(2);
-    expect(fetcher.mock.calls.map(([input]) => new URL(String(input)).searchParams.get("sheet"))).toEqual(["MT", "LT"]);
+    expect(fetcher.mock.calls.map(([input]) => new URL(String(input)).searchParams.get("sheet"))).toEqual(["1D SNIPER", "LT"]);
     expect(fetcher.mock.calls.every(([input]) => new URL(String(input)).searchParams.get("range") === "A1:AZ100")).toBe(true);
   });
 

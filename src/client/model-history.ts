@@ -15,16 +15,18 @@ const modelSections: Record<string, string> = {
   mrpi: "03 / Rates"
 };
 const modelPurposes: Record<string, string> = {
-  mtpi: "Five-day Medium-Term Trend Probability Module built from stacked trend-following indicators and oscillators.",
-  ltpi: "Weekly Long-Term Trend Probability Module for longer-horizon market structure.",
+  mtpi: "Total-market trend module built from stacked trend-following indicators and oscillators.",
+  ltpi: "Weekly Bitcoin trend module for longer-horizon market structure.",
   mrpi: "Measures tightening versus easing pressure in the 10-year Treasury backdrop."
 };
-const methodologyLinks: Record<string, string> = {
-  mtpi: "trend-following.html#medium-term-trend",
-  ltpi: "trend-following.html#long-term-trend",
-  mrpi: "mrpi-methodology.html"
-};
 const scaleThresholds = [-0.75, -0.25, 0.25, 0.75];
+
+function modelDisplayName(signal: Pick<WorkbookModelSignal, "id" | "name">): string {
+  if (signal.id === "mtpi") return "Total ES 1D";
+  if (signal.id === "ltpi") return "BTC 1W";
+  if (signal.id === "mrpi") return "10US Treasury Module";
+  return signal.name;
+}
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]!);
@@ -177,25 +179,20 @@ function gaugeAxis(signal: WorkbookModelSignal): [string, string, string] {
 }
 
 function gaugeAriaLabel(signal: WorkbookModelSignal): string {
-  return `${signal.name} published standardized score is ${formatScore(signal.value)} with classification ${signal.state}.`;
+  return `${modelDisplayName(signal)} published standardized score is ${formatScore(signal.value)} with classification ${signal.state}.`;
 }
 
 function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | undefined, period: HistoryPeriod): string {
   const latestDate = series?.points.at(-1)?.date;
   const updated = formatUpdatedLabel(signal.updatedLabel) ?? (latestDate ? formatDate(`${latestDate}T00:00:00.000Z`) : "Current published state");
   const classificationTone = tone(signal);
-  const methodologyHref = methodologyLinks[signal.id] ?? "methodology.html";
   const [leftAxis, middleAxis, rightAxis] = gaugeAxis(signal);
   return `<article id="${escapeHtml(signal.id)}" class="aq-model-card" data-model-id="${escapeHtml(signal.id)}" data-model-history-card="${escapeHtml(signal.id)}">
     <header class="aq-model-head">
       <div>
         <p class="aq-section-label">${escapeHtml(modelSections[signal.id] ?? "Model")}</p>
-        <h3>${escapeHtml(signal.name)}</h3>
+        <h3>${escapeHtml(modelDisplayName(signal))}</h3>
         <p>${escapeHtml(modelPurposes[signal.id] ?? signal.scope)}</p>
-      </div>
-      <div class="aq-model-actions">
-        <a class="button" href="${escapeHtml(methodologyHref)}">${signal.id === "mtpi" || signal.id === "ltpi" ? "Open Trend Family" : "Methodology"}</a>
-        <a class="button" href="backtesting.html">Open Backtesting</a>
       </div>
     </header>
     <div class="aq-model-body">

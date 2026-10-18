@@ -14,10 +14,6 @@ if (document.querySelector("[data-model-feed]")) {
   void import("./model-feed.js").then(({ bootModelFeed }) => bootModelFeed());
 }
 
-if (document.querySelector("[data-atlas-dialog]")) {
-  void import("./home-atlas.js").then(({ bootHomeAtlas }) => bootHomeAtlas());
-}
-
 if (document.querySelector("[data-home-overview]")) {
   void import("./home-overview.js").then(({ bootHomeOverview }) => bootHomeOverview());
 }

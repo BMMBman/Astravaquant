@@ -107,10 +107,10 @@ export function buildMrpiDashboard(
   const history = parseMrpiHistory(ranges.history);
   const warnings: string[] = [];
   if (score !== null && calculatedScore !== null && Math.abs(score - calculatedScore) > 0.01) {
-    warnings.push("The published MRPI score differs from the arithmetic mean of the available criteria.");
+    warnings.push("The published 10US Treasury Module score differs from the arithmetic mean of the available criteria.");
   }
-  if (indicators.length < 6) warnings.push(`Only ${indicators.length} of 6 expected MRPI criteria are currently readable.`);
-  if (history.length < 2) warnings.push("MRPI history needs at least two dated scores to form a line.");
+  if (indicators.length < 6) warnings.push(`Only ${indicators.length} of 6 expected 10US Treasury Module criteria are currently readable.`);
+  if (history.length < 2) warnings.push("10US Treasury Module history needs at least two dated scores to form a line.");
   return {
     status: score !== null && indicators.length > 0 ? (indicators.length >= 6 ? "ready" : "partial") : "unavailable",
     provider: score !== null || indicators.length > 0 ? "Google Sheets" : null,
@@ -124,14 +124,14 @@ export function buildMrpiDashboard(
     indicatorCount: indicators.length,
     indicators,
     historyStatus: history.length > 1 ? "ready" : "unavailable",
-    historyMessage: history.length > 1 ? null : "No verified MRPI history is published yet.",
+    historyMessage: history.length > 1 ? null : "No verified 10US Treasury Module history is published yet.",
     history,
     warnings
   };
 }
 
 function unavailableDashboard(spreadsheetId: string, refreshSeconds: number): MrpiDashboard {
-  const message = "AstravaQuant could not read the public MRPI workbook.";
+  const message = "AstravaQuant could not read the public 10US Treasury Module workbook.";
   return {
     status: "unavailable",
     provider: null,
@@ -177,7 +177,7 @@ export class PublicGoogleSheetsMrpiProvider implements MrpiProvider {
       { headers: { Accept: "text/csv" }, signal: AbortSignal.timeout(10_000) }
     );
     if (!response.ok || !response.headers.get("content-type")?.includes("text/csv")) {
-      throw new Error("MRPI workbook range unavailable.");
+      throw new Error("10US Treasury Module workbook range unavailable.");
     }
     return parseCsv(await response.text());
   }
@@ -236,7 +236,7 @@ export class PublicGoogleSheetsMrpiProvider implements MrpiProvider {
 function mrpiSeries(dashboard: MrpiDashboard): WorkbookScoreSeries {
   return {
     id: "mrpi",
-    label: "Mortgage Rate Pressure Index",
+    label: "10US Treasury Module",
     sourceTab: "Weekly LPI",
     status: dashboard.historyStatus,
     message: dashboard.historyMessage,
@@ -281,8 +281,8 @@ export class MrpiEnrichedWorkbookProvider implements WorkbookProvider {
     const signals = base.signals.some((candidate) => candidate.id === "mrpi")
       ? base.signals.map((candidate) => candidate.id === "mrpi" ? signal : candidate)
       : [...base.signals, signal];
-    const warnings = base.warnings.filter((warning) => !/^MRPI (?:is not present|is sourced)/i.test(warning));
-    if (mrpi.status === "unavailable") warnings.push("The separate MRPI workbook is temporarily unavailable; the published fallback reading remains visible.");
+    const warnings = base.warnings.filter((warning) => !/^(?:MRPI|10US Treasury Module) (?:is not present|is sourced)/i.test(warning));
+    if (mrpi.status === "unavailable") warnings.push("The separate 10US Treasury Module workbook is temporarily unavailable; the published fallback reading remains visible.");
     return {
       ...base,
       signals,

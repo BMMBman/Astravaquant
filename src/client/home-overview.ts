@@ -3,6 +3,7 @@ import type {
   MarketDashboard,
   MarketMetric,
   WorkbookDashboard,
+  WorkbookModelSignal,
   WorkbookScoreSeries
 } from "../shared/contracts.js";
 import { apiRequest } from "./api.js";
@@ -64,23 +65,25 @@ function trendTone(score: number): "positive" | "negative" {
   return score >= 0 ? "positive" : "negative";
 }
 
-function trendReading(series: WorkbookScoreSeries | undefined, label: string): string {
+function trendReading(series: WorkbookScoreSeries | undefined, signal: WorkbookModelSignal | undefined, label: string): string {
   const latest = series?.points.at(-1);
-  const state = latest ? trendRegime(latest.score) : "Unavailable";
+  const currentScore = signal?.value ?? latest?.score ?? null;
+  const state = currentScore === null ? "Unavailable" : trendRegime(currentScore);
   return `<div class="aq-trend-reading">
     <span>${escapeHtml(label)}</span>
-    <strong>${formatScore(latest?.score ?? null)}</strong>
+    <strong>${formatScore(currentScore)}</strong>
     <b class="${stateTone(state)}">${escapeHtml(state)}</b>
     ${sparkline((series?.points ?? []).map((point) => ({ date: point.date, value: point.score })), `${label} trend`)}
-    <small>${latest ? formatDate(latest.date) : "No published observation"}</small>
+    <small>${signal?.updatedLabel ? formatDate(signal.updatedLabel) : latest ? formatDate(latest.date) : "No published observation"}</small>
   </div>`;
 }
 
 function trendCard(workbook: WorkbookDashboard | null): string {
   const series = new Map(workbook?.scoreSeries.map((item) => [item.id, item]));
+  const signals = new Map(workbook?.signals.map((item) => [item.id, item]));
   return `<article class="aq-overview-card aq-overview-card-trend">
     <div class="aq-overview-card-head"><div><span>Trend</span><p>Published probability modules</p></div><a href="models.html#trend">Explore trend <i>↗</i></a></div>
-    <div class="aq-trend-readings">${trendReading(series.get("mtpi"), "Medium-term")}${trendReading(series.get("ltpi"), "Long-term")}</div>
+    <div class="aq-trend-readings">${trendReading(series.get("mtpi"), signals.get("mtpi"), "Total ES 1D")}${trendReading(series.get("ltpi"), signals.get("ltpi"), "BTC 1W")}</div>
   </article>`;
 }
 
@@ -146,7 +149,7 @@ function historyMarkup(series: WorkbookScoreSeries): string {
 
   return `<div class="aq-history-chart-wrap">
     <div class="aq-history-readout" data-home-history-readout data-tone="${trendTone(latest.score)}"><span>Selected observation</span><time>${escapeHtml(formatDate(latest.date))}</time><b>${trendRegime(latest.score)}</b><strong>${formatScore(latest.score)}</strong></div>
-    <svg class="aq-history-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(series.label)} historical score chart" data-home-history-chart>
+    <svg class="aq-history-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(series.id === "mtpi" ? "Total ES 1D" : series.id === "ltpi" ? "BTC 1W" : series.label)} historical score chart" data-home-history-chart>
       <rect x="${padding.left}" y="${y(1).toFixed(1)}" width="${width - padding.left - padding.right}" height="${Math.max(0, y(0) - y(1)).toFixed(1)}" class="aq-history-band is-positive"/>
       <rect x="${padding.left}" y="${y(0).toFixed(1)}" width="${width - padding.left - padding.right}" height="${Math.max(0, y(-1) - y(0)).toFixed(1)}" class="aq-history-band is-negative"/>
       ${yTicks.map((value) => `<g><line x1="${padding.left}" x2="${width - padding.right}" y1="${y(value).toFixed(1)}" y2="${y(value).toFixed(1)}" class="aq-history-gridline"/><text x="${padding.left - 10}" y="${(y(value) + 4).toFixed(1)}" text-anchor="end" class="aq-history-y-label">${formatScore(value)}</text></g>`).join("")}
@@ -158,7 +161,7 @@ function historyMarkup(series: WorkbookScoreSeries): string {
       <rect x="${padding.left}" y="${padding.top}" width="${width - padding.left - padding.right}" height="${height - padding.top - padding.bottom}" fill="transparent" data-home-history-hit/>
     </svg>
   </div>
-  <div class="aq-history-legend"><span class="is-positive"><i></i>Risk-on <em>0 to +1</em></span><span class="is-negative"><i></i>Risk-off <em>0 to -1</em></span><small>${escapeHtml(series.label)} / ${points.length} dated observations</small></div>
+  <div class="aq-history-legend"><span class="is-positive"><i></i>Risk-on <em>0 to +1</em></span><span class="is-negative"><i></i>Risk-off <em>0 to -1</em></span><small>${escapeHtml(series.id === "mtpi" ? "Total ES 1D" : series.id === "ltpi" ? "BTC 1W" : series.label)} / ${points.length} dated observations</small></div>
   <details class="aq-history-observations"><summary>View dated observations</summary><ol>${observations}</ol></details>`;
 }
 

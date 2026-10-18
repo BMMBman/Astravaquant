@@ -20,10 +20,10 @@
         </a>
         <nav class="site-nav" aria-label="Main navigation">
           <a class="is-active" href="#overview">Overview</a>
-          <button type="button" data-atlas-open="trend">Trend</button>
-          <button type="button" data-atlas-open="valuation">Valuation</button>
-          <button type="button" data-atlas-open="liquidity">Liquidity</button>
-          <button type="button" data-atlas-open="backtesting">Research</button>
+          <a href="models.html#trend">Trend</a>
+          <a href="valuation.html">Valuation</a>
+          <a href="models.html#liquidity">Liquidity</a>
+          <a href="research.html">Research</a>
           <a href="about.html">About</a>
         </nav>
         <div class="header-meta">Published research</div>
@@ -73,8 +73,8 @@
           <div class="aq-overview-section-head aq-history-heading">
             <div><p class="aq-overview-kicker">Published observations</p><h2 id="trend-history-title">Trend regime history</h2></div>
             <div class="aq-history-selector" role="group" aria-label="Trend history series">
-              <button class="is-active" type="button" data-home-history-series="mtpi">Medium-term</button>
-              <button type="button" data-home-history-series="ltpi">Long-term</button>
+              <button class="is-active" type="button" data-home-history-series="mtpi">Total ES 1D</button>
+              <button type="button" data-home-history-series="ltpi">BTC 1W</button>
             </div>
           </div>
           <article class="aq-history-panel" data-home-history aria-live="polite"><p class="aq-history-empty">Loading dated trend observations.</p></article>
@@ -88,19 +88,6 @@
         </div>
       </section>
     </main>
-
-    <dialog class="aq-atlas-dialog" data-atlas-dialog aria-labelledby="atlas-title">
-      <div class="aq-atlas-shell">
-        <header class="aq-atlas-head">
-          <div><p class="aq-section-label">AstravaQuant research</p><h2 id="atlas-title" data-atlas-title>Research system</h2></div>
-          <button class="aq-atlas-close" type="button" data-atlas-close aria-label="Close research">Close</button>
-        </header>
-        <div class="aq-atlas-nav" aria-label="Research systems">
-          <button type="button" data-atlas-open="trend">Trend</button><button type="button" data-atlas-open="valuation">Valuation</button><button type="button" data-atlas-open="liquidity">Liquidity</button><button type="button" data-atlas-open="backtesting">Research</button>
-        </div>
-        <div class="aq-atlas-content" data-atlas-content aria-live="polite"><p>Opening research system.</p></div>
-      </div>
-    </dialog>
 
     <footer class="aq-footer">
       <div class="shell footer-inner">

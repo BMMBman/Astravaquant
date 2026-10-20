@@ -205,6 +205,76 @@ export interface WorkbookSignalSnapshot {
   signals: WorkbookModelSignal[];
 }
 
+export type ResearchStrategyId = "mtpi" | "sniper-v1";
+
+export interface ResearchMetric {
+  label: string;
+  value: string | null;
+  status: "ready" | "unavailable";
+  reason: string | null;
+}
+
+export interface ResearchStrategy {
+  id: ResearchStrategyId;
+  displayName: string;
+  version: string;
+  emblem: string | null;
+  originalSourceLabels: string[];
+  sourceTabs: string[];
+  asset: string;
+  timeframe: string;
+  researchStatus: "backtest" | "forward_test" | "paper_trading" | "live";
+  description: string;
+  rulesSummary: string;
+  signal: WorkbookModelSignal | null;
+  scoreHistory: WorkbookScoreSeries | null;
+  performanceMetrics: ResearchMetric[];
+  performanceMessage: string;
+}
+
+export interface PublishedScoreRecord {
+  id: string;
+  strategyId: ResearchStrategyId | null;
+  modelId: string;
+  modelName: string;
+  asset: string;
+  timeframe: string;
+  observationDate: string;
+  publicationTimestamp: string | null;
+  publicationTimezone: string | null;
+  score: number;
+  regime: string;
+  commentary: string | null;
+  originalPublicationUrl: string | null;
+  revision: number;
+}
+
+export interface ResearchDataConnection {
+  id: string;
+  name: string;
+  provider: "Google Sheets";
+  access: "server_read_only" | "public_read_only";
+  status: "ready" | "partial" | "unavailable";
+  spreadsheetId: string;
+  sourceTabs: string[];
+  mappedFields: string[];
+  lastSuccessfulSync: string | null;
+  latestObservationDate: string | null;
+  message: string;
+}
+
+export interface ResearchTerminalDashboard {
+  session: AuthSession;
+  generatedAt: string;
+  strategies: ResearchStrategy[];
+  workbook: WorkbookDashboard;
+  valuation: BitcoinValuationDashboard;
+  markets: MarketDashboard;
+  publications: PublishedScoreRecord[];
+  connections: ResearchDataConnection[];
+  unresolvedSourceLabels: string[];
+}
+
 export type ValuationCategoryId = "fundamental" | "technical" | "sentiment";
 
 export interface ValuationIndicator {

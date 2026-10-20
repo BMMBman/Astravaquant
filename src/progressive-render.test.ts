@@ -23,7 +23,7 @@ const publicPages = [
   "privacy.html",
   "terms.html"
 ];
-const walletPages = ["terminal.html", "portfolio.html"];
+const walletPages = ["terminal.html", "portfolio.html", "research-terminal.html", "strategy.html"];
 
 describe("progressive page rendering", () => {
   it("keeps reveal content visible until JavaScript starts across public and legacy styles", () => {

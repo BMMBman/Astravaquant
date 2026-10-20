@@ -211,6 +211,20 @@ describe("wallet authentication", () => {
     await agent.get("/api/dashboard").expect(401);
   });
 
+  it("keeps the research terminal private and returns traceable source mappings after authentication", async () => {
+    const app = createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider });
+    await request(app).get("/api/research-terminal").expect(401);
+
+    const { agent } = await authenticate();
+    const response = await agent.get("/api/research-terminal").expect(200);
+    expect(response.headers["cache-control"]).toBe("private, no-store");
+    expect(response.body.strategies.map((strategy: { id: string }) => strategy.id)).toEqual(["mtpi", "sniper-v1"]);
+    expect(response.body.strategies[1].originalSourceLabels).toContain("Total ES1D");
+    expect(response.body.strategies[0].performanceMetrics[0]).toMatchObject({ status: "unavailable", value: null });
+    expect(response.body.connections).toHaveLength(3);
+    expect(response.body.unresolvedSourceLabels).toContain("0.9 total");
+  });
+
   it("publishes the normalized workbook contract without authentication", async () => {
     const response = await request(createApp({ config, database, portfolioProvider, marketProvider, workbookProvider, valuationProvider }))
       .get("/api/workbook")

@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import express, { type ErrorRequestHandler, type Response } from "express";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
-import type { BitcoinValuationDashboard, MarketDashboard, PortfolioDashboard, PortfolioOverview, WorkbookDashboard, WorkbookSignalSnapshot } from "../shared/contracts.js";
+import type { BitcoinValuationDashboard, MarketDashboard, PortfolioDashboard, PortfolioOverview, ResearchTerminalDashboard, WorkbookDashboard, WorkbookSignalSnapshot } from "../shared/contracts.js";
 import { attachSession, createAuthRouter, requireAuth, sessionResponse } from "./auth.js";
 import { getSupportedChain, supportedChains, type AppConfig } from "./config.js";
 import type { AstravaDataStore } from "./database.js";
@@ -22,6 +22,7 @@ import {
   relevantResearch,
   relevantSignals
 } from "./services/personalization.js";
+import { buildResearchTerminalDashboard } from "./services/research-terminal.js";
 
 interface AppDependencies {
   config: AppConfig;
@@ -200,6 +201,27 @@ export function createApp({ config, database, portfolioProvider, marketProvider,
     }
   });
 
+  app.get("/api/research-terminal", requireAuth, async (request, response, next) => {
+    try {
+      const [workbook, valuation, markets] = await Promise.all([
+        workbookProvider.getDashboard(),
+        valuationProvider.getDashboard(),
+        marketProvider.getDashboard()
+      ]);
+      const dashboard: ResearchTerminalDashboard = buildResearchTerminalDashboard(
+        sessionResponse(request),
+        workbook,
+        valuation,
+        markets,
+        config
+      );
+      response.setHeader("Cache-Control", "private, no-store");
+      response.json(dashboard);
+    } catch (error) {
+      next(error);
+    }
+  });
+
   app.use("/api", (_request, _response, next) => {
     next(new ApiError(404, "API_NOT_FOUND", "This AstravaQuant API route does not exist."));
   });
@@ -219,6 +241,8 @@ export function createApp({ config, database, portfolioProvider, marketProvider,
       "valuation-methodology",
       "terminal",
       "portfolio",
+      "research-terminal",
+      "strategy",
       "signals",
       "research",
       "research-crypto-participation",

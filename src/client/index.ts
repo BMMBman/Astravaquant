@@ -2,6 +2,7 @@ import type { AuthSession, PublicConfig } from "../shared/contracts.js";
 import { apiRequest } from "./api.js";
 import { initializeAnalytics } from "./analytics.js";
 import { PortfolioController } from "./portfolio.js";
+import { ResearchTerminalController } from "./research-terminal.js";
 import type { WalletController } from "./wallet.js";
 
 initializeAnalytics();
@@ -48,6 +49,9 @@ async function boot(): Promise<void> {
   const portfolio = document.querySelector<HTMLElement>("[data-portfolio-page]")
     ? new PortfolioController(() => void openWallet())
     : null;
+  const researchTerminal = document.querySelector<HTMLElement>("[data-research-terminal-page], [data-strategy-detail-page]")
+    ? new ResearchTerminalController(() => void openWallet())
+    : null;
   const bootstrapPromise = Promise.all([
     apiRequest<PublicConfig>("/api/config"),
     apiRequest<AuthSession>("/api/auth/session")
@@ -67,6 +71,7 @@ async function boot(): Promise<void> {
         wallet.onSessionChange((nextSession) => {
           session = nextSession;
           if (portfolio) void portfolio.updateSession(nextSession);
+          if (researchTerminal) void researchTerminal.updateSession(nextSession);
         });
         await wallet.initialize();
         return wallet;
@@ -100,6 +105,7 @@ async function boot(): Promise<void> {
   try {
     session = await bootstrapPromise;
     if (portfolio) await portfolio.updateSession(session);
+    if (researchTerminal) await researchTerminal.updateSession(session);
     if (session.authenticated) await loadWallet();
   } catch {
     root.innerHTML = '<button class="button wallet-connect-button" type="button" disabled>Wallet service offline</button>';

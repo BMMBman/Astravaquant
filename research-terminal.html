@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Private AstravaQuant quantitative intelligence workspace." />
+    <title>AstravaQuant Research | Private Intelligence Workspace</title>
+    <link rel="icon" href="assets/astravaquant-favicon-temporary.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="research-terminal.css" />
+  </head>
+  <body class="rt-body" data-research-terminal-page>
+    <div class="rt-app">
+      <aside class="rt-sidebar">
+        <a class="rt-brand" href="index.html" aria-label="AstravaQuant home">
+          <img src="assets/astravaquant-mark-temporary.svg" alt="" />
+          <span><strong>AstravaQuant</strong><small>Research</small></span>
+        </a>
+        <nav class="rt-nav" aria-label="Research workspace">
+          <button class="is-active" type="button" data-rt-nav="overview"><i>01</i><span>Overview</span></button>
+          <button type="button" data-rt-nav="strategies"><i>02</i><span>Strategies</span></button>
+          <button type="button" data-rt-nav="valuations"><i>03</i><span>Valuations</span></button>
+          <button type="button" data-rt-nav="models"><i>04</i><span>Models &amp; Signals</span></button>
+          <button type="button" data-rt-nav="forward"><i>05</i><span>Forward Testing</span></button>
+          <button type="button" data-rt-nav="publications"><i>06</i><span>Published Score History</span></button>
+          <button type="button" data-rt-nav="connections"><i>07</i><span>Data Connections</span></button>
+        </nav>
+        <div class="rt-sidebar-foot">
+          <span class="rt-connection-dot" data-rt-connection-tone></span>
+          <div><strong data-rt-connection-label>Authentication required</strong><small>Read-only research</small></div>
+        </div>
+      </aside>
+
+      <div class="rt-main">
+        <header class="rt-topbar">
+          <button class="rt-mobile-nav" type="button" data-rt-menu aria-label="Open research navigation">Menu</button>
+          <div><p>Private workspace</p><h1 data-rt-title>Research overview</h1></div>
+          <div class="rt-top-actions">
+            <time data-rt-updated>Awaiting secure session</time>
+            <div data-wallet-root><button class="rt-wallet-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div>
+          </div>
+        </header>
+
+        <main class="rt-content">
+          <section class="rt-gate" data-rt-gate>
+            <div class="rt-gate-mark"><img src="assets/astravaquant-mark-temporary.svg" alt="" /></div>
+            <p>Authenticated research workspace</p>
+            <h2>Connect your verified research identity.</h2>
+            <span>AstravaQuant Research is read-only. Authentication never requests a transaction, asset approval, deposit, or signature with financial authority.</span>
+            <button class="rt-primary-button" type="button" data-portfolio-connect>Connect Wallet</button>
+          </section>
+
+          <div data-rt-loading hidden><div class="rt-loading-line"></div><p>Synchronizing normalized research data.</p></div>
+          <section class="rt-error" data-rt-error hidden><h2>Research workspace unavailable</h2><p data-rt-error-message></p><button type="button" data-rt-retry>Retry connection</button></section>
+
+          <div data-rt-workspace hidden>
+            <div class="rt-filterbar">
+              <label>Strategy<select data-rt-strategy-filter><option value="all">All strategies</option></select></label>
+              <label>Asset<select data-rt-asset-filter><option value="all">All assets</option></select></label>
+              <label>Timeframe<select data-rt-timeframe-filter><option value="all">All timeframes</option></select></label>
+              <label>Date range<select data-rt-range-filter><option value="all">Full history</option><option value="90">90 days</option><option value="365">1 year</option></select></label>
+              <button type="button" data-rt-refresh>Refresh data</button>
+            </div>
+
+            <section class="rt-view is-active" data-rt-view="overview">
+              <div class="rt-view-head"><div><p>System state</p><h2>Overview</h2></div><span>Signal → strategy → performance → evidence</span></div>
+              <div class="rt-kpi-grid" data-rt-kpis></div>
+              <article class="rt-panel rt-table-panel">
+                <header><div><p>Strategy monitor</p><h3>Performance and current state</h3></div><span>Unavailable metrics remain explicit</span></header>
+                <div class="rt-table-scroll" data-rt-strategy-table></div>
+              </article>
+              <div class="rt-two-column rt-primary-grid">
+                <article class="rt-panel rt-equity-panel">
+                  <header><div><p>Comparison workspace</p><h3>Equity curves vs buy and hold</h3></div><div class="rt-segmented"><button class="is-active" disabled>Actual</button><button disabled>$10K</button><button disabled>Return</button><button disabled>Drawdown</button><button class="is-active" disabled>Linear</button><button disabled>Log</button></div></header>
+                  <div class="rt-chart-unavailable"><div class="rt-chart-grid"></div><strong>Portfolio and benchmark series not mapped</strong><span>Dated values, cash flows, currency, benchmark, and starting capital are required before performance is calculated.</span></div>
+                </article>
+                <article class="rt-panel"><header><div><p>Latest readings</p><h3>Models and regimes</h3></div></header><div class="rt-signal-stack" data-rt-latest-signals></div></article>
+              </div>
+              <div class="rt-two-column">
+                <article class="rt-panel"><header><div><p>Forward validation</p><h3>Active forward tests</h3></div></header><div data-rt-forward-summary></div></article>
+                <article class="rt-panel"><header><div><p>Publication record</p><h3>Recent score entries</h3></div></header><div data-rt-recent-publications></div></article>
+              </div>
+            </section>
+
+            <section class="rt-view" data-rt-view="strategies">
+              <div class="rt-view-head"><div><p>Research programs</p><h2>Strategies</h2></div><span>Display names retain original source labels</span></div>
+              <div class="rt-strategy-grid" data-rt-strategies></div>
+            </section>
+
+            <section class="rt-view" data-rt-view="valuations">
+              <div class="rt-view-head"><div><p>Independent context</p><h2>Valuations</h2></div><span>Kept separate from trend and momentum</span></div>
+              <div data-rt-valuations></div>
+            </section>
+
+            <section class="rt-view" data-rt-view="models">
+              <div class="rt-view-head"><div><p>Normalized directory</p><h2>Models &amp; Signals</h2></div><span>Model-specific scales and interpretations</span></div>
+              <div class="rt-model-directory" data-rt-models></div>
+            </section>
+
+            <section class="rt-view" data-rt-view="forward">
+              <div class="rt-view-head"><div><p>Dated observations</p><h2>Forward Testing</h2></div><span>Never spliced into backtested performance</span></div>
+              <div class="rt-forward-grid" data-rt-forward-tests></div>
+            </section>
+
+            <section class="rt-view" data-rt-view="publications">
+              <div class="rt-view-head"><div><p>Immutable observation record</p><h2>Published Score History</h2></div><span>Observation and publication time remain distinct</span></div>
+              <div class="rt-publication-controls"><input type="search" placeholder="Search model or asset" data-rt-publication-search /><select data-rt-publication-regime><option value="all">All regimes</option><option value="RISK-ON">Risk-on</option><option value="RISK-OFF">Risk-off</option></select></div>
+              <article class="rt-panel rt-table-panel"><div class="rt-table-scroll" data-rt-publications></div></article>
+            </section>
+
+            <section class="rt-view" data-rt-view="connections">
+              <div class="rt-view-head"><div><p>Source traceability</p><h2>Data Connections</h2></div><span>Credentials remain server-side</span></div>
+              <div class="rt-connection-grid" data-rt-connections></div>
+              <article class="rt-panel rt-mapping-panel"><header><div><p>Active mapping registry</p><h3>Normalized fields</h3></div><span>Read-only production mappings</span></header><div data-rt-mappings></div></article>
+              <article class="rt-panel rt-unresolved-panel"><header><div><p>Needs classification</p><h3>Unresolved source references</h3></div></header><div data-rt-unresolved></div></article>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+    <script type="module" src="/src/client/index.ts"></script>
+  </body>
+</html>

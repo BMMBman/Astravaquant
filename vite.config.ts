@@ -16,6 +16,8 @@ export default defineConfig({
         mrpiMethodology: resolve(import.meta.dirname, "mrpi-methodology.html"),
         valuationMethodology: resolve(import.meta.dirname, "valuation-methodology.html"),
         terminal: resolve(import.meta.dirname, "terminal.html"),
+        researchTerminal: resolve(import.meta.dirname, "research-terminal.html"),
+        strategy: resolve(import.meta.dirname, "strategy.html"),
         portfolio: resolve(import.meta.dirname, "portfolio.html"),
         signals: resolve(import.meta.dirname, "signals.html"),
         research: resolve(import.meta.dirname, "research.html"),

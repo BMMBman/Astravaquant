@@ -21,6 +21,14 @@ The original project was a static multi-page site with shared `styles.css` and `
 
 Public pages include the homepage, models, valuation, backtesting, research library, individual research notes, the methodology register and family pages, archive, about, privacy, and terms. The legacy Signals route redirects to Models, which owns current model state and history. The terminal and portfolio experiences remain available as separate pages, while the portfolio API still requires an authenticated wallet session. The access middleware already supports `public`, `authenticated`, and `premium` tiers; no payment or token-gating system is implemented.
 
+## Private Research Workspace
+
+`research-terminal.html` is an authenticated, read-only quantitative intelligence workspace. Its persistent navigation covers overview, strategies, valuations, models and signals, forward testing, published score history, and data connections. `strategy.html?strategy=mtpi` and `strategy.html?strategy=sniper-v1` provide dedicated strategy research views.
+
+`GET /api/research-terminal` requires an authenticated session and aggregates the existing normalized workbook, valuation, market, and connection-health contracts. MTPI and Sniper V1 remain distinct strategies; dashboard display names retain their original source labels. Unresolved source references remain visibly unassigned.
+
+The current connected workbooks publish model scores, dated score histories, and summary backtest statistics. They do not yet provide the aligned dated strategy portfolio values, benchmark values, cash flows, currencies, execution costs, and starting-capital records required for equity comparisons or performance calculations. The private workspace therefore reports those fields as unavailable instead of inferring returns from scores or account balances.
+
 There was no deployment configuration or existing backend, database, authentication system, or live model API in the repository before this milestone. `src/server/data/astrava.ts` now acts only as the disclosed fallback when the research workbook cannot be verified.
 
 ## Wallet Authentication

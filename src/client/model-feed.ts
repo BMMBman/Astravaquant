@@ -66,7 +66,7 @@ function updatePublication(dashboard: WorkbookDashboard): void {
       if (message) message.textContent = mrpiLive
         ? `Crypto and 10US Treasury Module workbooks validated every ${dashboard.refreshSeconds / 60} minutes.`
         : `Crypto workbook validated every ${dashboard.refreshSeconds / 60} minutes. 10US Treasury Module feed delayed.`;
-      if (status) status.textContent = dashboard.status === "ready" ? "15 / 15 crypto tabs online" : `${dashboard.tabs.filter((tab) => tab.status === "ready").length} / 15 crypto tabs online`;
+      if (status) status.textContent = `${dashboard.tabs.filter((tab) => tab.status === "ready").length} / ${dashboard.tabs.length} research tabs online`;
       root.dataset.state = dashboard.status;
     } else {
       if (title) title.textContent = "Manual fallback snapshot";

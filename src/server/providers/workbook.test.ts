@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildWorkbookDashboard, buildWorkbookSignalSnapshot, parseCsv, parseRatioModels, parseScoreSeries, PublicGoogleSheetsWorkbookProvider, regimeForScore } from "./workbook.js";
+import { buildWorkbookDashboard, buildWorkbookSignalSnapshot, parseCsv, parseModelResults, parseRatioModels, parseScoreSeries, PublicGoogleSheetsWorkbookProvider, regimeForScore } from "./workbook.js";
 
 describe("Google workbook normalization", () => {
   it("reads dated score observations and excludes blanks and formula errors", () => {
@@ -62,37 +62,43 @@ describe("Google workbook normalization", () => {
     ]);
   });
 
-  it("publishes the two trend models without changing MRPI", () => {
+  it("publishes four independently sourced trend models without changing MRPI", () => {
     const dashboard = buildWorkbookDashboard(
       new Map([
-        ["Total ES 1D", [["DATE UPDATED:", "June 4 2026"], ["MTPI Avg Score", "0.21", "Long Biased"]]],
-        ["BTC 1W", [["DATE UPDATED:", "June 4 2026"], ["LTPI Avg Score", "-0.89", "Short"]]],
-        ["Total ES 1D Forward Test", [["Date", "TPI Score"], ["8/4/2025", "0.1"], ["8/5/2025", "0.2"]]],
-        ["BTC 1W Forward Test", [["Date", "TPI Score"], ["11/26/2025", "-0.8"], ["12/3/2025", "-0.9"]]]
+        ["Total ES 1D", [["DATE UPDATED:", "Oct 20 2026"], ["SNIPER Composite Score", "-1", "Short"]]],
+        ["MTPI Total", [["DATE UPDATED:", "Oct 20 2026"], ["MTPI Avg Score", "-1", "Short"]]],
+        ["BTC 1W", [["DATE UPDATED:", "Oct 20 2026"], ["BTC Avg Score", "1", "Long"]]],
+        ["Long-Term Trend", [["DATE UPDATED:", "Oct 20 2026"], ["LTPI Avg Score", "0.89", "Long"]]],
+        ["Total ES 1D Forward Test", [["Date", "TPI Score"], ["10/19/2026", "-1"], ["10/20/2026", "-1"]]],
+        ["MTPI Total Forward Test", [["Date", "TPI Score"], ["10/19/2026", "-1"], ["10/20/2026", "-1"]]],
+        ["BTC 1W Forward Test", [["Date", "TPI Score"], ["10/20/2026", ""]]],
+        ["Long-Term Forward Test", [["Date", "TPI Score"], ["10/19/2026", "0.88"], ["10/20/2026", "0.89"]]]
       ]),
       300
     );
 
     expect(dashboard.status).toBe("partial");
-    expect(dashboard.signals.find((signal) => signal.id === "mtpi")).toMatchObject({
+    expect(dashboard.signals.find((signal) => signal.id === "sniper1d")).toMatchObject({
       name: "Total ES 1D",
-      value: 0.21,
-      state: "RISK-ON",
-      regime: "RISK-ON",
+      value: -1,
+      state: "RISK-OFF",
+      regime: "RISK-OFF",
       source: "google_sheets",
-      sourceTab: "1D SNIPER"
+      sourceTab: "1D SNIPER V1"
     });
-    expect(dashboard.signals.find((signal) => signal.id === "ltpi")).toMatchObject({
+    expect(dashboard.signals.find((signal) => signal.id === "btc1w")).toMatchObject({
       name: "BTC 1W",
-      sourceTab: "LT"
+      value: 1,
+      sourceTab: "New BTC"
     });
-    expect(dashboard.scoreSeries.find((series) => series.id === "mtpi")).toMatchObject({
+    expect(dashboard.scoreSeries.find((series) => series.id === "sniper1d")).toMatchObject({
       label: "Total ES 1D",
-      sourceTab: "MT Forward Testing"
+      sourceTab: "SNIPER V1 Forward Testing"
     });
-    expect(dashboard.scoreSeries.find((series) => series.id === "ltpi")).toMatchObject({
+    expect(dashboard.scoreSeries.find((series) => series.id === "btc1w")).toMatchObject({
       label: "BTC 1W",
-      sourceTab: "LT Forward Testing"
+      sourceTab: "BTC 6D Forward Testing",
+      status: "unavailable"
     });
     expect(dashboard.signals.find((signal) => signal.id === "mrpi")).toMatchObject({
       value: -0.79,
@@ -100,27 +106,35 @@ describe("Google workbook normalization", () => {
     });
   });
 
-  it("builds a lightweight signal snapshot from only the two core score ranges", () => {
+  it("builds a lightweight signal snapshot from all four core score ranges", () => {
     const snapshot = buildWorkbookSignalSnapshot(new Map([
-      ["Total ES 1D", [["DATE UPDATED:", "Aug 11 2026"], ["MTPI Avg Score", "-0.58", "Short"]]],
-      ["BTC 1W", [["DATE UPDATED:", "Aug 11 2026"], ["LTPI Avg Score", "-0.89", "Short"]]]
+      ["Total ES 1D", [["DATE UPDATED:", "Oct 20 2026"], ["SNIPER Composite Score", "-1", "Short"]]],
+      ["MTPI Total", [["DATE UPDATED:", "Oct 20 2026"], ["MTPI Avg Score", "-1", "Short"]]],
+      ["BTC 1W", [["DATE UPDATED:", "Oct 20 2026"], ["BTC Avg Score", "1", "Long"]]],
+      ["Long-Term Trend", [["DATE UPDATED:", "Oct 20 2026"], ["LTPI Avg Score", "0.89", "Long"]]]
     ]), 300);
 
     expect(snapshot.status).toBe("partial");
     expect(snapshot.signals.map(({ id, value }) => ({ id, value }))).toEqual([
-      { id: "mtpi", value: -0.58 },
-      { id: "ltpi", value: -0.89 },
+      { id: "sniper1d", value: -1 },
+      { id: "mtpi", value: -1 },
+      { id: "btc1w", value: 1 },
+      { id: "ltpi", value: 0.89 },
       { id: "mrpi", value: -0.79 }
     ]);
   });
 
-  it("fetches only bounded MTPI and LTPI ranges for the homepage snapshot", async () => {
+  it("fetches only bounded ranges for the four homepage signals", async () => {
     const fetcher = vi.fn(async (input: string | URL | Request) => {
       const url = new URL(String(input));
       const sheet = url.searchParams.get("sheet");
-      const csv = sheet === "1D SNIPER"
-        ? '"DATE UPDATED:","Aug 11 2026"\n"MTPI Avg Score","-0.58","Short"'
-        : '"DATE UPDATED:","Aug 11 2026"\n"LTPI Avg Score","-0.89","Short"';
+      const csvBySheet: Record<string, string> = {
+        "1D SNIPER V1": '"DATE UPDATED:","Oct 20 2026"\n"SNIPER Composite Score","-1","Short"',
+        MTPI: '"DATE UPDATED:","Oct 20 2026"\n"MTPI Avg Score","-1","Short"',
+        "New BTC": '"DATE UPDATED:","Oct 20 2026"\n"BTC Avg Score","1","Long"',
+        LT: '"DATE UPDATED:","Oct 20 2026"\n"LTPI Avg Score","0.89","Long"'
+      };
+      const csv = csvBySheet[sheet ?? ""] ?? "";
       return new Response(csv, { status: 200, headers: { "content-type": "text/csv" } });
     });
     const provider = new PublicGoogleSheetsWorkbookProvider("test-workbook-id", 300_000, fetcher);
@@ -130,9 +144,21 @@ describe("Google workbook normalization", () => {
 
     expect(first.signals.map((signal) => signal.id)).not.toContain("nspi");
     expect(second).toBe(first);
-    expect(fetcher).toHaveBeenCalledTimes(2);
-    expect(fetcher.mock.calls.map(([input]) => new URL(String(input)).searchParams.get("sheet"))).toEqual(["1D SNIPER", "LT"]);
+    expect(fetcher).toHaveBeenCalledTimes(4);
+    expect(fetcher.mock.calls.map(([input]) => new URL(String(input)).searchParams.get("sheet"))).toEqual(["1D SNIPER V1", "MTPI", "New BTC", "LT"]);
     expect(fetcher.mock.calls.every(([input]) => new URL(String(input)).searchParams.get("range") === "A1:AZ100")).toBe(true);
+  });
+
+  it("preserves published backtest values and review flags", () => {
+    const results = parseModelResults([
+      ["MODEL BACKTEST RESULTS"],
+      ["As of", "2026-10-17", "Models", "3", "Tests", "14", "Best Net Profit", "136644.96%", "Best Sharpe", "1.47", "Best Profit Factor", "20.32", "Review Flags", "3"],
+      ["Historical simulated results"],
+      ["Model", "Timeframe", "Window", "Start Date", "End / As-of", "Net Profit", "Max Equity DD", "Max Intratrade DD", "Profit Factor", "Win Rate", "Sharpe", "Sortino", "Omega", "Half Kelly", "Trades", "Source / Notes", "Review Status"],
+      ["TOTALES", "1D", "Rolling 36 months", "2023-10-17", "2026-10-17", "191.15%", "-27.16%", "-22.44%", "3.88", "58.33%", "0.73", "1.09", "1.3", "36.44%", "12", "Published", "Complete"]
+    ]);
+    expect(results).toMatchObject({ status: "ready", testCount: 14, reviewFlags: 3, bestSharpe: "1.47" });
+    expect(results.results[0]).toMatchObject({ model: "TOTALES", netProfit: "191.15%", reviewStatus: "Complete" });
   });
 
   it("uses the documented shared regime bands", () => {

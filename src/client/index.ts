@@ -18,6 +18,10 @@ if (document.querySelector("[data-home-overview]")) {
   void import("./home-overview.js").then(({ bootHomeOverview }) => bootHomeOverview());
 }
 
+if (document.querySelector("[data-model-results]")) {
+  void import("./research-results.js").then(({ bootResearchResults }) => bootResearchResults());
+}
+
 if (document.querySelector("[data-net-liquidity]")) {
   void import("./net-liquidity.js").then(({ bootNetLiquidity }) => bootNetLiquidity());
 }

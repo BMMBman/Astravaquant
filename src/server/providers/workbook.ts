@@ -2,6 +2,7 @@ import { JWT } from "google-auth-library";
 import type {
   ModelSignal,
   WorkbookDashboard,
+  WorkbookModelResults,
   WorkbookModelSignal,
   WorkbookRatioModel,
   WorkbookSignalSnapshot,
@@ -17,7 +18,8 @@ type SheetRows = string[][];
 interface SheetDefinition {
   name: string;
   sourceName?: string;
-  modelId?: "mtpi" | "ltpi";
+  modelId?: "sniper1d" | "mtpi" | "btc1w" | "ltpi";
+  scoreLabel?: RegExp;
   category: WorkbookTabCategory;
   description: string;
 }
@@ -33,12 +35,17 @@ interface GoogleBatchGetResponse {
 
 const sheetDefinitions: SheetDefinition[] = [
   { name: "Command Center", category: "allocation", description: "Published allocation and system command view." },
+  { name: "Model Results", category: "forward_test", description: "Published historical simulated backtest results and review flags." },
   { name: "SMPS", sourceName: "RSPS", category: "relative_strength", description: "Strength Module Portfolio System Strategy ratio models." },
   { name: "Alternative SMPS", sourceName: "Alts RSPS", category: "relative_strength", description: "Alternative-asset Strength Module Portfolio System Strategy ratio models." },
-  { name: "Total ES 1D", sourceName: "1D SNIPER", modelId: "mtpi", category: "core_model", description: "Total-market model components from the 1D SNIPER research tab." },
-  { name: "BTC 1W", sourceName: "LT", modelId: "ltpi", category: "core_model", description: "Weekly Bitcoin and total-market model components." },
-  { name: "Total ES 1D Forward Test", sourceName: "MT Forward Testing", category: "forward_test", description: "Dated Total ES 1D score observations." },
-  { name: "BTC 1W Forward Test", sourceName: "LT Forward Testing", category: "forward_test", description: "Dated BTC 1W score observations." },
+  { name: "Total ES 1D", sourceName: "1D SNIPER V1", modelId: "sniper1d", scoreLabel: /^SNIPER Composite Score$/i, category: "core_model", description: "Total-market model components from the 1D SNIPER V1 research tab." },
+  { name: "MTPI Total", sourceName: "MTPI", modelId: "mtpi", scoreLabel: /^MTPI Avg Score$/i, category: "core_model", description: "Medium-term total-market trend model components." },
+  { name: "BTC 1W", sourceName: "New BTC", modelId: "btc1w", scoreLabel: /^BTC Avg Score$/i, category: "core_model", description: "Bitcoin one-week model components." },
+  { name: "Long-Term Trend", sourceName: "LT", modelId: "ltpi", scoreLabel: /^LTPI Avg Score$/i, category: "core_model", description: "Long-term Bitcoin and total-market trend components." },
+  { name: "Total ES 1D Forward Test", sourceName: "SNIPER V1 Forward Testing", category: "forward_test", description: "Dated Total ES 1D score observations." },
+  { name: "MTPI Total Forward Test", sourceName: "MT Forward Testing", category: "forward_test", description: "Dated MTPI Total score observations." },
+  { name: "BTC 1W Forward Test", sourceName: "BTC 6D Forward Testing", category: "forward_test", description: "Dated BTC 1W score observations." },
+  { name: "Long-Term Forward Test", sourceName: "LT Forward Testing", category: "forward_test", description: "Dated long-term trend observations." },
   { name: "BTC", category: "asset_model", description: "Bitcoin trend probability model components." },
   { name: "ETH", category: "asset_model", description: "Ethereum trend probability model components." },
   { name: "SOL", category: "asset_model", description: "Solana trend probability model components." },
@@ -50,8 +57,10 @@ const sheetDefinitions: SheetDefinition[] = [
 ];
 
 const scoreScopes: Record<string, string> = {
-  mtpi: "Five-day aggregate of total crypto market cap and TOTAL2.",
-  ltpi: "Weekly aggregate of total crypto market cap and Bitcoin.",
+  sniper1d: "Daily Total ES trend model from the 1D SNIPER V1 system.",
+  mtpi: "Medium-term total-market trend model.",
+  btc1w: "Bitcoin one-week trend model.",
+  ltpi: "Long-term aggregate of total crypto market cap and Bitcoin.",
   mrpi: "Weekly 10-year Treasury pressure model, read as tightening versus easing."
 };
 
@@ -111,14 +120,23 @@ function latestSummary(rows: SheetRows): { score: number; state: string } | null
   return summaries.at(-1) ?? null;
 }
 
-function modelSummary(modelId: SheetDefinition["modelId"], rows: SheetRows): { score: number; state: string } | null {
+function modelSummary(modelId: SheetDefinition["modelId"], rows: SheetRows, scoreLabel?: RegExp): { score: number; state: string } | null {
   if (!modelId) return latestSummary(rows);
-  const sourceLabel = modelId === "mtpi" ? "MTPI" : "LTPI";
-  const matcher = new RegExp(`^${sourceLabel}\\s+Avg\\s*Score`, "i");
-  const preferred = rows
-    .filter((row) => row.some((cell) => matcher.test(cell)))
-    .map(rowSummary)
-    .filter((summary): summary is { score: number; state: string } => Boolean(summary));
+  const matcher = scoreLabel ?? /avg\s*score/i;
+  const preferred = rows.flatMap((row) => {
+    const labelIndex = row.findIndex((cell) => matcher.test(cell));
+    if (labelIndex < 0) return [];
+    let score: number | null = null;
+    let state = "";
+    for (const cell of row.slice(labelIndex + 1)) {
+      if (score === null) {
+        score = finiteScore(cell);
+        if (score !== null) continue;
+      }
+      if (!state && /long|short|neutral|risk|biased|bull|bear/i.test(cell)) state = titleState(cell);
+    }
+    return score === null ? [] : [{ score, state: state || regimeForScore(score) }];
+  });
   return preferred.at(-1) ?? latestSummary(rows);
 }
 
@@ -146,7 +164,7 @@ function dimensions(rows: SheetRows): { rowCount: number; columnCount: number } 
 
 export function summarizeTab(definition: SheetDefinition, rows: SheetRows): WorkbookTabSummary {
   const { rowCount, columnCount } = dimensions(rows);
-  const summary = modelSummary(definition.modelId, rows);
+  const summary = modelSummary(definition.modelId, rows, definition.scoreLabel);
   const latestState = summary?.score === undefined
     ? null
     : definition.modelId
@@ -175,10 +193,11 @@ function normalizedDate(value: string): string | null {
 }
 
 export function parseScoreSeries(
-  id: "mtpi" | "ltpi",
+  id: WorkbookScoreSeries["id"],
   sourceTab: string,
   rows: SheetRows
 ): WorkbookScoreSeries {
+  const label = ({ sniper1d: "Total ES 1D", mtpi: "MTPI Total", btc1w: "BTC 1W", ltpi: "Long-Term Trend", mrpi: "10US Treasury Module" } as Record<WorkbookScoreSeries["id"], string>)[id];
   const headerIndex = rows.findIndex(
     (row) => row.some((cell) => /^date$/i.test(cell)) && row.some((cell) => /(?:tpi|model)?\s*score/i.test(cell))
   );
@@ -186,7 +205,7 @@ export function parseScoreSeries(
     ? rows.findIndex((row) => row.some((cell) => normalizedDate(cell)) && row.some((cell) => finiteScore(cell) !== null))
     : -1;
   if (headerIndex < 0 && inferredIndex < 0) {
-    return { id, label: id.toUpperCase(), sourceTab, status: "unavailable", message: "No dated score series was found.", points: [] };
+    return { id, label, sourceTab, status: "unavailable", message: "No dated score series was found.", points: [] };
   }
 
   const anchor = rows[headerIndex >= 0 ? headerIndex : inferredIndex]!;
@@ -209,11 +228,74 @@ export function parseScoreSeries(
     .sort((left, right) => left.date.localeCompare(right.date));
   return {
     id,
-    label: id === "mtpi" ? "Total ES 1D" : "BTC 1W",
+    label,
     sourceTab,
     status: points.length > 1 ? "ready" : "unavailable",
     message: points.length > 1 ? null : "The sheet does not yet contain enough dated score observations.",
     points
+  };
+}
+
+function numericCell(value: string): number | null {
+  if (!value.trim()) return null;
+  const parsed = Number(value.replace(/,/g, ""));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+export function parseModelResults(rows: SheetRows): WorkbookModelResults {
+  const summary = rows.find((row) => row.some((cell) => /^As of$/i.test(cell))) ?? [];
+  const summaryValue = (label: string): string | null => {
+    const index = summary.findIndex((cell) => cell.toLowerCase() === label.toLowerCase());
+    return index >= 0 ? summary[index + 1] || null : null;
+  };
+  const headerIndex = rows.findIndex((row) => row.some((cell) => /^Model$/i.test(cell)) && row.some((cell) => /^Timeframe$/i.test(cell)));
+  const header = headerIndex >= 0 ? rows[headerIndex]! : [];
+  const fixedColumns: Record<string, number> = {
+    Model: 0, Timeframe: 1, Window: 2, "Start Date": 3, "End / As-of": 4, "Net Profit": 5,
+    "Max Equity DD": 6, "Profit Factor": 8, "Win Rate": 9, Sharpe: 10, Trades: 14, "Review Status": 16
+  };
+  const column = (label: string) => {
+    const detected = header.findIndex((cell) => cell.toLowerCase() === label.toLowerCase());
+    return detected >= 0 ? detected : fixedColumns[label] ?? -1;
+  };
+  const valueAt = (row: string[], label: string) => {
+    const index = column(label);
+    return index >= 0 ? row[index] ?? "" : "";
+  };
+  const results = headerIndex < 0 ? [] : rows.slice(headerIndex + 1)
+    .filter((row) => Boolean(valueAt(row, "Model")))
+    .map((row) => ({
+      model: valueAt(row, "Model"),
+      timeframe: valueAt(row, "Timeframe"),
+      window: valueAt(row, "Window"),
+      startDate: valueAt(row, "Start Date"),
+      endDate: valueAt(row, "End / As-of"),
+      netProfit: valueAt(row, "Net Profit"),
+      maxEquityDrawdown: valueAt(row, "Max Equity DD"),
+      profitFactor: valueAt(row, "Profit Factor"),
+      winRate: valueAt(row, "Win Rate"),
+      sharpe: valueAt(row, "Sharpe"),
+      trades: valueAt(row, "Trades"),
+      reviewStatus: valueAt(row, "Review Status")
+    }));
+  const disclosure = rows.flat().find((cell) => /historical simulated results/i.test(cell))
+    ?? "Historical simulated results. Backtests are not live trading results and do not predict future performance.";
+  const numericPercent = (value: string) => Number(value.replace(/[,%]/g, ""));
+  const maximumText = (values: string[]) => values
+    .filter((value) => value.trim() && Number.isFinite(numericPercent(value)))
+    .sort((left, right) => numericPercent(right) - numericPercent(left))[0] ?? null;
+  return {
+    status: results.length ? "ready" : "unavailable",
+    sourceTab: "Model Results",
+    asOf: summaryValue("As of"),
+    modelCount: numericCell(summaryValue("Models") ?? "") ?? new Set(results.map((result) => result.model)).size,
+    testCount: numericCell(summaryValue("Tests") ?? "") ?? results.length,
+    bestNetProfit: summaryValue("Best Net Profit") ?? maximumText(results.map((result) => result.netProfit)),
+    bestSharpe: summaryValue("Best Sharpe") ?? maximumText(results.map((result) => result.sharpe)),
+    bestProfitFactor: summaryValue("Best Profit Factor") ?? maximumText(results.map((result) => result.profitFactor)),
+    reviewFlags: numericCell(summaryValue("Review Flags") ?? "") ?? results.filter((result) => result.reviewStatus !== "Complete").length,
+    disclosure,
+    results
   };
 }
 
@@ -319,7 +401,7 @@ function fallbackSignal(id: string): WorkbookModelSignal {
   };
 }
 
-function publishedSignal(id: "mtpi" | "ltpi", tab: WorkbookTabSummary, sourceTab: string): WorkbookModelSignal {
+function publishedSignal(id: "sniper1d" | "mtpi" | "btc1w" | "ltpi", tab: WorkbookTabSummary, sourceTab: string): WorkbookModelSignal {
   const fallback = currentSignals.find((signal) => signal.id === id)!;
   return {
     ...fallback,
@@ -337,22 +419,32 @@ export function buildWorkbookDashboard(
   refreshSeconds: number
 ): WorkbookDashboard {
   const tabs = sheetDefinitions.map((definition) => summarizeTab(definition, rowsBySheet.get(definition.name) ?? []));
-  const mtTab = tabs.find((tab) => tab.name === "Total ES 1D")!;
-  const ltTab = tabs.find((tab) => tab.name === "BTC 1W")!;
-  const mtpi = mtTab.latestScore === null ? fallbackSignal("mtpi") : publishedSignal("mtpi", mtTab, "1D SNIPER");
-  const ltpi = ltTab.latestScore === null ? fallbackSignal("ltpi") : publishedSignal("ltpi", ltTab, "LT");
+  const signalDefinitions = [
+    { id: "sniper1d", tab: "Total ES 1D", source: "1D SNIPER V1" },
+    { id: "mtpi", tab: "MTPI Total", source: "MTPI" },
+    { id: "btc1w", tab: "BTC 1W", source: "New BTC" },
+    { id: "ltpi", tab: "Long-Term Trend", source: "LT" }
+  ] as const;
+  const signals = signalDefinitions.map(({ id, tab, source }) => {
+    const summary = tabs.find((candidate) => candidate.name === tab)!;
+    return summary.latestScore === null ? fallbackSignal(id) : publishedSignal(id, summary, source);
+  });
   const mrpi = fallbackSignal("mrpi");
-  const mtpiSeries = parseScoreSeries("mtpi", "MT Forward Testing", rowsBySheet.get("Total ES 1D Forward Test") ?? []);
-  const ltpiSeries = parseScoreSeries("ltpi", "LT Forward Testing", rowsBySheet.get("BTC 1W Forward Test") ?? []);
-  const scoreSeries = [mtpiSeries, ltpiSeries];
-  const signals = [mtpi, ltpi];
+  const scoreSeries = [
+    parseScoreSeries("sniper1d", "SNIPER V1 Forward Testing", rowsBySheet.get("Total ES 1D Forward Test") ?? []),
+    parseScoreSeries("mtpi", "MT Forward Testing", rowsBySheet.get("MTPI Total Forward Test") ?? []),
+    parseScoreSeries("btc1w", "BTC 6D Forward Testing", rowsBySheet.get("BTC 1W Forward Test") ?? []),
+    parseScoreSeries("ltpi", "LT Forward Testing", rowsBySheet.get("Long-Term Forward Test") ?? [])
+  ];
+  const modelResults = parseModelResults(rowsBySheet.get("Model Results") ?? []);
   const ratioModels = [
     ...parseRatioModels("SMPS", rowsBySheet.get("SMPS") ?? []),
     ...parseRatioModels("Alternative SMPS", rowsBySheet.get("Alternative SMPS") ?? [])
   ];
   const readyTabs = tabs.filter((tab) => tab.status === "ready").length;
   const warnings: string[] = [];
-  if (mtpi.source !== "google_sheets" || ltpi.source !== "google_sheets") warnings.push("A trend reading could not be verified; affected readings use the manual fallback snapshot.");
+  if (signals.some((signal) => signal.source !== "google_sheets")) warnings.push("A trend reading could not be verified; affected readings use the manual fallback snapshot.");
+  if (scoreSeries.some((series) => series.status === "unavailable")) warnings.push("One or more forward-test histories do not yet contain enough populated dated observations.");
   warnings.push("10US Treasury Module is sourced from a separate weekly system workbook.");
   if (tabs.some((tab) => tab.formulaErrorCount > 0)) warnings.push("Some research cells contain spreadsheet formula errors; they are reported as unavailable, never as zero.");
   return {
@@ -362,6 +454,7 @@ export function buildWorkbookDashboard(
     refreshSeconds,
     signals: [...signals, mrpi],
     scoreSeries,
+    modelResults,
     ratioModels,
     tabs,
     warnings
@@ -459,14 +552,14 @@ export class GoogleSheetsWorkbookProvider implements WorkbookProvider {
         valueRenderOption: "FORMATTED_VALUE",
         dateTimeRenderOption: "FORMATTED_STRING"
       });
-      for (const name of ["1D SNIPER", "LT"]) query.append("ranges", `'${name}'!A1:AZ100`);
+      for (const name of ["1D SNIPER V1", "MTPI", "New BTC", "LT"]) query.append("ranges", `'${name}'!A1:AZ100`);
       const response = await this.auth.request<GoogleBatchGetResponse>({
         url: `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(this.spreadsheetId)}/values:batchGet?${query}`,
         method: "GET",
         timeout: 8_000
       });
       const rowsBySheet = new Map<string, SheetRows>();
-      ["Total ES 1D", "BTC 1W"].forEach((name, index) => rowsBySheet.set(name, cleanRows(response.data.valueRanges?.[index]?.values)));
+      ["Total ES 1D", "MTPI Total", "BTC 1W", "Long-Term Trend"].forEach((name, index) => rowsBySheet.set(name, cleanRows(response.data.valueRanges?.[index]?.values)));
       const snapshot = buildWorkbookSignalSnapshot(rowsBySheet, Math.round(this.signalCacheMs / 1000));
       if (snapshot.status !== "unavailable") {
         this.signalCache = { expiresAt: Date.now() + this.signalCacheMs, snapshot };
@@ -534,7 +627,12 @@ export class PublicGoogleSheetsWorkbookProvider implements WorkbookProvider {
       return { ...workbookSignalSnapshot(this.cache.dashboard), refreshSeconds: Math.round(this.signalCacheMs / 1000) };
     }
     if (this.signalCache && this.signalCache.expiresAt > Date.now()) return this.signalCache.snapshot;
-    const signalSheets: Array<[string, string]> = [["Total ES 1D", "1D SNIPER"], ["BTC 1W", "LT"]];
+    const signalSheets: Array<[string, string]> = [
+      ["Total ES 1D", "1D SNIPER V1"],
+      ["MTPI Total", "MTPI"],
+      ["BTC 1W", "New BTC"],
+      ["Long-Term Trend", "LT"]
+    ];
     const sheetResults = await Promise.all(
       signalSheets.map(async ([name, sourceName]): Promise<[string, SheetRows]> => [name, await this.fetchSheet(sourceName, "A1:AZ100")])
     );
@@ -575,9 +673,12 @@ function unavailableWorkbook(
     refreshSeconds,
     signals,
     scoreSeries: [
-      { id: "mtpi", label: "Total ES 1D", sourceTab: "MT Forward Testing", status: "unavailable", message, points: [] },
-      { id: "ltpi", label: "BTC 1W", sourceTab: "LT Forward Testing", status: "unavailable", message, points: [] }
+      { id: "sniper1d", label: "Total ES 1D", sourceTab: "SNIPER V1 Forward Testing", status: "unavailable", message, points: [] },
+      { id: "mtpi", label: "MTPI Total", sourceTab: "MT Forward Testing", status: "unavailable", message, points: [] },
+      { id: "btc1w", label: "BTC 1W", sourceTab: "BTC 6D Forward Testing", status: "unavailable", message, points: [] },
+      { id: "ltpi", label: "Long-Term Trend", sourceTab: "LT Forward Testing", status: "unavailable", message, points: [] }
     ],
+    modelResults: parseModelResults([]),
     ratioModels: [],
     tabs: sheetDefinitions.map((definition) => summarizeTab(definition, [])),
     warnings: [message, "10US Treasury Module is sourced from a separate weekly system workbook."]

@@ -8,22 +8,28 @@ import type {
 type HistoryPeriod = "30D" | "90D" | "YTD" | "ALL";
 
 const periods: HistoryPeriod[] = ["30D", "90D", "YTD", "ALL"];
-const modelIds = ["mtpi", "ltpi", "mrpi"];
+const modelIds = ["sniper1d", "mtpi", "btc1w", "ltpi", "mrpi"];
 const modelSections: Record<string, string> = {
-  mtpi: "01 / Trend",
-  ltpi: "02 / Trend",
-  mrpi: "03 / Rates"
+  sniper1d: "01 / Daily trend",
+  mtpi: "02 / Medium-term trend",
+  btc1w: "03 / Bitcoin trend",
+  ltpi: "04 / Long-term trend",
+  mrpi: "05 / Rates"
 };
 const modelPurposes: Record<string, string> = {
-  mtpi: "Total-market trend module built from stacked trend-following indicators and oscillators.",
-  ltpi: "Weekly Bitcoin trend module for longer-horizon market structure.",
+  sniper1d: "Daily Total ES model published from 1D SNIPER V1 with its own forward-test record.",
+  mtpi: "Medium-term total-market module published from MTPI with a separate dated forward test.",
+  btc1w: "Bitcoin one-week module published from New BTC; history begins when its forward-test tab has populated scores.",
+  ltpi: "Long-term trend module published from LT with its own forward-test record.",
   mrpi: "Measures tightening versus easing pressure in the 10-year Treasury backdrop."
 };
 const scaleThresholds = [-0.75, -0.25, 0.25, 0.75];
 
 function modelDisplayName(signal: Pick<WorkbookModelSignal, "id" | "name">): string {
-  if (signal.id === "mtpi") return "Total ES 1D";
-  if (signal.id === "ltpi") return "BTC 1W";
+  if (signal.id === "sniper1d") return "Total ES 1D";
+  if (signal.id === "mtpi") return "MTPI Total";
+  if (signal.id === "btc1w") return "BTC 1W";
+  if (signal.id === "ltpi") return "Long-Term Trend";
   if (signal.id === "mrpi") return "10US Treasury Module";
   return signal.name;
 }
@@ -304,7 +310,7 @@ export function renderModelHistory(dashboard: WorkbookDashboard): void {
 
 export function renderModelHistoryUnavailable(): void {
   const root = document.querySelector<HTMLElement>("[data-model-history]");
-  if (root && !root.querySelector(".aq-model-catalog-card")) {
+  if (root) {
     root.innerHTML = '<p class="terminal-loading-copy">Model history is temporarily unavailable. No substitute series is shown.</p>';
   }
   const state = document.querySelector<HTMLElement>("[data-model-history-status]");

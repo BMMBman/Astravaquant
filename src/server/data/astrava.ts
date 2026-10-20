@@ -4,19 +4,35 @@ const broadCryptoSymbols = ["BTC", "WBTC", "ETH", "WETH", "HYPE", "LINK", "SOL",
 
 export const currentSignals: ModelSignal[] = [
   {
-    id: "mtpi",
+    id: "sniper1d",
     name: "Total ES 1D",
-    value: 0.47,
+    value: -1,
+    state: "SHORT",
+    scope: "Daily Total ES trend model from the 1D SNIPER V1 system.",
+    relevantSymbols: broadCryptoSymbols
+  },
+  {
+    id: "mtpi",
+    name: "MTPI Total",
+    value: -1,
+    state: "SHORT",
+    scope: "Medium-term total-market trend model.",
+    relevantSymbols: broadCryptoSymbols
+  },
+  {
+    id: "btc1w",
+    name: "BTC 1W",
+    value: 1,
     state: "LONG",
-    scope: "Five-day aggregate of total crypto market cap and TOTAL2.",
+    scope: "Bitcoin one-week trend model.",
     relevantSymbols: broadCryptoSymbols
   },
   {
     id: "ltpi",
-    name: "BTC 1W",
-    value: -0.95,
-    state: "SHORT",
-    scope: "Weekly aggregate of total crypto market cap and Bitcoin.",
+    name: "Long-Term Trend",
+    value: 0.89,
+    state: "LONG",
+    scope: "Long-term aggregate of total crypto market cap and Bitcoin.",
     relevantSymbols: broadCryptoSymbols
   },
   {
@@ -32,14 +48,14 @@ export const researchLibrary: Omit<PersonalizedResearch, "relevance">[] = [
   {
     id: "crypto-medium-term",
     title: "Medium-Term Crypto Participation",
-    summary: "The Total ES 1D model combines total crypto market cap and TOTAL2 into the current tactical regime.",
+    summary: "The Total ES 1D and MTPI Total systems separate daily tactical and medium-term total-market regimes.",
     href: "research-crypto-participation.html",
     symbols: broadCryptoSymbols
   },
   {
     id: "crypto-long-term",
     title: "Weekly Crypto Structure",
-    summary: "The BTC 1W model places broad crypto exposure against the weekly total-market and Bitcoin trend.",
+    summary: "The BTC 1W and Long-Term Trend systems separate Bitcoin tactical structure from the longer-horizon regime.",
     href: "research-weekly-structure.html",
     symbols: broadCryptoSymbols
   },

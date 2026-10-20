@@ -111,12 +111,41 @@ export interface WorkbookScorePoint {
 }
 
 export interface WorkbookScoreSeries {
-  id: "mtpi" | "ltpi" | "mrpi";
+  id: "sniper1d" | "mtpi" | "btc1w" | "ltpi" | "mrpi";
   label: string;
   sourceTab: string;
   status: "ready" | "unavailable";
   message: string | null;
   points: WorkbookScorePoint[];
+}
+
+export interface WorkbookBacktestResult {
+  model: string;
+  timeframe: string;
+  window: string;
+  startDate: string;
+  endDate: string;
+  netProfit: string;
+  maxEquityDrawdown: string;
+  profitFactor: string;
+  winRate: string;
+  sharpe: string;
+  trades: string;
+  reviewStatus: string;
+}
+
+export interface WorkbookModelResults {
+  status: "ready" | "unavailable";
+  sourceTab: "Model Results";
+  asOf: string | null;
+  modelCount: number | null;
+  testCount: number | null;
+  bestNetProfit: string | null;
+  bestSharpe: string | null;
+  bestProfitFactor: string | null;
+  reviewFlags: number | null;
+  disclosure: string;
+  results: WorkbookBacktestResult[];
 }
 
 export interface MrpiIndicator {
@@ -161,6 +190,7 @@ export interface WorkbookDashboard {
   refreshSeconds: number;
   signals: WorkbookModelSignal[];
   scoreSeries: WorkbookScoreSeries[];
+  modelResults?: WorkbookModelResults;
   ratioModels: WorkbookRatioModel[];
   tabs: WorkbookTabSummary[];
   warnings: string[];

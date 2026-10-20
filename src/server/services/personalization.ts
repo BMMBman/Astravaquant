@@ -27,7 +27,7 @@ export function relevantSignals(
 ): ModelSignal[] {
   const heldSymbols = new Set(holdings.map((holding) => normalizedSymbol(holding.symbol)));
   if (heldSymbols.size === 0) {
-    return signals.filter((signal) => signal.id === "mtpi" || signal.id === "ltpi");
+    return signals.filter((signal) => signal.id === "sniper1d" || signal.id === "mtpi" || signal.id === "btc1w" || signal.id === "ltpi");
   }
 
   return signals.filter((signal) =>

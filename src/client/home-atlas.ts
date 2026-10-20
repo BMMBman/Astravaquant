@@ -216,10 +216,14 @@ function signalCard(series: WorkbookScoreSeries | undefined, label: string, stat
 function trendMarkup(workbook: WorkbookDashboard): string {
   const signals = new Map(workbook.signals.map((signal) => [signal.id, signal]));
   const series = new Map(workbook.scoreSeries.map((item) => [item.id, item]));
-  const medium = signals.get("mtpi");
-  const long = signals.get("ltpi");
-  return `<div class="aq-atlas-intro"><span>Two horizons, one research family</span><p>Medium-term trend follows Total Crypto Market Cap and Total2. Long-term trend combines Bitcoin long-term behavior with Total Crypto Market Cap.</p></div>
-    <div class="aq-atlas-grid two">${signalCard(series.get("mtpi"), "Medium-Term Trend / MTTPM", medium?.state ?? "Unavailable", medium?.updatedLabel)}${signalCard(series.get("ltpi"), "Long-Term Trend / LTTPM", long?.state ?? "Unavailable", long?.updatedLabel)}</div>
+  const cards = [
+    ["sniper1d", "Total ES 1D / 1D SNIPER V1"],
+    ["mtpi", "MTPI Total / Medium-Term"],
+    ["btc1w", "BTC 1W / New BTC"],
+    ["ltpi", "Long-Term Trend / LT"]
+  ] as const;
+  return `<div class="aq-atlas-intro"><span>Four distinct systems, four verified source pairs</span><p>Daily, medium-term, Bitcoin one-week, and long-term readings remain separate so each model retains its own current signal and forward-test record.</p></div>
+    <div class="aq-atlas-grid two">${cards.map(([id, label]) => signalCard(series.get(id), label, signals.get(id)?.state ?? "Unavailable", signals.get(id)?.updatedLabel)).join("")}</div>
     <div class="aq-atlas-foot"><span>Published signal state and dated forward-test record.</span></div>`;
 }
 
@@ -282,7 +286,7 @@ function diagnosticsCard(series: WorkbookScoreSeries): string {
 }
 
 function backtestingMarkup(workbook: WorkbookDashboard): string {
-  const series = workbook.scoreSeries.filter((item) => item.id === "mtpi" || item.id === "ltpi" || item.id === "mrpi");
+  const series = workbook.scoreSeries.filter((item) => item.id === "sniper1d" || item.id === "mtpi" || item.id === "btc1w" || item.id === "ltpi" || item.id === "mrpi");
   return `<div class="aq-atlas-intro"><span>Forward-testing diagnostics</span><p>Counts and transitions describe the published score history. They are not performance claims.</p></div>
     <div class="aq-atlas-grid two">${series.length ? series.map(diagnosticsCard).join("") : '<p class="aq-atlas-empty">Dated trend observations are unavailable.</p>'}</div>
     <div class="aq-atlas-foot"><span>Classification history is shown as a dated research record, not a performance claim.</span></div>`;

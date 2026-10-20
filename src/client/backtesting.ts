@@ -81,13 +81,7 @@ function coreSeries(series: WorkbookScoreSeries): BacktestSeries {
   const isMrpi = series.id === "mrpi";
   return {
     ...series,
-    label: series.id === "mtpi"
-      ? "Total ES 1D"
-      : series.id === "ltpi"
-        ? "BTC 1W"
-        : isMrpi
-          ? "10US Treasury Module"
-          : series.label,
+    label: isMrpi ? "10US Treasury Module" : series.label,
     extent: [-1, 1],
     defaultThresholds: isMrpi ? [-0.25, 0.25] : [-0.25, 0.25],
     thresholdStep: 0.05,

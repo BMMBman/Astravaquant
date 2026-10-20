@@ -1,12 +1,32 @@
 import type {
   AuthSession,
+  BitcoinValuationDashboard,
+  MarketDashboard,
   PublishedScoreRecord,
   ResearchStrategy,
   ResearchTerminalDashboard,
+  WorkbookDashboard,
   WorkbookScorePoint,
   WorkbookScoreSeries
 } from "../shared/contracts.js";
-import { apiRequest, ClientApiError } from "./api.js";
+import { buildResearchTerminalDashboard } from "../server/services/research-terminal.js";
+import { apiRequest } from "./api.js";
+
+const publicResearchSession: AuthSession = {
+  authenticated: false,
+  address: null,
+  chainId: null,
+  network: null,
+  accessTier: "public",
+  expiresAt: null
+};
+
+const publicResearchSources = {
+  googleSheetsConfigured: false,
+  googleSheetsId: "1biKNqqaBGKRYYFgJ8ND-DozvwD7R9h9_r4B5YXeRYzA",
+  valuationSheetsId: "1CDRiyNvMiQEz-YsrJT6vOEPN-CwAMj6cQrMYmY01bxE",
+  mrpiSheetsId: "1Scc4v7j5qp_x_nU4tuPyx8BqUmTEX23eILXW6y0TIgY"
+};
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[character]!);
@@ -89,12 +109,11 @@ export class ResearchTerminalController {
   private readonly terminalPage = Boolean(document.querySelector("[data-research-terminal-page]"));
   private readonly detailPage = Boolean(document.querySelector("[data-strategy-detail-page]"));
 
-  constructor(private readonly onConnect: () => void) {
+  constructor() {
     document.addEventListener("click", (event) => {
       const target = event.target as HTMLElement;
       const nav = target.closest<HTMLElement>("[data-rt-nav]");
       if (nav?.dataset.rtNav) this.showView(nav.dataset.rtNav);
-      if (target.closest("[data-portfolio-connect]")) this.onConnect();
       if (target.closest("[data-rt-retry], [data-rt-refresh]")) void this.load();
       if (target.closest("[data-rt-menu]")) document.body.classList.toggle("is-menu-open");
     });
@@ -126,17 +145,11 @@ export class ResearchTerminalController {
     window.addEventListener("hashchange", () => this.showView(location.hash.slice(1) || "overview"));
   }
 
-  async updateSession(session: AuthSession): Promise<void> {
-    if (!session.authenticated) {
-      this.dashboard = null;
-      this.show("gate");
-      return;
-    }
+  async initialize(): Promise<void> {
     await this.load();
   }
 
-  private show(state: "gate" | "loading" | "workspace" | "error"): void {
-    document.querySelector<HTMLElement>("[data-rt-gate]")?.toggleAttribute("hidden", state !== "gate");
+  private show(state: "loading" | "workspace" | "error"): void {
     document.querySelector<HTMLElement>("[data-rt-loading]")?.toggleAttribute("hidden", state !== "loading");
     document.querySelector<HTMLElement>("[data-rt-workspace]")?.toggleAttribute("hidden", state !== "workspace");
     document.querySelector<HTMLElement>("[data-rt-strategy-detail]")?.toggleAttribute("hidden", state !== "workspace");
@@ -146,14 +159,21 @@ export class ResearchTerminalController {
   private async load(): Promise<void> {
     this.show("loading");
     try {
-      this.dashboard = await apiRequest<ResearchTerminalDashboard>("/api/research-terminal", { signal: AbortSignal.timeout(20_000) });
+      const [workbook, valuation, markets] = await Promise.all([
+        apiRequest<WorkbookDashboard>("/api/workbook", { signal: AbortSignal.timeout(20_000) }),
+        apiRequest<BitcoinValuationDashboard>("/api/valuation", { signal: AbortSignal.timeout(20_000) }),
+        apiRequest<MarketDashboard>("/api/markets", { signal: AbortSignal.timeout(20_000) })
+      ]);
+      this.dashboard = buildResearchTerminalDashboard(
+        publicResearchSession,
+        workbook,
+        valuation,
+        markets,
+        publicResearchSources
+      );
       this.render();
       this.show("workspace");
     } catch (error) {
-      if (error instanceof ClientApiError && error.code === "AUTH_REQUIRED") {
-        this.show("gate");
-        return;
-      }
       const message = document.querySelector<HTMLElement>("[data-rt-error-message]");
       if (message) message.textContent = error instanceof Error ? error.message : "Research data could not be loaded.";
       this.show("error");

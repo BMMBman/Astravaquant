@@ -23,7 +23,8 @@ const publicPages = [
   "privacy.html",
   "terms.html"
 ];
-const walletPages = ["terminal.html", "portfolio.html", "research-terminal.html", "strategy.html"];
+const walletPages = ["terminal.html", "portfolio.html"];
+const directResearchPages = ["research-terminal.html", "strategy.html"];
 
 describe("progressive page rendering", () => {
   it("keeps reveal content visible until JavaScript starts across public and legacy styles", () => {
@@ -45,6 +46,13 @@ describe("progressive page rendering", () => {
     const html = readFileSync(new URL(page, root), "utf8");
     expect(html).not.toContain("Loading wallet");
     expect(html).toContain("Connect Wallet");
+  });
+
+  it.each(directResearchPages)("opens %s directly without wallet prompts", (page) => {
+    const html = readFileSync(new URL(page, root), "utf8");
+    expect(html).not.toContain("Connect Wallet");
+    expect(html).not.toContain("data-wallet-root");
+    expect(html).not.toContain("data-portfolio-connect");
   });
 
   it("consolidates the legacy signals route into Models", () => {

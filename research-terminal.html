@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Private AstravaQuant quantitative intelligence workspace." />
-    <title>AstravaQuant Research | Private Intelligence Workspace</title>
+    <meta name="description" content="AstravaQuant quantitative intelligence workspace." />
+    <title>AstravaQuant Research | Quantitative Intelligence Workspace</title>
     <link rel="icon" href="assets/astravaquant-favicon-temporary.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="research-terminal.css" />
   </head>
@@ -26,30 +26,21 @@
         </nav>
         <div class="rt-sidebar-foot">
           <span class="rt-connection-dot" data-rt-connection-tone></span>
-          <div><strong data-rt-connection-label>Authentication required</strong><small>Read-only research</small></div>
+          <div><strong data-rt-connection-label>Connecting to research data</strong><small>Read-only research</small></div>
         </div>
       </aside>
 
       <div class="rt-main">
         <header class="rt-topbar">
           <button class="rt-mobile-nav" type="button" data-rt-menu aria-label="Open research navigation">Menu</button>
-          <div><p>Private workspace</p><h1 data-rt-title>Research overview</h1></div>
+          <div><p>Research workspace</p><h1 data-rt-title>Research overview</h1></div>
           <div class="rt-top-actions">
-            <time data-rt-updated>Awaiting secure session</time>
-            <div data-wallet-root><button class="rt-wallet-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div>
+            <time data-rt-updated>Synchronizing research data</time>
           </div>
         </header>
 
         <main class="rt-content">
-          <section class="rt-gate" data-rt-gate>
-            <div class="rt-gate-mark"><img src="assets/astravaquant-mark-temporary.svg" alt="" /></div>
-            <p>Authenticated research workspace</p>
-            <h2>Connect your verified research identity.</h2>
-            <span>AstravaQuant Research is read-only. Authentication never requests a transaction, asset approval, deposit, or signature with financial authority.</span>
-            <button class="rt-primary-button" type="button" data-portfolio-connect>Connect Wallet</button>
-          </section>
-
-          <div data-rt-loading hidden><div class="rt-loading-line"></div><p>Synchronizing normalized research data.</p></div>
+          <div data-rt-loading><div class="rt-loading-line"></div><p>Synchronizing normalized research data.</p></div>
           <section class="rt-error" data-rt-error hidden><h2>Research workspace unavailable</h2><p data-rt-error-message></p><button type="button" data-rt-retry>Retry connection</button></section>
 
           <div data-rt-workspace hidden>

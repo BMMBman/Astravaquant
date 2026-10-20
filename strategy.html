@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="AstravaQuant private strategy research detail." />
+    <meta name="description" content="AstravaQuant strategy research detail." />
     <title>Strategy Research | AstravaQuant</title>
     <link rel="icon" href="assets/astravaquant-favicon-temporary.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="research-terminal.css" />
@@ -15,13 +15,12 @@
         <nav class="rt-nav" aria-label="Research workspace">
           <a href="research-terminal.html#overview"><i>01</i><span>Overview</span></a><a class="is-active" href="research-terminal.html#strategies"><i>02</i><span>Strategies</span></a><a href="research-terminal.html#valuations"><i>03</i><span>Valuations</span></a><a href="research-terminal.html#models"><i>04</i><span>Models &amp; Signals</span></a><a href="research-terminal.html#forward"><i>05</i><span>Forward Testing</span></a><a href="research-terminal.html#publications"><i>06</i><span>Published Score History</span></a><a href="research-terminal.html#connections"><i>07</i><span>Data Connections</span></a>
         </nav>
-        <div class="rt-sidebar-foot"><span class="rt-connection-dot" data-rt-connection-tone></span><div><strong data-rt-connection-label>Authentication required</strong><small>Read-only research</small></div></div>
+        <div class="rt-sidebar-foot"><span class="rt-connection-dot" data-rt-connection-tone></span><div><strong data-rt-connection-label>Connecting to research data</strong><small>Read-only research</small></div></div>
       </aside>
       <div class="rt-main">
-        <header class="rt-topbar"><a class="rt-back" href="research-terminal.html#strategies">← Strategies</a><div><p>Strategy research</p><h1 data-rt-title>Loading strategy</h1></div><div class="rt-top-actions"><time data-rt-updated>Awaiting secure session</time><div data-wallet-root><button class="rt-wallet-button" type="button" data-wallet-bootstrap>Connect Wallet</button></div></div></header>
+        <header class="rt-topbar"><a class="rt-back" href="research-terminal.html#strategies">← Strategies</a><div><p>Strategy research</p><h1 data-rt-title>Loading strategy</h1></div><div class="rt-top-actions"><time data-rt-updated>Synchronizing research data</time></div></header>
         <main class="rt-content">
-          <section class="rt-gate" data-rt-gate><div class="rt-gate-mark"><img src="assets/astravaquant-mark-temporary.svg" alt="" /></div><p>Authenticated strategy research</p><h2>Connect to inspect this strategy.</h2><span>Read-only authentication. No transaction or asset approval is requested.</span><button class="rt-primary-button" type="button" data-portfolio-connect>Connect Wallet</button></section>
-          <div data-rt-loading hidden><div class="rt-loading-line"></div><p>Loading strategy evidence.</p></div>
+          <div data-rt-loading><div class="rt-loading-line"></div><p>Loading strategy evidence.</p></div>
           <section class="rt-error" data-rt-error hidden><h2>Strategy unavailable</h2><p data-rt-error-message></p><button type="button" data-rt-retry>Retry connection</button></section>
           <section data-rt-strategy-detail hidden></section>
         </main>

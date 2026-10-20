@@ -11,7 +11,12 @@ import type {
   WorkbookDashboard,
   WorkbookScoreSeries
 } from "../../shared/contracts.js";
-import type { AppConfig } from "../config.js";
+interface ResearchTerminalSourceConfig {
+  googleSheetsConfigured: boolean;
+  googleSheetsId: string | null;
+  valuationSheetsId: string;
+  mrpiSheetsId: string;
+}
 
 const unavailablePerformanceReason = "A dated strategy portfolio-value series, aligned benchmark series, currency, starting capital, and cash-flow history have not been mapped from the source workbook.";
 
@@ -99,7 +104,7 @@ export function buildResearchTerminalDashboard(
   workbook: WorkbookDashboard,
   valuation: BitcoinValuationDashboard,
   markets: MarketDashboard,
-  config: AppConfig
+  config: ResearchTerminalSourceConfig
 ): ResearchTerminalDashboard {
   const strategies: ResearchStrategy[] = [
     strategy(workbook, {
@@ -137,7 +142,7 @@ export function buildResearchTerminalDashboard(
       id: "core-research",
       name: "Core research workbook",
       provider: "Google Sheets",
-      access: config.googleSheets ? "server_read_only" : "public_read_only",
+      access: config.googleSheetsConfigured ? "server_read_only" : "public_read_only",
       status: connectionStatus(workbook.status),
       spreadsheetId: config.googleSheetsId ?? "Not configured",
       sourceTabs: workbook.tabs.map((tab) => tab.name),

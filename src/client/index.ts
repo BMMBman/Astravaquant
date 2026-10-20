@@ -35,6 +35,10 @@ if (document.querySelector("[data-valuation-page]")) {
   void import("./valuation.js").then(({ bootValuation }) => bootValuation());
 }
 
+if (document.querySelector("[data-research-terminal-page], [data-strategy-detail-page]")) {
+  void new ResearchTerminalController().initialize();
+}
+
 async function boot(): Promise<void> {
   const walletRoot = document.querySelector<HTMLElement>("[data-wallet-root]");
   if (!walletRoot) return;
@@ -48,9 +52,6 @@ async function boot(): Promise<void> {
   let walletPromise: Promise<WalletController> | null = null;
   const portfolio = document.querySelector<HTMLElement>("[data-portfolio-page]")
     ? new PortfolioController(() => void openWallet())
-    : null;
-  const researchTerminal = document.querySelector<HTMLElement>("[data-research-terminal-page], [data-strategy-detail-page]")
-    ? new ResearchTerminalController(() => void openWallet())
     : null;
   const bootstrapPromise = Promise.all([
     apiRequest<PublicConfig>("/api/config"),
@@ -71,7 +72,6 @@ async function boot(): Promise<void> {
         wallet.onSessionChange((nextSession) => {
           session = nextSession;
           if (portfolio) void portfolio.updateSession(nextSession);
-          if (researchTerminal) void researchTerminal.updateSession(nextSession);
         });
         await wallet.initialize();
         return wallet;
@@ -105,7 +105,6 @@ async function boot(): Promise<void> {
   try {
     session = await bootstrapPromise;
     if (portfolio) await portfolio.updateSession(session);
-    if (researchTerminal) await researchTerminal.updateSession(session);
     if (session.authenticated) await loadWallet();
   } catch {
     root.innerHTML = '<button class="button wallet-connect-button" type="button" disabled>Wallet service offline</button>';

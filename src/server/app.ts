@@ -213,7 +213,12 @@ export function createApp({ config, database, portfolioProvider, marketProvider,
         workbook,
         valuation,
         markets,
-        config
+        {
+          googleSheetsConfigured: Boolean(config.googleSheets),
+          googleSheetsId: config.googleSheetsId,
+          valuationSheetsId: config.valuationSheetsId,
+          mrpiSheetsId: config.mrpiSheetsId
+        }
       );
       response.setHeader("Cache-Control", "private, no-store");
       response.json(dashboard);

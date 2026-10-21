@@ -75,7 +75,9 @@ describe("progressive page rendering", () => {
     expect(html).toContain("home-premium.css");
     expect(html).toContain("data-home-hero-snapshot");
     expect(html).toContain("Quantitative intelligence.");
-    expect(html).toContain("One view of the market.");
+    expect(html).not.toContain("One view of the market.");
+    expect(html).toContain("aq-overview-instruments");
+    expect(html).not.toContain("Loading published trend readings.");
     expect(html).toContain("data-home-performance");
     expect(html).toContain("Performance, with context.");
     expect(html).toContain("The signal, over time.");

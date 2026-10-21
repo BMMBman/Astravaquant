@@ -160,6 +160,7 @@ body.aq-site.aq-overview-home .aq-performance-loading span { width: 7px; height:
 body.aq-site.aq-overview-home .aq-overview-section,
 body.aq-site.aq-overview-home .aq-performance-section { padding: 112px 0; border-top: 1px solid var(--home-line); }
 body.aq-site.aq-overview-home .aq-performance-section { background: rgba(255, 255, 255, 0.012); }
+body.aq-site.aq-overview-home .aq-overview-section.aq-overview-instruments { padding: 56px 0 112px; }
 body.aq-site.aq-overview-home .aq-centered-heading { display: grid; justify-items: center; max-width: 760px; margin: 0 auto 54px; text-align: center; }
 body.aq-site.aq-overview-home #current-regimes-title,
 body.aq-site.aq-overview-home #performance-title,
@@ -167,7 +168,7 @@ body.aq-site.aq-overview-home #trend-history-title { margin: 14px 0 0; font-fami
 body.aq-site.aq-overview-home .aq-overview-section-head p { max-width: 650px; margin: 20px 0 0; color: var(--home-muted); font-size: 0.98rem; line-height: 1.7; }
 
 /* Current research */
-body.aq-site.aq-overview-home .aq-overview-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; }
+body.aq-site.aq-overview-home .aq-overview-section.aq-overview-instruments .aq-overview-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; }
 body.aq-site.aq-overview-home .aq-overview-card { position: relative; grid-column: span 6; min-width: 0; padding: 28px; border: 1px solid var(--home-line); border-radius: 9px; background: linear-gradient(145deg, rgba(17, 27, 40, 0.88), rgba(9, 15, 23, 0.94)); transition: border-color 180ms ease, transform 180ms ease; }
 body.aq-site.aq-overview-home .aq-overview-card:hover { border-color: var(--home-line-strong); transform: translateY(-2px); }
 body.aq-site.aq-overview-home .aq-overview-card-trend,
@@ -212,12 +213,91 @@ body.aq-site.aq-overview-home .aq-overview-spark-area { fill: rgba(113, 220, 244
 body.aq-site.aq-overview-home .aq-overview-spark-line { fill: none; stroke: var(--home-cyan); stroke-width: 2; }
 body.aq-site.aq-overview-home .aq-overview-sparkline.is-unavailable { color: var(--home-muted); font-size: 0.7rem; }
 
-body.aq-site.aq-overview-home .aq-research-record-card { display: grid; grid-template-columns: minmax(230px, 0.72fr) 1.5fr; align-items: center; gap: 28px; padding-block: 24px; }
-body.aq-site.aq-overview-home .aq-research-record-card .aq-overview-card-head { margin: 0; }
-body.aq-site.aq-overview-home .aq-research-record-card .aq-overview-card-head > a { display: none; }
-body.aq-site.aq-overview-home .aq-research-record-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-body.aq-site.aq-overview-home .aq-research-record-links a { display: flex; align-items: center; justify-content: space-between; min-height: 58px; padding: 0 20px; border-left: 1px solid var(--home-line); color: #c8d2dc; font-size: 0.75rem; }
-body.aq-site.aq-overview-home .aq-research-record-links a:hover { color: var(--home-cyan); }
+body.aq-site.aq-overview-home .aq-overview-card.aq-instrument-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 450px;
+  padding: 30px;
+  border-color: var(--home-line);
+  background: linear-gradient(155deg, rgba(17, 27, 40, 0.94), rgba(8, 14, 22, 0.96));
+}
+
+body.aq-site.aq-overview-home .aq-instrument-card::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, var(--home-cyan), rgba(102, 140, 255, 0.46), transparent 70%);
+}
+
+body.aq-site.aq-overview-home .aq-liquidity-card::after {
+  background: linear-gradient(90deg, var(--home-blue), rgba(216, 105, 220, 0.48), transparent 70%);
+}
+
+body.aq-site.aq-overview-home .aq-instrument-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+body.aq-site.aq-overview-home .aq-instrument-head > div { display: grid; gap: 7px; }
+body.aq-site.aq-overview-home .aq-instrument-head span,
+body.aq-site.aq-overview-home .aq-record-intro > span { color: var(--home-cyan); font-size: 0.61rem; font-weight: 750; letter-spacing: 0.13em; text-transform: uppercase; }
+body.aq-site.aq-overview-home .aq-instrument-head h3,
+body.aq-site.aq-overview-home .aq-record-intro h3 { margin: 0; color: var(--home-text); font-family: inherit; font-size: 1.2rem; font-weight: 660; letter-spacing: -0.02em; }
+body.aq-site.aq-overview-home .aq-instrument-head a,
+body.aq-site.aq-overview-home .aq-record-intro a { color: #aab8c8; font-size: 0.65rem; font-weight: 720; letter-spacing: 0.06em; text-transform: uppercase; }
+body.aq-site.aq-overview-home .aq-instrument-head a:hover,
+body.aq-site.aq-overview-home .aq-record-intro a:hover { color: var(--home-cyan); }
+body.aq-site.aq-overview-home .aq-instrument-head i,
+body.aq-site.aq-overview-home .aq-record-intro i { font-style: normal; }
+
+body.aq-site.aq-overview-home .aq-instrument-reading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 52px 0 0;
+}
+
+body.aq-site.aq-overview-home .aq-instrument-reading > div { display: grid; gap: 10px; }
+body.aq-site.aq-overview-home .aq-instrument-reading span { color: #748397; font-size: 0.61rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+body.aq-site.aq-overview-home .aq-instrument-reading strong { font-family: var(--home-mono); font-size: clamp(2.7rem, 5vw, 4.4rem); font-weight: 440; letter-spacing: -0.075em; line-height: 0.95; }
+body.aq-site.aq-overview-home .aq-instrument-reading b { padding: 7px 9px; border: 1px solid currentColor; border-radius: 4px; font-size: 0.58rem; letter-spacing: 0.09em; text-transform: uppercase; }
+body.aq-site.aq-overview-home .aq-instrument-copy { min-height: 46px; margin: 26px 0 30px; color: #8d9bad; font-size: 0.76rem; line-height: 1.65; }
+body.aq-site.aq-overview-home .aq-instrument-card .aq-overview-scale { margin-top: auto; }
+body.aq-site.aq-overview-home .aq-instrument-chart { display: grid; align-items: end; min-height: 78px; margin-top: auto; }
+body.aq-site.aq-overview-home .aq-instrument-meta { display: flex; align-items: center; gap: 14px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--home-line); color: #677589; font-size: 0.6rem; }
+body.aq-site.aq-overview-home .aq-instrument-meta span + span { padding-left: 14px; border-left: 1px solid var(--home-line); }
+
+body.aq-site.aq-overview-home .aq-overview-card.aq-research-record-card {
+  display: grid;
+  grid-template-columns: 0.85fr 0.78fr 1.35fr;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  border-color: var(--home-line);
+  background: linear-gradient(120deg, rgba(15, 24, 36, 0.96), rgba(8, 14, 22, 0.98));
+}
+
+body.aq-site.aq-overview-home .aq-record-intro { display: flex; flex-direction: column; align-items: flex-start; padding: 30px; }
+body.aq-site.aq-overview-home .aq-record-intro h3 { margin-top: 9px; font-size: 1.4rem; }
+body.aq-site.aq-overview-home .aq-record-intro p { margin: 20px 0 28px; color: #8b99ab; font-size: 0.75rem; line-height: 1.65; }
+body.aq-site.aq-overview-home .aq-record-intro a { margin-top: auto; }
+body.aq-site.aq-overview-home .aq-record-metrics { display: grid; grid-template-rows: repeat(3, 1fr); margin: 0; border-inline: 1px solid var(--home-line); }
+body.aq-site.aq-overview-home .aq-record-metrics > div { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 18px 24px; border-bottom: 1px solid var(--home-line); }
+body.aq-site.aq-overview-home .aq-record-metrics > div:last-child { border-bottom: 0; }
+body.aq-site.aq-overview-home .aq-record-metrics dt { color: #738195; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+body.aq-site.aq-overview-home .aq-record-metrics dd { margin: 0; color: #e8f0f5; font-family: var(--home-mono); font-size: 1.45rem; }
+body.aq-site.aq-overview-home .aq-research-record-links { display: grid; }
+body.aq-site.aq-overview-home .aq-research-record-links a { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 82px; padding: 18px 24px; border-bottom: 1px solid var(--home-line); color: #c8d2dc; }
+body.aq-site.aq-overview-home .aq-research-record-links a:last-child { border-bottom: 0; }
+body.aq-site.aq-overview-home .aq-research-record-links a:hover { color: var(--home-cyan); background: rgba(113, 220, 244, 0.035); }
+body.aq-site.aq-overview-home .aq-research-record-links span { display: grid; gap: 6px; }
+body.aq-site.aq-overview-home .aq-research-record-links strong { font-size: 0.76rem; font-weight: 680; }
+body.aq-site.aq-overview-home .aq-research-record-links small { color: #718094; font-size: 0.62rem; line-height: 1.45; }
 body.aq-site.aq-overview-home .aq-research-record-links i { color: #66768a; font-style: normal; }
 
 /* Model performance */
@@ -313,7 +393,6 @@ body.aq-site.aq-overview-home .aq-footer-disclosure { padding: 0 0 28px; color: 
 
 @media (max-width: 860px) {
   body.aq-site.aq-overview-home .shell { width: min(100% - 34px, 1240px); }
-  body.aq-site.aq-overview-home .site-nav { display: none; }
   body.aq-site.aq-overview-home .header-inner { flex-wrap: nowrap; }
   body.aq-site.aq-overview-home .aq-header-access { display: none; }
   body.aq-site.aq-overview-home .nav-toggle { display: inline-flex; margin-left: auto; }
@@ -322,6 +401,18 @@ body.aq-site.aq-overview-home .aq-footer-disclosure { padding: 0 0 28px; color: 
   body.aq-site.aq-overview-home .aq-snapshot-row:nth-child(2) { border-right: 0; }
   body.aq-site.aq-overview-home .aq-snapshot-row:nth-child(-n + 2) { border-bottom: 1px solid var(--home-line); }
   body.aq-site.aq-overview-home .aq-overview-card:nth-child(n) { grid-column: 1 / -1; }
+  body.aq-site.aq-overview-home .aq-overview-section.aq-overview-instruments { padding-top: 34px; }
+  body.aq-site.aq-overview-home .aq-overview-section.aq-overview-instruments .aq-overview-grid { grid-template-columns: 1fr; }
+  body.aq-site.aq-overview-home .aq-overview-card.aq-instrument-card { min-height: 410px; }
+  body.aq-site.aq-overview-home .aq-overview-card.aq-research-record-card { grid-template-columns: 1fr; }
+  body.aq-site.aq-overview-home .aq-record-metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: none;
+    border-inline: 0;
+    border-block: 1px solid var(--home-line);
+  }
+  body.aq-site.aq-overview-home .aq-record-metrics > div { border-right: 1px solid var(--home-line); border-bottom: 0; }
+  body.aq-site.aq-overview-home .aq-record-metrics > div:last-child { border-right: 0; }
   body.aq-site.aq-overview-home .aq-trend-readings { grid-template-columns: 1fr 1fr; }
   body.aq-site.aq-overview-home .aq-trend-reading:nth-child(2) { border-right: 0; }
   body.aq-site.aq-overview-home .aq-trend-reading:nth-child(-n + 2) { border-bottom: 1px solid var(--home-line); }
@@ -350,6 +441,7 @@ body.aq-site.aq-overview-home .aq-footer-disclosure { padding: 0 0 28px; color: 
   body.aq-site.aq-overview-home .aq-snapshot-row strong { font-size: 1.7rem; }
   body.aq-site.aq-overview-home .aq-overview-section,
   body.aq-site.aq-overview-home .aq-performance-section { padding: 78px 0; }
+  body.aq-site.aq-overview-home .aq-overview-section.aq-overview-instruments { padding: 28px 0 78px; }
   body.aq-site.aq-overview-home .aq-centered-heading { margin-bottom: 34px; }
   body.aq-site.aq-overview-home #current-regimes-title,
   body.aq-site.aq-overview-home #performance-title,
@@ -359,9 +451,16 @@ body.aq-site.aq-overview-home .aq-footer-disclosure { padding: 0 0 28px; color: 
   body.aq-site.aq-overview-home .aq-trend-readings { grid-template-columns: 1fr; }
   body.aq-site.aq-overview-home .aq-trend-reading:nth-child(n) { min-height: 122px; border-right: 0; border-bottom: 1px solid var(--home-line); }
   body.aq-site.aq-overview-home .aq-trend-reading:last-child { border-bottom: 0; }
-  body.aq-site.aq-overview-home .aq-research-record-card { grid-template-columns: 1fr; }
-  body.aq-site.aq-overview-home .aq-research-record-links { grid-template-columns: 1fr; }
-  body.aq-site.aq-overview-home .aq-research-record-links a { border-top: 1px solid var(--home-line); border-left: 0; padding-inline: 0; }
+  body.aq-site.aq-overview-home .aq-overview-card.aq-instrument-card { min-height: 0; padding: 22px; }
+  body.aq-site.aq-overview-home .aq-instrument-head { gap: 14px; }
+  body.aq-site.aq-overview-home .aq-instrument-reading { align-items: flex-start; flex-direction: column; margin-top: 40px; }
+  body.aq-site.aq-overview-home .aq-instrument-copy { min-height: 0; }
+  body.aq-site.aq-overview-home .aq-instrument-meta { align-items: flex-start; flex-wrap: wrap; }
+  body.aq-site.aq-overview-home .aq-record-intro { padding: 24px 20px; }
+  body.aq-site.aq-overview-home .aq-record-metrics { grid-template-columns: 1fr; }
+  body.aq-site.aq-overview-home .aq-record-metrics > div { border-right: 0; border-bottom: 1px solid var(--home-line); }
+  body.aq-site.aq-overview-home .aq-record-metrics > div:last-child { border-bottom: 0; }
+  body.aq-site.aq-overview-home .aq-research-record-links a { min-height: 76px; padding: 17px 20px; }
   body.aq-site.aq-overview-home .aq-performance-summary { grid-template-columns: 1fr; }
   body.aq-site.aq-overview-home .aq-performance-summary > div { border-right: 0; border-bottom: 1px solid var(--home-line); }
   body.aq-site.aq-overview-home .aq-performance-summary > div:last-child { border-bottom: 0; }

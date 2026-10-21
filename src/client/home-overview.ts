@@ -4,7 +4,6 @@ import type {
   MarketMetric,
   WorkbookBacktestResult,
   WorkbookDashboard,
-  WorkbookModelSignal,
   WorkbookScoreSeries
 } from "../shared/contracts.js";
 import { apiRequest } from "./api.js";
@@ -15,9 +14,10 @@ function escapeHtml(value: string): string {
 
 function formatDate(value: string | null | undefined): string {
   if (!value) return "Unavailable";
-  const parsed = new Date(value.includes("T") ? value : `${value}T00:00:00Z`);
+  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T00:00:00Z` : value;
+  const parsed = new Date(normalized);
   return Number.isNaN(parsed.getTime())
-    ? value
+    ? "Unavailable"
     : new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" }).format(parsed);
 }
 
@@ -66,27 +66,6 @@ function trendTone(score: number): "positive" | "negative" {
   return score >= 0 ? "positive" : "negative";
 }
 
-function trendReading(series: WorkbookScoreSeries | undefined, signal: WorkbookModelSignal | undefined, label: string): string {
-  const latest = series?.points.at(-1);
-  const currentScore = signal?.value ?? latest?.score ?? null;
-  const state = currentScore === null ? "Unavailable" : trendRegime(currentScore);
-  return `<div class="aq-trend-reading">
-    <div><span>${escapeHtml(label)}</span><small>${escapeHtml(signal?.sourceTab ?? "Published model")}</small></div>
-    <strong>${formatScore(currentScore)}</strong>
-    <b class="${stateTone(state)}">${escapeHtml(state)}</b>
-    <time>${signal?.updatedLabel ? formatDate(signal.updatedLabel) : latest ? formatDate(latest.date) : "No published observation"}</time>
-  </div>`;
-}
-
-function trendCard(workbook: WorkbookDashboard | null): string {
-  const series = new Map(workbook?.scoreSeries.map((item) => [item.id, item]));
-  const signals = new Map(workbook?.signals.map((item) => [item.id, item]));
-  return `<article class="aq-overview-card aq-overview-card-trend">
-    <div class="aq-overview-card-head"><div><span>Trend regime</span><p>Four horizons. One published view.</p></div><a href="models.html#trend">Open trend research <i>↗</i></a></div>
-    <div class="aq-trend-readings">${trendReading(series.get("sniper1d"), signals.get("sniper1d"), "Total ES 1D")}${trendReading(series.get("mtpi"), signals.get("mtpi"), "MTPI Total")}${trendReading(series.get("btc1w"), signals.get("btc1w"), "BTC 1W")}${trendReading(series.get("ltpi"), signals.get("ltpi"), "Long-Term Trend")}</div>
-  </article>`;
-}
-
 function valuationCard(valuation: BitcoinValuationDashboard | null): string {
   const minimum = valuation?.scaleMin ?? -1;
   const maximum = valuation?.scaleMax ?? 1;
@@ -94,32 +73,51 @@ function valuationCard(valuation: BitcoinValuationDashboard | null): string {
     ? 50
     : Math.min(100, Math.max(0, ((valuation.score - minimum) / (maximum - minimum || 1)) * 100));
   const state = valuation?.state ?? "Unavailable";
-  return `<article class="aq-overview-card">
-    <div class="aq-overview-card-head"><div><span>Bitcoin valuation</span><p>Price relative to independent value</p></div><a href="valuation.html">Open valuation <i>↗</i></a></div>
-    <div class="aq-valuation-summary"><strong>${formatScore(valuation?.score ?? null, "σ")}</strong><b class="${stateTone(state)}">${escapeHtml(state)}</b><small>${valuation?.workbookUpdatedLabel ? `Published ${formatDate(valuation.workbookUpdatedLabel)}` : "No published reading"}</small></div>
+  return `<article class="aq-overview-card aq-instrument-card aq-valuation-card">
+    <header class="aq-instrument-head"><div><span>Valuation model</span><h3>Bitcoin valuation</h3></div><a href="valuation.html">Full analysis <i>↗</i></a></header>
+    <div class="aq-instrument-reading"><div><span>Standardized score</span><strong>${formatScore(valuation?.score ?? null, "σ")}</strong></div><b class="${stateTone(state)}">${escapeHtml(state)}</b></div>
+    <p class="aq-instrument-copy">Composite evidence showing where Bitcoin trades relative to the model’s independent valuation range.</p>
     <div class="aq-overview-scale" aria-label="Valuation scale from ${minimum.toFixed(2)} to ${maximum.toFixed(2)} standard deviations"><i style="left:${position.toFixed(2)}%"></i></div>
-    <div class="aq-overview-scale-labels"><span>${minimum.toFixed(1)}σ</span><span>0σ</span><span>${maximum.toFixed(1)}σ</span></div>
+    <div class="aq-overview-scale-labels"><span>Lower value</span><span>Neutral</span><span>Higher value</span></div>
+    <footer class="aq-instrument-meta"><span>${valuation?.workbookUpdatedLabel ? `Published ${formatDate(valuation.workbookUpdatedLabel)}` : "No published reading"}</span><span>${valuation?.indicatorCount ?? 0} model inputs</span></footer>
   </article>`;
 }
 
 function liquidityCard(markets: MarketDashboard | null): string {
   const liquidity = markets?.metrics.find((metric) => metric.id === "fedNetLiquidity");
   const points = liquidity?.points.map((point) => ({ date: point.timestamp, value: point.value })) ?? [];
-  return `<article class="aq-overview-card">
-    <div class="aq-overview-card-head"><div><span>Net Fed liquidity</span><p>Macro liquidity beneath the market</p></div><a href="models.html#liquidity">Open liquidity <i>↗</i></a></div>
-    <div class="aq-liquidity-summary"><strong>${formatLiquidity(liquidity)}</strong><small>${liquidity?.asOf ? `Updated ${formatDate(liquidity.asOf)}` : "No published reading"}</small></div>
-    ${sparkline(points, "Net Fed liquidity")}
+  const publishedDate = formatDate(liquidity?.asOf);
+  const weeklyChange = liquidity?.change === null || liquidity?.change === undefined
+    ? "Weekly change pending"
+    : `${liquidity.change > 0 ? "+" : ""}${liquidity.change.toFixed(2)}% weekly`;
+  const changeTone = liquidity?.change === null || liquidity?.change === undefined
+    ? "is-neutral"
+    : liquidity.change >= 0 ? "is-positive" : "is-negative";
+  return `<article class="aq-overview-card aq-instrument-card aq-liquidity-card">
+    <header class="aq-instrument-head"><div><span>Macro liquidity</span><h3>Net Fed liquidity</h3></div><a href="models.html#liquidity">Full analysis <i>↗</i></a></header>
+    <div class="aq-instrument-reading"><div><span>Current level</span><strong>${formatLiquidity(liquidity)}</strong></div><b class="${changeTone}">${escapeHtml(weeklyChange)}</b></div>
+    <p class="aq-instrument-copy">${escapeHtml(liquidity?.message ?? "Federal Reserve balance-sheet liquidity after major offsetting facilities.")}</p>
+    <div class="aq-instrument-chart">${sparkline(points, "Net Fed liquidity")}</div>
+    <footer class="aq-instrument-meta"><span>${publishedDate === "Unavailable" ? "Update pending" : `Updated ${publishedDate}`}</span><span>${escapeHtml(liquidity?.frequency ?? "Weekly derived")}</span><span>${escapeHtml(liquidity?.source ?? "FRED-derived")}</span></footer>
   </article>`;
 }
 
-function researchCard(): string {
+function researchCard(workbook: WorkbookDashboard | null): string {
+  const observationCount = (workbook?.scoreSeries ?? []).reduce((total, series) => total + series.points.length, 0);
+  const completedTests = workbook?.modelResults?.results.filter((result) => result.reviewStatus.toLowerCase() === "complete").length ?? 0;
+  const publishedModels = (workbook?.signals ?? []).filter((signal) => signal.source === "google_sheets").length;
   return `<article class="aq-overview-card aq-research-record-card">
-    <div class="aq-overview-card-head"><div><span>Research record</span><p>Nothing disappears when the view changes.</p></div><a href="research.html">View the record <i>↗</i></a></div>
-    <div class="aq-research-record-links">
-      <a href="models.html#trend"><span>Score history</span><i>↗</i></a>
-      <a href="backtesting.html"><span>Forward testing</span><i>↗</i></a>
-      <a href="methodology.html"><span>Methodology</span><i>↗</i></a>
-    </div>
+    <div class="aq-record-intro"><span>Evidence ledger</span><h3>Research record</h3><p>Published readings stay dated, source-traceable, and open to inspection as the market view changes.</p><a href="research.html">Open research archive <i>↗</i></a></div>
+    <dl class="aq-record-metrics">
+      <div><dt>Published models</dt><dd>${publishedModels || "--"}</dd></div>
+      <div><dt>Dated observations</dt><dd>${observationCount || "--"}</dd></div>
+      <div><dt>Completed tests</dt><dd>${completedTests || "--"}</dd></div>
+    </dl>
+    <nav class="aq-research-record-links" aria-label="Research record destinations">
+      <a href="models.html#trend"><span><strong>Score history</strong><small>Inspect every published model reading.</small></span><i>↗</i></a>
+      <a href="backtesting.html"><span><strong>Forward testing</strong><small>Review validation windows and diagnostics.</small></span><i>↗</i></a>
+      <a href="methodology.html"><span><strong>Methodology</strong><small>Understand construction, scale, and limits.</small></span><i>↗</i></a>
+    </nav>
   </article>`;
 }
 
@@ -317,7 +315,7 @@ export async function bootHomeOverview(): Promise<void> {
   const valuation = valuationResult.status === "fulfilled" ? valuationResult.value : null;
   const markets = marketsResult.status === "fulfilled" ? marketsResult.value : null;
 
-  overview.innerHTML = `${trendCard(workbook)}${valuationCard(valuation)}${liquidityCard(markets)}${researchCard()}`;
+  overview.innerHTML = `${valuationCard(valuation)}${liquidityCard(markets)}${researchCard(workbook)}`;
   if (snapshot) snapshot.innerHTML = heroSnapshot(workbook);
   if (performance) performance.innerHTML = performanceMarkup(workbook);
   if (updated) updated.textContent = formatDate(newestPublishedDate(workbook, valuation, markets));

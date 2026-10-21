@@ -92,7 +92,7 @@ body.aq-site.aq-overview-home .aq-section-index { color: var(--home-cyan); font-
 body.aq-site.aq-overview-home .aq-overview-kicker { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 24px; }
 body.aq-site.aq-overview-home .aq-overview-kicker span { width: 22px; height: 1px; background: linear-gradient(90deg, var(--home-cyan), var(--home-magenta)); }
 
-body.aq-site.aq-overview-home .aq-hero-center h1 {
+body.aq-site.aq-overview-home #atlas-home-title {
   max-width: 1000px;
   margin: 0 auto;
   color: var(--home-text);
@@ -103,7 +103,7 @@ body.aq-site.aq-overview-home .aq-hero-center h1 {
   letter-spacing: -0.065em;
 }
 
-body.aq-site.aq-overview-home .aq-hero-center h1 span { color: #9aa9b9; }
+body.aq-site.aq-overview-home #atlas-home-title span { color: #9aa9b9; }
 body.aq-site.aq-overview-home .aq-overview-copy { max-width: 710px; margin: 30px auto 0; color: #aab5c4; font-size: clamp(1rem, 1.6vw, 1.2rem); line-height: 1.75; }
 body.aq-site.aq-overview-home .aq-overview-actions { display: flex; justify-content: center; gap: 12px; margin-top: 34px; }
 body.aq-site.aq-overview-home .aq-overview-actions .button,
@@ -161,7 +161,9 @@ body.aq-site.aq-overview-home .aq-overview-section,
 body.aq-site.aq-overview-home .aq-performance-section { padding: 112px 0; border-top: 1px solid var(--home-line); }
 body.aq-site.aq-overview-home .aq-performance-section { background: rgba(255, 255, 255, 0.012); }
 body.aq-site.aq-overview-home .aq-centered-heading { display: grid; justify-items: center; max-width: 760px; margin: 0 auto 54px; text-align: center; }
-body.aq-site.aq-overview-home .aq-overview-section-head h2 { margin: 14px 0 0; font-family: inherit; font-size: clamp(2.5rem, 4.8vw, 4.5rem); font-weight: 520; line-height: 1; letter-spacing: -0.055em; }
+body.aq-site.aq-overview-home #current-regimes-title,
+body.aq-site.aq-overview-home #performance-title,
+body.aq-site.aq-overview-home #trend-history-title { margin: 14px 0 0; font-family: inherit; font-size: clamp(2.5rem, 4.8vw, 4.5rem); font-weight: 520; line-height: 1; letter-spacing: -0.055em; }
 body.aq-site.aq-overview-home .aq-overview-section-head p { max-width: 650px; margin: 20px 0 0; color: var(--home-muted); font-size: 0.98rem; line-height: 1.7; }
 
 /* Current research */
@@ -170,9 +172,13 @@ body.aq-site.aq-overview-home .aq-overview-card { position: relative; grid-colum
 body.aq-site.aq-overview-home .aq-overview-card:hover { border-color: var(--home-line-strong); transform: translateY(-2px); }
 body.aq-site.aq-overview-home .aq-overview-card-trend,
 body.aq-site.aq-overview-home .aq-research-record-card { grid-column: 1 / -1; }
+body.aq-site.aq-overview-home .aq-overview-card.aq-overview-card-trend {
+  border-color: var(--home-line);
+  background: linear-gradient(145deg, rgba(17, 27, 40, 0.88), rgba(9, 15, 23, 0.94));
+}
 body.aq-site.aq-overview-home .aq-overview-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 28px; }
 body.aq-site.aq-overview-home .aq-overview-card-head > div { display: grid; gap: 5px; }
-body.aq-site.aq-overview-home .aq-overview-card-head > div > span {
+body.aq-site.aq-overview-home .aq-overview-card .aq-overview-card-head > div > span {
   color: #eef3f8;
   font-family: inherit;
   font-size: 1rem;
@@ -289,7 +295,7 @@ body.aq-site.aq-overview-home .aq-history-empty { margin: 0; padding: 44px; colo
 body.aq-site.aq-overview-home .aq-methodology-bridge { display: flex; align-items: flex-end; justify-content: space-between; gap: 34px; margin-top: 16px; padding: 34px; border: 1px solid var(--home-line); border-radius: 9px; background: rgba(255, 255, 255, 0.015); }
 body.aq-site.aq-overview-home .aq-methodology-bridge > div:first-child { max-width: 670px; }
 body.aq-site.aq-overview-home .aq-methodology-bridge > div > span { color: var(--home-cyan); font-size: 0.61rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; }
-body.aq-site.aq-overview-home .aq-methodology-bridge h2 { margin: 12px 0 0; font-family: inherit; font-size: clamp(1.65rem, 3vw, 2.65rem); font-weight: 540; letter-spacing: -0.045em; }
+body.aq-site.aq-overview-home #methodology-bridge-title { margin: 12px 0 0; font-family: inherit; font-size: clamp(1.65rem, 3vw, 2.65rem); font-weight: 540; letter-spacing: -0.045em; }
 body.aq-site.aq-overview-home .aq-methodology-bridge p { margin: 13px 0 0; color: var(--home-muted); font-size: 0.82rem; line-height: 1.65; }
 body.aq-site.aq-overview-home .aq-methodology-actions { display: flex; flex: 0 0 auto; gap: 9px; }
 
@@ -332,7 +338,7 @@ body.aq-site.aq-overview-home .aq-footer-disclosure { padding: 0 0 28px; color: 
   body.aq-site.aq-overview-home .header-inner { min-height: 62px; }
   body.aq-site.aq-overview-home .aq-header-access { display: none; }
   body.aq-site.aq-overview-home .aq-overview-hero { padding: 64px 0 52px; }
-  body.aq-site.aq-overview-home .aq-hero-center h1 { font-size: clamp(2.75rem, 13.5vw, 4.2rem); line-height: 0.98; }
+  body.aq-site.aq-overview-home #atlas-home-title { font-size: clamp(2.75rem, 13.5vw, 4.2rem); line-height: 0.98; }
   body.aq-site.aq-overview-home .aq-overview-copy { margin-top: 23px; font-size: 0.95rem; line-height: 1.6; }
   body.aq-site.aq-overview-home .aq-overview-actions { flex-direction: column; }
   body.aq-site.aq-overview-home .aq-overview-actions .button { width: 100%; }
@@ -345,7 +351,9 @@ body.aq-site.aq-overview-home .aq-footer-disclosure { padding: 0 0 28px; color: 
   body.aq-site.aq-overview-home .aq-overview-section,
   body.aq-site.aq-overview-home .aq-performance-section { padding: 78px 0; }
   body.aq-site.aq-overview-home .aq-centered-heading { margin-bottom: 34px; }
-  body.aq-site.aq-overview-home .aq-overview-section-head h2 { font-size: 2.65rem; }
+  body.aq-site.aq-overview-home #current-regimes-title,
+  body.aq-site.aq-overview-home #performance-title,
+  body.aq-site.aq-overview-home #trend-history-title { font-size: 2.65rem; }
   body.aq-site.aq-overview-home .aq-overview-card { padding: 20px; }
   body.aq-site.aq-overview-home .aq-overview-card-head { align-items: flex-start; flex-direction: column; margin-bottom: 21px; }
   body.aq-site.aq-overview-home .aq-trend-readings { grid-template-columns: 1fr; }

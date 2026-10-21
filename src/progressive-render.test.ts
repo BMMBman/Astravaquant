@@ -68,4 +68,14 @@ describe("progressive page rendering", () => {
     expect(html).not.toContain("data-earth-globe");
     expect(publicCss).not.toContain("hero-world-css-texture");
   });
+
+  it("keeps the premium homepage connected to live research and the evidence journey", () => {
+    const html = readFileSync(new URL("index.html", root), "utf8");
+
+    expect(html).toContain("home-premium.css");
+    expect(html).toContain("data-home-hero-snapshot");
+    expect(html).toContain("The market, reduced to decision-useful state.");
+    expect(html).toContain("Every score leaves a record.");
+    expect(html).toContain('href="research-terminal.html"');
+  });
 });

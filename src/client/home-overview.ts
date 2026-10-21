@@ -123,6 +123,25 @@ function researchCard(): string {
   </article>`;
 }
 
+function heroSnapshot(workbook: WorkbookDashboard | null): string {
+  const models = [
+    { id: "sniper1d", label: "Total ES 1D", horizon: "Daily total-market regime" },
+    { id: "mtpi", label: "MTPI Total", horizon: "Medium-term trend" },
+    { id: "btc1w", label: "BTC 1W", horizon: "Bitcoin weekly structure" },
+    { id: "ltpi", label: "Long-Term Trend", horizon: "Long-horizon market structure" }
+  ];
+  const signals = new Map(workbook?.signals.map((signal) => [signal.id, signal]));
+  return models.map((model) => {
+    const signal = signals.get(model.id);
+    const state = signal?.state ?? "Unavailable";
+    return `<div class="aq-snapshot-row">
+      <div><span>${escapeHtml(model.label)}</span><small>${escapeHtml(signal?.sourceTab ?? model.horizon)}</small></div>
+      <strong>${formatScore(signal?.value ?? null)}</strong>
+      <b class="${stateTone(state)}">${escapeHtml(state)}</b>
+    </div>`;
+  }).join("");
+}
+
 function historyMarkup(series: WorkbookScoreSeries): string {
   const points = series.points;
   if (!points.length) return '<p class="aq-history-empty">No dated observations are currently published for this model.</p>';
@@ -236,6 +255,7 @@ function newestPublishedDate(workbook: WorkbookDashboard | null, valuation: Bitc
 export async function bootHomeOverview(): Promise<void> {
   const overview = document.querySelector<HTMLElement>("[data-home-overview]");
   const history = document.querySelector<HTMLElement>("[data-home-history]");
+  const snapshot = document.querySelector<HTMLElement>("[data-home-hero-snapshot]");
   const updated = document.querySelector<HTMLTimeElement>("[data-overview-updated]");
   if (!overview || !history) return;
 
@@ -249,6 +269,7 @@ export async function bootHomeOverview(): Promise<void> {
   const markets = marketsResult.status === "fulfilled" ? marketsResult.value : null;
 
   overview.innerHTML = `${trendCard(workbook)}${valuationCard(valuation)}${liquidityCard(markets)}${researchCard()}`;
+  if (snapshot) snapshot.innerHTML = heroSnapshot(workbook);
   if (updated) updated.textContent = formatDate(newestPublishedDate(workbook, valuation, markets));
 
   const seriesById = new Map(workbook?.scoreSeries.map((series) => [series.id, series]));

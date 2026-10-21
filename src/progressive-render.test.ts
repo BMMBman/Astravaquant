@@ -74,8 +74,11 @@ describe("progressive page rendering", () => {
 
     expect(html).toContain("home-premium.css");
     expect(html).toContain("data-home-hero-snapshot");
-    expect(html).toContain("The market, reduced to decision-useful state.");
-    expect(html).toContain("Every score leaves a record.");
+    expect(html).toContain("Quantitative intelligence.");
+    expect(html).toContain("One view of the market.");
+    expect(html).toContain("data-home-performance");
+    expect(html).toContain("Performance, with context.");
+    expect(html).toContain("The signal, over time.");
     expect(html).toContain('href="research-terminal.html"');
   });
 });

@@ -33,47 +33,36 @@
 
     <main id="overview">
       <section class="aq-overview-hero" aria-labelledby="atlas-home-title">
-        <div class="shell aq-overview-hero-inner reveal">
-          <div class="aq-overview-hero-copy">
-            <p class="aq-overview-kicker"><span></span>Independent quantitative research</p>
-            <h1 class="aq-hero-wordmark" id="atlas-home-title"><span>AstravaQuant</span></h1>
-            <p class="aq-overview-subtitle">Quantitative Intelligence. Systematic Precision.</p>
-            <p class="aq-overview-copy">A research platform for understanding digital-asset trend, valuation, liquidity, and macro pressure through dated, inspectable quantitative evidence.</p>
-            <div class="aq-overview-actions" aria-label="AstravaQuant research actions">
-              <a class="button primary" href="#market-atlas">Explore Market Atlas</a>
-              <a class="button" href="research-terminal.html">Open Research Workspace</a>
-            </div>
-            <div class="aq-hero-principles" aria-label="Research principles">
-              <span>Source-traceable</span><span>Dated observations</span><span>Forward validation</span>
-            </div>
+        <div class="shell aq-hero-center reveal">
+          <p class="aq-overview-kicker"><span></span>AstravaQuant Research</p>
+          <h1 id="atlas-home-title">Quantitative intelligence.<br /><span>Systematic precision.</span></h1>
+          <p class="aq-overview-copy">Independent quantitative research across digital assets, market regimes, valuation, and macro liquidity.</p>
+          <div class="aq-overview-actions" aria-label="AstravaQuant research actions">
+            <a class="button primary" href="#market-atlas">View Market Outlook</a>
+            <a class="button" href="research-terminal.html">Open Research Workspace</a>
           </div>
-          <aside class="aq-hero-console" aria-label="Current AstravaQuant research state">
+          <aside class="aq-market-outlook" aria-label="Current AstravaQuant market outlook">
             <header>
-              <div class="aq-hero-console-identity"><img src="assets/astravaquant-mark-temporary.svg" alt="" /><div><span>Market Atlas</span><strong>Current research state</strong></div></div>
+              <div><span>Current research state</span><strong>Market outlook</strong></div>
               <div class="aq-live-indicator"><i></i>Published</div>
             </header>
             <div class="aq-hero-snapshot" data-home-hero-snapshot aria-live="polite">
               <div class="aq-snapshot-loading"><span></span><p>Synchronizing published model readings.</p></div>
             </div>
             <footer>
-              <div><span>Latest observation</span><time data-overview-updated>Loading published data</time></div>
-              <a href="research-terminal.html">Inspect workspace <i>↗</i></a>
+              <div><span>Latest published observation</span><time data-overview-updated>Loading published data</time></div>
+              <a href="research-terminal.html">Inspect full research <i>↗</i></a>
             </footer>
           </aside>
-        </div>
-        <div class="shell aq-evidence-rail reveal" aria-label="AstravaQuant publication standards">
-          <div><strong>01</strong><span>Independent research</span></div>
-          <div><strong>02</strong><span>Published model readings</span></div>
-          <div><strong>03</strong><span>Historical evidence</span></div>
-          <div><strong>04</strong><span>Transparent methodology</span></div>
         </div>
       </section>
 
       <section class="aq-overview-section" id="market-atlas" aria-labelledby="current-regimes-title">
         <div class="shell">
-          <div class="aq-overview-section-head">
-            <div class="aq-section-heading-copy"><span class="aq-section-index">01 / Market intelligence</span><p class="aq-overview-kicker">Market Atlas · Current research</p><h2 id="current-regimes-title">The market, reduced to decision-useful state.</h2></div>
-            <p>Live readings from published model feeds—organized by horizon and research family, with no synthetic values substituted.</p>
+          <div class="aq-overview-section-head aq-centered-heading">
+            <span class="aq-section-index">01 / Market Atlas</span>
+            <h2 id="current-regimes-title">One view of the market.</h2>
+            <p>Current model readings across trend, valuation, and liquidity—published from the underlying research feeds.</p>
           </div>
           <div class="aq-overview-grid" data-home-overview aria-live="polite">
             <article class="aq-overview-card aq-overview-card-trend aq-overview-loading-card"><span>Trend</span><p>Loading published trend readings.</p></article>
@@ -84,26 +73,19 @@
         </div>
       </section>
 
-      <section class="aq-research-system" aria-labelledby="research-system-title">
+      <section class="aq-performance-section" aria-labelledby="performance-title">
         <div class="shell">
-          <div class="aq-overview-section-head">
-            <div class="aq-section-heading-copy"><span class="aq-section-index">02 / Research architecture</span><p class="aq-overview-kicker">One system, multiple lenses</p><h2 id="research-system-title">Built to separate signal from narrative.</h2></div>
-            <p>Each research family answers a different question. Scores, histories, and methodology remain distinct so the evidence can be inspected on its own terms.</p>
+          <div class="aq-overview-section-head aq-centered-heading">
+            <span class="aq-section-index">02 / Model evidence</span>
+            <h2 id="performance-title">Performance, with context.</h2>
+            <p>Selected completed tests from the live Model Results tab. Historical simulations are shown with their window, drawdown, and review status intact.</p>
           </div>
-          <div class="aq-research-system-grid">
-            <a href="models.html#trend" class="aq-system-module">
-              <span>01</span><div><p>Regime and trend</p><h3>Multi-horizon market structure</h3><small>Total ES 1D · MTPI Total · BTC 1W · Long-Term Trend</small></div><i>↗</i>
-            </a>
-            <a href="valuation.html" class="aq-system-module">
-              <span>02</span><div><p>Valuation</p><h3>Independent price context</h3><small>Composite inputs normalized to a transparent standardized scale</small></div><i>↗</i>
-            </a>
-            <a href="models.html#liquidity" class="aq-system-module">
-              <span>03</span><div><p>Liquidity and rates</p><h3>Macro pressure beneath the surface</h3><small>Net Fed Liquidity · 10US Treasury Module</small></div><i>↗</i>
-            </a>
+          <div class="aq-performance-grid" data-home-performance aria-live="polite">
+            <article class="aq-performance-loading"><span></span><p>Loading verified model results.</p></article>
           </div>
-          <div class="aq-system-standard">
-            <div><span>Publication standard</span><h3>Every reading carries its date, scale, classification, and source context.</h3></div>
-            <a class="button" href="methodology.html">Review Methodology</a>
+          <div class="aq-performance-footer">
+            <p>Backtests are historical simulations, not live trading results, and do not predict future performance.</p>
+            <a href="research-terminal.html#model-results">Review all model results <i>↗</i></a>
           </div>
         </div>
       </section>
@@ -111,7 +93,7 @@
       <section class="aq-overview-section aq-overview-history-section" aria-labelledby="trend-history-title">
         <div class="shell">
           <div class="aq-overview-section-head aq-history-heading">
-            <div class="aq-section-heading-copy"><span class="aq-section-index">03 / Historical evidence</span><p class="aq-overview-kicker">Published observations</p><h2 id="trend-history-title">Every score leaves a record.</h2></div>
+            <div><span class="aq-section-index">03 / Published history</span><h2 id="trend-history-title">The signal, over time.</h2><p>Inspect every dated observation behind the current trend state.</p></div>
             <div class="aq-history-selector" role="group" aria-label="Trend history series">
               <button class="is-active" type="button" data-home-history-series="sniper1d">Total ES 1D</button>
               <button type="button" data-home-history-series="mtpi">MTPI Total</button>
@@ -122,9 +104,9 @@
           <article class="aq-history-panel" data-home-history aria-live="polite"><p class="aq-history-empty">Loading dated trend observations.</p></article>
           <aside class="aq-methodology-bridge" aria-labelledby="methodology-bridge-title">
             <div>
-              <span>From signal to evidence</span>
-              <h2 id="methodology-bridge-title">Research designed to be challenged, not merely consumed.</h2>
-              <p>Review system definitions, inputs, scales, limitations, forward-test boundaries, and publication standards behind AstravaQuant’s market observations.</p>
+              <span>Research standard</span>
+              <h2 id="methodology-bridge-title">Every reading should be inspectable.</h2>
+              <p>Review definitions, inputs, limitations, forward-test boundaries, and publication standards behind the models.</p>
             </div>
             <div class="aq-methodology-actions"><a class="button primary" href="research-terminal.html">Enter Research Workspace</a><a class="button" href="methodology.html">Review Methodology</a></div>
           </aside>

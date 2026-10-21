@@ -2,6 +2,7 @@ import type {
   BitcoinValuationDashboard,
   MarketDashboard,
   MarketMetric,
+  WorkbookBacktestResult,
   WorkbookDashboard,
   WorkbookModelSignal,
   WorkbookScoreSeries
@@ -70,11 +71,10 @@ function trendReading(series: WorkbookScoreSeries | undefined, signal: WorkbookM
   const currentScore = signal?.value ?? latest?.score ?? null;
   const state = currentScore === null ? "Unavailable" : trendRegime(currentScore);
   return `<div class="aq-trend-reading">
-    <span>${escapeHtml(label)}</span>
+    <div><span>${escapeHtml(label)}</span><small>${escapeHtml(signal?.sourceTab ?? "Published model")}</small></div>
     <strong>${formatScore(currentScore)}</strong>
     <b class="${stateTone(state)}">${escapeHtml(state)}</b>
-    ${sparkline((series?.points ?? []).map((point) => ({ date: point.date, value: point.score })), `${label} trend`)}
-    <small>${signal?.updatedLabel ? formatDate(signal.updatedLabel) : latest ? formatDate(latest.date) : "No published observation"}</small>
+    <time>${signal?.updatedLabel ? formatDate(signal.updatedLabel) : latest ? formatDate(latest.date) : "No published observation"}</time>
   </div>`;
 }
 
@@ -82,7 +82,7 @@ function trendCard(workbook: WorkbookDashboard | null): string {
   const series = new Map(workbook?.scoreSeries.map((item) => [item.id, item]));
   const signals = new Map(workbook?.signals.map((item) => [item.id, item]));
   return `<article class="aq-overview-card aq-overview-card-trend">
-    <div class="aq-overview-card-head"><div><span>Trend</span><p>Published probability modules</p></div><a href="models.html#trend">Explore trend <i>↗</i></a></div>
+    <div class="aq-overview-card-head"><div><span>Trend regime</span><p>Four horizons. One published view.</p></div><a href="models.html#trend">Open trend research <i>↗</i></a></div>
     <div class="aq-trend-readings">${trendReading(series.get("sniper1d"), signals.get("sniper1d"), "Total ES 1D")}${trendReading(series.get("mtpi"), signals.get("mtpi"), "MTPI Total")}${trendReading(series.get("btc1w"), signals.get("btc1w"), "BTC 1W")}${trendReading(series.get("ltpi"), signals.get("ltpi"), "Long-Term Trend")}</div>
   </article>`;
 }
@@ -95,7 +95,7 @@ function valuationCard(valuation: BitcoinValuationDashboard | null): string {
     : Math.min(100, Math.max(0, ((valuation.score - minimum) / (maximum - minimum || 1)) * 100));
   const state = valuation?.state ?? "Unavailable";
   return `<article class="aq-overview-card">
-    <div class="aq-overview-card-head"><div><span>Bitcoin valuation</span><p>Composite valuation context</p></div><a href="valuation.html">Explore valuation <i>↗</i></a></div>
+    <div class="aq-overview-card-head"><div><span>Bitcoin valuation</span><p>Price relative to independent value</p></div><a href="valuation.html">Open valuation <i>↗</i></a></div>
     <div class="aq-valuation-summary"><strong>${formatScore(valuation?.score ?? null, "σ")}</strong><b class="${stateTone(state)}">${escapeHtml(state)}</b><small>${valuation?.workbookUpdatedLabel ? `Published ${formatDate(valuation.workbookUpdatedLabel)}` : "No published reading"}</small></div>
     <div class="aq-overview-scale" aria-label="Valuation scale from ${minimum.toFixed(2)} to ${maximum.toFixed(2)} standard deviations"><i style="left:${position.toFixed(2)}%"></i></div>
     <div class="aq-overview-scale-labels"><span>${minimum.toFixed(1)}σ</span><span>0σ</span><span>${maximum.toFixed(1)}σ</span></div>
@@ -106,7 +106,7 @@ function liquidityCard(markets: MarketDashboard | null): string {
   const liquidity = markets?.metrics.find((metric) => metric.id === "fedNetLiquidity");
   const points = liquidity?.points.map((point) => ({ date: point.timestamp, value: point.value })) ?? [];
   return `<article class="aq-overview-card">
-    <div class="aq-overview-card-head"><div><span>Net Fed liquidity</span><p>Five-component balance-sheet series</p></div><a href="models.html#liquidity">Explore liquidity <i>↗</i></a></div>
+    <div class="aq-overview-card-head"><div><span>Net Fed liquidity</span><p>Macro liquidity beneath the market</p></div><a href="models.html#liquidity">Open liquidity <i>↗</i></a></div>
     <div class="aq-liquidity-summary"><strong>${formatLiquidity(liquidity)}</strong><small>${liquidity?.asOf ? `Updated ${formatDate(liquidity.asOf)}` : "No published reading"}</small></div>
     ${sparkline(points, "Net Fed liquidity")}
   </article>`;
@@ -114,13 +114,61 @@ function liquidityCard(markets: MarketDashboard | null): string {
 
 function researchCard(): string {
   return `<article class="aq-overview-card aq-research-record-card">
-    <div class="aq-overview-card-head"><div><span>Research record</span><p>Inspect the published evidence</p></div><a href="research.html">View research record <i>↗</i></a></div>
+    <div class="aq-overview-card-head"><div><span>Research record</span><p>Nothing disappears when the view changes.</p></div><a href="research.html">View the record <i>↗</i></a></div>
     <div class="aq-research-record-links">
-      <a href="models.html#trend"><span>Published score history</span><i>↗</i></a>
-      <a href="backtesting.html"><span>Forward-test diagnostics</span><i>↗</i></a>
-      <a href="research.html"><span>Research records</span><i>↗</i></a>
+      <a href="models.html#trend"><span>Score history</span><i>↗</i></a>
+      <a href="backtesting.html"><span>Forward testing</span><i>↗</i></a>
+      <a href="methodology.html"><span>Methodology</span><i>↗</i></a>
     </div>
   </article>`;
+}
+
+function performanceModelName(result: WorkbookBacktestResult): string {
+  if (result.model === "TOTALES") return "Total ES";
+  if (result.model.endsWith("USD")) return result.model.slice(0, -3);
+  return result.model;
+}
+
+function selectPerformanceResults(workbook: WorkbookDashboard | null): WorkbookBacktestResult[] {
+  const complete = (workbook?.modelResults?.results ?? []).filter((result) => result.reviewStatus.toLowerCase() === "complete");
+  const preferred = [
+    (result: WorkbookBacktestResult) => result.model === "TOTALES" && result.startDate === "2019-01-01",
+    (result: WorkbookBacktestResult) => result.model === "TOTALES" && /rolling 36 months/i.test(result.window),
+    (result: WorkbookBacktestResult) => result.model === "ETHUSD" && /rolling 36 months/i.test(result.window)
+  ];
+  const selected: WorkbookBacktestResult[] = [];
+  preferred.forEach((predicate) => {
+    const result = complete.find(predicate);
+    if (result && !selected.includes(result)) selected.push(result);
+  });
+  complete.forEach((result) => {
+    if (selected.length < 3 && !selected.includes(result)) selected.push(result);
+  });
+  return selected;
+}
+
+function performanceMarkup(workbook: WorkbookDashboard | null): string {
+  const modelResults = workbook?.modelResults;
+  const results = selectPerformanceResults(workbook);
+  if (!modelResults || modelResults.status !== "ready" || !results.length) {
+    return '<article class="aq-performance-unavailable"><strong>Model evidence is temporarily unavailable.</strong><span>No substitute performance figures are shown.</span></article>';
+  }
+  return `<div class="aq-performance-summary">
+    <div><span>Source</span><strong>${escapeHtml(modelResults.sourceTab)}</strong></div>
+    <div><span>As of</span><strong>${escapeHtml(formatDate(modelResults.asOf))}</strong></div>
+    <div><span>Completed tests</span><strong>${modelResults.results.filter((result) => result.reviewStatus.toLowerCase() === "complete").length}</strong></div>
+  </div>
+  <div class="aq-performance-cards">${results.map((result) => `<article class="aq-performance-card">
+    <header><div><span>${escapeHtml(result.window)}</span><h3>${escapeHtml(performanceModelName(result))} <i>${escapeHtml(result.timeframe)}</i></h3></div><b>Complete</b></header>
+    <div class="aq-performance-primary"><span>Net profit</span><strong>${escapeHtml(result.netProfit)}</strong></div>
+    <dl>
+      <div><dt>Sharpe</dt><dd>${escapeHtml(result.sharpe)}</dd></div>
+      <div><dt>Max equity DD</dt><dd>${escapeHtml(result.maxEquityDrawdown)}</dd></div>
+      <div><dt>Profit factor</dt><dd>${escapeHtml(result.profitFactor)}</dd></div>
+      <div><dt>Trades</dt><dd>${escapeHtml(result.trades)}</dd></div>
+    </dl>
+    <footer><span>${escapeHtml(formatDate(result.startDate))}</span><i>to</i><span>${escapeHtml(formatDate(result.endDate))}</span></footer>
+  </article>`).join("")}</div>`;
 }
 
 function heroSnapshot(workbook: WorkbookDashboard | null): string {
@@ -256,6 +304,7 @@ export async function bootHomeOverview(): Promise<void> {
   const overview = document.querySelector<HTMLElement>("[data-home-overview]");
   const history = document.querySelector<HTMLElement>("[data-home-history]");
   const snapshot = document.querySelector<HTMLElement>("[data-home-hero-snapshot]");
+  const performance = document.querySelector<HTMLElement>("[data-home-performance]");
   const updated = document.querySelector<HTMLTimeElement>("[data-overview-updated]");
   if (!overview || !history) return;
 
@@ -270,6 +319,7 @@ export async function bootHomeOverview(): Promise<void> {
 
   overview.innerHTML = `${trendCard(workbook)}${valuationCard(valuation)}${liquidityCard(markets)}${researchCard()}`;
   if (snapshot) snapshot.innerHTML = heroSnapshot(workbook);
+  if (performance) performance.innerHTML = performanceMarkup(workbook);
   if (updated) updated.textContent = formatDate(newestPublishedDate(workbook, valuation, markets));
 
   const seriesById = new Map(workbook?.scoreSeries.map((series) => [series.id, series]));

@@ -73,14 +73,14 @@ body.aq-site.aq-overview-home .aq-performance-footer i,
 body.aq-site.aq-overview-home .aq-market-outlook a i { font-style: normal; }
 
 /* Centered research hero */
-body.aq-site.aq-overview-home .aq-overview-hero { position: relative; padding: clamp(88px, 11vw, 144px) 0 72px; overflow: hidden; }
-body.aq-site.aq-overview-home .aq-overview-hero::before {
+body.aq-site.aq-overview-home main#overview .aq-overview-hero { position: relative; padding: clamp(44px, 4.2vw, 60px) 0 30px; overflow: hidden; }
+body.aq-site.aq-overview-home main#overview .aq-overview-hero::before {
   content: "";
   position: absolute;
   top: 0;
   left: 50%;
   width: min(920px, 96vw);
-  height: 480px;
+  height: 380px;
   transform: translateX(-50%);
   pointer-events: none;
   background: radial-gradient(ellipse at top, rgba(53, 114, 176, 0.17), transparent 68%);
@@ -89,33 +89,33 @@ body.aq-site.aq-overview-home .aq-overview-hero::before {
 body.aq-site.aq-overview-home .aq-hero-center { position: relative; text-align: center; }
 body.aq-site.aq-overview-home .aq-overview-kicker,
 body.aq-site.aq-overview-home .aq-section-index { color: var(--home-cyan); font-size: 0.69rem; font-weight: 760; letter-spacing: 0.17em; text-transform: uppercase; }
-body.aq-site.aq-overview-home .aq-overview-kicker { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 24px; }
+body.aq-site.aq-overview-home .aq-hero-center .aq-overview-kicker { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 12px; }
 body.aq-site.aq-overview-home .aq-overview-kicker span { width: 22px; height: 1px; background: linear-gradient(90deg, var(--home-cyan), var(--home-magenta)); }
 
 body.aq-site.aq-overview-home #atlas-home-title {
-  max-width: 1000px;
+  max-width: 1120px;
   margin: 0 auto;
   color: var(--home-text);
   font-family: inherit;
-  font-size: clamp(3.4rem, 7.1vw, 6.8rem);
+  font-size: clamp(3.1rem, 5.3vw, 5.15rem);
   font-weight: 520;
-  line-height: 0.94;
-  letter-spacing: -0.065em;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
 }
 
 body.aq-site.aq-overview-home #atlas-home-title span { color: #9aa9b9; }
-body.aq-site.aq-overview-home .aq-overview-copy { max-width: 710px; margin: 30px auto 0; color: #aab5c4; font-size: clamp(1rem, 1.6vw, 1.2rem); line-height: 1.75; }
-body.aq-site.aq-overview-home .aq-overview-actions { display: flex; justify-content: center; gap: 12px; margin-top: 34px; }
+body.aq-site.aq-overview-home .aq-hero-center .aq-overview-copy { max-width: 780px; margin: 14px auto 0; color: #aab5c4; font-size: clamp(0.9rem, 1.1vw, 1.02rem); line-height: 1.55; text-align: center; text-wrap: balance; }
+body.aq-site.aq-overview-home .aq-hero-center .aq-overview-actions { display: flex; justify-content: center; gap: 12px; margin-top: 20px; }
 body.aq-site.aq-overview-home .aq-overview-actions .button,
-body.aq-site.aq-overview-home .aq-methodology-actions .button { min-height: 46px; padding-inline: 22px; border-radius: 6px; }
+body.aq-site.aq-overview-home .aq-methodology-actions .button { min-height: 44px; padding-inline: 22px; border-radius: 6px; }
 body.aq-site.aq-overview-home .button.primary { border-color: transparent; color: #071018; background: #dff8ff; }
 body.aq-site.aq-overview-home .button.primary:hover { color: #071018; background: #fff; }
 
 /* Central market outlook */
-body.aq-site.aq-overview-home .aq-market-outlook {
+body.aq-site.aq-overview-home .aq-hero-center .aq-market-outlook {
   position: relative;
-  max-width: 1080px;
-  margin: 72px auto 0;
+  max-width: 1120px;
+  margin: clamp(24px, 2.5vw, 32px) auto 0;
   overflow: hidden;
   text-align: left;
   border: 1px solid var(--home-line-strong);
@@ -126,7 +126,7 @@ body.aq-site.aq-overview-home .aq-market-outlook {
 
 body.aq-site.aq-overview-home .aq-market-outlook::before { content: ""; position: absolute; inset: 0 0 auto; height: 2px; background: linear-gradient(90deg, transparent, var(--home-cyan), var(--home-blue), var(--home-magenta), transparent); }
 body.aq-site.aq-overview-home .aq-market-outlook > header,
-body.aq-site.aq-overview-home .aq-market-outlook > footer { display: flex; align-items: center; justify-content: space-between; padding: 21px 24px; }
+body.aq-site.aq-overview-home .aq-market-outlook > footer { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; }
 body.aq-site.aq-overview-home .aq-market-outlook > header { border-bottom: 1px solid var(--home-line); }
 body.aq-site.aq-overview-home .aq-market-outlook > header > div:first-child,
 body.aq-site.aq-overview-home .aq-market-outlook > footer > div { display: grid; gap: 5px; }
@@ -137,7 +137,7 @@ body.aq-site.aq-overview-home .aq-market-outlook header strong { font-size: 1rem
 body.aq-site.aq-overview-home .aq-live-indicator { display: inline-flex; align-items: center; gap: 8px; color: var(--home-positive); font-family: var(--home-mono); font-size: 0.68rem; letter-spacing: 0.11em; text-transform: uppercase; }
 body.aq-site.aq-overview-home .aq-live-indicator i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 14px currentColor; }
 body.aq-site.aq-overview-home .aq-hero-snapshot { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-body.aq-site.aq-overview-home .aq-snapshot-row { display: grid; min-height: 152px; padding: 25px 24px 22px; border-right: 1px solid var(--home-line); }
+body.aq-site.aq-overview-home .aq-snapshot-row { display: grid; min-height: 112px; padding: 18px 20px 16px; border-right: 1px solid var(--home-line); }
 body.aq-site.aq-overview-home .aq-snapshot-row:last-child { border-right: 0; }
 body.aq-site.aq-overview-home .aq-snapshot-row > div { display: grid; align-content: start; gap: 6px; }
 body.aq-site.aq-overview-home .aq-snapshot-row span { color: #e2e9f0; font-size: 0.78rem; font-weight: 680; }
@@ -152,7 +152,9 @@ body.aq-site.aq-overview-home .aq-market-outlook footer time,
 body.aq-site.aq-overview-home .aq-market-outlook footer a { color: #d7e0e9; font-size: 0.74rem; }
 body.aq-site.aq-overview-home .aq-market-outlook footer a:hover { color: var(--home-cyan); }
 body.aq-site.aq-overview-home .aq-snapshot-loading,
-body.aq-site.aq-overview-home .aq-performance-loading { display: flex; grid-column: 1 / -1; align-items: center; justify-content: center; gap: 12px; min-height: 150px; color: var(--home-muted); }
+body.aq-site.aq-overview-home .aq-performance-loading { display: flex; grid-column: 1 / -1; align-items: center; justify-content: center; gap: 12px; color: var(--home-muted); }
+body.aq-site.aq-overview-home .aq-snapshot-loading { min-height: 112px; }
+body.aq-site.aq-overview-home .aq-performance-loading { min-height: 150px; }
 body.aq-site.aq-overview-home .aq-snapshot-loading span,
 body.aq-site.aq-overview-home .aq-performance-loading span { width: 7px; height: 7px; border-radius: 50%; background: var(--home-cyan); }
 
@@ -396,7 +398,8 @@ body.aq-site.aq-overview-home .aq-footer-disclosure { padding: 0 0 28px; color: 
   body.aq-site.aq-overview-home .header-inner { flex-wrap: nowrap; }
   body.aq-site.aq-overview-home .aq-header-access { display: none; }
   body.aq-site.aq-overview-home .nav-toggle { display: inline-flex; margin-left: auto; }
-  body.aq-site.aq-overview-home .aq-overview-hero { padding-top: 82px; }
+  body.aq-site.aq-overview-home main#overview .aq-overview-hero { padding: 42px 0 30px; }
+  body.aq-site.aq-overview-home .aq-hero-center .aq-market-outlook { margin-top: 28px; }
   body.aq-site.aq-overview-home .aq-hero-snapshot { grid-template-columns: 1fr 1fr; }
   body.aq-site.aq-overview-home .aq-snapshot-row:nth-child(2) { border-right: 0; }
   body.aq-site.aq-overview-home .aq-snapshot-row:nth-child(-n + 2) { border-bottom: 1px solid var(--home-line); }
@@ -428,16 +431,16 @@ body.aq-site.aq-overview-home .aq-footer-disclosure { padding: 0 0 28px; color: 
   body.aq-site.aq-overview-home .shell { width: min(100% - 24px, 1240px); }
   body.aq-site.aq-overview-home .header-inner { min-height: 62px; }
   body.aq-site.aq-overview-home .aq-header-access { display: none; }
-  body.aq-site.aq-overview-home .aq-overview-hero { padding: 64px 0 52px; }
-  body.aq-site.aq-overview-home #atlas-home-title { font-size: clamp(2.75rem, 13.5vw, 4.2rem); line-height: 0.98; }
-  body.aq-site.aq-overview-home .aq-overview-copy { margin-top: 23px; font-size: 0.95rem; line-height: 1.6; }
-  body.aq-site.aq-overview-home .aq-overview-actions { flex-direction: column; }
+  body.aq-site.aq-overview-home main#overview .aq-overview-hero { padding: 40px 0 28px; }
+  body.aq-site.aq-overview-home #atlas-home-title { font-size: clamp(2.25rem, 10.4vw, 2.75rem); line-height: 1.01; }
+  body.aq-site.aq-overview-home .aq-hero-center .aq-overview-copy { max-width: 34rem; margin-top: 15px; font-size: 0.88rem; line-height: 1.5; }
+  body.aq-site.aq-overview-home .aq-hero-center .aq-overview-actions { flex-direction: column; margin-top: 20px; }
   body.aq-site.aq-overview-home .aq-overview-actions .button { width: 100%; }
-  body.aq-site.aq-overview-home .aq-market-outlook { margin-top: 48px; }
+  body.aq-site.aq-overview-home .aq-hero-center .aq-market-outlook { margin-top: 28px; }
   body.aq-site.aq-overview-home .aq-market-outlook > header,
-  body.aq-site.aq-overview-home .aq-market-outlook > footer { padding: 17px; }
+  body.aq-site.aq-overview-home .aq-market-outlook > footer { padding: 15px; }
   body.aq-site.aq-overview-home .aq-market-outlook > footer { align-items: flex-start; flex-direction: column; gap: 14px; }
-  body.aq-site.aq-overview-home .aq-snapshot-row { min-height: 132px; padding: 18px 15px; }
+  body.aq-site.aq-overview-home .aq-snapshot-row { min-height: 110px; padding: 16px 14px; }
   body.aq-site.aq-overview-home .aq-snapshot-row strong { font-size: 1.7rem; }
   body.aq-site.aq-overview-home .aq-overview-section,
   body.aq-site.aq-overview-home .aq-performance-section { padding: 78px 0; }

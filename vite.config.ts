@@ -9,6 +9,7 @@ export default defineConfig({
         about: resolve(import.meta.dirname, "about.html"),
         archive: resolve(import.meta.dirname, "archive.html"),
         models: resolve(import.meta.dirname, "models.html"),
+        liquidity: resolve(import.meta.dirname, "liquidity.html"),
         valuation: resolve(import.meta.dirname, "valuation.html"),
         backtesting: resolve(import.meta.dirname, "backtesting.html"),
         trendFollowing: resolve(import.meta.dirname, "trend-following.html"),

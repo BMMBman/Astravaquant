@@ -94,7 +94,7 @@ function liquidityCard(markets: MarketDashboard | null): string {
     ? "is-neutral"
     : liquidity.change >= 0 ? "is-positive" : "is-negative";
   return `<article class="aq-overview-card aq-instrument-card aq-liquidity-card">
-    <header class="aq-instrument-head"><div><span>Macro liquidity</span><h3>Net Fed liquidity</h3></div><a href="models.html#liquidity">Full analysis <i>↗</i></a></header>
+    <header class="aq-instrument-head"><div><span>Macro liquidity</span><h3>Net Fed liquidity</h3></div><a href="liquidity.html">Full analysis <i>↗</i></a></header>
     <div class="aq-instrument-reading"><div><span>Current level</span><strong>${formatLiquidity(liquidity)}</strong></div><b class="${changeTone}">${escapeHtml(weeklyChange)}</b></div>
     <p class="aq-instrument-copy">${escapeHtml(liquidity?.message ?? "Federal Reserve balance-sheet liquidity after major offsetting facilities.")}</p>
     <div class="aq-instrument-chart">${sparkline(points, "Net Fed liquidity")}</div>

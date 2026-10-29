@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="AstravaQuant Net Fed Liquidity research: current balance-sheet conditions, weekly direction, underlying drivers, and a transparent FRED-derived methodology."
+    />
+    <title>Net Fed Liquidity | AstravaQuant Research</title>
+    <link rel="icon" href="assets/astravaquant-favicon-temporary.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="public-redesign.css" />
+    <link rel="stylesheet" href="brand.css" />
+    <link rel="stylesheet" href="liquidity-premium.css" />
+  </head>
+  <body class="aq-site aq-atlas-detail aq-liquidity-page">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="shell header-inner">
+        <a class="brand" href="index.html" aria-label="AstravaQuant home">
+          <svg class="brand-mark" viewBox="0 0 164 150" aria-hidden="true">
+            <path d="M82 10 151 138 82 101 13 138Z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="14" />
+          </svg>
+          <span class="brand-copy"><strong>AstravaQuant</strong><span>Quantitative intelligence</span></span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a href="index.html">Overview</a>
+          <a href="models.html#trend">Trend</a>
+          <a href="valuation.html">Valuation</a>
+          <a class="is-active" href="liquidity.html">Liquidity</a>
+          <a href="research.html">Research</a>
+          <a href="about.html">About</a>
+        </nav>
+        <div class="header-meta">Macro research</div>
+      </div>
+    </header>
+
+    <main data-net-liquidity>
+      <section class="aq-liquidity-hero" aria-labelledby="liquidity-title">
+        <div class="shell shell-wide aq-liquidity-hero-grid">
+          <div class="aq-liquidity-hero-copy reveal">
+            <p class="aq-liquidity-eyebrow"><span></span>Macro liquidity / weekly</p>
+            <h1 id="liquidity-title">Net Fed<br /><em>liquidity.</em></h1>
+            <p>
+              A transparent view of the Federal Reserve balance sheet after the largest
+              cash offsets and funding facilities. Built to show the level, the direction,
+              and the drivers—not to manufacture a trading signal.
+            </p>
+            <div class="aq-liquidity-hero-actions">
+              <a class="button primary" href="#liquidity-history">Inspect history</a>
+              <a class="button" href="#liquidity-methodology">View construction</a>
+            </div>
+          </div>
+
+          <aside class="aq-liquidity-now reveal" aria-label="Latest Net Fed liquidity observation">
+            <header><span>Latest published level</span><b data-net-liquidity-status>Loading FRED series</b></header>
+            <strong data-net-liquidity-current>--</strong>
+            <p data-net-liquidity-as-of>Loading public observations</p>
+            <div class="aq-liquidity-now-direction">
+              <span>Weekly direction</span>
+              <b data-net-liquidity-direction>Verifying</b>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="aq-liquidity-state" aria-label="Current liquidity state">
+        <div class="shell shell-wide aq-liquidity-state-grid">
+          <article>
+            <span>1-week change</span>
+            <strong data-net-liquidity-weekly>--</strong>
+            <p>Change in the derived series from the prior aligned observation.</p>
+          </article>
+          <article>
+            <span>4-week change</span>
+            <strong data-net-liquidity-four-week>--</strong>
+            <p>Near-term balance-sheet direction, measured in U.S. dollars.</p>
+          </article>
+          <article>
+            <span>Largest weekly driver</span>
+            <strong data-net-liquidity-driver>Verifying</strong>
+            <p data-net-liquidity-driver-detail>Comparing the five formula components.</p>
+          </article>
+          <article>
+            <span>Publication cadence</span>
+            <strong>Weekly</strong>
+            <p>Aligned to the underlying Federal Reserve release schedule.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="aq-liquidity-research" id="liquidity-history">
+        <div class="shell shell-wide">
+          <div class="aq-liquidity-section-head reveal">
+            <div><span>01 / Current state</span><h2>Direction matters more than spectacle.</h2></div>
+            <p>Read the current balance-sheet direction, then inspect which public series is driving the change.</p>
+          </div>
+
+          <div class="aq-liquidity-research-grid">
+            <article class="aq-liquidity-chart-card reveal">
+              <header>
+                <div><span>Derived weekly history</span><h3>Net liquidity through time</h3></div>
+                <div class="aq-liquidity-range" data-net-liquidity-range>Awaiting aligned observations</div>
+              </header>
+              <div class="aq-net-liquidity-controls">
+                <label>Start date<input type="date" data-net-liquidity-start /></label>
+                <label>End date<input type="date" data-net-liquidity-end /></label>
+              </div>
+              <div class="terminal-chart aq-chart-panel aq-net-liquidity-chart" data-net-liquidity-chart>
+                <span>Loading net liquidity history.</span>
+              </div>
+              <label class="aq-liquidity-observation-control">
+                <span>Inspect observation</span>
+                <input type="range" min="0" max="0" value="0" data-net-liquidity-observation />
+              </label>
+            </article>
+
+            <aside class="aq-liquidity-brief reveal">
+              <span>What matters now</span>
+              <h3 data-net-liquidity-brief-title>Verifying the latest weekly state.</h3>
+              <p data-net-liquidity-brief-copy>The interpretation will appear when the public component series have been aligned.</p>
+              <div class="aq-liquidity-brief-rule"></div>
+              <dl>
+                <div><dt>Level</dt><dd>How much balance-sheet liquidity remains after the major offsets.</dd></div>
+                <div><dt>Direction</dt><dd>Whether the derived series expanded or contracted across recent observations.</dd></div>
+                <div><dt>Driver</dt><dd>Which formula component contributed most to the latest weekly move.</dd></div>
+              </dl>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="aq-liquidity-drivers" aria-labelledby="drivers-title">
+        <div class="shell shell-wide">
+          <div class="aq-liquidity-section-head reveal">
+            <div><span>02 / Under the surface</span><h2 id="drivers-title">Five inputs. One inspectable result.</h2></div>
+            <p>Every component keeps its own level, direction in the formula, and history—so the headline can be audited.</p>
+          </div>
+          <div class="aq-liquidity-components" data-net-liquidity-components>
+            <p class="aq-disclosure">Loading component trends.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="aq-liquidity-why" aria-labelledby="why-title">
+        <div class="shell shell-wide">
+          <div class="aq-liquidity-section-head reveal">
+            <div><span>03 / Interpretation</span><h2 id="why-title">Why liquidity belongs in the market map.</h2></div>
+            <p>It is context for financial conditions—not proof of causation, a return forecast, or an allocation instruction.</p>
+          </div>
+          <div class="aq-liquidity-why-grid">
+            <article class="reveal"><i>01</i><h3>Balance-sheet capacity</h3><p>Federal Reserve assets can add system liquidity, while Treasury cash balances and reverse repo usage can absorb it. Netting them provides a more useful backdrop than reading any one series alone.</p></article>
+            <article class="reveal"><i>02</i><h3>Direction over headline</h3><p>The weekly and four-week change show whether the backdrop is expanding or contracting. The level can be large while the marginal impulse is moving the other way.</p></article>
+            <article class="reveal"><i>03</i><h3>Context, not causation</h3><p>Liquidity can help frame risk conditions, but assets respond to many variables. AstravaQuant does not treat this series as a stand-alone timing model or performance claim.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="aq-liquidity-method" id="liquidity-methodology" aria-labelledby="method-title">
+        <div class="shell shell-wide aq-liquidity-method-grid">
+          <div class="reveal">
+            <span>04 / Construction</span>
+            <h2 id="method-title">Public inputs. Explicit arithmetic.</h2>
+            <p>All inputs are normalized to millions of U.S. dollars before alignment. Overnight reverse repo is converted from billions. BTFP is retained historically and set to zero after discontinuation.</p>
+          </div>
+          <div class="aq-liquidity-formula-card reveal">
+            <span>Net Fed Liquidity</span>
+            <code>WALCL - WTREGEN - (RRPONTSYD × 1,000) + H41RESPPALDKNWW + WLCFLPCL</code>
+            <p>Federal Reserve assets minus the Treasury General Account and overnight reverse repo, plus BTFP and primary credit.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="aq-liquidity-source">
+        <div class="shell shell-wide">
+          <p>Source: Federal Reserve H.4.1 data via <a href="https://fred.stlouisfed.org/series/WALCL" target="_blank" rel="noreferrer">FRED</a>. The series is updated on the source release schedule. No substitute reading is shown when the feed is unavailable.</p>
+          <div><a href="research.html">Data standards</a><a href="methodology.html">Research methodology</a><a href="terms.html">Disclosures</a></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="aq-footer">
+      <div class="shell footer-inner">
+        <p>Independent quantitative research. Net Fed Liquidity is market context, not a trading signal.</p>
+        <div class="footer-links">
+          <a href="index.html">Home</a><a href="models.html#trend">Trend</a><a href="valuation.html">Valuation</a>
+          <a href="research.html">Research</a><a href="about.html">About</a><span>Copyright <span data-year></span> AstravaQuant</span>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+    <script type="module" src="/src/client/index.ts"></script>
+  </body>
+</html>

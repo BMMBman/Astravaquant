@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="AstravaQuant published trend, relative-strength, rate-pressure, and liquidity systems with dated history."
+      content="AstravaQuant published trend, relative-strength, and rate-pressure systems with dated history."
     />
-    <title>AstravaQuant Trend &amp; Liquidity | Published Systems</title>
+    <title>AstravaQuant Trend | Published Systems</title>
     <link rel="icon" href="assets/astravaquant-favicon-temporary.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="public-redesign.css" />
     <link rel="stylesheet" href="brand.css" />
@@ -34,7 +34,7 @@
           <a href="index.html">Overview</a>
           <a class="is-active" href="models.html#trend">Trend</a>
           <a href="valuation.html">Valuation</a>
-          <a href="models.html#liquidity">Liquidity</a>
+          <a href="liquidity.html">Liquidity</a>
           <a href="research.html">Research</a>
           <a href="about.html">About</a>
         </nav>
@@ -47,9 +47,9 @@
         <div class="shell aq-hero-grid">
           <div class="aq-hero-copy reveal">
             <p class="aq-kicker">Published trend systems</p>
-            <h1 class="aq-page-title">Trend and liquidity.</h1>
+            <h1 class="aq-page-title">Published trend state.</h1>
             <p class="aq-lead">
-              Dated, inspectable model readings for crypto trend, rate pressure, relative strength, and Federal Reserve liquidity.
+              Dated, inspectable model readings for crypto trend, rate pressure, and relative strength.
             </p>
           </div>
 
@@ -60,41 +60,6 @@
               and dated observation history.
             </span>
           </aside>
-        </div>
-      </section>
-
-      <section class="aq-page-section" id="liquidity">
-        <div class="shell shell-wide">
-          <div class="aq-section-head reveal">
-            <div>
-              <p class="aq-section-label">Liquidity</p>
-              <h2>Net Fed liquidity</h2>
-            </div>
-            <p class="aq-section-note">A first-party calculation from public FRED series, updated on the Federal Reserve release schedule.</p>
-          </div>
-          <article class="aq-net-liquidity reveal" data-net-liquidity aria-live="polite">
-            <div class="aq-net-liquidity-overview">
-              <div>
-                <p class="aq-section-label">Latest net liquidity</p>
-                <strong data-net-liquidity-current>--</strong>
-                <p data-net-liquidity-as-of>Loading public observations</p>
-              </div>
-              <div class="aq-net-liquidity-status" data-net-liquidity-status>Loading FRED series</div>
-            </div>
-            <div class="aq-liquidity-formula">
-              <span>Formula</span>
-              <code>WALCL - TGA - RRPONTSYD + H41RESPPALDKNWW + WLCFLPCL</code>
-              <p>All inputs are normalized to millions of U.S. dollars; reverse repo is converted from billions before calculation.</p>
-            </div>
-            <div class="aq-net-liquidity-controls">
-              <label>Start date<input type="date" data-net-liquidity-start /></label>
-              <label>End date<input type="date" data-net-liquidity-end /></label>
-              <span data-net-liquidity-range>Awaiting aligned observations</span>
-            </div>
-            <div class="terminal-chart aq-chart-panel aq-net-liquidity-chart" data-net-liquidity-chart><span>Loading net liquidity history.</span></div>
-            <div class="aq-liquidity-components" data-net-liquidity-components><p class="aq-disclosure">Loading component trends.</p></div>
-            <p class="aq-disclosure">Source: Federal Reserve H.4.1 data via FRED. BTFP is retained for historical continuity and is zero after its discontinuation. This derived series is market context, not a trading signal or a recommendation.</p>
-          </article>
         </div>
       </section>
 

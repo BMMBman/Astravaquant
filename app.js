@@ -2,6 +2,11 @@ document.documentElement.classList.add("js");
 if (document.body) {
 document.body.classList.add("js");
 
+// Preserve old liquidity deep links while the research now lives on its own page.
+if (document.body.classList.contains("aq-models") && window.location.hash === "#liquidity") {
+  window.location.replace("liquidity.html");
+}
+
 // The homepage keeps research navigation inside the Market Atlas.
 if (!document.body.classList.contains("aq-home") && !document.body.classList.contains("aq-atlas-detail")) {
   document.querySelectorAll(".site-nav").forEach((navigation) => {

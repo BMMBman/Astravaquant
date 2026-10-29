@@ -38,6 +38,7 @@ const sheetDefinitions: SheetDefinition[] = [
   { name: "Model Results", category: "forward_test", description: "Published historical simulated backtest results and review flags." },
   { name: "SMPS", sourceName: "RSPS", category: "relative_strength", description: "Strength Module Portfolio System Strategy ratio models." },
   { name: "Alternative SMPS", sourceName: "Alts RSPS", category: "relative_strength", description: "Alternative-asset Strength Module Portfolio System Strategy ratio models." },
+  { name: "RSPS Published Feed", category: "relative_strength", description: "Formula-linked publication feed for all published relative-strength relationships." },
   { name: "Total ES 1D", sourceName: "1D SNIPER V1", modelId: "sniper1d", scoreLabel: /^SNIPER Composite Score$/i, category: "core_model", description: "Total-market model components from the 1D SNIPER V1 research tab." },
   { name: "MTPI Total", sourceName: "MTPI", modelId: "mtpi", scoreLabel: /^MTPI Avg Score$/i, category: "core_model", description: "Medium-term total-market trend model components." },
   { name: "BTC 1W", sourceName: "New BTC", modelId: "btc1w", scoreLabel: /^BTC Avg Score$/i, category: "core_model", description: "Bitcoin one-week model components." },
@@ -389,6 +390,49 @@ export function parseRatioModels(sourceTab: "SMPS" | "Alternative SMPS", rows: S
   return [...models.values()];
 }
 
+export function parsePublishedRatioFeed(rows: SheetRows): WorkbookRatioModel[] {
+  const headerIndex = rows.findIndex((row) => {
+    const normalized = row.map((cell) => cell.trim().toLowerCase());
+    return normalized.includes("pair") && normalized.includes("source tab") && (normalized.includes("score") || normalized.includes("feed status"));
+  });
+  if (headerIndex < 0) return [];
+
+  const header = rows[headerIndex]!.map((cell) => cell.trim().toLowerCase());
+  const pairIndex = header.indexOf("pair");
+  const sourceIndex = header.indexOf("source tab");
+  const scoreIndex = header.indexOf("score") >= 0 ? header.indexOf("score") : 2;
+  const stateIndex = header.indexOf("state");
+  const updatedIndex = header.indexOf("source updated") >= 0 ? header.indexOf("source updated") : 4;
+  const statusIndex = header.indexOf("feed status");
+  const models = new Map<string, WorkbookRatioModel>();
+
+  for (const row of rows.slice(headerIndex + 1)) {
+    const label = ratioLabel(row[pairIndex] ?? "");
+    const score = finiteScore(row[scoreIndex] ?? "");
+    const sourceValue = row[sourceIndex]?.trim();
+    if (!label || score === null || (sourceValue !== "SMPS" && sourceValue !== "Alternative SMPS")) continue;
+    if (statusIndex >= 0 && row[statusIndex] && row[statusIndex]!.trim().toUpperCase() !== "READY") continue;
+    const publishedState = stateIndex >= 0 ? row[stateIndex]?.trim() ?? "" : "";
+    const state = /^(?:long|short|neutral)$/i.test(publishedState)
+      ? titleState(publishedState)
+      : score > 0.25
+        ? "LONG"
+        : score < -0.25
+          ? "SHORT"
+          : "NEUTRAL";
+    const id = sheetId(label);
+    models.set(id, {
+      id,
+      label,
+      score,
+      state,
+      sourceTab: sourceValue,
+      updatedLabel: updatedIndex >= 0 ? row[updatedIndex]?.trim() || null : null
+    });
+  }
+  return [...models.values()];
+}
+
 function fallbackSignal(id: string): WorkbookModelSignal {
   const fallback = currentSignals.find((signal) => signal.id === id)!;
   return {
@@ -437,14 +481,18 @@ export function buildWorkbookDashboard(
     parseScoreSeries("ltpi", "LT Forward Testing", rowsBySheet.get("Long-Term Forward Test") ?? [])
   ];
   const modelResults = parseModelResults(rowsBySheet.get("Model Results") ?? []);
-  const ratioModels = [
-    ...parseRatioModels("SMPS", rowsBySheet.get("SMPS") ?? []),
-    ...parseRatioModels("Alternative SMPS", rowsBySheet.get("Alternative SMPS") ?? [])
-  ];
+  const publishedRatioModels = parsePublishedRatioFeed(rowsBySheet.get("RSPS Published Feed") ?? []);
+  const ratioModels = publishedRatioModels.length
+    ? publishedRatioModels
+    : [
+        ...parseRatioModels("SMPS", rowsBySheet.get("SMPS") ?? []),
+        ...parseRatioModels("Alternative SMPS", rowsBySheet.get("Alternative SMPS") ?? [])
+      ];
   const readyTabs = tabs.filter((tab) => tab.status === "ready").length;
   const warnings: string[] = [];
   if (signals.some((signal) => signal.source !== "google_sheets")) warnings.push("A trend reading could not be verified; affected readings use the manual fallback snapshot.");
   if (scoreSeries.some((series) => series.status === "unavailable")) warnings.push("One or more forward-test histories do not yet contain enough populated dated observations.");
+  if (!publishedRatioModels.length) warnings.push("The structured RSPS publication feed is unavailable; relative-strength readings are using the validated source-tab parser.");
   warnings.push("10US Treasury Module is sourced from a separate weekly system workbook.");
   if (tabs.some((tab) => tab.formulaErrorCount > 0)) warnings.push("Some research cells contain spreadsheet formula errors; they are reported as unavailable, never as zero.");
   return {

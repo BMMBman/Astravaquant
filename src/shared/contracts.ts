@@ -181,6 +181,7 @@ export interface WorkbookRatioModel {
   score: number;
   state: string;
   sourceTab: "SMPS" | "Alternative SMPS";
+  updatedLabel?: string | null;
 }
 
 export interface WorkbookDashboard {

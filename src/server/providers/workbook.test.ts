@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildWorkbookDashboard, buildWorkbookSignalSnapshot, parseCsv, parseModelResults, parseRatioModels, parseScoreSeries, PublicGoogleSheetsWorkbookProvider, regimeForScore } from "./workbook.js";
+import { buildWorkbookDashboard, buildWorkbookSignalSnapshot, parseCsv, parseModelResults, parsePublishedRatioFeed, parseRatioModels, parseScoreSeries, PublicGoogleSheetsWorkbookProvider, regimeForScore } from "./workbook.js";
 
 describe("Google workbook normalization", () => {
   it("reads dated score observations and excludes blanks and formula errors", () => {
@@ -59,6 +59,32 @@ describe("Google workbook normalization", () => {
       { id: "sol-eth", label: "SOL / ETH", score: 0.88, state: "NEUTRAL", sourceTab: "SMPS" },
       { id: "eth-btc", label: "ETH / BTC", score: -1, state: "SHORT", sourceTab: "SMPS" },
       { id: "sui-sol", label: "SUI / SOL", score: -0.71, state: "SHORT", sourceTab: "SMPS" }
+    ]);
+  });
+
+  it("prefers the formula-linked RSPS publication feed and preserves HYPE coverage", () => {
+    const published = parsePublishedRatioFeed([
+      ["Major Rotational Vector — Published Feed"],
+      ["Pair", "Source Tab", "", "State", "", "Refresh Contract", "Feed Status"],
+      ["ETH / BTC", "SMPS", "-1.00", "SHORT", "09/03/2026", "Automatic / 5-minute cache", "READY"],
+      ["HYPE / BTC", "Alternative SMPS", "0.88", "LONG", "09/21/2026", "Automatic / 5-minute cache", "READY"],
+      ["HYPE / ETH", "Alternative SMPS", "#N/A", "LONG", "09/21/2026", "Automatic / 5-minute cache", "CHECK"]
+    ]);
+
+    expect(published).toEqual([
+      { id: "eth-btc", label: "ETH / BTC", score: -1, state: "SHORT", sourceTab: "SMPS", updatedLabel: "09/03/2026" },
+      { id: "hype-btc", label: "HYPE / BTC", score: 0.88, state: "LONG", sourceTab: "Alternative SMPS", updatedLabel: "09/21/2026" }
+    ]);
+
+    const dashboard = buildWorkbookDashboard(new Map([
+      ["RSPS Published Feed", [
+        ["Pair", "Source Tab", "Score", "State", "Source Updated", "Refresh Contract", "Feed Status"],
+        ["HYPE / BTC", "Alternative SMPS", "0.88", "LONG", "09/21/2026", "Automatic / 5-minute cache", "READY"]
+      ]],
+      ["Alternative SMPS", [["HYPEBTC Avg Score", "-1", "Short"]]]
+    ]), 300);
+    expect(dashboard.ratioModels).toEqual([
+      { id: "hype-btc", label: "HYPE / BTC", score: 0.88, state: "LONG", sourceTab: "Alternative SMPS", updatedLabel: "09/21/2026" }
     ]);
   });
 

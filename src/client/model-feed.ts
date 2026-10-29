@@ -159,6 +159,27 @@ function updateRatios(dashboard: WorkbookDashboard): void {
   render();
 }
 
+function updateRotationRefresh(dashboard: WorkbookDashboard, delayed = false): void {
+  const node = document.querySelector<HTMLElement>("[data-rotation-refresh]");
+  if (!node) return;
+  if (delayed) {
+    node.textContent = "Latest published readings retained · automatic refresh temporarily delayed";
+    node.dataset.state = "delayed";
+    return;
+  }
+  if (!dashboard.ratioModels.length) {
+    node.textContent = "Relative-strength publication feed unavailable";
+    node.dataset.state = "unavailable";
+    return;
+  }
+  const sourceDates = [...new Set(dashboard.ratioModels.map((model) => model.updatedLabel).filter((value): value is string => Boolean(value)))];
+  const syncedAt = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit" }).format(new Date(dashboard.updatedAt));
+  const cadence = Math.max(1, Math.round(dashboard.refreshSeconds / 60));
+  const sourceText = sourceDates.length ? ` · source ${sourceDates.join(" / ")}` : "";
+  node.textContent = `${dashboard.ratioModels.length} published relationships${sourceText} · refreshes every ${cadence} min · synced ${syncedAt}`;
+  node.dataset.state = "ready";
+}
+
 function valuationScore(value: number | null): string {
   if (value === null) return "--";
   return `${signed(value)}\u03c3`;
@@ -214,20 +235,38 @@ function renderValuationBriefUnavailable(): void {
   if (state) state.textContent = "NO SUBSTITUTE SCORE";
 }
 
-export async function bootModelFeed(): Promise<void> {
-  const workbookTask = apiRequest<WorkbookDashboard>("/api/workbook", { signal: AbortSignal.timeout(12_000) })
-    .then((dashboard) => {
-      renderModelHistory(dashboard);
-      dashboard.signals.forEach(updateSignal);
-      updatePublication(dashboard);
-      updateRatios(dashboard);
-    })
-    .catch(() => {
+let workbookRefreshTimer: number | null = null;
+let hasWorkbookSnapshot = false;
+
+async function refreshWorkbook(): Promise<void> {
+  let nextRefreshMs = 60_000;
+  try {
+    const dashboard = await apiRequest<WorkbookDashboard>("/api/workbook", { cache: "no-store", signal: AbortSignal.timeout(12_000) });
+    renderModelHistory(dashboard);
+    dashboard.signals.forEach(updateSignal);
+    updatePublication(dashboard);
+    updateRatios(dashboard);
+    updateRotationRefresh(dashboard);
+    hasWorkbookSnapshot = true;
+    nextRefreshMs = Math.min(15 * 60_000, Math.max(60_000, dashboard.refreshSeconds * 1000));
+  } catch {
+    if (hasWorkbookSnapshot) {
+      updateRotationRefresh({ status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] }, true);
+    } else {
       const unavailable: WorkbookDashboard = { status: "unavailable", provider: null, updatedAt: new Date().toISOString(), refreshSeconds: 300, signals: [], scoreSeries: [], ratioModels: [], tabs: [], warnings: [] };
       updatePublication(unavailable);
       updateRatios(unavailable);
+      updateRotationRefresh(unavailable);
       renderModelHistoryUnavailable();
-    });
+    }
+  } finally {
+    if (workbookRefreshTimer !== null) window.clearTimeout(workbookRefreshTimer);
+    workbookRefreshTimer = window.setTimeout(() => void refreshWorkbook(), nextRefreshMs);
+  }
+}
+
+export async function bootModelFeed(): Promise<void> {
+  const workbookTask = refreshWorkbook();
 
   const valuationTask = document.querySelector("[data-valuation-brief]")
     ? apiRequest<BitcoinValuationDashboard>("/api/valuation", { signal: AbortSignal.timeout(12_000) })

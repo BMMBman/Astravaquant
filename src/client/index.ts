@@ -15,7 +15,7 @@ if (document.querySelector("[data-model-feed]")) {
   void import("./model-feed.js").then(({ bootModelFeed }) => bootModelFeed());
 }
 
-if (document.querySelector("[data-home-overview]")) {
+if (document.querySelector("[data-home-hero-snapshot]")) {
   void import("./home-overview.js").then(({ bootHomeOverview }) => bootHomeOverview());
 }
 

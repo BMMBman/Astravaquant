@@ -343,7 +343,7 @@ export async function bootHomeOverview(): Promise<void> {
   const snapshot = document.querySelector<HTMLElement>("[data-home-hero-snapshot]");
   const performance = document.querySelector<HTMLElement>("[data-home-performance]");
   const updated = document.querySelector<HTMLTimeElement>("[data-overview-updated]");
-  if (!overview || !history) return;
+  if (!history) return;
 
   const [workbookResult, valuationResult, marketsResult] = await Promise.allSettled([
     apiRequest<WorkbookDashboard>("/api/workbook", { signal: AbortSignal.timeout(12_000) }),
@@ -354,7 +354,7 @@ export async function bootHomeOverview(): Promise<void> {
   const valuation = valuationResult.status === "fulfilled" ? valuationResult.value : null;
   const markets = marketsResult.status === "fulfilled" ? marketsResult.value : null;
 
-  overview.innerHTML = `${valuationCard(valuation)}${liquidityCard(markets)}${researchCard(workbook)}`;
+  if (overview) overview.innerHTML = `${valuationCard(valuation)}${liquidityCard(markets)}${researchCard(workbook)}`;
   if (snapshot) snapshot.innerHTML = heroSnapshot(workbook, markets);
   if (performance) performance.innerHTML = performanceMarkup(workbook);
   if (updated) updated.textContent = formatDate(newestPublishedDate(workbook, valuation, markets));

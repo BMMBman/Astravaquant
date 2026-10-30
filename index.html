@@ -34,12 +34,37 @@
     <main id="overview">
       <section class="aq-overview-hero" aria-labelledby="atlas-home-title">
         <div class="aq-hero-orbits" aria-hidden="true"><i></i><i></i><i></i></div>
+        <svg class="aq-world-network" viewBox="0 0 1600 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="aq-network-blue" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4f9dff" stop-opacity="0"/><stop offset=".48" stop-color="#72b9ff" stop-opacity=".72"/><stop offset="1" stop-color="#4f9dff" stop-opacity="0"/></linearGradient>
+            <linearGradient id="aq-network-pink" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f3adc9" stop-opacity="0"/><stop offset=".55" stop-color="#f3adc9" stop-opacity=".74"/><stop offset="1" stop-color="#8ebfff" stop-opacity="0"/></linearGradient>
+            <filter id="aq-node-glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <g class="aq-network-grid">
+            <path d="M0 190H1600M0 380H1600M0 570H1600"/>
+            <path d="M200 0V760M400 0V760M600 0V760M800 0V760M1000 0V760M1200 0V760M1400 0V760"/>
+          </g>
+          <g class="aq-network-routes">
+            <path d="M92 350 C 320 158, 560 126, 799 324 S 1280 486, 1512 270"/>
+            <path d="M138 494 C 416 318, 633 612, 844 402 S 1250 147, 1484 370"/>
+            <path class="is-pink" d="M252 220 C 486 438, 720 178, 1017 264 S 1320 612, 1536 446"/>
+          </g>
+          <g class="aq-network-nodes" filter="url(#aq-node-glow)">
+            <circle cx="252" cy="220" r="4"/><circle cx="516" cy="290" r="3"/><circle cx="799" cy="324" r="4"/><circle cx="1017" cy="264" r="4"/><circle cx="1284" cy="374" r="3"/><circle cx="1484" cy="370" r="4"/>
+          </g>
+        </svg>
+        <div class="aq-world-labels" aria-hidden="true">
+          <span class="aq-world-label aq-world-label-a"><i></i>MTPI / REGIME</span>
+          <span class="aq-world-label aq-world-label-b"><i></i>BTC / VALUATION</span>
+          <span class="aq-world-label aq-world-label-c"><i></i>FED / LIQUIDITY</span>
+          <span class="aq-world-label aq-world-label-d"><i></i>RSPS / RELATIVE STRENGTH</span>
+        </div>
         <div class="shell aq-hero-center reveal">
           <p class="aq-overview-kicker"><span></span>Digital assets&nbsp; / &nbsp;Systematic models&nbsp; / &nbsp;Independent research<span></span></p>
           <h1 id="atlas-home-title">Quantitative intelligence.<br /><span>Systematic precision.</span></h1>
           <p class="aq-overview-copy">Independent quantitative research across digital assets, market regimes, valuation, and macro liquidity—published in one inspectable platform.</p>
           <div class="aq-overview-actions" aria-label="AstravaQuant research actions">
-            <a class="button primary" href="#market-atlas">Explore Research <i aria-hidden="true">→</i></a>
+            <a class="button primary" href="#signal-history">Explore Research <i aria-hidden="true">→</i></a>
             <a class="button" href="models.html#trend"><span class="aq-button-bars" aria-hidden="true"><i></i><i></i><i></i></span>View Models</a>
           </div>
           <div class="aq-hero-dashboard" data-home-hero-snapshot aria-live="polite">
@@ -54,37 +79,10 @@
         </div>
       </section>
 
-      <section class="aq-overview-section aq-overview-instruments" id="market-atlas" aria-label="Valuation, liquidity, and research record">
-        <div class="shell">
-          <div class="aq-overview-grid" data-home-overview aria-live="polite">
-            <article class="aq-overview-card aq-overview-loading-card"><span>Bitcoin valuation</span><p>Loading published valuation reading.</p></article>
-            <article class="aq-overview-card aq-overview-loading-card"><span>Net Fed liquidity</span><p>Loading published liquidity reading.</p></article>
-            <article class="aq-overview-card aq-overview-loading-card"><span>Research record</span><p>Loading research record.</p></article>
-          </div>
-        </div>
-      </section>
-
-      <section class="aq-performance-section" aria-labelledby="performance-title">
-        <div class="shell">
-          <div class="aq-overview-section-head aq-centered-heading">
-            <span class="aq-section-index">01 / Model evidence</span>
-            <h2 id="performance-title">Performance, with context.</h2>
-            <p>Selected completed tests from the live Model Results tab. Historical simulations are shown with their window, drawdown, and review status intact.</p>
-          </div>
-          <div class="aq-performance-grid" data-home-performance aria-live="polite">
-            <article class="aq-performance-loading"><span></span><p>Loading verified model results.</p></article>
-          </div>
-          <div class="aq-performance-footer">
-            <p>Backtests are historical simulations, not live trading results, and do not predict future performance.</p>
-            <a href="research-terminal.html#model-results">Review all model results <i>↗</i></a>
-          </div>
-        </div>
-      </section>
-
-      <section class="aq-overview-section aq-overview-history-section" aria-labelledby="trend-history-title">
+      <section class="aq-overview-section aq-overview-history-section" id="signal-history" aria-labelledby="trend-history-title">
         <div class="shell">
           <div class="aq-overview-section-head aq-history-heading">
-            <div><span class="aq-section-index">02 / Published history</span><h2 id="trend-history-title">The signal, over time.</h2><p>Inspect every dated observation behind the current trend state.</p></div>
+            <div><span class="aq-section-index">01 / Published signal history</span><h2 id="trend-history-title">The signal, over time.</h2><p>Inspect every dated observation behind the current trend state.</p></div>
             <div class="aq-history-selector" role="group" aria-label="Trend history series">
               <button class="is-active" type="button" data-home-history-series="sniper1d">Total ES 1D</button>
               <button type="button" data-home-history-series="mtpi">MTPI Total</button>
@@ -101,6 +99,23 @@
             </div>
             <div class="aq-methodology-actions"><a class="button primary" href="research-terminal.html">Enter Research Workspace</a><a class="button" href="methodology.html">Review Methodology</a></div>
           </aside>
+        </div>
+      </section>
+
+      <section class="aq-performance-section" aria-labelledby="performance-title">
+        <div class="shell">
+          <div class="aq-overview-section-head aq-centered-heading">
+            <span class="aq-section-index">02 / Model evidence</span>
+            <h2 id="performance-title">Performance, with context.</h2>
+            <p>Selected completed tests from the live Model Results tab. Historical simulations are shown with their window, drawdown, and review status intact.</p>
+          </div>
+          <div class="aq-performance-grid" data-home-performance aria-live="polite">
+            <article class="aq-performance-loading"><span></span><p>Loading verified model results.</p></article>
+          </div>
+          <div class="aq-performance-footer">
+            <p>Backtests are historical simulations, not live trading results, and do not predict future performance.</p>
+            <a href="research-terminal.html#model-results">Review all model results <i>↗</i></a>
+          </div>
         </div>
       </section>
     </main>

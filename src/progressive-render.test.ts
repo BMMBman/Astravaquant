@@ -76,11 +76,14 @@ describe("progressive page rendering", () => {
     expect(html).toContain("data-home-hero-snapshot");
     expect(html).toContain("Quantitative intelligence.");
     expect(html).not.toContain("One view of the market.");
-    expect(html).toContain("aq-overview-instruments");
+    expect(html).not.toContain("aq-overview-instruments");
+    expect(html).toContain("aq-world-network");
+    expect(html).toContain('id="signal-history"');
     expect(html).not.toContain("Loading published trend readings.");
     expect(html).toContain("data-home-performance");
     expect(html).toContain("Performance, with context.");
     expect(html).toContain("The signal, over time.");
+    expect(html.indexOf("The signal, over time.")).toBeLessThan(html.indexOf("Performance, with context."));
     expect(html).toContain('href="research-terminal.html"');
   });
 });

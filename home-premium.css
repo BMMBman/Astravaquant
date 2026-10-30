@@ -8,6 +8,7 @@
   --home-cyan: #71dcf4;
   --home-blue: #668cff;
   --home-magenta: #d869dc;
+  --home-pink: #f3adc9;
   --home-positive: #83e2ca;
   --home-negative: #ef9a98;
   --home-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
@@ -755,4 +756,161 @@ body.aq-site.aq-overview-home .aq-overview-section.aq-overview-instruments { pad
   body.aq-site.aq-overview-home .aq-command-signal { grid-template-columns: minmax(72px, 1fr) 80px 44px; }
   body.aq-site.aq-overview-home .aq-command-signal > b { display: none; }
   body.aq-site.aq-overview-home .aq-regime-dial { transform: scale(0.92); transform-origin: center top; }
+}
+
+/* Analytical world field + consolidated research narrative */
+body.aq-site.aq-overview-home main#overview .aq-overview-hero {
+  min-height: min(900px, calc(100vh - 76px));
+  background:
+    radial-gradient(circle at 50% 34%, rgba(24, 91, 170, 0.15), transparent 33%),
+    #050d19;
+}
+body.aq-site.aq-overview-home main#overview .aq-overview-hero::before {
+  opacity: 0.34;
+  filter: grayscale(0.16) saturate(0.58) contrast(1.62) brightness(0.42) hue-rotate(158deg);
+}
+body.aq-site.aq-overview-home main#overview .aq-overview-hero::after {
+  background:
+    radial-gradient(circle at 50% 25%, rgba(15, 92, 181, 0.13), transparent 29%),
+    linear-gradient(to bottom, rgba(4, 11, 21, 0.2), rgba(4, 11, 21, 0.68) 70%, #050d19 98%),
+    radial-gradient(circle, rgba(117, 180, 255, 0.13) 0 0.85px, transparent 1.2px) 0 0 / 8px 8px,
+    repeating-linear-gradient(90deg, transparent 0 79px, rgba(100, 168, 255, 0.038) 80px),
+    repeating-linear-gradient(0deg, transparent 0 79px, rgba(100, 168, 255, 0.038) 80px);
+}
+body.aq-site.aq-overview-home .aq-world-network {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 76%;
+  pointer-events: none;
+  opacity: 0.68;
+}
+body.aq-site.aq-overview-home .aq-network-grid path {
+  fill: none;
+  stroke: rgba(110, 169, 235, 0.075);
+  stroke-width: 1;
+}
+body.aq-site.aq-overview-home .aq-network-routes path {
+  fill: none;
+  stroke: url(#aq-network-blue);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 9;
+  vector-effect: non-scaling-stroke;
+  animation: aq-network-flow 18s linear infinite;
+}
+body.aq-site.aq-overview-home .aq-network-routes path.is-pink {
+  stroke: url(#aq-network-pink);
+  stroke-dasharray: 2 12;
+  animation-duration: 24s;
+  animation-direction: reverse;
+}
+body.aq-site.aq-overview-home .aq-network-nodes circle {
+  fill: #b8d9ff;
+  stroke: rgba(143, 197, 255, 0.62);
+  stroke-width: 5;
+  stroke-opacity: 0.16;
+}
+body.aq-site.aq-overview-home .aq-network-nodes circle:nth-child(3n + 1) { fill: var(--home-pink); }
+@keyframes aq-network-flow { to { stroke-dashoffset: -78; } }
+
+body.aq-site.aq-overview-home .aq-world-labels { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+body.aq-site.aq-overview-home .aq-world-label {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(170, 203, 238, 0.56);
+  font-family: var(--home-mono);
+  font-size: 0.49rem;
+  letter-spacing: 0.16em;
+}
+body.aq-site.aq-overview-home .aq-world-label i { width: 18px; height: 1px; background: linear-gradient(90deg, var(--home-pink), #72b9ff); }
+body.aq-site.aq-overview-home .aq-world-label-a { top: 21%; left: 5%; }
+body.aq-site.aq-overview-home .aq-world-label-b { top: 37%; right: 5%; }
+body.aq-site.aq-overview-home .aq-world-label-c { top: 49%; left: 8%; }
+body.aq-site.aq-overview-home .aq-world-label-d { top: 56%; right: 7%; }
+
+body.aq-site.aq-overview-home #atlas-home-title span {
+  background: linear-gradient(100deg, #83b9ff 6%, #6f9ff4 48%, var(--home-pink) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+body.aq-site.aq-overview-home .aq-overview-kicker span:last-child,
+body.aq-site.aq-overview-home .aq-section-index::before { background: var(--home-pink); }
+body.aq-site.aq-overview-home .aq-command-panel { border-color: rgba(105, 164, 237, 0.36); }
+body.aq-site.aq-overview-home .aq-command-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, rgba(243, 173, 201, 0.54), transparent);
+}
+body.aq-site.aq-overview-home .aq-dial-arc {
+  background: conic-gradient(from 225deg, var(--home-pink) 0deg, #5e7fc7 68deg, #4e9cff 104deg, #63d6b8 140deg, transparent 141deg 360deg);
+}
+body.aq-site.aq-overview-home .aq-hero-publication-line::before,
+body.aq-site.aq-overview-home .aq-hero-publication-line::after {
+  content: "";
+  width: min(8vw, 90px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(243, 173, 201, 0.46));
+}
+body.aq-site.aq-overview-home .aq-hero-publication-line::after { transform: scaleX(-1); }
+
+body.aq-site.aq-overview-home .aq-overview-history-section {
+  padding: 86px 0 72px;
+  border-top-color: rgba(113, 167, 233, 0.22);
+  background:
+    radial-gradient(circle at 12% 0, rgba(243, 173, 201, 0.05), transparent 25rem),
+    linear-gradient(180deg, #050d19, var(--home-bg) 230px);
+}
+body.aq-site.aq-overview-home .aq-overview-history-section .aq-section-index,
+body.aq-site.aq-overview-home .aq-performance-section .aq-section-index { display: inline-flex; align-items: center; gap: 9px; }
+body.aq-site.aq-overview-home .aq-overview-history-section .aq-section-index::before,
+body.aq-site.aq-overview-home .aq-performance-section .aq-section-index::before { content: ""; width: 20px; height: 1px; }
+body.aq-site.aq-overview-home .aq-history-heading { margin-bottom: 26px; }
+body.aq-site.aq-overview-home .aq-history-panel {
+  border-color: rgba(112, 169, 236, 0.22);
+  background: linear-gradient(150deg, rgba(15, 28, 46, 0.94), rgba(7, 15, 27, 0.98));
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+}
+body.aq-site.aq-overview-home .aq-history-line { stroke: #84bcff; filter: drop-shadow(0 0 5px rgba(70, 147, 244, 0.22)); }
+body.aq-site.aq-overview-home .aq-history-area { fill: rgba(112, 160, 255, 0.075); }
+body.aq-site.aq-overview-home .aq-history-selector button.is-active {
+  color: #fff;
+  background: linear-gradient(105deg, rgba(52, 123, 233, 0.38), rgba(243, 173, 201, 0.13));
+  box-shadow: inset 0 0 0 1px rgba(132, 188, 255, 0.12);
+}
+body.aq-site.aq-overview-home .aq-methodology-bridge {
+  margin-top: 14px;
+  background: linear-gradient(120deg, rgba(17, 32, 52, 0.72), rgba(243, 173, 201, 0.025));
+}
+body.aq-site.aq-overview-home .aq-performance-section {
+  padding: 78px 0 84px;
+  background:
+    radial-gradient(circle at 82% 20%, rgba(71, 134, 221, 0.07), transparent 25rem),
+    rgba(255, 255, 255, 0.012);
+}
+body.aq-site.aq-overview-home .aq-performance-section .aq-centered-heading { margin-bottom: 34px; }
+body.aq-site.aq-overview-home .aq-performance-section .aq-section-index::before { background: #72b9ff; }
+body.aq-site.aq-overview-home .aq-performance-card { padding-block: 22px 20px; }
+body.aq-site.aq-overview-home .aq-performance-primary { margin: 30px 0 22px; }
+
+@media (max-width: 1120px) {
+  body.aq-site.aq-overview-home .aq-world-label { opacity: 0.48; }
+  body.aq-site.aq-overview-home .aq-world-label-a,
+  body.aq-site.aq-overview-home .aq-world-label-c { left: 2%; }
+  body.aq-site.aq-overview-home .aq-world-label-b,
+  body.aq-site.aq-overview-home .aq-world-label-d { right: 2%; }
+}
+
+@media (max-width: 760px) {
+  body.aq-site.aq-overview-home .aq-world-network { height: 50%; opacity: 0.42; }
+  body.aq-site.aq-overview-home .aq-world-labels { display: none; }
+  body.aq-site.aq-overview-home .aq-hero-publication-line::before,
+  body.aq-site.aq-overview-home .aq-hero-publication-line::after { display: none; }
+  body.aq-site.aq-overview-home .aq-overview-history-section,
+  body.aq-site.aq-overview-home .aq-performance-section { padding-block: 64px; }
 }

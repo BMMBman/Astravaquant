@@ -169,23 +169,62 @@ function performanceMarkup(workbook: WorkbookDashboard | null): string {
   </article>`).join("")}</div>`;
 }
 
-function heroSnapshot(workbook: WorkbookDashboard | null): string {
+function heroSnapshot(workbook: WorkbookDashboard | null, markets: MarketDashboard | null): string {
   const models = [
-    { id: "sniper1d", label: "Total ES 1D", horizon: "Daily total-market regime" },
-    { id: "mtpi", label: "MTPI Total", horizon: "Medium-term trend" },
-    { id: "btc1w", label: "BTC 1W", horizon: "Bitcoin weekly structure" },
-    { id: "ltpi", label: "Long-Term Trend", horizon: "Long-horizon market structure" }
+    { id: "sniper1d", label: "Total ES 1D" },
+    { id: "mtpi", label: "MTPI Total" },
+    { id: "btc1w", label: "BTC 1W" },
+    { id: "ltpi", label: "Long-Term" }
   ];
   const signals = new Map(workbook?.signals.map((signal) => [signal.id, signal]));
-  return models.map((model) => {
+  const signalRows = models.map((model) => {
     const signal = signals.get(model.id);
     const state = signal?.state ?? "Unavailable";
-    return `<div class="aq-snapshot-row">
-      <div><span>${escapeHtml(model.label)}</span><small>${escapeHtml(signal?.sourceTab ?? model.horizon)}</small></div>
+    const position = signal ? Math.min(100, Math.max(0, ((signal.value + 1) / 2) * 100)) : 50;
+    return `<div class="aq-command-signal">
+      <span>${escapeHtml(model.label)}</span>
+      <div class="aq-command-rail"><i style="width:${position.toFixed(2)}%"></i></div>
       <strong>${formatScore(signal?.value ?? null)}</strong>
       <b class="${stateTone(state)}">${escapeHtml(state)}</b>
     </div>`;
   }).join("");
+  const regime = signals.get("mtpi") ?? signals.get("sniper1d") ?? null;
+  const regimeScore = regime?.value ?? null;
+  const regimeState = regime?.state ?? "Unavailable";
+  const needle = regimeScore === null ? 0 : Math.min(70, Math.max(-70, regimeScore * 70));
+  const liquidity = markets?.metrics.find((metric) => metric.id === "fedNetLiquidity");
+  const liquidityPoints = liquidity?.points.slice(-120).map((point) => ({ date: point.timestamp, value: point.value })) ?? [];
+  const liquidityChange = liquidity?.change === null || liquidity?.change === undefined
+    ? "Change pending"
+    : `${liquidity.change > 0 ? "+" : ""}${liquidity.change.toFixed(2)}% weekly`;
+  const liquidityTone = liquidity?.change === null || liquidity?.change === undefined
+    ? "is-neutral"
+    : liquidity.change >= 0 ? "is-positive" : "is-negative";
+
+  return `<article class="aq-command-panel aq-signal-panel">
+    <header><div><span class="aq-panel-icon" aria-hidden="true">⌁</span><h2>Published model stack</h2></div><a href="models.html#trend">View all <i>→</i></a></header>
+    <nav class="aq-command-tabs" aria-label="Model stack categories"><span class="is-active">Trend</span><span>Bitcoin</span><span>Rates</span></nav>
+    <div class="aq-command-signal-list">${signalRows}</div>
+    <footer><span>Standardized scale</span><strong>−1.00 <i>to</i> +1.00</strong></footer>
+  </article>
+  <article class="aq-command-panel aq-regime-panel">
+    <header><div><span class="aq-panel-icon" aria-hidden="true">◎</span><h2>Medium-term market regime</h2></div><span class="aq-live-indicator"><i></i>Live model</span></header>
+    <div class="aq-regime-dial" style="--aq-needle:${needle.toFixed(2)}deg">
+      <div class="aq-dial-arc" aria-hidden="true"></div>
+      <div class="aq-dial-labels" aria-hidden="true"><span>Risk-off</span><span>Transition</span><span>Risk-on</span></div>
+      <div class="aq-dial-needle" aria-hidden="true"><i></i></div>
+      <div class="aq-dial-copy"><small>${escapeHtml(regime?.name ?? "MTPI Total")}</small><strong>${formatScore(regimeScore)}</strong><b class="${stateTone(regimeState)}">${escapeHtml(regimeState)}</b></div>
+    </div>
+    <div class="aq-regime-brief"><span aria-hidden="true">↗</span><p>${regime ? `Published ${escapeHtml(regime.name)} reading from ${escapeHtml(regime.sourceTab ?? "the research workbook")}.` : "The published medium-term regime feed is temporarily unavailable."}</p></div>
+    <footer><span>Latest observation</span><strong>${escapeHtml(formatDate(regime?.updatedLabel))}</strong></footer>
+  </article>
+  <article class="aq-command-panel aq-liquidity-panel">
+    <header><div><span class="aq-panel-icon" aria-hidden="true">▥</span><h2>Net Fed Liquidity</h2></div><a href="liquidity.html">View details <i>→</i></a></header>
+    <div class="aq-liquidity-reading"><strong>${formatLiquidity(liquidity)}</strong><span class="${liquidityTone}">${escapeHtml(liquidityChange)}</span></div>
+    <p>Federal Reserve balance-sheet liquidity after Treasury General Account and reverse-repo offsets.</p>
+    <div class="aq-command-chart">${sparkline(liquidityPoints, "Net Fed Liquidity")}</div>
+    <footer><span>${liquidity?.asOf ? `Updated ${escapeHtml(formatDate(liquidity.asOf))}` : "Update pending"}</span><strong>${escapeHtml(liquidity?.source ?? "FRED-derived")}</strong></footer>
+  </article>`;
 }
 
 function historyMarkup(series: WorkbookScoreSeries): string {
@@ -316,7 +355,7 @@ export async function bootHomeOverview(): Promise<void> {
   const markets = marketsResult.status === "fulfilled" ? marketsResult.value : null;
 
   overview.innerHTML = `${valuationCard(valuation)}${liquidityCard(markets)}${researchCard(workbook)}`;
-  if (snapshot) snapshot.innerHTML = heroSnapshot(workbook);
+  if (snapshot) snapshot.innerHTML = heroSnapshot(workbook, markets);
   if (performance) performance.innerHTML = performanceMarkup(workbook);
   if (updated) updated.textContent = formatDate(newestPublishedDate(workbook, valuation, markets));
 

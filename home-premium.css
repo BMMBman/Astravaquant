@@ -914,3 +914,120 @@ body.aq-site.aq-overview-home .aq-performance-primary { margin: 30px 0 22px; }
   body.aq-site.aq-overview-home .aq-overview-history-section,
   body.aq-site.aq-overview-home .aq-performance-section { padding-block: 64px; }
 }
+
+/* 2026 mobile consolidation and forward-test directory */
+body.aq-site.aq-overview-home main#overview .aq-overview-hero::before {
+  opacity: 0.4;
+  filter: grayscale(0.1) saturate(0.68) contrast(1.72) brightness(0.46) hue-rotate(158deg);
+}
+body.aq-site.aq-overview-home .aq-world-network { height: 82%; opacity: 0.84; }
+body.aq-site.aq-overview-home .aq-network-routes path { stroke-width: 1.55; }
+body.aq-site.aq-overview-home .aq-network-routes path.is-pink { stroke-width: 1.8; }
+body.aq-site.aq-overview-home .aq-network-nodes circle:nth-child(odd) {
+  fill: var(--home-pink);
+  stroke: rgba(243, 173, 201, 0.72);
+}
+body.aq-site.aq-overview-home .aq-hero-orbits::after {
+  content: "";
+  position: absolute;
+  top: 10%;
+  bottom: 15%;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  opacity: 0.42;
+  background: linear-gradient(to bottom, transparent, #7db8ff 44%, var(--home-pink) 58%, transparent);
+  box-shadow: 0 0 30px rgba(97, 162, 255, 0.35);
+}
+body.aq-site.aq-overview-home .aq-overview-actions .button.primary {
+  background: linear-gradient(112deg, #1263e6 0%, #168df4 72%, #df8fbd 135%);
+  box-shadow: 0 0 38px rgba(31, 137, 255, 0.34), 0 0 54px rgba(243, 173, 201, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+body.aq-site.aq-overview-home .aq-regime-panel { border-color: rgba(243, 173, 201, 0.38); }
+
+body.aq-site.aq-overview-home .aq-forward-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+body.aq-site.aq-overview-home .aq-forward-summary-card,
+body.aq-site.aq-overview-home .aq-forward-summary > article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 12px;
+  min-width: 0;
+  min-height: 92px;
+  padding: 15px 16px;
+  border: 1px solid rgba(111, 171, 244, 0.18);
+  border-radius: 9px;
+  color: #dce8f6;
+  background: linear-gradient(145deg, rgba(15, 31, 53, 0.86), rgba(7, 16, 28, 0.95));
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+body.aq-site.aq-overview-home .aq-forward-summary-card:hover { border-color: rgba(243, 173, 201, 0.46); transform: translateY(-1px); }
+body.aq-site.aq-overview-home .aq-forward-summary-card > span,
+body.aq-site.aq-overview-home .aq-forward-summary > article > span { display: flex; align-items: center; gap: 7px; min-width: 0; font-size: 0.67rem; font-weight: 700; }
+body.aq-site.aq-overview-home .aq-forward-summary-card > span i { width: 5px; height: 5px; flex: 0 0 auto; border-radius: 50%; background: #526176; }
+body.aq-site.aq-overview-home .aq-forward-summary-card > span i.is-live { background: var(--home-positive); box-shadow: 0 0 9px var(--home-positive); }
+body.aq-site.aq-overview-home .aq-forward-summary-card > strong,
+body.aq-site.aq-overview-home .aq-forward-summary > article > strong { justify-self: end; font-family: var(--home-mono); font-size: 0.92rem; font-weight: 500; }
+body.aq-site.aq-overview-home .aq-forward-summary-card > strong.is-positive { color: var(--home-positive); }
+body.aq-site.aq-overview-home .aq-forward-summary-card > strong.is-negative { color: var(--home-pink); }
+body.aq-site.aq-overview-home .aq-forward-summary-card > small { grid-column: 1 / -1; overflow: hidden; color: #667890; font-size: 0.56rem; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 920px) {
+  body.aq-site.aq-overview-home .aq-forward-summary { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 620px) {
+  body.aq-site.aq-overview-home main#overview .aq-overview-hero { padding-top: 28px; }
+  body.aq-site.aq-overview-home main#overview .aq-overview-hero::before { opacity: 0.34; background-position: 58% top; }
+  body.aq-site.aq-overview-home .aq-world-network { height: 42%; opacity: 0.56; }
+  body.aq-site.aq-overview-home .aq-hero-center .aq-overview-kicker { max-width: 100%; gap: 7px; font-size: 0.5rem; line-height: 1.5; letter-spacing: 0.12em; }
+  body.aq-site.aq-overview-home .aq-overview-kicker span { width: 14px; }
+  body.aq-site.aq-overview-home #atlas-home-title { font-size: clamp(2.5rem, 12vw, 3.35rem); line-height: 0.93; letter-spacing: -0.064em; }
+  body.aq-site.aq-overview-home .aq-hero-dashboard { margin-top: 22px; }
+  body.aq-site.aq-overview-home .aq-command-panel:nth-child(n) { height: auto; min-height: 0; }
+  body.aq-site.aq-overview-home .aq-regime-panel { min-height: 338px; }
+  body.aq-site.aq-overview-home .aq-signal-panel { min-height: 310px; }
+  body.aq-site.aq-overview-home .aq-liquidity-panel { min-height: 300px; }
+  body.aq-site.aq-overview-home .aq-regime-brief { margin-top: -14px; }
+  body.aq-site.aq-overview-home .aq-hero-capabilities article { min-height: 64px; }
+
+  body.aq-site.aq-overview-home .aq-overview-history-section { padding: 54px 0 50px; }
+  body.aq-site.aq-overview-home .aq-history-heading { gap: 22px; margin-bottom: 20px; }
+  body.aq-site.aq-overview-home #trend-history-title { max-width: 100%; font-size: clamp(2.2rem, 12vw, 3rem); line-height: 0.95; text-wrap: balance; }
+  body.aq-site.aq-overview-home .aq-history-heading p { font-size: 0.84rem; line-height: 1.55; }
+  body.aq-site.aq-overview-home .aq-history-selector { gap: 5px; padding: 5px; }
+  body.aq-site.aq-overview-home .aq-history-selector button { min-width: 0; padding-inline: 7px; font-size: 0.56rem; }
+  body.aq-site.aq-overview-home .aq-history-panel { padding: 12px 8px; overflow: hidden; }
+  body.aq-site.aq-overview-home .aq-history-readout {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 4px 10px;
+    width: 100%;
+    margin: 0 0 8px;
+    padding: 9px 10px;
+  }
+  body.aq-site.aq-overview-home .aq-history-readout span { overflow: hidden; font-size: 0.52rem; text-overflow: ellipsis; white-space: nowrap; }
+  body.aq-site.aq-overview-home .aq-history-readout time { font-size: 0.58rem; }
+  body.aq-site.aq-overview-home .aq-history-readout b { grid-row: auto; font-size: 0.52rem; }
+  body.aq-site.aq-overview-home .aq-history-readout strong { grid-column: 2; grid-row: 1 / 4; align-self: center; font-size: 1.4rem; }
+  body.aq-site.aq-overview-home .aq-history-chart { width: 100%; min-width: 0; height: auto; }
+  body.aq-site.aq-overview-home .aq-history-y-label,
+  body.aq-site.aq-overview-home .aq-history-x-label { font-size: 18px; }
+  body.aq-site.aq-overview-home .aq-history-line { stroke-width: 3.2; }
+  body.aq-site.aq-overview-home .aq-history-dot { stroke-width: 4; }
+  body.aq-site.aq-overview-home .aq-history-legend { gap: 9px 12px; min-width: 0; padding: 10px 4px 0; font-size: 0.58rem; }
+  body.aq-site.aq-overview-home .aq-history-legend small { width: 100%; margin-left: 0; }
+  body.aq-site.aq-overview-home .aq-forward-summary { grid-template-columns: 1fr 1fr; gap: 7px; }
+  body.aq-site.aq-overview-home .aq-forward-summary-card { min-height: 96px; padding: 13px 12px; }
+  body.aq-site.aq-overview-home .aq-forward-summary-card > span { font-size: 0.61rem; }
+  body.aq-site.aq-overview-home .aq-forward-summary-card > small { white-space: normal; }
+  body.aq-site.aq-overview-home .aq-methodology-bridge { margin-top: 10px; }
+}
+
+@media (max-width: 390px) {
+  body.aq-site.aq-overview-home .aq-forward-summary { grid-template-columns: 1fr; }
+  body.aq-site.aq-overview-home .aq-history-selector button { font-size: 0.52rem; }
+}

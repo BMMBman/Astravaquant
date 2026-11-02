@@ -80,10 +80,19 @@ describe("progressive page rendering", () => {
     expect(html).toContain("aq-world-network");
     expect(html).toContain('id="signal-history"');
     expect(html).not.toContain("Loading published trend readings.");
-    expect(html).toContain("data-home-performance");
-    expect(html).toContain("Performance, with context.");
+    expect(html).not.toContain("data-home-performance");
+    expect(html).not.toContain("Performance, with context.");
+    expect(html).toContain("data-home-forward-summary");
     expect(html).toContain("The signal, over time.");
-    expect(html.indexOf("The signal, over time.")).toBeLessThan(html.indexOf("Performance, with context."));
     expect(html).toContain('href="research-terminal.html"');
+  });
+
+  it("keeps the Models directory aligned with the premium research system", () => {
+    const html = readFileSync(new URL("models.html", root), "utf8");
+
+    expect(html).toContain("models-premium.css");
+    expect(html).toContain("Forward-tested evidence.");
+    expect(html).toContain('id="rotation"');
+    expect(html).not.toContain("One template across every public model.");
   });
 });

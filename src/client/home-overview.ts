@@ -2,7 +2,6 @@ import type {
   BitcoinValuationDashboard,
   MarketDashboard,
   MarketMetric,
-  WorkbookBacktestResult,
   WorkbookDashboard,
   WorkbookScoreSeries
 } from "../shared/contracts.js";
@@ -121,54 +120,6 @@ function researchCard(workbook: WorkbookDashboard | null): string {
   </article>`;
 }
 
-function performanceModelName(result: WorkbookBacktestResult): string {
-  if (result.model === "TOTALES") return "Total ES";
-  if (result.model.endsWith("USD")) return result.model.slice(0, -3);
-  return result.model;
-}
-
-function selectPerformanceResults(workbook: WorkbookDashboard | null): WorkbookBacktestResult[] {
-  const complete = (workbook?.modelResults?.results ?? []).filter((result) => result.reviewStatus.toLowerCase() === "complete");
-  const preferred = [
-    (result: WorkbookBacktestResult) => result.model === "TOTALES" && result.startDate === "2019-01-01",
-    (result: WorkbookBacktestResult) => result.model === "TOTALES" && /rolling 36 months/i.test(result.window),
-    (result: WorkbookBacktestResult) => result.model === "ETHUSD" && /rolling 36 months/i.test(result.window)
-  ];
-  const selected: WorkbookBacktestResult[] = [];
-  preferred.forEach((predicate) => {
-    const result = complete.find(predicate);
-    if (result && !selected.includes(result)) selected.push(result);
-  });
-  complete.forEach((result) => {
-    if (selected.length < 3 && !selected.includes(result)) selected.push(result);
-  });
-  return selected;
-}
-
-function performanceMarkup(workbook: WorkbookDashboard | null): string {
-  const modelResults = workbook?.modelResults;
-  const results = selectPerformanceResults(workbook);
-  if (!modelResults || modelResults.status !== "ready" || !results.length) {
-    return '<article class="aq-performance-unavailable"><strong>Model evidence is temporarily unavailable.</strong><span>No substitute performance figures are shown.</span></article>';
-  }
-  return `<div class="aq-performance-summary">
-    <div><span>Source</span><strong>${escapeHtml(modelResults.sourceTab)}</strong></div>
-    <div><span>As of</span><strong>${escapeHtml(formatDate(modelResults.asOf))}</strong></div>
-    <div><span>Completed tests</span><strong>${modelResults.results.filter((result) => result.reviewStatus.toLowerCase() === "complete").length}</strong></div>
-  </div>
-  <div class="aq-performance-cards">${results.map((result) => `<article class="aq-performance-card">
-    <header><div><span>${escapeHtml(result.window)}</span><h3>${escapeHtml(performanceModelName(result))} <i>${escapeHtml(result.timeframe)}</i></h3></div><b>Complete</b></header>
-    <div class="aq-performance-primary"><span>Net profit</span><strong>${escapeHtml(result.netProfit)}</strong></div>
-    <dl>
-      <div><dt>Sharpe</dt><dd>${escapeHtml(result.sharpe)}</dd></div>
-      <div><dt>Max equity DD</dt><dd>${escapeHtml(result.maxEquityDrawdown)}</dd></div>
-      <div><dt>Profit factor</dt><dd>${escapeHtml(result.profitFactor)}</dd></div>
-      <div><dt>Trades</dt><dd>${escapeHtml(result.trades)}</dd></div>
-    </dl>
-    <footer><span>${escapeHtml(formatDate(result.startDate))}</span><i>to</i><span>${escapeHtml(formatDate(result.endDate))}</span></footer>
-  </article>`).join("")}</div>`;
-}
-
 function heroSnapshot(workbook: WorkbookDashboard | null, markets: MarketDashboard | null): string {
   const models = [
     { id: "sniper1d", label: "Total ES 1D" },
@@ -225,6 +176,26 @@ function heroSnapshot(workbook: WorkbookDashboard | null, markets: MarketDashboa
     <div class="aq-command-chart">${sparkline(liquidityPoints, "Net Fed Liquidity")}</div>
     <footer><span>${liquidity?.asOf ? `Updated ${escapeHtml(formatDate(liquidity.asOf))}` : "Update pending"}</span><strong>${escapeHtml(liquidity?.source ?? "FRED-derived")}</strong></footer>
   </article>`;
+}
+
+function forwardSummaryMarkup(workbook: WorkbookDashboard | null): string {
+  const models: Array<{ id: WorkbookScoreSeries["id"]; label: string }> = [
+    { id: "sniper1d", label: "Total ES 1D" },
+    { id: "mtpi", label: "MTPI Total" },
+    { id: "btc1w", label: "BTC 1W" },
+    { id: "ltpi", label: "Long-Term" }
+  ];
+  const seriesById = new Map(workbook?.scoreSeries.map((series) => [series.id, series]));
+  return models.map((model) => {
+    const series = seriesById.get(model.id);
+    const latest = series?.points.at(-1);
+    const available = Boolean(latest);
+    return `<a class="aq-forward-summary-card" href="models.html#${model.id}">
+      <span><i class="${available ? "is-live" : ""}"></i>${escapeHtml(model.label)}</span>
+      <strong class="${latest ? `is-${trendTone(latest.score)}` : "is-neutral"}">${latest ? formatScore(latest.score) : "Pending"}</strong>
+      <small>${series?.points.length ?? 0} dated observations · ${escapeHtml(series?.sourceTab ?? "Source pending")}</small>
+    </a>`;
+  }).join("");
 }
 
 function historyMarkup(series: WorkbookScoreSeries): string {
@@ -341,7 +312,7 @@ export async function bootHomeOverview(): Promise<void> {
   const overview = document.querySelector<HTMLElement>("[data-home-overview]");
   const history = document.querySelector<HTMLElement>("[data-home-history]");
   const snapshot = document.querySelector<HTMLElement>("[data-home-hero-snapshot]");
-  const performance = document.querySelector<HTMLElement>("[data-home-performance]");
+  const forwardSummary = document.querySelector<HTMLElement>("[data-home-forward-summary]");
   const updated = document.querySelector<HTMLTimeElement>("[data-overview-updated]");
   if (!history) return;
 
@@ -356,7 +327,7 @@ export async function bootHomeOverview(): Promise<void> {
 
   if (overview) overview.innerHTML = `${valuationCard(valuation)}${liquidityCard(markets)}${researchCard(workbook)}`;
   if (snapshot) snapshot.innerHTML = heroSnapshot(workbook, markets);
-  if (performance) performance.innerHTML = performanceMarkup(workbook);
+  if (forwardSummary) forwardSummary.innerHTML = forwardSummaryMarkup(workbook);
   if (updated) updated.textContent = formatDate(newestPublishedDate(workbook, valuation, markets));
 
   const seriesById = new Map(workbook?.scoreSeries.map((series) => [series.id, series]));

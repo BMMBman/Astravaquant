@@ -248,8 +248,8 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
         </div>
       </div>
     </div>
-    <details class="aq-model-history-details">
-      <summary><span>View dated history</span><strong>${series?.points.length ? `${series.points.length} observations` : "Unavailable"}</strong></summary>
+    <details class="aq-model-history-details" ${series?.points.length ? "open" : ""}>
+      <summary><span>Forward-test history</span><strong>${series?.points.length ? `${series.points.length} observations · ${escapeHtml(series.sourceTab)}` : "Unavailable"}</strong></summary>
       <div class="aq-model-chart-wrap">
         ${series?.points.length ? periodButtons(period) : ""}
         <div class="terminal-chart aq-chart-panel" data-model-history-chart="${escapeHtml(signal.id)}"><span>${escapeHtml(series?.message ?? "Historical series unavailable.")}</span></div>

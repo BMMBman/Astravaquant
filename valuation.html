@@ -11,6 +11,7 @@
     <link rel="icon" href="assets/astravaquant-favicon-temporary.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="public-redesign.css" />
     <link rel="stylesheet" href="brand.css" />
+    <link rel="stylesheet" href="valuation-premium.css" />
   </head>
   <body class="aq-site aq-valuation-page aq-atlas-detail" data-valuation-page>
     <header class="site-header" aria-label="Primary navigation">
@@ -43,109 +44,85 @@
     </header>
 
     <main>
-      <section class="aq-hero">
+      <section class="aq-hero valuation-hero">
+        <div class="valuation-hero-field" aria-hidden="true"><i></i><i></i><i></i><span></span><span></span></div>
         <div class="shell shell-narrow aq-method-shell">
           <div class="aq-hero-copy reveal">
-            <p class="aq-kicker">Bitcoin valuation</p>
-            <h1 class="aq-page-title">A standardized valuation record.</h1>
+            <p class="aq-kicker">Bitcoin / relative valuation</p>
+            <h1 class="aq-page-title">Where the market sits on value.</h1>
             <p class="aq-lead">
-              Seventeen verified inputs across fundamental, technical, and sentiment categories. A relative historical condition, never a dollar price target.
+              A 17-input composite across fundamentals, technical condition, and sentiment—standardized against history and published with dated evidence.
             </p>
           </div>
 
-          <div class="aq-inline-actions reveal">
-            <a class="button" href="valuation-methodology.html">Methodology</a>
-            <a class="button" href="backtesting.html">Backtesting</a>
-          </div>
+          <aside class="valuation-hero-aside reveal" aria-label="Valuation model overview">
+            <span>Model architecture</span>
+            <strong>17 inputs <i>/</i> 3 lenses</strong>
+            <p>Relative historical condition. Never a dollar price target.</p>
+            <div class="aq-inline-actions">
+              <a class="button" href="valuation-methodology.html">Methodology</a>
+              <a class="button" href="backtesting.html">Backtesting</a>
+            </div>
+          </aside>
         </div>
       </section>
 
-      <section class="aq-page-section">
+      <section class="aq-page-section valuation-command-section">
         <div class="shell shell-narrow">
-          <article class="aq-valuation-card reveal" data-valuation-instrument aria-live="polite">
-            <div class="aq-valuation-kicker">
-              <span class="aq-section-label">Current Reading</span>
-              <span class="feed-live" data-valuation-status>Loading workbook</span>
-            </div>
-
-            <div class="aq-valuation-score">
-              <strong class="valuation-score" data-valuation-score>--</strong>
-              <span class="valuation-state" data-valuation-state>Verifying</span>
-            </div>
-
-            <p class="valuation-definition">
-              Positive readings mean greater modeled value in the current workbook
-              orientation. The score is a relative historical condition, not a dollar fair
-              value.
-            </p>
-
-            <div class="valuation-market-strip aq-spacer-top">
+          <article class="aq-valuation-card valuation-command reveal" data-valuation-instrument aria-live="polite">
+            <header class="valuation-command-head">
               <div>
-                <span>Bitcoin</span>
-                <strong data-bitcoin-price>Loading</strong>
-                <small data-bitcoin-change>Live market feed</small>
+                <span class="aq-section-label">01 / Composite reading</span>
+                <p>Published standardized value score</p>
               </div>
-              <div>
-                <span>Inputs</span>
-                <strong data-indicator-count>--</strong>
-                <small>Verified indicators</small>
-              </div>
-              <div>
-                <span>Updated</span>
-                <strong data-valuation-date>--</strong>
-                <small>Workbook publication</small>
-              </div>
-            </div>
+              <span class="feed-live" data-valuation-status><i></i> Loading workbook</span>
+            </header>
 
-            <div class="valuation-scale-wrap aq-spacer-top">
-              <div class="valuation-scale-readout">
-                <span>No value</span>
-                <span>Neutral</span>
-                <span>High value</span>
-              </div>
-              <div class="valuation-scale" role="img" aria-label="Value scale from negative two to positive two standard deviations">
-                <div class="valuation-scale-segments" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-                <div class="valuation-marker" data-valuation-marker style="--valuation-position: 50%">
-                  <span data-marker-label>--</span>
+            <div class="valuation-command-grid">
+              <div class="valuation-score-core">
+                <span>Current composite</span>
+                <div class="aq-valuation-score">
+                  <strong class="valuation-score" data-valuation-score>--</strong>
+                  <span class="valuation-state" data-valuation-state>Verifying</span>
+                </div>
+                <p class="valuation-definition">
+                  Positive readings indicate greater modeled value in the workbook orientation. The score describes relative condition—not fair value in dollars.
+                </p>
+                <div class="valuation-score-context">
+                  <div><span>Bitcoin spot</span><strong data-bitcoin-price>Loading</strong><small data-bitcoin-change>Live market feed</small></div>
+                  <div><span>Verified inputs</span><strong data-indicator-count>--</strong><small>Across three lenses</small></div>
                 </div>
               </div>
-              <div class="valuation-ticks" aria-hidden="true">
-                <span>-2σ</span>
-                <span>-1σ</span>
-                <span>0</span>
-                <span>+1σ</span>
-                <span>+2σ</span>
-              </div>
-            </div>
 
-            <div class="aq-value-grid aq-spacer-top">
-              <div>
-                <span>Primary scale</span>
-                <strong>17-input average</strong>
-                <small>Fundamental, technical, sentiment</small>
-              </div>
-              <div>
-                <span>Inverse risk lens</span>
-                <strong data-inverse-score>--</strong>
-                <small data-inverse-state>Verifying</small>
-              </div>
-              <div>
-                <span>Source workbook</span>
-                <strong>Read-only</strong>
-                <small><a data-valuation-source href="https://docs.google.com/spreadsheets/d/1CDRiyNvMiQEz-YsrJT6vOEPN-CwAMj6cQrMYmY01bxE/edit" target="_blank" rel="noreferrer">Open source workbook</a></small>
+              <div class="valuation-spectrum">
+                <div class="valuation-spectrum-head">
+                  <div><span>Value spectrum</span><strong>−2σ <i>to</i> +2σ</strong></div>
+                  <small>Updated <b data-valuation-date>--</b></small>
+                </div>
+                <div class="valuation-scale-wrap">
+                  <div class="valuation-scale-readout"><span>No value</span><span>Neutral</span><span>High value</span></div>
+                  <div class="valuation-scale" role="img" aria-label="Value scale from negative two to positive two standard deviations">
+                    <div class="valuation-scale-zones" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+                    <div class="valuation-scale-ticks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+                    <div class="valuation-marker" data-valuation-marker style="--valuation-position: 50%"><span data-marker-label>--</span><i></i></div>
+                  </div>
+                  <div class="valuation-ticks" aria-hidden="true"><span>−2σ</span><span>−1σ</span><span>0</span><span>+1σ</span><span>+2σ</span></div>
+                </div>
+                <div class="valuation-spectrum-foot">
+                  <div><span>Inverse risk lens</span><strong data-inverse-score>--</strong><small data-inverse-state>Verifying</small></div>
+                  <div><span>Publication source</span><strong>Read-only</strong><small><a data-valuation-source href="https://docs.google.com/spreadsheets/d/1CDRiyNvMiQEz-YsrJT6vOEPN-CwAMj6cQrMYmY01bxE/edit" target="_blank" rel="noreferrer">Inspect workbook ↗</a></small></div>
+                </div>
               </div>
             </div>
           </article>
         </div>
       </section>
 
-      <section class="aq-page-section">
+      <section class="aq-page-section valuation-lenses-section">
         <div class="shell shell-narrow">
           <div class="aq-section-head reveal">
-            <div>
-              <p class="aq-section-label">Composite Structure</p>
-              <h2>Three lenses. One score.</h2>
-            </div>
+            <div><p class="aq-section-label">02 / Composite architecture</p><h2>Three lenses. One published score.</h2></div>
+            <p class="aq-section-note">Each lens is the mean of its verified standardized inputs. Center marks neutral.</p>
           </div>
           <div class="aq-category-grid reveal" data-valuation-categories>
             <article class="valuation-category-card"><span>Fundamental</span><strong>--</strong><small>Loading inputs</small></article>
@@ -155,53 +132,39 @@
         </div>
       </section>
 
-      <section class="aq-page-section">
+      <section class="aq-page-section valuation-inputs-section">
         <div class="shell shell-narrow">
           <article class="valuation-input-panel reveal">
             <div class="valuation-panel-head">
-              <div>
-                <p class="aq-section-label">Input Monitor</p>
-                <h2>What is driving the score.</h2>
-              </div>
+              <div><p class="aq-section-label">03 / Input monitor</p><h2>The evidence behind the composite.</h2><p>Inspect every verified input, its standardized reading, state, and source.</p></div>
               <div class="valuation-tabs" role="tablist" aria-label="Valuation category" data-valuation-tabs>
-                <button type="button" class="is-active" data-valuation-tab="fundamental">Fundamental</button>
-                <button type="button" data-valuation-tab="technical">Technical</button>
-                <button type="button" data-valuation-tab="sentiment">Sentiment</button>
+                <button type="button" role="tab" aria-selected="true" class="is-active" data-valuation-tab="fundamental">Fundamental</button>
+                <button type="button" role="tab" aria-selected="false" data-valuation-tab="technical">Technical</button>
+                <button type="button" role="tab" aria-selected="false" data-valuation-tab="sentiment">Sentiment</button>
               </div>
             </div>
-            <div class="aq-indicator-table" data-valuation-inputs>
-              <p class="valuation-empty-copy">Loading verified inputs.</p>
-            </div>
+            <div class="valuation-table-head" aria-hidden="true"><span>Input</span><span>Reading</span><span>Position</span><span>Source</span></div>
+            <div class="aq-indicator-table" data-valuation-inputs><p class="valuation-empty-copy">Loading verified inputs.</p></div>
           </article>
         </div>
       </section>
 
-      <section class="aq-page-section">
+      <section class="aq-page-section valuation-evidence-section">
         <div class="shell shell-narrow valuation-lower-grid">
           <article class="valuation-dispersion reveal">
             <div class="valuation-panel-head">
-              <div>
-                <p class="aq-section-label">Dispersion</p>
-                <h2>All inputs at a glance.</h2>
-              </div>
-              <span class="aq-table-label">-3σ to +3σ</span>
+              <div><p class="aq-section-label">04 / Cross-sectional view</p><h2>Input dispersion.</h2><p>Every component positioned on the same standardized axis.</p></div>
+              <span class="aq-table-label">−3σ to +3σ</span>
             </div>
-            <div class="valuation-dot-plot" data-dispersion-plot>
-              <p class="valuation-empty-copy">Loading verified inputs.</p>
-            </div>
+            <div class="valuation-dot-plot" data-dispersion-plot><p class="valuation-empty-copy">Loading verified inputs.</p></div>
           </article>
 
           <article class="valuation-history reveal">
             <div class="valuation-panel-head">
-              <div>
-                <p class="aq-section-label">Forward Testing</p>
-                <h2>Verified history only.</h2>
-              </div>
+              <div><p class="aq-section-label">05 / Dated evidence</p><h2>Forward-test history.</h2><p>No backfilled substitutes. Only published observations.</p></div>
               <span class="aq-table-label" data-history-state>Checking</span>
             </div>
-            <div class="valuation-history-stage" data-valuation-history>
-              <p class="valuation-empty-copy">Checking for dated observations.</p>
-            </div>
+            <div class="valuation-history-stage" data-valuation-history><p class="valuation-empty-copy">Checking for dated observations.</p></div>
           </article>
         </div>
       </section>

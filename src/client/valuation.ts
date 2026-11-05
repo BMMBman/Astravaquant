@@ -9,10 +9,24 @@ import type {
 import { apiRequest } from "./api.js";
 
 const categoryColors: Record<ValuationCategoryId, string> = {
-  fundamental: "#8fc8f4",
-  technical: "#e7c68d",
-  sentiment: "#b5c6d8"
+  fundamental: "#72b8ff",
+  technical: "#72e2d0",
+  sentiment: "#e5b87b"
 };
+
+function scoreTone(value: number): "negative" | "neutral" | "positive" {
+  if (value < -0.25) return "negative";
+  if (value > 0.25) return "positive";
+  return "neutral";
+}
+
+function scoreBand(value: number): string {
+  if (value <= -1) return "No value";
+  if (value < -0.25) return "Low value";
+  if (value <= 0.25) return "Near neutral";
+  if (value < 1) return "Value";
+  return "High value";
+}
 
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (character) => ({
@@ -62,10 +76,12 @@ function renderSummary(dashboard: BitcoinValuationDashboard): void {
   setText("[data-valuation-date]", formatDate(dashboard.workbookUpdatedLabel));
   setText("[data-inverse-score]", formatScore(dashboard.invertedScore));
   setText("[data-inverse-state]", dashboard.invertedState?.toUpperCase() ?? "Unavailable");
-  setText("[data-valuation-status]", dashboard.status === "ready" ? "Live workbook" : dashboard.status === "partial" ? "Partial workbook" : "Feed unavailable");
-
   const status = document.querySelector<HTMLElement>("[data-valuation-status]");
+  if (status) status.innerHTML = `<i></i> ${dashboard.status === "ready" ? "Live workbook" : dashboard.status === "partial" ? "Partial workbook" : "Feed unavailable"}`;
   status?.classList.toggle("is-unavailable", dashboard.status === "unavailable");
+
+  const instrument = document.querySelector<HTMLElement>("[data-valuation-instrument]");
+  if (instrument && dashboard.score !== null) instrument.dataset.tone = scoreTone(dashboard.score);
 
   const source = document.querySelector<HTMLAnchorElement>("[data-valuation-source]");
   if (source) source.href = dashboard.sourceUrl;
@@ -86,12 +102,14 @@ function renderCategories(dashboard: BitcoinValuationDashboard): void {
     root.innerHTML = '<article class="valuation-category-card glass-card"><span>Workbook</span><strong>Unavailable</strong><small>Try again shortly</small></article>';
     return;
   }
-  root.innerHTML = dashboard.categories.map((category) => `
-    <article class="valuation-category-card glass-card" style="--category-color:${categoryColors[category.id]}">
-      <span>${escapeHtml(category.label)}</span>
+  root.innerHTML = dashboard.categories.map((category, index) => `
+    <article class="valuation-category-card" style="--category-color:${categoryColors[category.id]};--category-position:${scorePosition(category.averageScore, -3, 3).toFixed(2)}%">
+      <header><span>${escapeHtml(category.label)}</span><i>0${index + 1} / 03</i></header>
       <strong>${escapeHtml(formatScore(category.averageScore))}</strong>
       <small>${category.indicatorCount} verified input${category.indicatorCount === 1 ? "" : "s"}</small>
-      <div class="valuation-category-line"><i style="width:${scorePosition(category.averageScore, -3, 3).toFixed(2)}%"></i></div>
+      <b>${escapeHtml(scoreBand(category.averageScore))}</b>
+      <div class="valuation-category-line" aria-label="${escapeHtml(category.label)} average ${escapeHtml(formatScore(category.averageScore))}"><i></i></div>
+      <div class="valuation-category-scale" aria-hidden="true"><span>Low</span><span>Neutral</span><span>High</span></div>
     </article>
   `).join("");
 }
@@ -105,7 +123,7 @@ function renderInputs(indicators: ValuationIndicator[], category: ValuationCateg
     return;
   }
   root.innerHTML = filtered.map((indicator, index) => `
-    <article class="valuation-input-row">
+    <article class="valuation-input-row" data-tone="${scoreTone(indicator.score)}">
       <span class="valuation-input-index">${String(index + 1).padStart(2, "0")}</span>
       <div class="valuation-input-copy">
         <h3>${escapeHtml(indicator.name)}</h3>
@@ -115,8 +133,8 @@ function renderInputs(indicators: ValuationIndicator[], category: ValuationCateg
         <strong>${escapeHtml(formatScore(indicator.score))}</strong>
         <span>${escapeHtml(indicator.state)}</span>
       </div>
-      <div class="valuation-input-rail" aria-hidden="true"><i style="left:${scorePosition(indicator.score, -3, 3).toFixed(2)}%"></i></div>
-      ${indicator.sourceUrl ? `<a class="valuation-source-link" href="${escapeHtml(indicator.sourceUrl)}" target="_blank" rel="noreferrer" aria-label="Open source for ${escapeHtml(indicator.name)}">Source</a>` : '<span class="valuation-source-link is-muted">Internal</span>'}
+      <div class="valuation-input-rail" role="img" aria-label="${escapeHtml(indicator.name)} position ${escapeHtml(formatScore(indicator.score))}"><i style="left:${scorePosition(indicator.score, -3, 3).toFixed(2)}%"></i></div>
+      ${indicator.sourceUrl ? `<a class="valuation-source-link" href="${escapeHtml(indicator.sourceUrl)}" target="_blank" rel="noreferrer" aria-label="Open source for ${escapeHtml(indicator.name)}">Open ↗</a>` : '<span class="valuation-source-link is-muted">Internal</span>'}
     </article>
   `).join("");
 }
@@ -132,11 +150,11 @@ function renderDispersion(indicators: ValuationIndicator[]): void {
     const categoryIndicators = indicators.filter((indicator) => indicator.category === category);
     const dots = categoryIndicators.map((indicator, index) => {
       const x = scorePosition(indicator.score, -3, 3);
-      const y = 28 + (index % 3) * 12;
+      const y = 18 + (index % 3) * 18;
       return `<button type="button" class="valuation-dot" style="left:${x.toFixed(2)}%;top:${y}px;--dot-color:${categoryColors[category]}" aria-label="${escapeHtml(indicator.name)}, ${escapeHtml(formatScore(indicator.score))}" title="${escapeHtml(indicator.name)}: ${escapeHtml(formatScore(indicator.score))}"></button>`;
     }).join("");
     const label = category.charAt(0).toUpperCase() + category.slice(1);
-    return `<div class="valuation-dot-lane"><span>${label}</span><div>${dots}</div></div>`;
+    return `<div class="valuation-dot-lane" style="--lane-color:${categoryColors[category]}"><span>${label}</span><div>${dots}</div></div>`;
   }).join("");
   root.innerHTML = `<div class="valuation-dot-axis"><span>-3σ</span><span>0</span><span>+3σ</span></div>${lanes}`;
 }
@@ -147,7 +165,9 @@ function renderHistoryChart(root: HTMLElement, points: ValuationPoint[]): void {
   const padding = { top: 24, right: 20, bottom: 32, left: 20 };
   if (points.length === 1) {
     const point = points[0]!;
-    root.innerHTML = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Bitcoin valuation tracking start">
+    root.classList.remove("is-empty");
+    root.innerHTML = `<div class="valuation-history-readout"><time>${escapeHtml(formatDate(point.date))}</time><strong>${escapeHtml(formatScore(point.score))}</strong></div>
+      <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Bitcoin valuation tracking start">
       <path d="M${padding.left} ${height / 2}H${width - padding.right}" class="valuation-history-zero"/>
       <circle cx="${width / 2}" cy="${height / 2}" r="14" class="backtest-current-halo"/>
       <circle cx="${width / 2}" cy="${height / 2}" r="6" class="valuation-history-current"/>
@@ -164,15 +184,44 @@ function renderHistoryChart(root: HTMLElement, points: ValuationPoint[]): void {
   const y = (value: number) => padding.top + ((maximum - value) / span) * (height - padding.top - padding.bottom);
   const line = points.map((point, index) => `${index ? "L" : "M"}${x(index).toFixed(1)} ${y(point.score).toFixed(1)}`).join(" ");
   const area = `${line} L${x(points.length - 1).toFixed(1)} ${height - padding.bottom} L${x(0).toFixed(1)} ${height - padding.bottom} Z`;
-  root.innerHTML = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Bitcoin valuation forward-test history">
+  const lastIndex = points.length - 1;
+  const grid = [-1, 0, 1].map((value) => `<path d="M${padding.left} ${y(value).toFixed(1)}H${width - padding.right}" class="valuation-history-grid"/>`).join("");
+  root.classList.remove("is-empty");
+  root.innerHTML = `<div class="valuation-history-readout" data-valuation-history-readout><time>${escapeHtml(formatDate(points[lastIndex]!.date))}</time><strong>${escapeHtml(formatScore(points[lastIndex]!.score))}</strong></div>
+    <svg viewBox="0 0 ${width} ${height}" role="img" aria-label="Bitcoin valuation forward-test history">
     <defs><linearGradient id="valuation-history-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fc8f4" stop-opacity=".3"/><stop offset="1" stop-color="#8fc8f4" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
     <path d="M${padding.left} ${y(0)}H${width - padding.right}" class="valuation-history-zero"/>
     <path d="${area}" fill="url(#valuation-history-fill)"/>
     <path d="${line}" class="valuation-history-line" pathLength="1"/>
-    <circle cx="${x(points.length - 1)}" cy="${y(points.at(-1)!.score)}" r="5" class="valuation-history-current"/>
+    <line x1="${x(lastIndex)}" x2="${x(lastIndex)}" y1="${padding.top}" y2="${height - padding.bottom}" class="valuation-history-guide" data-valuation-history-guide/>
+    <circle cx="${x(lastIndex)}" cy="${y(points[lastIndex]!.score)}" r="5" class="valuation-history-current" data-valuation-history-dot/>
     <text x="${padding.left}" y="${height - 8}" class="valuation-history-date">${escapeHtml(formatDate(points[0]!.date))}</text>
-    <text x="${width - padding.right}" y="${height - 8}" text-anchor="end" class="valuation-history-date">${escapeHtml(formatDate(points.at(-1)!.date))}</text>
+    <text x="${width - padding.right}" y="${height - 8}" text-anchor="end" class="valuation-history-date">${escapeHtml(formatDate(points[lastIndex]!.date))}</text>
   </svg>`;
+
+  const svg = root.querySelector<SVGElement>("svg")!;
+  const guide = svg.querySelector<SVGLineElement>("[data-valuation-history-guide]");
+  const dot = svg.querySelector<SVGCircleElement>("[data-valuation-history-dot]");
+  const readout = root.querySelector<HTMLElement>("[data-valuation-history-readout]");
+  const inspect = (index: number) => {
+    const point = points[index]!;
+    const pointX = x(index);
+    guide?.setAttribute("x1", pointX.toFixed(1));
+    guide?.setAttribute("x2", pointX.toFixed(1));
+    dot?.setAttribute("cx", pointX.toFixed(1));
+    dot?.setAttribute("cy", y(point.score).toFixed(1));
+    const date = readout?.querySelector("time");
+    const value = readout?.querySelector("strong");
+    if (date) date.textContent = formatDate(point.date);
+    if (value) value.textContent = formatScore(point.score);
+  };
+  svg.addEventListener("pointermove", (event) => {
+    const rect = svg.getBoundingClientRect();
+    const ratio = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+    inspect(Math.round(ratio * lastIndex));
+  });
+  svg.addEventListener("pointerleave", () => inspect(lastIndex));
 }
 
 function renderHistory(dashboard: BitcoinValuationDashboard): void {
@@ -214,7 +263,11 @@ export async function bootValuation(): Promise<void> {
 
   buttons.forEach((button) => button.addEventListener("click", () => {
     activeCategory = button.dataset.valuationTab as ValuationCategoryId;
-    buttons.forEach((candidate) => candidate.classList.toggle("is-active", candidate === button));
+    buttons.forEach((candidate) => {
+      const active = candidate === button;
+      candidate.classList.toggle("is-active", active);
+      candidate.setAttribute("aria-selected", String(active));
+    });
     if (dashboard) renderInputs(dashboard.indicators, activeCategory);
   }));
 

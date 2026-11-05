@@ -204,7 +204,10 @@ function panelMarkup(signal: WorkbookModelSignal, series: WorkbookScoreSeries | 
     <div class="aq-model-body">
       <section class="aq-model-gauge-panel">
         <div class="aq-model-gauge-copy">
-          <span>${escapeHtml(gaugeTitle(signal))}</span>
+          <div class="aq-model-gauge-heading">
+            <span>${escapeHtml(gaugeTitle(signal))}</span>
+            <em><i></i> Live signal</em>
+          </div>
           <p>${escapeHtml(gaugeDescription(signal))}</p>
         </div>
         <div

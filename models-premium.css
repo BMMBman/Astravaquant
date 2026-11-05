@@ -282,3 +282,157 @@ body.aq-site.aq-models .aq-footer { margin-top: 64px; border-top: 1px solid var(
   body.aq-site.aq-models *::before,
   body.aq-site.aq-models *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
+
+/* Precision model instruments ------------------------------------------------ */
+body.aq-site.aq-models .aq-model-body {
+  grid-template-columns: minmax(244px, .82fr) minmax(0, 1fr);
+  gap: 14px;
+}
+body.aq-site.aq-models .aq-model-gauge-panel {
+  --gauge-accent: #9cb9db;
+  position: relative;
+  isolation: isolate;
+  gap: 10px;
+  min-width: 0;
+  padding: 16px 16px 13px;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--gauge-accent) 25%, transparent);
+  border-radius: 15px;
+  background:
+    radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--gauge-accent) 10%, transparent), transparent 46%),
+    linear-gradient(rgba(125, 176, 237, .035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 176, 237, .028) 1px, transparent 1px),
+    linear-gradient(145deg, rgba(15, 36, 63, .96), rgba(7, 19, 35, .98));
+  background-size: auto, 100% 32px, 32px 100%, auto;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.055), 0 16px 40px rgba(0,0,0,.18);
+}
+body.aq-site.aq-models .aq-model-gauge-panel::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, color-mix(in srgb, var(--gauge-accent) 8%, transparent), transparent 42%);
+}
+body.aq-site.aq-models .aq-model-gauge-panel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 18px;
+  width: 74px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gauge-accent), transparent);
+  box-shadow: 0 0 13px color-mix(in srgb, var(--gauge-accent) 48%, transparent);
+}
+body.aq-site.aq-models .aq-model-gauge-panel:has([data-dial-tone="bad"]) { --gauge-accent: #ff8d84; }
+body.aq-site.aq-models .aq-model-gauge-panel:has([data-dial-tone="warn"]) { --gauge-accent: #e0aa72; }
+body.aq-site.aq-models .aq-model-gauge-panel:has([data-dial-tone="good"]) { --gauge-accent: #6fdcbe; }
+body.aq-site.aq-models .aq-model-gauge-copy { position: relative; z-index: 2; gap: 5px; }
+body.aq-site.aq-models .aq-model-gauge-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+body.aq-site.aq-models .aq-model-gauge-heading em {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #9cb0c9;
+  font-family: var(--aq-font-mono);
+  font-size: .49rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+body.aq-site.aq-models .aq-model-gauge-heading em i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gauge-accent);
+  box-shadow: 0 0 10px var(--gauge-accent);
+}
+body.aq-site.aq-models .aq-model-gauge-copy span { color: #bed0e5; font-size: .64rem; letter-spacing: .12em; }
+body.aq-site.aq-models .aq-model-gauge-copy p { max-width: 31ch; color: #7f95ae; font-size: .72rem; line-height: 1.45; }
+body.aq-site.aq-models .aq-model-dial,
+body.aq-site.aq-models .aq-static-gauge .dial {
+  width: min(100%, 236px);
+  max-width: none;
+  margin: 1px auto 0;
+  padding-bottom: 7px;
+}
+body.aq-site.aq-models .dial-svg { display: block; overflow: visible; shape-rendering: geometricPrecision; }
+body.aq-site.aq-models .dial-ambient {
+  fill: none;
+  stroke: var(--dial-color, #9cb9db);
+  stroke-width: 27;
+  opacity: .09;
+  filter: blur(7px);
+}
+body.aq-site.aq-models .dial-track { stroke: rgba(177, 207, 239, .11); stroke-width: 23; }
+body.aq-site.aq-models .dial-zone { stroke-width: 17; opacity: .67; }
+body.aq-site.aq-models .dial-active {
+  stroke-width: 4;
+  filter: drop-shadow(0 0 5px var(--dial-color)) drop-shadow(0 0 12px color-mix(in srgb, var(--dial-color) 50%, transparent));
+}
+body.aq-site.aq-models .dial-tick {
+  stroke: rgba(211, 228, 248, .34);
+  stroke-width: 1;
+}
+body.aq-site.aq-models .dial-tick.is-major { stroke: rgba(230, 240, 253, .72); stroke-width: 1.6; }
+body.aq-site.aq-models .dial-neutral-mark { stroke: #d7e9ff; stroke-width: 2; filter: drop-shadow(0 0 5px rgba(126, 184, 252, .6)); }
+body.aq-site.aq-models .dial-marker-halo {
+  fill: var(--dial-color);
+  opacity: .17;
+  filter: blur(3px);
+}
+body.aq-site.aq-models .dial-dot {
+  fill: #09182a;
+  stroke: color-mix(in srgb, var(--dial-color) 70%, #fff);
+  stroke-width: 4;
+  filter: drop-shadow(0 0 7px var(--dial-color));
+}
+body.aq-site.aq-models .dial-dot-core { fill: #fff; filter: drop-shadow(0 0 4px var(--dial-color)); }
+body.aq-site.aq-models .dial-center {
+  inset: 64px 0 auto;
+  gap: 5px;
+  transform: translateY(-50%);
+}
+body.aq-site.aq-models .dial-center strong {
+  color: #f6f9fd;
+  font-family: var(--aq-font-mono);
+  font-size: 2rem;
+  font-weight: 520;
+  letter-spacing: -.075em;
+  text-shadow: 0 0 20px color-mix(in srgb, var(--dial-color) 40%, transparent);
+}
+body.aq-site.aq-models .dial-center span {
+  max-width: 160px;
+  color: var(--dial-color);
+  font-size: .59rem;
+  letter-spacing: .13em;
+}
+body.aq-site.aq-models .dial-axis {
+  margin-top: -7px;
+  color: #8095ae;
+  font-family: var(--aq-font-mono);
+  font-size: .57rem;
+  font-weight: 650;
+  letter-spacing: .04em;
+}
+body.aq-site.aq-models .dial-axis span:nth-child(2) { color: #afc5dd; }
+body.aq-site.aq-models .aq-model-scale-note { padding-top: 10px; border-top-color: rgba(136, 176, 225, .14); }
+body.aq-site.aq-models .aq-model-scale-note span { color: #7389a2; font-size: .57rem; }
+body.aq-site.aq-models .aq-model-scale-note strong { color: #c3d2e3; font-size: .62rem; }
+
+@media (max-width: 1280px) and (min-width: 1121px) {
+  body.aq-site.aq-models .aq-model-body { grid-template-columns: minmax(218px, .72fr) minmax(0, 1fr); }
+  body.aq-site.aq-models .aq-model-dial { width: min(100%, 216px); }
+  body.aq-site.aq-models .dial-center { inset-block-start: 59px; }
+}
+@media (max-width: 1120px) {
+  body.aq-site.aq-models .aq-model-body { grid-template-columns: minmax(260px, .7fr) minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  body.aq-site.aq-models .aq-model-body { grid-template-columns: 1fr; }
+  body.aq-site.aq-models .aq-model-gauge-panel { padding: 15px 14px 12px; }
+  body.aq-site.aq-models .aq-model-dial { width: min(100%, 244px); }
+  body.aq-site.aq-models .dial-center { inset-block-start: 66px; }
+}

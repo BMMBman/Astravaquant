@@ -358,18 +358,18 @@ if (!document.body.classList.contains("aq-home") && !document.body.classList.con
 
   function toneColor(tone) {
     if (tone === "bad") {
-      return "#d37c71";
+      return "#ff8d84";
     }
 
     if (tone === "good") {
-      return "#8caed3";
+      return "#6fdcbe";
     }
 
     if (tone === "neutral") {
-      return "#b9b5ae";
+      return "#9cb9db";
     }
 
-    return "#c9a56a";
+    return "#e0aa72";
   }
 
   function animateDialValue(node, target) {
@@ -424,11 +424,11 @@ if (!document.body.classList.contains("aq-home") && !document.body.classList.con
     var marker = pointOnDial(cx, cy, radius, currentAngle);
     var activePath = dialPath(cx, cy, radius, neutralAngle, currentAngle);
     var zoneValues = [
-      { start: -1, end: -0.75, color: "#b86b61" },
-      { start: -0.75, end: -0.25, color: "#9f7552" },
-      { start: -0.25, end: 0.25, color: "#6e747c" },
-      { start: 0.25, end: 0.75, color: "#7c95af" },
-      { start: 0.75, end: 1, color: "#98b7d8" }
+      { start: -1, end: -0.75, color: "#ff817a" },
+      { start: -0.75, end: -0.25, color: "#d9899e" },
+      { start: -0.25, end: 0.25, color: "#71829a" },
+      { start: 0.25, end: 0.75, color: "#609edc" },
+      { start: 0.75, end: 1, color: "#66d9bf" }
     ];
     var zoneMarkup = zoneValues
       .map(function (zone) {
@@ -441,24 +441,49 @@ if (!document.body.classList.contains("aq-home") && !document.body.classList.con
         );
       })
       .join("");
+    var tickMarkup = Array.from({ length: 17 }, function (_, tickIndex) {
+      var tickValue = -1 + tickIndex / 8;
+      var tickAngle = dialAngle(tickValue);
+      var major = tickIndex % 4 === 0;
+      var outer = pointOnDial(cx, cy, radius + (major ? 15 : 12), tickAngle);
+      var inner = pointOnDial(cx, cy, radius + (major ? 5 : 7), tickAngle);
+      return '<line class="dial-tick' + (major ? ' is-major' : '') + '" x1="' + inner.x.toFixed(2) + '" y1="' + inner.y.toFixed(2) + '" x2="' + outer.x.toFixed(2) + '" y2="' + outer.y.toFixed(2) + '" />';
+    }).join("");
+    var neutralInner = pointOnDial(cx, cy, radius - 16, neutralAngle);
+    var neutralOuter = pointOnDial(cx, cy, radius + 18, neutralAngle);
 
     node.style.setProperty("--dial-color", color);
 
     svg.innerHTML =
+      '<path class="dial-ambient" d="' +
+      dialPath(cx, cy, radius, 180, 0) +
+      '" />' +
       '<path class="dial-track" d="' +
       dialPath(cx, cy, radius, 180, 0) +
       '" />' +
       zoneMarkup +
+      tickMarkup +
+      '<line class="dial-neutral-mark" x1="' + neutralInner.x.toFixed(2) + '" y1="' + neutralInner.y.toFixed(2) + '" x2="' + neutralOuter.x.toFixed(2) + '" y2="' + neutralOuter.y.toFixed(2) + '" />' +
       '<path class="dial-active" d="' +
       activePath +
       '" stroke="' +
       color +
       '" />' +
+      '<circle class="dial-marker-halo" cx="' +
+      marker.x.toFixed(2) +
+      '" cy="' +
+      marker.y.toFixed(2) +
+      '" r="14" />' +
       '<circle class="dial-dot" cx="' +
       marker.x.toFixed(2) +
       '" cy="' +
       marker.y.toFixed(2) +
-      '" r="8" />';
+      '" r="8" />' +
+      '<circle class="dial-dot-core" cx="' +
+      marker.x.toFixed(2) +
+      '" cy="' +
+      marker.y.toFixed(2) +
+      '" r="2.5" />';
 
     var active = svg.querySelector(".dial-active");
     var dot = svg.querySelector(".dial-dot");

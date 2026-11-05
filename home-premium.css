@@ -1031,3 +1031,143 @@ body.aq-site.aq-overview-home .aq-forward-summary-card > small { grid-column: 1 
   body.aq-site.aq-overview-home .aq-forward-summary { grid-template-columns: 1fr; }
   body.aq-site.aq-overview-home .aq-history-selector button { font-size: 0.52rem; }
 }
+
+/* Precision regime instrument ------------------------------------------------ */
+body.aq-site.aq-overview-home .aq-regime-panel {
+  --aq-regime-color: #8bbcff;
+  height: 386px;
+}
+body.aq-site.aq-overview-home .aq-regime-panel.is-negative { --aq-regime-color: #ff8f87; }
+body.aq-site.aq-overview-home .aq-regime-panel.is-positive { --aq-regime-color: #70e0c2; }
+body.aq-site.aq-overview-home .aq-regime-dial {
+  position: relative;
+  isolation: isolate;
+  height: 236px;
+  margin: 10px -4px 0;
+  overflow: hidden;
+}
+body.aq-site.aq-overview-home .aq-dial-ambient {
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  bottom: 4px;
+  width: 245px;
+  height: 150px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  opacity: .18;
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--aq-regime-color) 46%, transparent), transparent 67%);
+  filter: blur(14px);
+}
+body.aq-site.aq-overview-home .aq-dial-arc {
+  top: 32px;
+  width: 300px;
+  height: 300px;
+  background: conic-gradient(from 250deg, #ff817a 0 32deg, #d9899e 32deg 58deg, #71829a 58deg 82deg, #609edc 82deg 110deg, #66d9bf 110deg 140deg, transparent 140.5deg 360deg);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 15px), #000 calc(100% - 14px));
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--aq-regime-color) 32%, transparent));
+}
+body.aq-site.aq-overview-home .aq-dial-arc::before,
+body.aq-site.aq-overview-home .aq-dial-arc::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: inherit;
+  background: conic-gradient(from 250deg, var(--aq-regime-color) 0 var(--aq-progress), transparent calc(var(--aq-progress) + .6deg) 360deg);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+}
+body.aq-site.aq-overview-home .aq-dial-arc::after { inset: -7px; opacity: .3; filter: blur(4px); }
+body.aq-site.aq-overview-home .aq-dial-ticks {
+  position: absolute;
+  top: 25px;
+  left: 50%;
+  width: 314px;
+  height: 314px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+body.aq-site.aq-overview-home .aq-dial-ticks i { position: absolute; inset: 0; transform: rotate(calc(-70deg + (var(--tick) * 10deg))); }
+body.aq-site.aq-overview-home .aq-dial-ticks i::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  width: 1px;
+  height: 7px;
+  background: rgba(211, 230, 253, .46);
+}
+body.aq-site.aq-overview-home .aq-dial-ticks i:nth-child(8)::before { width: 2px; height: 11px; background: #cfe2fa; box-shadow: 0 0 9px rgba(132, 190, 255, .52); }
+body.aq-site.aq-overview-home .aq-dial-labels {
+  inset: auto 2px 8px;
+  z-index: 3;
+  align-items: end;
+  color: #70849e;
+  font-size: .47rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+body.aq-site.aq-overview-home .aq-dial-labels span { display: grid; gap: 3px; }
+body.aq-site.aq-overview-home .aq-dial-labels span:nth-child(2) { justify-items: center; transform: translateY(-3px); }
+body.aq-site.aq-overview-home .aq-dial-labels span:nth-child(3) { justify-items: end; }
+body.aq-site.aq-overview-home .aq-dial-labels b { color: #b7c9df; font-family: var(--home-mono); font-size: .54rem; font-weight: 600; letter-spacing: .03em; }
+body.aq-site.aq-overview-home .aq-dial-needle {
+  z-index: 2;
+  bottom: 41px;
+  height: 126px;
+  transition: transform 900ms cubic-bezier(.16,1,.3,1);
+}
+body.aq-site.aq-overview-home .aq-dial-needle::before {
+  inset: 7px 0 24px;
+  background: linear-gradient(to top, transparent, rgba(242, 248, 255, .74) 35%, #fff);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--aq-regime-color) 76%, transparent);
+}
+body.aq-site.aq-overview-home .aq-dial-needle span {
+  position: absolute;
+  top: 1px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  transform: translateX(-50%);
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background: var(--aq-regime-color);
+  box-shadow: 0 0 12px var(--aq-regime-color);
+}
+body.aq-site.aq-overview-home .aq-dial-needle i {
+  bottom: -8px;
+  width: 17px;
+  height: 17px;
+  border-color: color-mix(in srgb, var(--aq-regime-color) 72%, #fff);
+  background: #08162b;
+  box-shadow: 0 0 0 5px rgba(8, 23, 44, .76), 0 0 20px color-mix(in srgb, var(--aq-regime-color) 56%, transparent);
+}
+body.aq-site.aq-overview-home .aq-dial-copy { z-index: 4; bottom: 47px; }
+body.aq-site.aq-overview-home .aq-dial-copy small { color: #7289a7; font-weight: 700; }
+body.aq-site.aq-overview-home .aq-dial-copy strong {
+  color: #f3f8ff;
+  font-size: 2.45rem;
+  font-weight: 500;
+  line-height: .92;
+  text-shadow: 0 0 24px color-mix(in srgb, var(--aq-regime-color) 46%, transparent);
+}
+body.aq-site.aq-overview-home .aq-dial-copy b { margin-top: 6px; color: var(--aq-regime-color); }
+body.aq-site.aq-overview-home .aq-regime-brief {
+  z-index: 5;
+  margin-top: 1px;
+  border-color: color-mix(in srgb, var(--aq-regime-color) 22%, transparent);
+  background: linear-gradient(110deg, color-mix(in srgb, var(--aq-regime-color) 9%, #0e2038), rgba(12, 27, 48, .93));
+}
+body.aq-site.aq-overview-home .aq-regime-brief > span { color: var(--aq-regime-color); }
+
+@media (max-width: 1120px) {
+  body.aq-site.aq-overview-home .aq-regime-panel { height: 386px; }
+}
+@media (max-width: 760px) {
+  body.aq-site.aq-overview-home .aq-regime-panel { min-height: 382px; }
+  body.aq-site.aq-overview-home .aq-regime-brief { margin-top: 1px; }
+}
+@media (max-width: 420px) {
+  body.aq-site.aq-overview-home .aq-regime-dial { transform: none; }
+  body.aq-site.aq-overview-home .aq-dial-arc { width: 282px; height: 282px; }
+  body.aq-site.aq-overview-home .aq-dial-ticks { width: 296px; height: 296px; }
+}

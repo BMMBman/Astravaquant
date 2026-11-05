@@ -143,6 +143,7 @@ function heroSnapshot(workbook: WorkbookDashboard | null, markets: MarketDashboa
   const regimeScore = regime?.value ?? null;
   const regimeState = regime?.state ?? "Unavailable";
   const needle = regimeScore === null ? 0 : Math.min(70, Math.max(-70, regimeScore * 70));
+  const regimeProgress = regimeScore === null ? 70 : Math.min(140, Math.max(0, ((regimeScore + 1) / 2) * 140));
   const liquidity = markets?.metrics.find((metric) => metric.id === "fedNetLiquidity");
   const liquidityPoints = liquidity?.points.slice(-120).map((point) => ({ date: point.timestamp, value: point.value })) ?? [];
   const liquidityChange = liquidity?.change === null || liquidity?.change === undefined
@@ -158,13 +159,15 @@ function heroSnapshot(workbook: WorkbookDashboard | null, markets: MarketDashboa
     <div class="aq-command-signal-list">${signalRows}</div>
     <footer><span>Standardized scale</span><strong>−1.00 <i>to</i> +1.00</strong></footer>
   </article>
-  <article class="aq-command-panel aq-regime-panel">
+  <article class="aq-command-panel aq-regime-panel ${stateTone(regimeState)}">
     <header><div><span class="aq-panel-icon" aria-hidden="true">◎</span><h2>Medium-term market regime</h2></div><span class="aq-live-indicator"><i></i>Live model</span></header>
-    <div class="aq-regime-dial" style="--aq-needle:${needle.toFixed(2)}deg">
+    <div class="aq-regime-dial" style="--aq-needle:${needle.toFixed(2)}deg;--aq-progress:${regimeProgress.toFixed(2)}deg" role="img" aria-label="${escapeHtml(regime?.name ?? "MTPI Total")} score ${formatScore(regimeScore)}, classified ${escapeHtml(regimeState)}">
+      <div class="aq-dial-ambient" aria-hidden="true"></div>
       <div class="aq-dial-arc" aria-hidden="true"></div>
-      <div class="aq-dial-labels" aria-hidden="true"><span>Risk-off</span><span>Transition</span><span>Risk-on</span></div>
-      <div class="aq-dial-needle" aria-hidden="true"><i></i></div>
+      <div class="aq-dial-ticks" aria-hidden="true">${Array.from({ length: 15 }, (_, index) => `<i style="--tick:${index}"></i>`).join("")}</div>
+      <div class="aq-dial-needle" aria-hidden="true"><span></span><i></i></div>
       <div class="aq-dial-copy"><small>${escapeHtml(regime?.name ?? "MTPI Total")}</small><strong>${formatScore(regimeScore)}</strong><b class="${stateTone(regimeState)}">${escapeHtml(regimeState)}</b></div>
+      <div class="aq-dial-labels" aria-hidden="true"><span><b>−1.00</b>Risk-off</span><span><b>0.00</b>Transition</span><span><b>+1.00</b>Risk-on</span></div>
     </div>
     <div class="aq-regime-brief"><span aria-hidden="true">↗</span><p>${regime ? `Published ${escapeHtml(regime.name)} reading from ${escapeHtml(regime.sourceTab ?? "the research workbook")}.` : "The published medium-term regime feed is temporarily unavailable."}</p></div>
     <footer><span>Latest observation</span><strong>${escapeHtml(formatDate(regime?.updatedLabel))}</strong></footer>
